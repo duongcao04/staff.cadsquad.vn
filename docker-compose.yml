@@ -41,7 +41,10 @@ services:
     restart: always
 
   backend:
-    build: ./server
+    build: 
+      context: ./server
+      args:
+        DATABASE_URL: ${DATABASE_URL}
     container_name: backend
     restart: always
     depends_on:

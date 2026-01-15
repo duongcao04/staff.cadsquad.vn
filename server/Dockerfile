@@ -2,6 +2,10 @@
 FROM oven/bun:1-slim AS base
 WORKDIR /app
 
+# Khai báo các ARG
+ARG DATABASE_URL
+ENV DATABASE_URL="${DATABASE_URL}"
+
 # Cài đặt thư viện hệ thống cần thiết (Dùng cho Prisma và kết nối Postgres)
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
