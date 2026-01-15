@@ -8,14 +8,14 @@ services:
     restart: always
     environment:
       TZ: Asia/Ho_Chi_Minh
-      POSTGRES_DB: ${POSTGRES_DB:-cadsquaddb}
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
-      - '${DATA_PATH:-./data}/postgres:/var/lib/postgresql/data'
-      - '${LOG_PATH:-./logs}/postgres:/var/log/postgresql'
+      - '${DATA_PATH}/postgres:/var/lib/postgresql/data'
+      - '${LOG_PATH}/postgres:/var/log/postgresql'
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}']
       interval: 5s
@@ -33,7 +33,7 @@ services:
     environment:
       TZ: Asia/Ho_Chi_Minh
     volumes:
-      - ${DATA_PATH:-./data}/redis:/data
+      - ${DATA_PATH}/redis:/data
     ports:
       - "6379:6379"
     networks:
@@ -47,12 +47,10 @@ services:
     depends_on:
       database: { condition: service_healthy }
     volumes:
-      - '${LOG_PATH:-./logs}/backend:/app/logs'
+      - '${LOG_PATH}/backend:/app/logs'
     env_file: .env
     environment:
       TZ: Asia/Ho_Chi_Minh
-      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}?schema=public
-      REDIS_HOST: cache
     networks:
       - app-network
 
@@ -105,10 +103,10 @@ services:
     container_name: pgadmin
     restart: always
     ports:
-      - '${PGADMIN_PORT:-5050}:80'
+      - '${PGADMIN_PORT}:80'
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@admin.com}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-root}
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
     depends_on:
       database:
         condition: service_healthy
