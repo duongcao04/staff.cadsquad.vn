@@ -1,7 +1,7 @@
 # Stage 1: Build the application
 FROM oven/bun:1-alpine AS build
 
-# Khai báo các ARG (giữ nguyên các biến của bạn)
+# Khai báo các ARG
 ARG VITE_APP_URL
 ARG VITE_API_ENDPOINT
 ARG VITE_FIREBASE_VAPID_KEY

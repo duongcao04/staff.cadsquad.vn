@@ -18,8 +18,9 @@ import {
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { PlusIcon } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { startTransition, useEffect, useMemo, useState } from 'react'
 import { z } from 'zod'
+import lodash from 'lodash'
 
 const DEFAULT_SORT = 'displayName:asc'
 
@@ -34,11 +35,7 @@ export type TManageJobsParams = z.infer<typeof manageJobsParamsSchema>
 
 export const Route = createFileRoute('/_administrator/admin/mgmt/jobs/')({
     head: () => ({
-        meta: [
-            {
-                title: getPageTitle('Job Management'),
-            },
-        ],
+        meta: [{ title: getPageTitle('Job Management') }],
     }),
     validateSearch: (search) => manageJobsParamsSchema.parse(search),
     loaderDeps: ({ search }) => ({ search }),
@@ -49,7 +46,6 @@ export const Route = createFileRoute('/_administrator/admin/mgmt/jobs/')({
             search,
             sort = DEFAULT_SORT,
         } = deps.search
-
         return context.queryClient.ensureQueryData(
             jobsListOptions({
                 limit,
@@ -67,103 +63,113 @@ export const Route = createFileRoute('/_administrator/admin/mgmt/jobs/')({
 function ManageJobsPage() {
     const navigate = useNavigate({ from: Route.fullPath })
     const searchParams = Route.useSearch()
+    const createJobModalDisclosure = useDisclosure({ id: 'CreateJobModal' })
 
-    const createJobModalDisclosure = useDisclosure({
-        id: 'CreateJobModal',
-    })
-
-    // Server state
+    // --- Server State ---
     const options = jobsListOptions({
         ...searchParams,
         tab: 'active',
         hideFinishItems: '0',
-        sort: [searchParams.sort || DEFAULT_SORT], // Ensure sort is an array if your API expects it
+        sort: [searchParams.sort || DEFAULT_SORT],
     })
     const { data, isFetching } = useSuspenseQuery(options)
 
-    // Local UI state
+    // --- Local UI State ---
     const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]))
     const [statusFilter, setStatusFilter] = useState<Selection>('all')
 
-    // Search State (Debounce Buffer)
+    // Search State: searchValue quản lý input tức thì, debouncedSearch cập nhật URL
     const [searchValue, setSearchValue] = useState(searchParams.search || '')
+
+    // --- Search Logic (Fix Debounce) ---
+
+    // 1. Hàm cập nhật URL
+    const updateSearch = (
+        updater: (old: TManageJobsParams) => TManageJobsParams
+    ) => {
+        startTransition(() => {
+            navigate({
+                search: ((old: TManageJobsParams) =>
+                    updater(old as TManageJobsParams)) as unknown as true,
+                replace: true,
+            })
+        })
+    }
+
+    // 2. Tạo hàm debounce để cập nhật URL sau 500ms
+    const debouncedUpdateUrl = useMemo(
+        () =>
+            lodash.debounce((value: string) => {
+                updateSearch((old) => ({
+                    ...old,
+                    search: value || undefined,
+                    page: 1,
+                }))
+            }, 500),
+        []
+    )
+
+    // 3. Sync input khi URL thay đổi (nhấn Back/Forward hoặc reset)
+    useEffect(() => {
+        setSearchValue(searchParams.search || '')
+    }, [searchParams.search])
+
+    // 4. Cleanup debounce
+    useEffect(() => {
+        return () => debouncedUpdateUrl.cancel()
+    }, [debouncedUpdateUrl])
+
+    // --- Handlers ---
+
+    const onSearchInputChange = (value: string) => {
+        setSearchValue(value) // Cập nhật UI ngay lập tức
+        debouncedUpdateUrl(value) // Trigger debounce cập nhật URL
+    }
+
+    const handleClearSearch = () => {
+        setSearchValue('')
+        debouncedUpdateUrl.cancel()
+        updateSearch((old) => ({ ...old, search: undefined, page: 1 }))
+    }
+
+    const handlePageChange = (newPage: number) => {
+        navigate({ search: (prev) => ({ ...prev, page: newPage }) })
+    }
+
+    const handleSortChange = (newSort: string) => {
+        navigate({
+            search: (old) => ({ ...old, sort: newSort, page: 1 }),
+            replace: true,
+        })
+    }
+
+    // --- Bulk Actions ---
+    const { isOpen, onOpen, onOpenChange } = useDisclosure()
+    const [bulkActionType, setBulkActionType] = useState<
+        'DELETE' | 'STATUS' | null
+    >(null)
+
+    const onBulkAction = (type: 'DELETE' | 'STATUS') => {
+        setBulkActionType(type)
+        onOpen()
+    }
+
+    const handleBulkConfirm = () => {
+        const selectedIds =
+            selectedKeys === 'all'
+                ? data.jobs.map((j: TJob) => j.id)
+                : Array.from(selectedKeys)
+
+        console.log(`Performing ${bulkActionType} on:`, selectedIds)
+        setSelectedKeys(new Set([]))
+        onOpenChange()
+    }
 
     const pagination = {
         limit: data.paginate?.limit ?? 10,
         page: data.paginate?.page ?? 1,
         totalPages: data.paginate?.totalPages ?? 1,
         total: data.paginate?.total ?? 0,
-    }
-
-    // Sync local search input with URL if URL changes externally
-    useEffect(() => {
-        setSearchValue(searchParams.search || '')
-    }, [searchParams.search])
-
-    // Modal State
-    const { isOpen, onOpen, onOpenChange } = useDisclosure()
-    const [bulkActionType, setBulkActionType] = useState<
-        'DELETE' | 'STATUS' | null
-    >(null)
-
-    // --- Handlers ---
-
-    // 1. Search Debounce
-    const handleSearchChange = (value: string) => {
-        setSearchValue(value)
-        const timeoutId = setTimeout(() => {
-            navigate({
-                search: (prev) => ({
-                    ...prev,
-                    search: value || undefined,
-                    page: 1,
-                }),
-            })
-        }, 500) // 500ms debounce
-        return () => clearTimeout(timeoutId)
-    }
-
-    const handleClearSearch = () => {
-        setSearchValue('')
-        navigate({
-            search: (prev) => ({ ...prev, search: undefined, page: 1 }),
-        })
-    }
-
-    // 3. Pagination
-    const handlePageChange = (newPage: number) => {
-        navigate({
-            search: (prev) => ({ ...prev, page: newPage }),
-        })
-    }
-
-    // 4. Bulk Actions
-    const onBulkAction = (type: 'DELETE' | 'STATUS') => {
-        setBulkActionType(type)
-        onOpen()
-    }
-
-    const handleSortChange = (newSort: string) => {
-        navigate({
-            search: (old) => ({
-                ...old,
-                sort: newSort, // undefined để về default
-                page: 1, // Sort lại thì reset về trang 1
-            }),
-            replace: true,
-        })
-    }
-
-    const handleBulkConfirm = () => {
-        const selectedIds =
-            selectedKeys === 'all'
-                ? data.jobs.map((j: TJob) => j.id) // Assuming 'all' means all on current page
-                : Array.from(selectedKeys)
-
-        console.log(`Performing ${bulkActionType} on IDs:`, selectedIds)
-
-        setSelectedKeys(new Set([]))
-        onOpenChange()
     }
 
     return (
@@ -193,40 +199,41 @@ function ManageJobsPage() {
 
             <AdminContentContainer>
                 <AdminManagementJobsTable
-                    onClearSearch={handleClearSearch}
-                    onBulkAction={onBulkAction}
-                    onSearchChange={handleSearchChange}
-                    pagination={pagination}
                     data={data.jobs}
                     isLoadingData={isFetching}
-                    onStatusFilterChange={setStatusFilter}
-                    selectedKeys={selectedKeys}
+                    // Search props
                     searchValue={searchValue}
-                    statusFilter={statusFilter}
+                    onSearchChange={onSearchInputChange}
+                    onClearSearch={handleClearSearch}
+                    // Pagination & Sort
+                    pagination={pagination}
                     onPageChange={handlePageChange}
-                    onSelectionChange={setSelectedKeys}
                     sort={searchParams.sort ?? DEFAULT_SORT}
                     onSortChange={handleSortChange}
+                    // Selection & Filter
+                    selectedKeys={selectedKeys}
+                    onSelectionChange={setSelectedKeys}
+                    statusFilter={statusFilter}
+                    onStatusFilterChange={setStatusFilter}
+                    onBulkAction={onBulkAction}
                 />
 
-                {/* Modal */}
                 <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
                     <ModalContent>
                         {(onClose) => (
                             <>
-                                <ModalHeader className="flex flex-col gap-1">
+                                <ModalHeader>
                                     Confirm{' '}
                                     {bulkActionType === 'DELETE'
                                         ? 'Deletion'
                                         : 'Update'}
                                 </ModalHeader>
                                 <ModalBody>
-                                    <p className="text-slate-600">
+                                    <p className="text-default-600">
                                         Are you sure you want to{' '}
                                         {bulkActionType === 'DELETE'
                                             ? 'permanently delete'
                                             : 'update'}{' '}
-                                        the{' '}
                                         <strong>
                                             {selectedKeys === 'all'
                                                 ? data.jobs.length
@@ -236,11 +243,7 @@ function ManageJobsPage() {
                                     </p>
                                 </ModalBody>
                                 <ModalFooter>
-                                    <Button
-                                        color="default"
-                                        variant="light"
-                                        onPress={onClose}
-                                    >
+                                    <Button variant="light" onPress={onClose}>
                                         Cancel
                                     </Button>
                                     <Button

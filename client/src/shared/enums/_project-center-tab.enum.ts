@@ -30,10 +30,16 @@ export const ProjectCenterTabEnum = {
     DELIVERED: 'delivered',
     /*
      * Xem jobs
-     * Status: ['Completed','Finish']
-     * {"status":{"systemType":{"in":["COMPLETED","TERMINATED"]}}}
+     * Status: ['Completed']
+     * {"status":{"systemType":{"in":["COMPLETED"]}}}
      */
     COMPLETED: 'completed',
+    /*
+     * Xem jobs
+     * Status: ['Finish']
+     * {"status":{"systemType":{"in":["TERMINATED"]}}}
+     */
+    FINISHED: 'finished',
     /*
      * Xem jobs
      * Đã xóa

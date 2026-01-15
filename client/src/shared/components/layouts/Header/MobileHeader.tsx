@@ -43,7 +43,7 @@ import {
     HeroDrawerContent,
 } from '../../ui/hero-drawer'
 import { ScrollArea, ScrollBar } from '../../ui/scroll-area'
-import { SearchModal } from './SearchModal'
+import { SearchModal } from '../../search/search-modal'
 
 export default function MobileHeader() {
     const { profile, isAdmin } = useProfile()

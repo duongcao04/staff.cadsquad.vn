@@ -1,7 +1,7 @@
 import { INTERNAL_URLS, SYSTEM_ROUTES } from '@/lib/utils' // Assuming you have this
 import { queryOptions } from '@tanstack/react-query'
-import { jobApi, userApi } from '../../api'
 import { IJobResponse, IUserResponse } from '../../../shared/interfaces'
+import { jobApi, userApi } from '../../api'
 
 export type SearchCategory =
     | 'All'
@@ -17,7 +17,11 @@ const fetcher = async (url: string) => {
     return res.json()
 }
 
-export const searchOptions = (query: string, category: SearchCategory) => {
+export const searchOptions = (
+    query: string,
+    category: SearchCategory,
+    isAdmin?: boolean
+) => {
     return queryOptions({
         queryKey: ['search', category, query],
         queryFn: async () => {
@@ -67,22 +71,24 @@ export const searchOptions = (query: string, category: SearchCategory) => {
 
             // 3. Clients
             if (category === 'All' || category === 'Clients') {
-                promises.push(
-                    fetcher(
-                        `/api/clients/search?q=${encodeURIComponent(query)}`
-                    )
-                        .then((data) =>
-                            data.map((item: any) => ({
-                                id: `client-${item.id}`,
-                                title: item.name,
-                                subtitle: item.code,
-                                type: 'Clients',
-                                route: `/clients/${item.id}`,
-                                rawData: item,
-                            }))
+                if (isAdmin) {
+                    promises.push(
+                        fetcher(
+                            `/api/clients/search?q=${encodeURIComponent(query)}`
                         )
-                        .catch(() => [])
-                )
+                            .then((data) =>
+                                data.map((item: any) => ({
+                                    id: `client-${item.id}`,
+                                    title: item.name,
+                                    subtitle: item.code,
+                                    type: 'Clients',
+                                    route: `/clients/${item.id}`,
+                                    rawData: item,
+                                }))
+                            )
+                            .catch(() => [])
+                    )
+                }
             }
 
             // 4. Communities
@@ -107,22 +113,26 @@ export const searchOptions = (query: string, category: SearchCategory) => {
 
             // 5. Staff Members
             if (category === 'All' || category === 'Staff Members') {
-                promises.push(
-                    userApi.search(query).then((data) => {
-                        return data.result?.map((item: IUserResponse) => ({
-                            id: `users-${item.id}`,
-                            title: item.displayName,
-                            subtitle:
-                                item.department?.displayName ||
-                                'Unknown Client',
-                            type: 'Staff Member',
-                            route: item.username
-                                ? INTERNAL_URLS.editStaffDetails(item.username)
-                                : INTERNAL_URLS.staffDirectory,
-                            rawData: item,
-                        }))
-                    })
-                )
+                if (isAdmin) {
+                    promises.push(
+                        userApi.search(query).then((data) => {
+                            return data.result?.map((item: IUserResponse) => ({
+                                id: `users-${item.id}`,
+                                title: item.displayName,
+                                subtitle:
+                                    item.department?.displayName ||
+                                    'Unknown Client',
+                                type: 'Staff Member',
+                                route: item.username
+                                    ? INTERNAL_URLS.editStaffDetails(
+                                          item.username
+                                      )
+                                    : INTERNAL_URLS.staffDirectory,
+                                rawData: item,
+                            }))
+                        })
+                    )
+                }
             }
 
             const apiResults = await Promise.all(promises)

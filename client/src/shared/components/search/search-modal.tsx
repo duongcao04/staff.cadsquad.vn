@@ -1,4 +1,4 @@
-import { SearchCategory } from '@/lib/queries'
+import { SearchCategory, useProfile } from '@/lib/queries'
 import {
     HeroModal,
     HeroModalBody,
@@ -31,6 +31,8 @@ export const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
     const [activeTab, setActiveTab] = useState<SearchCategory>('All')
     const deferredQuery = useDeferredValue(query)
     const isStale = query !== deferredQuery
+
+    const { isAdmin } = useProfile()
 
     return (
         <HeroModal
@@ -114,15 +116,18 @@ export const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
                                     />
                                 }
                             />
-                            <Tab
-                                key="Clients"
-                                title={
-                                    <TabHeader
-                                        icon={<UserCircleIcon size={14} />}
-                                        text="Clients"
-                                    />
-                                }
-                            />
+                            {/* TODO: implement search clients */}
+                            {false && (
+                                <Tab
+                                    key="Clients"
+                                    title={
+                                        <TabHeader
+                                            icon={<UserCircleIcon size={14} />}
+                                            text="Clients"
+                                        />
+                                    }
+                                />
+                            )}
                             <Tab
                                 key="System"
                                 title={
@@ -132,24 +137,30 @@ export const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
                                     />
                                 }
                             />
-                            <Tab
-                                key="Communities"
-                                title={
-                                    <TabHeader
-                                        icon={<UsersIcon size={14} />}
-                                        text="Communities"
-                                    />
-                                }
-                            />
-                            <Tab
-                                key="Staff Members"
-                                title={
-                                    <TabHeader
-                                        icon={<BadgeCheck size={14} />}
-                                        text="Staff"
-                                    />
-                                }
-                            />
+
+                            {/* TODO: implement search clients */}
+                            {false && (
+                                <Tab
+                                    key="Communities"
+                                    title={
+                                        <TabHeader
+                                            icon={<UsersIcon size={14} />}
+                                            text="Communities"
+                                        />
+                                    }
+                                />
+                            )}
+                            {isAdmin && (
+                                <Tab
+                                    key="Staff Members"
+                                    title={
+                                        <TabHeader
+                                            icon={<BadgeCheck size={14} />}
+                                            text="Staff"
+                                        />
+                                    }
+                                />
+                            )}
                         </Tabs>
                     </div>
 

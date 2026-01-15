@@ -1,3 +1,4 @@
+import { APP_PERMISSIONS } from '@/lib/utils'
 import {
     FileText,
     Link as IconLink,
@@ -7,45 +8,53 @@ import {
     X,
 } from 'lucide-react'
 import { useState } from 'react'
-
+import { usePermission } from '../../hooks'
 import { HeroButton } from '../ui/hero-button'
 import { HeroCard, HeroCardBody, HeroCardHeader } from '../ui/hero-card'
 import { HeroInput } from '../ui/hero-input'
 
 type JobAttachmentsFieldProps = {
     defaultAttachments?: string[]
-    // Sửa lại type onChange để trả về data cho form cha
-    onChange: (attachments: string[]) => void
-    onRemove?: (attachments: string[]) => void
+    // Emits the NEW full list (for local state sync if needed)
+    onChange?: (attachments: string[]) => void
+    // Emits specifically the item to be removed (for API mutation)
+    onRemove?: (removedItem: string) => void
+    // New prop: Emits specifically the item added (for API mutation)
+    onAdd?: (addedItem: string) => void
 }
 
 export default function JobAttachmentsField({
     defaultAttachments = [],
     onChange,
     onRemove,
+    onAdd,
 }: JobAttachmentsFieldProps) {
+    const { hasPermission } = usePermission()
     const [attachments, setAttachments] = useState<string[]>(defaultAttachments)
     const [isAdding, setIsAdding] = useState(false)
 
-    // Xử lý thêm mới
+    // Handle Adding
     const handleAdd = (url: string) => {
         const newAttachments = [...attachments, url]
         setAttachments(newAttachments)
-        onChange(newAttachments) // Bắn event ra ngoài
+
+        if (onAdd) onAdd(url) // Emit specific item for mutation
+        if (onChange) onChange(newAttachments) // Emit full list
+
         setIsAdding(false)
     }
 
-    // Xử lý xóa
+    // Handle Removal
     const handleRemove = (indexToRemove: number) => {
+        const itemToRemove = attachments[indexToRemove] // Get the item BEFORE filtering
         const newAttachments = attachments.filter(
             (_, idx) => idx !== indexToRemove
         )
+
         setAttachments(newAttachments)
-        if (onRemove) {
-            onRemove(newAttachments)
-        } else {
-            onChange(newAttachments)
-        }
+
+        if (onRemove) onRemove(itemToRemove) // Emit specific item for mutation
+        if (onChange) onChange(newAttachments) // Emit full list
     }
 
     return (
@@ -56,7 +65,7 @@ export default function JobAttachmentsField({
                     <h3 className="text-sm font-semibold text-default-700">
                         Attachments ({attachments.length})
                     </h3>
-                    {!isAdding && (
+                    {hasPermission(APP_PERMISSIONS.JOB.UPDATE) && !isAdding && (
                         <HeroButton
                             size="sm"
                             variant="light"
@@ -122,17 +131,19 @@ export default function JobAttachmentsField({
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <HeroButton
-                                    isIconOnly
-                                    size="sm"
-                                    color="danger"
-                                    variant="light"
-                                    onClick={() => handleRemove(idx)}
-                                >
-                                    <Trash2 size={16} />
-                                </HeroButton>
-                            </div>
+                            {hasPermission(APP_PERMISSIONS.JOB.UPDATE) && (
+                                <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <HeroButton
+                                        isIconOnly
+                                        size="sm"
+                                        color="danger"
+                                        variant="light"
+                                        onClick={() => handleRemove(idx)}
+                                    >
+                                        <Trash2 size={16} />
+                                    </HeroButton>
+                                </div>
+                            )}
                         </div>
                     ))}
                 </div>

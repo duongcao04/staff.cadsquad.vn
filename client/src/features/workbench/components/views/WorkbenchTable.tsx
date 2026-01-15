@@ -207,24 +207,26 @@ export default function WorkbenchTable({
                             )
                         }}
                     >
-                        {jobStatuses.map((jobStatus) => {
-                            return (
-                                <HeroSelectItem key={jobStatus.code}>
-                                    <div className="flex items-center justify-start gap-2">
-                                        <div
-                                            className="size-2 rounded-full"
-                                            style={{
-                                                backgroundColor:
-                                                    jobStatus.hexColor
-                                                        ? jobStatus.hexColor
-                                                        : '#000000',
-                                            }}
-                                        />
-                                        <p>{jobStatus.displayName}</p>
-                                    </div>
-                                </HeroSelectItem>
-                            )
-                        })}
+                        {jobStatuses
+                            .filter((it) => it.systemType !== 'TERMINATED')
+                            .map((jobStatus) => {
+                                return (
+                                    <HeroSelectItem key={jobStatus.code}>
+                                        <div className="flex items-center justify-start gap-2">
+                                            <div
+                                                className="size-2 rounded-full"
+                                                style={{
+                                                    backgroundColor:
+                                                        jobStatus.hexColor
+                                                            ? jobStatus.hexColor
+                                                            : '#000000',
+                                                }}
+                                            />
+                                            <p>{jobStatus.displayName}</p>
+                                        </div>
+                                    </HeroSelectItem>
+                                )
+                            })}
                     </HeroSelect>
 
                     <HeroSelect
@@ -469,7 +471,7 @@ export default function WorkbenchTable({
             sortString={sort}
             onSortStringChange={onSortChange}
             selectedKeys={selectedKeys}
-            selectionMode="multiple"
+            selectionMode="single"
             topContent={topContent}
             onSelectionChange={setSelectedKeys}
             onRowAction={(key) => onViewDetail(key as string)}

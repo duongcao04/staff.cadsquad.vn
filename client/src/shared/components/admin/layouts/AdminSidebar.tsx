@@ -155,12 +155,15 @@ export const AdminSidebar = ({
                                 </p>
                             )}
                             <div className="space-y-1">
-                                <SidebarItem
-                                    icon={LayoutDashboard}
-                                    label="Dashboard"
-                                    isCollapsed={isCollapsed}
-                                    url={INTERNAL_URLS.admin}
-                                />
+                                {/* TODO: Implement System Dashboard */}
+                                {false && (
+                                    <SidebarItem
+                                        icon={LayoutDashboard}
+                                        label="Dashboard"
+                                        isCollapsed={isCollapsed}
+                                        url={INTERNAL_URLS.admin}
+                                    />
+                                )}
                                 <SidebarItem
                                     icon={CheckSquare}
                                     label="All Jobs"
@@ -187,12 +190,16 @@ export const AdminSidebar = ({
                                     isCollapsed={isCollapsed}
                                     url={INTERNAL_URLS.schedule}
                                 />
-                                <SidebarItem
-                                    icon={MonitorCog}
-                                    label="System Configuration"
-                                    isCollapsed={isCollapsed}
-                                    url={INTERNAL_URLS.systemConfiguration}
-                                />
+
+                                {/* TODO: Implement System Configuration */}
+                                {false && (
+                                    <SidebarItem
+                                        icon={MonitorCog}
+                                        label="System Configuration"
+                                        isCollapsed={isCollapsed}
+                                        url={INTERNAL_URLS.systemConfiguration}
+                                    />
+                                )}
                             </div>
                         </div>
                     )}
@@ -205,12 +212,16 @@ export const AdminSidebar = ({
                             </p>
                         )}
                         <div className="space-y-1">
-                            <SidebarItem
-                                icon={PieChart}
-                                label="Revenue Reports"
-                                isCollapsed={isCollapsed}
-                                url={INTERNAL_URLS.revenueReports}
-                            />
+                            {/* TODO: Implement System Revenue Reports */}
+                            {false && (
+                                <SidebarItem
+                                    icon={PieChart}
+                                    label="Revenue Reports"
+                                    isCollapsed={isCollapsed}
+                                    url={INTERNAL_URLS.revenueReports}
+                                />
+                            )}
+
                             {isAdmin && (
                                 <SidebarItem
                                     icon={Users}
@@ -252,12 +263,16 @@ export const AdminSidebar = ({
                                 isCollapsed={isCollapsed}
                                 url={INTERNAL_URLS.profitLoss}
                             /> */}
-                            <SidebarItem
-                                icon={BadgeDollarSign}
-                                label="Transaction Reports"
-                                isCollapsed={isCollapsed}
-                                url={INTERNAL_URLS.payment}
-                            />
+
+                            {/* TODO: Implement System Transaction Reports */}
+                            {false && (
+                                <SidebarItem
+                                    icon={BadgeDollarSign}
+                                    label="Transaction Reports"
+                                    isCollapsed={isCollapsed}
+                                    url={INTERNAL_URLS.payment}
+                                />
+                            )}
                             <SidebarItem
                                 icon={BadgeDollarSign}
                                 label="Pending payouts"
@@ -271,12 +286,16 @@ export const AdminSidebar = ({
                                 isCollapsed={isCollapsed}
                                 url={INTERNAL_URLS.payroll}
                             /> */}
-                            <SidebarItem
-                                icon={Group}
-                                label="Reimbursements"
-                                isCollapsed={isCollapsed}
-                                url={INTERNAL_URLS.reimbursements}
-                            />
+
+                            {/* TODO: Implement System Reimbursements */}
+                            {false && (
+                                <SidebarItem
+                                    icon={Group}
+                                    label="Reimbursements"
+                                    isCollapsed={isCollapsed}
+                                    url={INTERNAL_URLS.reimbursements}
+                                />
+                            )}
                             {/* <SidebarItem
                                 icon={Settings2}
                                 label="Financial Settings"
@@ -286,8 +305,9 @@ export const AdminSidebar = ({
                         </div>
                     </div>
 
+                    {/* TODO: Implement Manage Departments */}
                     {/* Departments */}
-                    {isAdmin && departments && (
+                    {false && isAdmin && departments && (
                         <div>
                             {!isCollapsed ? (
                                 <div className="flex items-center justify-between px-2 mb-2">

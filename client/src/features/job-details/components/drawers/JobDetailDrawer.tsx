@@ -1,10 +1,10 @@
+import { optimizeCloudinary, useUpdateAttachmentsMutation } from '@/lib'
 import { dateFormatter } from '@/lib/dayjs'
 import {
     jobActivityLogsOptions,
     jobByNoOptions,
     useProfile,
     useUpdateJobGeneralInfoMutation,
-    useUpdateJobMutation,
 } from '@/lib/queries'
 import {
     APP_PERMISSIONS,
@@ -14,8 +14,28 @@ import {
     INTERNAL_URLS,
     PAID_STATUS_COLOR,
 } from '@/lib/utils'
+import { JobStatusChip } from '@/shared/components/chips/JobStatusChip'
+import { PaidChip } from '@/shared/components/chips/PaidChip'
+import JobAttachmentsField from '@/shared/components/form-fields/JobAttachmentsField'
+import CountdownTimer from '@/shared/components/ui/countdown-timer'
+import { HeroButton } from '@/shared/components/ui/hero-button'
 import {
-    addToast,
+    HeroCard,
+    HeroCardBody,
+    HeroCardHeader,
+} from '@/shared/components/ui/hero-card'
+import HeroCopyButton from '@/shared/components/ui/hero-copy-button'
+import {
+    HeroDrawer,
+    HeroDrawerBody,
+    HeroDrawerContent,
+    HeroDrawerHeader,
+} from '@/shared/components/ui/hero-drawer'
+import HtmlReactParser from '@/shared/components/ui/html-react-parser'
+import { JobStatusSystemTypeEnum } from '@/shared/enums'
+import { PermissionGuard } from '@/shared/guards/permission'
+import { usePermission } from '@/shared/hooks'
+import {
     Avatar,
     Button,
     Chip,
@@ -59,35 +79,12 @@ import {
     Wallet,
 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
-import { JobStatusSystemTypeEnum } from '../../../../shared/enums'
-import { JobStatusChip } from '../../../../shared/components/chips/JobStatusChip'
-import { PaidChip } from '../../../../shared/components/chips/PaidChip'
-import JobAttachmentsField from '../../../../shared/components/form-fields/JobAttachmentsField'
 import { DeliverJobModal } from '../../../job-manage/components/modals/DeliverJobModal'
 import UpdateCostModal from '../../../project-center/components/modals/UpdateCostModal'
-import CountdownTimer from '../../../../shared/components/ui/countdown-timer'
-import { HeroButton } from '../../../../shared/components/ui/hero-button'
-import {
-    HeroCard,
-    HeroCardBody,
-    HeroCardHeader,
-} from '../../../../shared/components/ui/hero-card'
-import HeroCopyButton from '../../../../shared/components/ui/hero-copy-button'
-import {
-    HeroDrawer,
-    HeroDrawerBody,
-    HeroDrawerContent,
-    HeroDrawerHeader,
-} from '../../../../shared/components/ui/hero-drawer'
-import HtmlReactParser from '../../../../shared/components/ui/html-react-parser'
+import JobDescriptionModal from '../modals/JobDescriptionModal'
 import { JobActivityHistory } from '../views/JobActivityHistory'
 import JobAssigneesView from '../views/JobAssigneesView'
 import JobCommentsView from '../views/JobCommentsView'
-import JobDescriptionModal from '../modals/JobDescriptionModal'
-import { PermissionGuard } from '../../../../shared/guards/permission'
-import { optimizeCloudinary } from '../../../../lib'
-import { usePermission } from '../../../../shared/hooks'
-import HeroNumberInput from '../../../../shared/components/ui/hero-number-input'
 
 type JobDetailDrawerProps = {
     isOpen: boolean
@@ -102,7 +99,7 @@ export default function JobDetailDrawer({
     const router = useRouter()
 
     const { profile } = useProfile()
-    const { hasPermission } = usePermission()
+    const { hasPermission, hasAnyPermission } = usePermission()
     const updateJobGeneralInfoMutation = useUpdateJobGeneralInfoMutation()
 
     const deliverJobDisclosure = useDisclosure()
@@ -123,9 +120,9 @@ export default function JobDetailDrawer({
         enabled: !!job?.id,
     })
 
-    const updateJobMutation = useUpdateJobMutation(() => {
-        addToast({ title: 'Success', color: 'success' })
-    })
+    const updateAttachmentsMutation = useUpdateAttachmentsMutation(
+        job?.id ?? ''
+    )
 
     const [descContent, setDescContent] = useState('')
 
@@ -147,7 +144,7 @@ export default function JobDetailDrawer({
         job?.status?.systemType === JobStatusSystemTypeEnum.TERMINATED
 
     const isJobWaitReview =
-        job?.status?.systemType === JobStatusSystemTypeEnum.WAIT_REVIEW
+        job?.status?.systemType === JobStatusSystemTypeEnum.DELIVERED
 
     const budgetUsage = useMemo(() => {
         if (!job?.incomeCost || job.incomeCost === 0) return 0
@@ -170,6 +167,18 @@ export default function JobDetailDrawer({
                 },
             })
         }
+    }
+
+    const handleRemoveAttachment = (url: string) => {
+        // Directly pass the removed URL to the mutation
+        updateAttachmentsMutation.mutateAsync({
+            action: 'remove',
+            files: [url],
+        })
+    }
+
+    const handleAddAttachment = (url: string) => {
+        updateAttachmentsMutation.mutateAsync({ action: 'add', files: [url] })
     }
 
     return (
@@ -363,23 +372,23 @@ export default function JobDetailDrawer({
                                     {job.displayName}
                                 </h1>
                                 <div className="flex gap-3 text-xs text-text-subdued items-center">
-                                    <p className="flex items-center gap-1.5 font-medium">
+                                    <div className="flex items-center gap-1.5 font-medium">
                                         <UserRound size={14} />
                                         {job.client?.name || 'Unknown client'}
-                                    </p>
+                                    </div>
                                     <Divider
                                         orientation="vertical"
                                         className="h-3"
                                     />
-                                    <p className="flex items-center gap-1.5 font-medium">
+                                    <div className="flex items-center gap-1.5 font-medium">
                                         <LibraryBig size={14} />
                                         {job.type?.displayName}
-                                    </p>
+                                    </div>
                                     <Divider
                                         orientation="vertical"
                                         className="h-3"
                                     />
-                                    <p className="flex items-center gap-1.5 font-medium">
+                                    <div className="flex items-center gap-1.5 font-medium">
                                         <CalendarDays size={14} />
                                         {isJobCompleted ? (
                                             `Completed`
@@ -398,7 +407,7 @@ export default function JobDetailDrawer({
                                                 />
                                             </span>
                                         )}
-                                    </p>
+                                    </div>
                                 </div>
                             </HeroDrawerHeader>
 
@@ -407,8 +416,8 @@ export default function JobDetailDrawer({
                             <HeroDrawerBody className="py-6">
                                 <div className="flex flex-col gap-6">
                                     {/* ACTION BAR */}
-                                    <HeroCard className="border-border-muted shadow-xs">
-                                        <HeroCardBody className="w-full flex justify-between">
+                                    <HeroCard className="bg-background dark:bg-background-hovered/50 border-border-default">
+                                        <HeroCardBody className="w-full flex justify-between p-4">
                                             <div className="flex justify-between">
                                                 {/* SECTION 1: CORE PROGRESS STATUS */}
                                                 <div className="flex flex-col gap-1">
@@ -592,7 +601,8 @@ export default function JobDetailDrawer({
                                                             </Button>
                                                         )}
                                                     </PermissionGuard>
-                                                    <Button
+                                                    {/* TODO: Issue Report */}
+                                                    {/* <Button
                                                         size="sm"
                                                         variant="light"
                                                         color="danger"
@@ -601,7 +611,7 @@ export default function JobDetailDrawer({
                                                         <AlertCircle
                                                             size={16}
                                                         />
-                                                    </Button>
+                                                    </Button> */}
                                                 </div>
                                             </div>
                                         </HeroCardBody>
@@ -636,24 +646,30 @@ export default function JobDetailDrawer({
                                                                 <span className="font-semibold text-xs tracking-wide text-text-default">
                                                                     Description
                                                                 </span>
-                                                                <div className="flex gap-1">
-                                                                    <HeroButton
-                                                                        isIconOnly
-                                                                        size="sm"
-                                                                        variant="light"
-                                                                        onPress={
-                                                                            fullEditorDisclosure.onOpen
-                                                                        }
-                                                                    >
-                                                                        <Maximize2
-                                                                            size={
-                                                                                14
+                                                                {hasPermission(
+                                                                    APP_PERMISSIONS
+                                                                        .JOB
+                                                                        .UPDATE
+                                                                ) && (
+                                                                    <div className="flex gap-1">
+                                                                        <HeroButton
+                                                                            isIconOnly
+                                                                            size="sm"
+                                                                            variant="light"
+                                                                            onPress={
+                                                                                fullEditorDisclosure.onOpen
                                                                             }
-                                                                        />
-                                                                    </HeroButton>
-                                                                </div>
+                                                                        >
+                                                                            <Maximize2
+                                                                                size={
+                                                                                    14
+                                                                                }
+                                                                            />
+                                                                        </HeroButton>
+                                                                    </div>
+                                                                )}
                                                             </HeroCardHeader>
-                                                            <HeroCardBody className="py-0! px-3 text-sm text-text-7">
+                                                            <HeroCardBody className="py-0! px-3 text-sm text-text-default">
                                                                 {job.description ? (
                                                                     <HtmlReactParser
                                                                         htmlString={
@@ -734,41 +750,33 @@ export default function JobDetailDrawer({
                                                             defaultAttachments={
                                                                 job.attachmentUrls
                                                             }
-                                                            onChange={(urls) =>
-                                                                updateJobMutation.mutate(
-                                                                    {
-                                                                        jobId: job.id,
-                                                                        data: {
-                                                                            attachmentUrls:
-                                                                                urls,
-                                                                        },
-                                                                    }
-                                                                )
+                                                            onAdd={
+                                                                handleAddAttachment
+                                                            }
+                                                            onRemove={
+                                                                handleRemoveAttachment
                                                             }
                                                         />
                                                     </div>
                                                 </Tab>
 
                                                 {/* TAB 3: ASSIGNMENTS (Beautiful Version) */}
-
-                                                {hasPermission(
-                                                    APP_PERMISSIONS.JOB
-                                                        .READ_SENSITIVE
-                                                ) && (
-                                                    <Tab
-                                                        key="assignments"
-                                                        title={
-                                                            <div className="flex items-center gap-2">
-                                                                <Users
-                                                                    size={16}
-                                                                />
-                                                                <span>
-                                                                    Assignments
-                                                                </span>
-                                                            </div>
-                                                        }
-                                                    >
-                                                        <div className="flex flex-col gap-6 py-4">
+                                                <Tab
+                                                    key="assignments"
+                                                    title={
+                                                        <div className="flex items-center gap-2">
+                                                            <Users size={16} />
+                                                            <span>
+                                                                Assignments
+                                                            </span>
+                                                        </div>
+                                                    }
+                                                >
+                                                    <div className="flex flex-col gap-6 py-4">
+                                                        {hasPermission(
+                                                            APP_PERMISSIONS.JOB
+                                                                .READ_SENSITIVE
+                                                        ) && (
                                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                                 <HeroCard className="bg-primary/5 border-primary/20 shadow-none">
                                                                     <HeroCardBody className="flex-row items-center gap-4 p-4">
@@ -792,13 +800,19 @@ export default function JobDetailDrawer({
                                                                                 )}
                                                                             </span>
                                                                         </div>
-                                                                        <PermissionGuard
-                                                                            permission={
+                                                                        {hasAnyPermission(
+                                                                            [
                                                                                 APP_PERMISSIONS
                                                                                     .JOB
-                                                                                    .UPDATE
-                                                                            }
-                                                                        >
+                                                                                    .PAID,
+                                                                                APP_PERMISSIONS
+                                                                                    .JOB
+                                                                                    .READ_SENSITIVE,
+                                                                                APP_PERMISSIONS
+                                                                                    .JOB
+                                                                                    .UPDATE,
+                                                                            ]
+                                                                        ) && (
                                                                             <Button
                                                                                 size="sm"
                                                                                 color="primary"
@@ -813,7 +827,7 @@ export default function JobDetailDrawer({
                                                                                     }
                                                                                 />
                                                                             </Button>
-                                                                        </PermissionGuard>
+                                                                        )}
                                                                     </HeroCardBody>
                                                                 </HeroCard>
                                                                 <HeroCard className="bg-default-50 border-divider shadow-none">
@@ -846,27 +860,29 @@ export default function JobDetailDrawer({
                                                                     </HeroCardBody>
                                                                 </HeroCard>
                                                             </div>
+                                                        )}
 
-                                                            <div className="space-y-2">
-                                                                {job.assignments?.map(
-                                                                    (asgn) => (
-                                                                        <div
-                                                                            key={
-                                                                                asgn.id
-                                                                            }
-                                                                            className="group flex items-center justify-between p-3 bg-background hover:bg-default-50 rounded-2xl border border-divider transition-all"
-                                                                        >
-                                                                            <div className="flex items-center gap-3">
-                                                                                <Avatar
-                                                                                    src={optimizeCloudinary(
-                                                                                        asgn
-                                                                                            .user
-                                                                                            .avatar
-                                                                                    )}
-                                                                                    size="sm"
-                                                                                    isBordered
-                                                                                    color="primary"
-                                                                                />
+                                                        <div className="space-y-2">
+                                                            {job.assignments?.map(
+                                                                (asgn) => (
+                                                                    <div
+                                                                        key={
+                                                                            asgn.id
+                                                                        }
+                                                                        className="group flex items-center justify-between p-3 bg-background hover:bg-default-50 rounded-2xl border border-divider transition-all"
+                                                                    >
+                                                                        <div className="flex items-center gap-3">
+                                                                            <Avatar
+                                                                                src={optimizeCloudinary(
+                                                                                    asgn
+                                                                                        .user
+                                                                                        .avatar
+                                                                                )}
+                                                                                size="sm"
+                                                                                isBordered
+                                                                                color="primary"
+                                                                            />
+                                                                            <div className="flex flex-col space-y-2">
                                                                                 <span className="text-sm font-bold">
                                                                                     {
                                                                                         asgn
@@ -874,51 +890,87 @@ export default function JobDetailDrawer({
                                                                                             .displayName
                                                                                     }
                                                                                 </span>
-                                                                            </div>
-                                                                            <div className="flex items-center gap-4">
-                                                                                <HeroNumberInput
-                                                                                    hideStepper
-                                                                                    size="sm"
-                                                                                    placeholder="0"
-                                                                                    isDisabled
-                                                                                    label="Staff cost"
-                                                                                    value={asgn.staffCost.toString()}
-                                                                                    classNames={{
-                                                                                        base: 'opacity-100!',
-                                                                                        label: 'text-xs!',
-                                                                                    }}
-                                                                                    className="w-40"
-                                                                                    variant="flat"
-                                                                                    endContent={
-                                                                                        <span className="text-[10px] font-bold text-text-subdued">
-                                                                                            VND
-                                                                                        </span>
-                                                                                    }
-                                                                                />
+                                                                                {asgn
+                                                                                    .user
+                                                                                    .department ? (
+                                                                                    <Chip
+                                                                                        style={{
+                                                                                            backgroundColor: `${asgn.user.department.hexColor}30`,
+                                                                                            color: asgn
+                                                                                                .user
+                                                                                                .department
+                                                                                                .hexColor,
+                                                                                        }}
+                                                                                        className="border-none"
+                                                                                        size="sm"
+                                                                                    >
+                                                                                        <div className="flex items-center gap-1">
+                                                                                            <div
+                                                                                                className="size-2 rounded-full"
+                                                                                                style={{
+                                                                                                    backgroundColor:
+                                                                                                        asgn
+                                                                                                            .user
+                                                                                                            .department
+                                                                                                            .hexColor,
+                                                                                                }}
+                                                                                            />
+                                                                                            <span className="font-semibold">
+                                                                                                {
+                                                                                                    asgn
+                                                                                                        .user
+                                                                                                        .department
+                                                                                                        .displayName
+                                                                                                }
+                                                                                            </span>
+                                                                                        </div>
+                                                                                    </Chip>
+                                                                                ) : (
+                                                                                    <span className="text-[10px] uppercase text-default-400 font-bold">
+                                                                                        Unknown
+                                                                                        Department
+                                                                                    </span>
+                                                                                )}
                                                                             </div>
                                                                         </div>
-                                                                    )
-                                                                )}
-                                                            </div>
-                                                            <div className="p-4 rounded-2xl bg-warning-50 border border-warning-100 flex gap-3 items-start">
-                                                                <TrendingDown
-                                                                    className="text-warning-500 shrink-0 mt-0.5"
-                                                                    size={16}
-                                                                />
-                                                                <p className="text-tiny text-warning-700">
-                                                                    Staff costs
-                                                                    are deducted
-                                                                    from income.
-                                                                    Ensure
-                                                                    accuracy
-                                                                    before
-                                                                    marking as
-                                                                    paid.
-                                                                </p>
-                                                            </div>
+                                                                        <div className="flex items-center gap-4">
+                                                                            <div className="text-right">
+                                                                                <p className="text-[10px] uppercase font-bold text-default-400">
+                                                                                    Payout
+                                                                                </p>
+                                                                                <p className="text-sm font-black text-primary">
+                                                                                    {hasPermission(
+                                                                                        APP_PERMISSIONS
+                                                                                            .JOB
+                                                                                            .READ_SENSITIVE
+                                                                                    )
+                                                                                        ? currencyFormatter(
+                                                                                              asgn.staffCost ||
+                                                                                                  0
+                                                                                          )
+                                                                                        : '••••••'}
+                                                                                </p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                )
+                                                            )}
                                                         </div>
-                                                    </Tab>
-                                                )}
+                                                        <div className="p-4 rounded-2xl bg-warning-50 border border-warning-100 flex gap-3 items-start">
+                                                            <TrendingDown
+                                                                className="text-warning-500 shrink-0 mt-0.5"
+                                                                size={16}
+                                                            />
+                                                            <p className="text-tiny text-warning-700">
+                                                                Staff costs are
+                                                                deducted from
+                                                                income. Ensure
+                                                                accuracy before
+                                                                marking as paid.
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </Tab>
 
                                                 {/* TAB 4: COMMENTS */}
                                                 <Tab

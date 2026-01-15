@@ -42,6 +42,10 @@ serviceAccountKey.json
 
 # dotenv environment variable files
 .env
+.env.dev
+.env.prod
+.env.stag
+.env.stagging
 .env.development
 .env.production
 .env.development.local

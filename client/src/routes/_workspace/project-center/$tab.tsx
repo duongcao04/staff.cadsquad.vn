@@ -1,5 +1,6 @@
 import JobDetailDrawer from '@/features/job-details/components/drawers/JobDetailDrawer'
 import {
+    pCenterTableStore,
     ProjectCenterMobileContent,
     ViewColumnsDrawer,
 } from '@/features/project-center'
@@ -15,15 +16,14 @@ import {
     useProfile,
     usersListOptions,
 } from '@/lib/queries'
-import { getAllowedJobColumns } from '@/lib/utils'
+import { APP_PERMISSIONS, getAllowedJobColumns } from '@/lib/utils'
 import {
     jobFiltersSchema,
     TDownloadExcelInput,
     TJobFilters,
 } from '@/lib/validationSchemas'
 import { ProjectCenterTabEnum } from '@/shared/enums'
-import { useDevice } from '@/shared/hooks'
-import { pCenterTableStore } from '@/features/project-center'
+import { useDevice, usePermission } from '@/shared/hooks'
 import { TJob } from '@/shared/types'
 import { Spinner, Tab, Tabs, useDisclosure } from '@heroui/react'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
@@ -32,12 +32,13 @@ import { useStore } from '@tanstack/react-store'
 import dayjs from 'dayjs'
 import lodash from 'lodash'
 import {
+    BanknoteArrowUp,
     CircleCheckBig,
     ClockAlert,
     LucideIcon,
+    PackageCheck,
     PinIcon,
     SquareX,
-    Truck,
     Vote,
 } from 'lucide-react'
 import { Suspense, useMemo, useState, useTransition } from 'react'
@@ -337,6 +338,7 @@ function ProjectCenterTableContent({
             ) : (
                 <ProjectCenterTable
                     data={data?.jobs ?? []}
+                    tab={tab}
                     isLoadingData={isFetching}
                     pagination={pagination}
                     searchKeywords={search.search}
@@ -383,7 +385,7 @@ function TableLoadingFallback() {
 }
 
 function ProjectCenterTabs({ defaultTab, onTabChange }: any) {
-    const { isAdmin } = useProfile()
+    const { hasPermission } = usePermission()
     const { isSmallView } = useDevice()
     return (
         <Tabs
@@ -432,7 +434,7 @@ function ProjectCenterTabs({ defaultTab, onTabChange }: any) {
                 key={ProjectCenterTabEnum.DELIVERED}
                 title={
                     <TabTitle
-                        icon={Truck}
+                        icon={PackageCheck}
                         label="Delivered"
                         value={ProjectCenterTabEnum.DELIVERED}
                     />
@@ -448,7 +450,17 @@ function ProjectCenterTabs({ defaultTab, onTabChange }: any) {
                     />
                 }
             />
-            {isAdmin && (
+            <Tab
+                key={ProjectCenterTabEnum.FINISHED}
+                title={
+                    <TabTitle
+                        icon={BanknoteArrowUp}
+                        label="Finished"
+                        value={ProjectCenterTabEnum.FINISHED}
+                    />
+                }
+            />
+            {hasPermission(APP_PERMISSIONS.JOB.READ_SENSITIVE) && (
                 <Tab
                     key={ProjectCenterTabEnum.CANCELLED}
                     title={

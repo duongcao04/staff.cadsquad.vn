@@ -25,9 +25,9 @@ export const BetterAuthProvider: Provider = {
 			socialProviders: {
 				microsoft: {
 					// Lấy từ Config đã validate (Zod)
-					clientId: config.microsoft.clientId,
-					clientSecret: config.microsoft.clientSecret,
-					tenantId: config.microsoft.tenantId,
+					clientId: config.azure.clientId,
+					clientSecret: config.azure.clientSecret,
+					tenantId: config.azure.tenantId,
 				},
 			},
 

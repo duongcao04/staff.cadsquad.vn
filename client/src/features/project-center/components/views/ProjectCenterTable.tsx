@@ -29,14 +29,13 @@ import PaymentStatusDropdown from '@/shared/components/dropdowns/PaymentStatusDr
 import CountdownTimer from '@/shared/components/ui/countdown-timer'
 import HeroCopyButton from '@/shared/components/ui/hero-copy-button'
 import { ScrollArea, ScrollBar } from '@/shared/components/ui/scroll-area'
-import { JobStatusSystemTypeEnum } from '@/shared/enums'
+import { JobStatusSystemTypeEnum, ProjectCenterTabEnum } from '@/shared/enums'
 import type { JobColumnKey, TJob, TJobStatus } from '@/shared/types'
 import {
     Button,
     Dropdown,
     DropdownItem,
     DropdownMenu,
-    DropdownSection,
     DropdownTrigger,
     Input,
     Pagination,
@@ -44,18 +43,14 @@ import {
     type Selection,
     SelectItem,
     Spinner,
-    Switch,
 } from '@heroui/react'
 import { useStore } from '@tanstack/react-store'
 import { Avatar, Image } from 'antd'
 import dayjs from 'dayjs'
 import lodash from 'lodash'
 import {
-    Check,
     ChevronDownIcon,
     Columns3Cog,
-    EllipsisVertical,
-    EyeClosed,
     EyeIcon,
     FilePlus,
     RefreshCw,
@@ -64,7 +59,6 @@ import {
     SquareChartGantt,
     SquareKanban,
     UserRoundPlus,
-    X,
 } from 'lucide-react'
 import { ReactNode, useCallback, useMemo } from 'react'
 import { FilterBuilder } from '../dropdowns/FilterDropdown'
@@ -73,6 +67,7 @@ import { ProjectCenterTableQuickActions } from '../dropdowns/ProjectCenterTableQ
 
 type ProjectCenterTableProps = {
     data: TJob[]
+    tab: ProjectCenterTabEnum
     isLoadingData: boolean
     sort?: string
     searchKeywords?: string
@@ -103,6 +98,7 @@ export default function ProjectCenterTable({
     isLoadingData = false,
     visibleColumns,
     sort,
+    tab,
     searchKeywords,
     pagination,
     filters,
@@ -112,7 +108,6 @@ export default function ProjectCenterTable({
     onFiltersChange,
     onSortChange,
     onDownloadCsv,
-    onShowFinishItemsChange,
     openViewColDrawer,
     openJobDetailDrawer,
     onAssignMember,
@@ -202,11 +197,14 @@ export default function ProjectCenterTable({
                                 <span className="font-medium">Refresh</span>
                             </Button>
 
-                            <FilterBuilder
-                                defaultFilters={filters}
-                                onApply={onFiltersChange}
-                                className="border-1"
-                            />
+                            {/* TODO: Implement filter */}
+                            {false && (
+                                <FilterBuilder
+                                    defaultFilters={filters}
+                                    onApply={onFiltersChange}
+                                    className="border-1"
+                                />
+                            )}
 
                             <Dropdown placement="bottom-start">
                                 <DropdownTrigger className="hidden sm:flex">
@@ -272,140 +270,100 @@ export default function ProjectCenterTable({
                                 </DropdownMenu>
                             </Dropdown>
 
-                            <Dropdown
-                                placement="bottom-end"
-                                showArrow
-                                style={{
-                                    width: 300,
-                                }}
+                            <HeroButton
+                                variant="bordered"
+                                size="sm"
+                                className="border-1"
+                                startContent={
+                                    <Columns3Cog
+                                        size={16}
+                                        className="text-text-default"
+                                    />
+                                }
+                                onPress={openViewColDrawer}
                             >
-                                <DropdownTrigger>
-                                    <Button
-                                        variant="bordered"
-                                        size="sm"
-                                        isIconOnly
-                                        className="border-1"
-                                    >
-                                        <EllipsisVertical
-                                            className="text-small"
-                                            size={14}
-                                        />
-                                    </Button>
-                                </DropdownTrigger>
-                                <DropdownMenu
-                                    disallowEmptySelection
-                                    aria-label="View settings dropdown"
-                                >
-                                    <DropdownSection title="View settings">
-                                        <DropdownItem
-                                            key="switch"
-                                            isReadOnly
-                                            classNames={{
-                                                base: 'hover:!bg-background cursor-default',
-                                            }}
-                                            startContent={
-                                                <EyeClosed
-                                                    size={16}
-                                                    className="text-text-default"
-                                                />
-                                            }
-                                        >
-                                            <div className="w-full flex items-center justify-between gap-3">
-                                                <p>Hide finish items</p>
-                                                {isLoadingData ? (
-                                                    <Spinner size="sm" />
-                                                ) : (
-                                                    <Switch
-                                                        isSelected={
-                                                            showFinishItems
-                                                        }
-                                                        size="sm"
-                                                        aria-label="Hide finish items"
-                                                        endContent={<X />}
-                                                        startContent={<Check />}
-                                                        color="success"
-                                                        onValueChange={
-                                                            onShowFinishItemsChange
-                                                        }
-                                                    />
-                                                )}
-                                            </div>
-                                        </DropdownItem>
-                                        <DropdownItem
-                                            key="columns"
-                                            startContent={
-                                                <Columns3Cog
-                                                    size={16}
-                                                    className="text-text-default"
-                                                />
-                                            }
-                                            onPress={openViewColDrawer}
-                                        >
-                                            View columns
-                                        </DropdownItem>
-                                    </DropdownSection>
-                                </DropdownMenu>
-                            </Dropdown>
+                                <span className="font-medium">Columns</span>
+                            </HeroButton>
                         </div>
 
                         <div className="w-px mx-3 h-5 bg-text-muted"></div>
 
                         <div className="flex gap-3">
-                            <HeroSelect
-                                selectionMode="multiple"
-                                className="min-w-34"
-                                size="sm"
-                                classNames={{
-                                    trigger:
-                                        'hover:shadow-SM border-border-default border cursor-pointer',
-                                    popoverContent: 'w-[200px]!',
-                                }}
-                                placeholder="Status"
-                                isClearable
-                                onClear={() => {
-                                    onFiltersChange({
-                                        ...filters,
-                                        status: undefined,
-                                    })
-                                }}
-                                onSelectionChange={(value) => {
-                                    const arrayToString =
-                                        Array.from(value).join(',')
-                                    onFiltersChange?.({
-                                        ...filters,
-                                        status: arrayToString,
-                                    })
-                                }}
-                                renderValue={(selectedItems) => {
-                                    return (
-                                        <p className="text-text-7">
-                                            {selectedItems.length} status
-                                            {selectedItems.length > 1
-                                                ? 'es'
-                                                : ''}
-                                        </p>
-                                    )
-                                }}
-                            >
-                                {jobStatuses.map((jobStatus) => {
-                                    return (
-                                        <HeroSelectItem key={jobStatus.code}>
-                                            <div className="flex items-center justify-start gap-2">
-                                                <div
-                                                    className="size-2 rounded-full"
-                                                    style={{
-                                                        backgroundColor:
-                                                            jobStatus.hexColor
-                                                                ? jobStatus.hexColor
-                                                                : '#000000',
-                                                    }}
-                                                />
-                                                <p>{jobStatus.displayName}</p>
-                                            </div>
-                                        </HeroSelectItem>
-                                    )
-                                })}
-                            </HeroSelect>
+                            {tab === 'active' ||
+                                tab === 'priority' ||
+                                tab === 'late' ||
+                                (tab === 'cancelled' && (
+                                    <HeroSelect
+                                        selectionMode="multiple"
+                                        className="min-w-34"
+                                        size="sm"
+                                        classNames={{
+                                            trigger:
+                                                'hover:shadow-SM border-border-default border cursor-pointer',
+                                            popoverContent: 'w-[200px]!',
+                                        }}
+                                        placeholder="Status"
+                                        isClearable
+                                        onClear={() => {
+                                            onFiltersChange({
+                                                ...filters,
+                                                status: undefined,
+                                            })
+                                        }}
+                                        onSelectionChange={(value) => {
+                                            const arrayToString =
+                                                Array.from(value).join(',')
+                                            onFiltersChange?.({
+                                                ...filters,
+                                                status: arrayToString,
+                                            })
+                                        }}
+                                        renderValue={(selectedItems) => {
+                                            return (
+                                                <p className="text-text-7">
+                                                    {selectedItems.length}{' '}
+                                                    status
+                                                    {selectedItems.length > 1
+                                                        ? 'es'
+                                                        : ''}
+                                                </p>
+                                            )
+                                        }}
+                                    >
+                                        {jobStatuses
+                                            .filter(
+                                                (it) =>
+                                                    it.systemType ===
+                                                        'STANDARD' ||
+                                                    it.systemType ===
+                                                        'DELIVERED'
+                                            )
+                                            .map((jobStatus) => {
+                                                return (
+                                                    <HeroSelectItem
+                                                        key={jobStatus.code}
+                                                    >
+                                                        <div className="flex items-center justify-start gap-2">
+                                                            <div
+                                                                className="size-2 rounded-full"
+                                                                style={{
+                                                                    backgroundColor:
+                                                                        jobStatus.hexColor
+                                                                            ? jobStatus.hexColor
+                                                                            : '#000000',
+                                                                }}
+                                                            />
+                                                            <p>
+                                                                {
+                                                                    jobStatus.displayName
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                    </HeroSelectItem>
+                                                )
+                                            })}
+                                    </HeroSelect>
+                                ))}
 
                             <HeroSelect
                                 className="min-w-34"
@@ -458,21 +416,24 @@ export default function ProjectCenterTable({
                             </div>
                         )}
                     </div>
-                    <div>
-                        <Button
-                            startContent={
-                                <Sheet className="text-small" size={14} />
-                            }
-                            variant="flat"
-                            size="sm"
-                            className="shadow-SM"
-                            onPress={onDownloadCsv}
-                        >
-                            <span className="font-medium">
-                                Download as .csv
-                            </span>
-                        </Button>
-                    </div>
+                    {/* TODO: Implement Download as CSV */}
+                    {false && (
+                        <div>
+                            <Button
+                                startContent={
+                                    <Sheet className="text-small" size={14} />
+                                }
+                                variant="flat"
+                                size="sm"
+                                className="shadow-SM"
+                                onPress={onDownloadCsv}
+                            >
+                                <span className="font-medium">
+                                    Download as .csv
+                                </span>
+                            </Button>
+                        </div>
+                    )}
                 </div>
             </div>
         )
@@ -798,8 +759,14 @@ export default function ProjectCenterTable({
             bottomContent={bottomContent}
             bottomContentPlacement="outside"
             selectedKeys={selectedKeys}
-            selectionMode="multiple"
+            // TODO: Implement bulk features
+            // selectionMode="multiple"
+            selectionMode="single"
             topContent={topContent}
+            onRowAction={(key) => {
+                console.log(key)
+                openJobDetailDrawer(key as string)
+            }}
             sortString={sort ?? undefined}
             onSortStringChange={onSortChange}
             BaseComponent={(found) => {
@@ -841,7 +808,7 @@ export default function ProjectCenterTable({
             >
                 {(item) => (
                     <HeroTableRow
-                        key={item.id}
+                        key={item.no}
                         onContextMenu={() => {
                             setContextItem(item)
                         }}

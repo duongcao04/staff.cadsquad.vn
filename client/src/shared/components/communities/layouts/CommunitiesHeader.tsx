@@ -10,10 +10,10 @@ import { useProfile } from '../../../../lib'
 import { CHANNELS } from '../../../../lib/ably'
 import CadsquadLogo from '../../CadsquadLogo'
 import NotificationDropdown from '../../../../features/notifications/components/views/NotificationDropdown'
-import { SearchModal } from '../../layouts/Header/SearchModal'
 import { SettingsDropdown } from '../../layouts/Header/SettingsDropdown'
 import { UserDropdown } from '../../layouts/Header/UserDropdown'
 import { HeroButton } from '../../ui/hero-button'
+import { SearchModal } from '../../search/search-modal'
 
 const { Header: AntHeader } = Layout
 

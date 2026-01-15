@@ -32,6 +32,7 @@ import { UpdateGeneralJobDto } from './dto/update-general.dto'
 import { UpdateRevenueDto } from './dto/update-revenue.dto'
 import { JobCommentService } from './job-comment.service'
 import { JobService } from './job.service'
+import { UpdateAttachmentsDto } from './dto/update-attachments.dto'
 
 @ApiTags('Jobs')
 @Controller('jobs')
@@ -252,6 +253,18 @@ export class JobController {
 	) {
 		const user: TokenPayload = request['user']
 		return this.jobService.updateGeneralInfo(user.sub, id, dto)
+	}
+
+	@Patch(':id/attachments')
+	@ApiOperation({ summary: 'Add or remove file attachments from a job' })
+	async updateAttachments(
+		@Param('id') jobId: string,
+		@Body() dto: UpdateAttachmentsDto,
+		@Req() request: Request
+	) {
+		const user: TokenPayload = request['user']
+		// req.user.id acts as the modifierId
+		return this.jobService.updateAttachments(user.sub, jobId, dto)
 	}
 
 	@Patch(':id/assign')
