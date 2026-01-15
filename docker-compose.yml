@@ -55,6 +55,7 @@ services:
     env_file: .env
     environment:
       TZ: Asia/Ho_Chi_Minh
+      DATABASE_URL: ${DATABASE_URL}
     networks:
       - app-network
 

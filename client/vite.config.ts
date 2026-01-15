@@ -48,44 +48,44 @@ export default defineConfig(({ mode }) => {
                     plugins: [['babel-plugin-react-compiler']],
                 },
             }),
-            VitePWA({
-                disable: Boolean(process.env.VITE_ENABLE_PWA),
-                devOptions: {
-                    enabled: false,
-                },
-                registerType: 'autoUpdate',
-                includeAssets: [
-                    'favicon.ico',
-                    'apple-touch-icon.png',
-                    'mask-icon.svg',
-                ],
-                workbox: {
-                    // Tăng giới hạn lên 10MB (hoặc cao hơn nếu cần)
-                    maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
-                },
-                manifest: {
-                    name: 'Cadsquad Staff',
-                    short_name: 'Staff',
-                    description:
-                        "Web application designed for Cadsquad's internal staff. It provides a comprehensive platform for managing jobs, user accounts, notifications, and other core business operations",
-                    icons: [
-                        {
-                            src: '/android-chrome-192x192.png',
-                            sizes: '192x192',
-                            type: 'image/png',
-                        },
-                        {
-                            src: '/android-chrome-512x512.png',
-                            sizes: '512x512',
-                            type: 'image/png',
-                        },
-                    ],
-                    theme_color: '#ffffff',
-                    background_color: '#ffffff',
-                    // Cấu hình riêng cho Safari/iOS
-                    display: 'standalone',
-                },
-            }),
+            // VitePWA({
+            //     disable: Boolean(process.env.VITE_ENABLE_PWA),
+            //     devOptions: {
+            //         enabled: false,
+            //     },
+            //     registerType: 'autoUpdate',
+            //     includeAssets: [
+            //         'favicon.ico',
+            //         'apple-touch-icon.png',
+            //         'mask-icon.svg',
+            //     ],
+            //     workbox: {
+            //         // Tăng giới hạn lên 10MB (hoặc cao hơn nếu cần)
+            //         maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
+            //     },
+            //     manifest: {
+            //         name: 'Cadsquad Staff',
+            //         short_name: 'Staff',
+            //         description:
+            //             "Web application designed for Cadsquad's internal staff. It provides a comprehensive platform for managing jobs, user accounts, notifications, and other core business operations",
+            //         icons: [
+            //             {
+            //                 src: '/android-chrome-192x192.png',
+            //                 sizes: '192x192',
+            //                 type: 'image/png',
+            //             },
+            //             {
+            //                 src: '/android-chrome-512x512.png',
+            //                 sizes: '512x512',
+            //                 type: 'image/png',
+            //             },
+            //         ],
+            //         theme_color: '#ffffff',
+            //         background_color: '#ffffff',
+            //         // Cấu hình riêng cho Safari/iOS
+            //         display: 'standalone',
+            //     },
+            // }),
         ],
 
         resolve: {
