@@ -104,10 +104,15 @@ export class JobQueryBuilder {
 		const isCompleted: Prisma.JobWhereInput = {
 			status: {
 				systemType: {
-					in: [
-						JobStatusSystemType.COMPLETED,
-						JobStatusSystemType.TERMINATED,
-					],
+					in: [JobStatusSystemType.COMPLETED],
+				},
+			},
+		}
+
+		const isFinished: Prisma.JobWhereInput = {
+			status: {
+				systemType: {
+					in: [JobStatusSystemType.TERMINATED],
 				},
 			},
 		}
@@ -142,10 +147,14 @@ export class JobQueryBuilder {
 					dueAt: {
 						gt: today,
 					},
+					...isNotFinished,
 				}
 
 			case JobTabEnum.COMPLETED:
 				return { ...isNotDeleted, ...isCompleted }
+
+			case JobTabEnum.FINISHED:
+				return { ...isNotDeleted, ...isFinished }
 
 			case JobTabEnum.DELIVERED:
 				return { ...isNotDeleted, status: { code: 'delivered' } }

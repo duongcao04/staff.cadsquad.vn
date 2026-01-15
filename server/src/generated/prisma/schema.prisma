@@ -520,7 +520,7 @@ model JobStatus {
 // Định nghĩa các nhóm logic hệ thống quan tâm
 enum JobStatusSystemType {
   STANDARD // Trạng thái bình thường (To do, In Progress...)
-  WAIT_REVIEW
+  DELIVERED // Wait review
   COMPLETED // Đã làm xong việc (nhưng chưa đóng hồ sơ)
   TERMINATED // Kết thúc vòng đời (Finished, Cancelled, Closed...)
 }

@@ -9,7 +9,7 @@ import {
     BadgeCheck,
 } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
-import { searchOptions, SearchCategory } from '@/lib/queries'
+import { searchOptions, SearchCategory, useProfile } from '@/lib/queries'
 
 interface SearchResultsProps {
     query: string
@@ -23,7 +23,8 @@ export const SearchResults = ({
     onSelect,
 }: SearchResultsProps) => {
     const navigate = useNavigate()
-    const { data } = useSuspenseQuery(searchOptions(query, category))
+    const { isAdmin } = useProfile()
+    const { data } = useSuspenseQuery(searchOptions(query, category, isAdmin))
 
     if (!data || data.length === 0) {
         return (

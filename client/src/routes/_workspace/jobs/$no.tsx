@@ -11,9 +11,11 @@ import {
     dateFormatter,
     EXTERNAL_URLS,
     getPageTitle,
+    optimizeCloudinary,
     PAID_STATUS_COLOR,
     useProfile,
-    useUpdateJobMutation,
+    useUpdateAttachmentsMutation,
+    useUpdateJobGeneralInfoMutation,
 } from '@/lib'
 import { jobActivityLogsOptions, jobByNoOptions } from '@/lib/queries'
 import {
@@ -28,10 +30,9 @@ import Timmer from '@/shared/components/layouts/PageHeading/Timmer'
 import CountdownTimer from '@/shared/components/ui/countdown-timer'
 import HtmlReactParser from '@/shared/components/ui/html-react-parser'
 import { JobStatusSystemTypeEnum } from '@/shared/enums'
-import { useDevice } from '@/shared/hooks'
+import { useDevice, usePermission } from '@/shared/hooks'
 import { TJob } from '@/shared/types'
 import {
-    addToast,
     Avatar,
     Button,
     Chip,
@@ -47,11 +48,9 @@ import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import dayjs from 'dayjs'
 import {
-    AlertCircle,
     CalendarDays,
     CheckCircle2,
     ChevronLeft,
-    ChevronRight,
     CirclePlus,
     Clock,
     FileText,
@@ -69,6 +68,7 @@ import {
 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { z } from 'zod'
+import { APP_PERMISSIONS } from '../../../lib/utils'
 
 export enum JobDetailTabEnum {
     OVERVIEW = 'overview',
@@ -118,6 +118,8 @@ function JobDetailPage() {
     const financialModal = useDisclosure()
     const fullEditorDisclosure = useDisclosure()
 
+    const { hasPermission, hasAnyPermission } = usePermission()
+
     const { data: job } = useQuery({
         ...jobByNoOptions(no),
         enabled: !!no,
@@ -142,9 +144,11 @@ function JobDetailPage() {
         })
     }
 
-    const updateJobMutation = useUpdateJobMutation(() => {
-        addToast({ title: 'Success', color: 'success' })
-    })
+    const updateAttachmentsMutation = useUpdateAttachmentsMutation(
+        job?.id ?? ''
+    )
+
+    const updateJobGeneralInfoMutation = useUpdateJobGeneralInfoMutation()
 
     const [descContent, setDescContent] = useState('')
 
@@ -159,7 +163,7 @@ function JobDetailPage() {
         job?.status?.systemType === JobStatusSystemTypeEnum.TERMINATED
 
     const isJobWaitReview =
-        job?.status?.systemType === JobStatusSystemTypeEnum.WAIT_REVIEW
+        job?.status?.systemType === JobStatusSystemTypeEnum.DELIVERED
 
     const budgetUsage = useMemo(() => {
         if (!job?.incomeCost || job.incomeCost === 0) return 0
@@ -168,6 +172,29 @@ function JobDetailPage() {
             100
         )
     }, [job])
+
+    const handleSaveDescription = async (value: string) => {
+        if (job) {
+            await updateJobGeneralInfoMutation.mutateAsync({
+                jobId: job.id,
+                data: {
+                    description: value,
+                },
+            })
+        }
+    }
+
+    const handleRemoveAttachment = (url: string) => {
+        // Directly pass the removed URL to the mutation
+        updateAttachmentsMutation.mutateAsync({
+            action: 'remove',
+            files: [url],
+        })
+    }
+
+    const handleAddAttachment = (url: string) => {
+        updateAttachmentsMutation.mutateAsync({ action: 'add', files: [url] })
+    }
 
     if (!job) {
         return <Spinner />
@@ -195,8 +222,7 @@ function JobDetailPage() {
                     isOpen={fullEditorDisclosure.isOpen}
                     onClose={fullEditorDisclosure.onClose}
                     defaultValue={descContent}
-                    // onChange={setDescContent}
-                    onSave={(value) => console.log(value)}
+                    onSave={handleSaveDescription}
                     title={`Editor: #${job.no}`}
                 />
             )}
@@ -222,17 +248,17 @@ function JobDetailPage() {
                             #{job.no}
                         </span>
                         <Divider orientation="vertical" className="h-3" />
-                        <p className="flex items-center gap-1.5 font-medium">
+                        <div className="flex items-center gap-1.5 font-medium">
                             <UserRound size={14} />
                             {job.client?.name || 'Unknown client'}
-                        </p>
+                        </div>
                         <Divider orientation="vertical" className="h-3" />
-                        <p className="flex items-center gap-1.5 font-medium">
+                        <div className="flex items-center gap-1.5 font-medium">
                             <LibraryBig size={14} />
                             {job.type?.displayName}
-                        </p>
+                        </div>
                         <Divider orientation="vertical" className="h-3" />
-                        <p className="flex items-center gap-1.5 font-medium">
+                        <div className="flex items-center gap-1.5 font-medium">
                             <CalendarDays size={14} />
                             {isJobCompleted ? (
                                 `Completed`
@@ -249,7 +275,7 @@ function JobDetailPage() {
                                     />
                                 </span>
                             )}
-                        </p>
+                        </div>
                     </div>
                 </div>
                 <Timmer />
@@ -258,8 +284,8 @@ function JobDetailPage() {
             {/* --- Main Content --- */}
             <div className="mt-6 max-w-7xl mx-auto h-[calc(100vh-120px)] space-y-6 px-4">
                 {/* ACTION BAR */}
-                <HeroCard className="bg-background border-border-muted">
-                    <HeroCardBody className="w-full flex justify-between">
+                <HeroCard className="bg-background dark:bg-background-hovered/50 border-border-default">
+                    <HeroCardBody className="w-full flex justify-between px-8">
                         <div className="flex justify-between py-3">
                             {/* SECTION 1: CORE PROGRESS STATUS */}
                             <div className="flex flex-col gap-1">
@@ -408,14 +434,15 @@ function JobDetailPage() {
                                         Deliver Job
                                     </Button>
                                 )}
-                                <Button
+                                {/* TODO: Issue Report */}
+                                {/* <Button
                                     size="sm"
                                     variant="light"
                                     color="danger"
                                     isIconOnly
                                 >
                                     <AlertCircle size={16} />
-                                </Button>
+                                </Button> */}
                             </div>
                         </div>
                     </HeroCardBody>
@@ -446,20 +473,24 @@ function JobDetailPage() {
                                             <span className="font-semibold text-xs tracking-wide text-text-default">
                                                 Description
                                             </span>
-                                            <div className="flex gap-1">
-                                                <HeroButton
-                                                    isIconOnly
-                                                    size="sm"
-                                                    variant="light"
-                                                    onPress={
-                                                        fullEditorDisclosure.onOpen
-                                                    }
-                                                >
-                                                    <Maximize2 size={14} />
-                                                </HeroButton>
-                                            </div>
+                                            {hasPermission(
+                                                APP_PERMISSIONS.JOB.UPDATE
+                                            ) && (
+                                                <div className="flex gap-1">
+                                                    <HeroButton
+                                                        isIconOnly
+                                                        size="sm"
+                                                        variant="light"
+                                                        onPress={
+                                                            fullEditorDisclosure.onOpen
+                                                        }
+                                                    >
+                                                        <Maximize2 size={14} />
+                                                    </HeroButton>
+                                                </div>
+                                            )}
                                         </HeroCardHeader>
-                                        <HeroCardBody className="py-0! px-3 text-sm text-text-7">
+                                        <HeroCardBody className="py-0! px-3 text-sm text-text-default">
                                             {job.description ? (
                                                 <HtmlReactParser
                                                     htmlString={job.description}
@@ -513,14 +544,8 @@ function JobDetailPage() {
                                 <div className="pt-4">
                                     <JobAttachmentsField
                                         defaultAttachments={job.attachmentUrls}
-                                        onChange={(urls) =>
-                                            updateJobMutation.mutate({
-                                                jobId: job.id,
-                                                data: {
-                                                    attachmentUrls: urls,
-                                                },
-                                            })
-                                        }
+                                        onAdd={handleAddAttachment}
+                                        onRemove={handleRemoveAttachment}
                                     />
                                 </div>
                             </Tab>
@@ -536,59 +561,70 @@ function JobDetailPage() {
                                 }
                             >
                                 <div className="flex flex-col gap-6 py-4">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <HeroCard className="bg-primary/5 border-primary/20 shadow-none">
-                                            <HeroCardBody className="flex-row items-center gap-4 p-4">
-                                                <div className="p-2.5 bg-primary rounded-xl text-white">
-                                                    <Wallet size={20} />
-                                                </div>
-                                                <div className="flex flex-col flex-1">
-                                                    <span className="text-[10px] uppercase font-black text-primary/60">
-                                                        Total Staff Payout
-                                                    </span>
-                                                    <span className="text-xl font-black text-primary">
-                                                        {currencyFormatter(
-                                                            job.totalStaffCost ||
-                                                                0
-                                                        )}
-                                                    </span>
-                                                </div>
-                                                {isAdmin && (
-                                                    <Button
+                                    {hasPermission(
+                                        APP_PERMISSIONS.JOB.READ_SENSITIVE
+                                    ) && (
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <HeroCard className="bg-primary/5 border-primary/20 shadow-none">
+                                                <HeroCardBody className="flex-row items-center gap-4 p-4">
+                                                    <div className="p-2.5 bg-primary rounded-xl text-white">
+                                                        <Wallet size={20} />
+                                                    </div>
+                                                    <div className="flex flex-col flex-1">
+                                                        <span className="text-[10px] uppercase font-black text-primary/60">
+                                                            Total Staff Payout
+                                                        </span>
+                                                        <span className="text-xl font-black text-primary">
+                                                            {currencyFormatter(
+                                                                job.totalStaffCost ||
+                                                                    0
+                                                            )}
+                                                        </span>
+                                                    </div>
+                                                    {hasAnyPermission([
+                                                        APP_PERMISSIONS.JOB
+                                                            .PAID,
+                                                        APP_PERMISSIONS.JOB
+                                                            .READ_SENSITIVE,
+                                                        APP_PERMISSIONS.JOB
+                                                            .UPDATE,
+                                                    ]) && (
+                                                        <Button
+                                                            size="sm"
+                                                            color="primary"
+                                                            variant="flat"
+                                                            onPress={
+                                                                financialModal.onOpen
+                                                            }
+                                                        >
+                                                            <Pencil size={14} />
+                                                        </Button>
+                                                    )}
+                                                </HeroCardBody>
+                                            </HeroCard>
+                                            <HeroCard className="bg-default-50 border-divider shadow-none">
+                                                <HeroCardBody className="p-4 gap-2">
+                                                    <div className="flex justify-between items-center">
+                                                        <span className="text-[10px] uppercase font-black text-default-400">
+                                                            Budget Usage
+                                                        </span>
+                                                        <span className="text-xs font-bold">
+                                                            {budgetUsage}%
+                                                        </span>
+                                                    </div>
+                                                    <Progress
                                                         size="sm"
-                                                        color="primary"
-                                                        variant="flat"
-                                                        onPress={
-                                                            financialModal.onOpen
+                                                        value={budgetUsage}
+                                                        color={
+                                                            budgetUsage > 80
+                                                                ? 'danger'
+                                                                : 'primary'
                                                         }
-                                                    >
-                                                        <Pencil size={14} />
-                                                    </Button>
-                                                )}
-                                            </HeroCardBody>
-                                        </HeroCard>
-                                        <HeroCard className="bg-default-50 border-divider shadow-none">
-                                            <HeroCardBody className="p-4 gap-2">
-                                                <div className="flex justify-between items-center">
-                                                    <span className="text-[10px] uppercase font-black text-default-400">
-                                                        Budget Usage
-                                                    </span>
-                                                    <span className="text-xs font-bold">
-                                                        {budgetUsage}%
-                                                    </span>
-                                                </div>
-                                                <Progress
-                                                    size="sm"
-                                                    value={budgetUsage}
-                                                    color={
-                                                        budgetUsage > 80
-                                                            ? 'danger'
-                                                            : 'primary'
-                                                    }
-                                                />
-                                            </HeroCardBody>
-                                        </HeroCard>
-                                    </div>
+                                                    />
+                                                </HeroCardBody>
+                                            </HeroCard>
+                                        </div>
+                                    )}
 
                                     <div className="space-y-2">
                                         {job.assignments?.map((asgn) => (
@@ -598,21 +634,60 @@ function JobDetailPage() {
                                             >
                                                 <div className="flex items-center gap-3">
                                                     <Avatar
-                                                        src={asgn.user.avatar}
+                                                        src={optimizeCloudinary(
+                                                            asgn.user.avatar
+                                                        )}
                                                         size="sm"
                                                         isBordered
                                                         color="primary"
                                                     />
-                                                    <div className="flex flex-col">
+                                                    <div className="flex flex-col space-y-2">
                                                         <span className="text-sm font-bold">
                                                             {
                                                                 asgn.user
                                                                     .displayName
                                                             }
                                                         </span>
-                                                        <span className="text-[10px] uppercase text-default-400 font-bold">
-                                                            Partner
-                                                        </span>
+                                                        {asgn.user
+                                                            .department ? (
+                                                            <Chip
+                                                                style={{
+                                                                    backgroundColor: `${asgn.user.department.hexColor}30`,
+                                                                    color: asgn
+                                                                        .user
+                                                                        .department
+                                                                        .hexColor,
+                                                                }}
+                                                                className="border-none"
+                                                                size="sm"
+                                                            >
+                                                                <div className="flex items-center gap-1">
+                                                                    <div
+                                                                        className="size-2 rounded-full"
+                                                                        style={{
+                                                                            backgroundColor:
+                                                                                asgn
+                                                                                    .user
+                                                                                    .department
+                                                                                    .hexColor,
+                                                                        }}
+                                                                    />
+                                                                    <span className="font-semibold">
+                                                                        {
+                                                                            asgn
+                                                                                .user
+                                                                                .department
+                                                                                .displayName
+                                                                        }
+                                                                    </span>
+                                                                </div>
+                                                            </Chip>
+                                                        ) : (
+                                                            <span className="text-[10px] uppercase text-default-400 font-bold">
+                                                                Unknown
+                                                                Department
+                                                            </span>
+                                                        )}
                                                     </div>
                                                 </div>
                                                 <div className="flex items-center gap-4">
@@ -621,7 +696,11 @@ function JobDetailPage() {
                                                             Payout
                                                         </p>
                                                         <p className="text-sm font-black text-primary">
-                                                            {isAdmin
+                                                            {hasPermission(
+                                                                APP_PERMISSIONS
+                                                                    .JOB
+                                                                    .READ_SENSITIVE
+                                                            )
                                                                 ? currencyFormatter(
                                                                       asgn.staffCost ||
                                                                           0
@@ -629,10 +708,6 @@ function JobDetailPage() {
                                                                 : '••••••'}
                                                         </p>
                                                     </div>
-                                                    <ChevronRight
-                                                        size={16}
-                                                        className="text-default-300 group-hover:text-primary transition-all"
-                                                    />
                                                 </div>
                                             </div>
                                         ))}

@@ -97,37 +97,13 @@ export function SettingsDropdown() {
                         </Link>
                     </DropdownItem>
 
-                    <DropdownItem
-                        key="notificationSettings"
-                        startContent={
-                            <div className={iconWrapperClasses}>
-                                <BellIcon size={24} className={iconClasses} />
-                            </div>
-                        }
-                    >
-                        <Link
-                            to={INTERNAL_URLS.notificationsSettings}
-                            className={linkClasses}
-                        >
-                            <p className={titleClasses}>
-                                Notification settings
-                            </p>
-                            <p className={descClasses}>
-                                Manage email and in-product notification from
-                                site.
-                            </p>
-                        </Link>
-                    </DropdownItem>
-                </DropdownSection>
-
-                {/* --- Group 2: Admin Settings (Conditional) --- */}
-                {isAdmin ? (
-                    <DropdownSection title="Admin settings">
+                    {/* TODO: Implement Notification Settings */}
+                    {false ? (
                         <DropdownItem
-                            key="system"
+                            key="notificationSettings"
                             startContent={
                                 <div className={iconWrapperClasses}>
-                                    <MonitorCog
+                                    <BellIcon
                                         size={24}
                                         className={iconClasses}
                                     />
@@ -135,17 +111,51 @@ export function SettingsDropdown() {
                             }
                         >
                             <Link
-                                to={INTERNAL_URLS.admin}
+                                to={INTERNAL_URLS.notificationsSettings}
                                 className={linkClasses}
                             >
                                 <p className={titleClasses}>
-                                    Performance Insights
+                                    Notification settings
                                 </p>
                                 <p className={descClasses}>
-                                    Real-time financial data and system metrics.
+                                    Manage email and in-product notification
+                                    from site.
                                 </p>
                             </Link>
                         </DropdownItem>
+                    ) : null}
+                </DropdownSection>
+
+                {/* --- Group 2: Admin Settings (Conditional) --- */}
+                {isAdmin ? (
+                    <DropdownSection title="Admin settings">
+                        {/* TODO: Implement System Dashboard */}
+                        {false ? (
+                            <DropdownItem
+                                key="system"
+                                startContent={
+                                    <div className={iconWrapperClasses}>
+                                        <MonitorCog
+                                            size={24}
+                                            className={iconClasses}
+                                        />
+                                    </div>
+                                }
+                            >
+                                <Link
+                                    to={INTERNAL_URLS.admin}
+                                    className={linkClasses}
+                                >
+                                    <p className={titleClasses}>
+                                        Performance Insights
+                                    </p>
+                                    <p className={descClasses}>
+                                        Real-time financial data and system
+                                        metrics.
+                                    </p>
+                                </Link>
+                            </DropdownItem>
+                        ) : null}
 
                         <DropdownItem
                             key="job"

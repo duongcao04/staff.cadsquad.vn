@@ -1,17 +1,6 @@
 import { Button, Card, CardBody } from '@heroui/react'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
-import {
-    Bell,
-    Building,
-    CreditCard,
-    Globe,
-    Lock,
-    Palette,
-    ShieldAlert,
-    Smartphone,
-    User,
-} from 'lucide-react'
-
+import { Lock, Palette, User } from 'lucide-react'
 import { INTERNAL_URLS } from '@/lib'
 
 export const Route = createFileRoute('/settings/')({
@@ -42,30 +31,30 @@ const SETTINGS_SECTIONS = [
                 color: 'text-rose-500',
                 bg: 'bg-rose-50',
             },
-            {
-                key: 'notifications',
-                label: 'Notifications',
-                desc: 'Email & Push preferences',
-                icon: Bell,
-                href: INTERNAL_URLS.notificationsSettings,
-                color: 'text-amber-500',
-                bg: 'bg-amber-50',
-            },
+            // {
+            //     key: 'notifications',
+            //     label: 'Notifications',
+            //     desc: 'Email & Push preferences',
+            //     icon: Bell,
+            //     href: INTERNAL_URLS.notificationsSettings,
+            //     color: 'text-amber-500',
+            //     bg: 'bg-amber-50',
+            // },
         ],
     },
     {
         title: 'Workspace',
         description: 'Customize your team environment and branding.',
         items: [
-            {
-                key: 'general',
-                label: 'General & Branding',
-                desc: 'Logo, Name & Timezone',
-                icon: Building,
-                href: '/settings/general',
-                color: 'text-purple-500',
-                bg: 'bg-purple-50',
-            },
+            // {
+            //     key: 'general',
+            //     label: 'General & Branding',
+            //     desc: 'Logo, Name & Timezone',
+            //     icon: Building,
+            //     href: '/settings/general',
+            //     color: 'text-purple-500',
+            //     bg: 'bg-purple-50',
+            // },
             {
                 key: 'appearance',
                 label: 'Appearance',
@@ -75,50 +64,50 @@ const SETTINGS_SECTIONS = [
                 color: 'text-pink-500',
                 bg: 'bg-pink-50',
             },
-            {
-                key: 'billing',
-                label: 'Billing & Plans',
-                desc: 'Invoices & Payment methods',
-                icon: CreditCard,
-                href: '/settings/billing',
-                color: 'text-emerald-500',
-                bg: 'bg-emerald-50',
-            },
-            {
-                key: 'language',
-                label: 'Language & Region',
-                desc: 'System language & currency',
-                icon: Globe,
-                href: INTERNAL_URLS.languageAndRegionSettings,
-                color: 'text-indigo-500',
-                bg: 'bg-indigo-50',
-            },
+            // {
+            //     key: 'billing',
+            //     label: 'Billing & Plans',
+            //     desc: 'Invoices & Payment methods',
+            //     icon: CreditCard,
+            //     href: '/settings/billing',
+            //     color: 'text-emerald-500',
+            //     bg: 'bg-emerald-50',
+            // },
+            // {
+            //     key: 'language',
+            //     label: 'Language & Region',
+            //     desc: 'System language & currency',
+            //     icon: Globe,
+            //     href: INTERNAL_URLS.languageAndRegionSettings,
+            //     color: 'text-indigo-500',
+            //     bg: 'bg-indigo-50',
+            // },
         ],
     },
-    {
-        title: 'App & Privacy',
-        description: 'Control device access and data privacy.',
-        items: [
-            {
-                key: 'devices',
-                label: 'Device Management',
-                desc: 'Active sessions & trusted devices',
-                icon: Smartphone,
-                href: '/settings/devices',
-                color: 'text-slate-600',
-                bg: 'bg-slate-100',
-            },
-            {
-                key: 'privacy',
-                label: 'Privacy & Data',
-                desc: 'Data export & deletion',
-                icon: ShieldAlert,
-                href: '/settings/privacy',
-                color: 'text-red-500',
-                bg: 'bg-red-50',
-            },
-        ],
-    },
+    // {
+    //     title: 'App & Privacy',
+    //     description: 'Control device access and data privacy.',
+    //     items: [
+    //         {
+    //             key: 'devices',
+    //             label: 'Device Management',
+    //             desc: 'Active sessions & trusted devices',
+    //             icon: Smartphone,
+    //             href: '/settings/devices',
+    //             color: 'text-slate-600',
+    //             bg: 'bg-slate-100',
+    //         },
+    //         {
+    //             key: 'privacy',
+    //             label: 'Privacy & Data',
+    //             desc: 'Data export & deletion',
+    //             icon: ShieldAlert,
+    //             href: '/settings/privacy',
+    //             color: 'text-red-500',
+    //             bg: 'bg-red-50',
+    //         },
+    //     ],
+    // },
 ]
 
 function SettingsIndexPage() {

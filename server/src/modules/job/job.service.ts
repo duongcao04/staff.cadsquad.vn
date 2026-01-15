@@ -27,6 +27,7 @@ import { JobFiltersBuilder } from './dto/job-filters.dto'
 import { JobQueryBuilder, JobQueryDto } from './dto/job-query.dto'
 import { JobResponseDto } from './dto/job-response.dto'
 import { JobSortBuilder } from './dto/job-sort.dto'
+import { UpdateAttachmentsDto } from './dto/update-attachments.dto'
 import { UpdateGeneralJobDto } from './dto/update-general.dto'
 import { UpdateRevenueDto } from './dto/update-revenue.dto'
 
@@ -82,6 +83,7 @@ export class JobService {
 								displayName: asm.user.displayName,
 								username: asm.user.username,
 								avatar: asm.user.avatar,
+								department: asm.user.department,
 							}
 						: undefined,
 				})),
@@ -120,15 +122,7 @@ export class JobService {
 
 		const userPermission = await this.buildPermission(userId)
 		const queryBuilder: Prisma.JobWhereInput = {
-			AND: [
-				userPermission,
-				hideFinishItems
-					? { status: { isNot: { systemType: 'TERMINATED' } } }
-					: {},
-				tabQuery,
-				filtersQuery,
-				searchQuery,
-			],
+			AND: [userPermission, tabQuery, filtersQuery, searchQuery],
 		}
 
 		const [rawData, total] = await Promise.all([
@@ -197,7 +191,9 @@ export class JobService {
 			where: { AND: [userPermission, { no: jobNo }] },
 			include: {
 				type: true,
-				assignments: { include: { user: true } },
+				assignments: {
+					include: { user: { include: { department: true } } },
+				},
 				createdBy: true,
 				paymentChannel: true,
 				status: true,
@@ -223,7 +219,7 @@ export class JobService {
 			excludeExtraneousValues: true,
 			groups: [
 				userPermissions.find(
-					(item) => item === 'job.readSensitive'
+					(item) => item === APP_PERMISSIONS.JOB.READ_SENSITIVE
 				) as string,
 			],
 		}) as unknown as Job
@@ -257,7 +253,7 @@ export class JobService {
 			excludeExtraneousValues: true,
 			groups: [
 				userPermissions.find(
-					(item) => item === 'job.readSensitive'
+					(item) => item === APP_PERMISSIONS.JOB.READ_SENSITIVE
 				) as string,
 			],
 		}) as unknown as Job[]
@@ -301,7 +297,7 @@ export class JobService {
 			excludeExtraneousValues: true,
 			groups: [
 				userPermissions.find(
-					(item) => item === 'job.readSensitive'
+					(item) => item === APP_PERMISSIONS.JOB.READ_SENSITIVE
 				) as string,
 			],
 		}) as unknown as Job[]
@@ -329,7 +325,7 @@ export class JobService {
 			excludeExtraneousValues: true,
 			groups: [
 				userPermissions.find(
-					(item) => item === 'job.readSensitive'
+					(item) => item === APP_PERMISSIONS.JOB.READ_SENSITIVE
 				) as string,
 			],
 		}) as unknown as Job[]
@@ -472,6 +468,9 @@ export class JobService {
 							title: `[${jobUpdated.no}] New Payout Pending`,
 							content: `Job #${jobUpdated.no} is completed and ready for payment.`,
 							type: NotificationType.JOB_UPDATE,
+							imageUrl:
+								jobUpdated.status.thumbnailUrl ||
+								IMAGES.NOTIFICATION_DEFAULT_IMAGE,
 							redirectUrl: `/financial/pending-payouts`,
 						}))
 					)
@@ -867,6 +866,110 @@ export class JobService {
 		return { id: transactionResult.id, no: transactionResult.no }
 	}
 
+	/**
+	 * Updates job attachments (add or remove) with detailed logging.
+	 * Matches Frontend: JobAttachmentsField & JobActivityHistory
+	 */
+	async updateAttachments(
+		modifierId: string,
+		jobId: string,
+		dto: UpdateAttachmentsDto
+	) {
+		// 1. Fetch current job (include assignments for notifications)
+		const job = await this.prisma.job.findUnique({
+			where: { id: jobId },
+			include: {
+				status: { select: { thumbnailUrl: true } },
+				assignments: { select: { userId: true } },
+			},
+		})
+
+		if (!job) throw new NotFoundException('Job not found')
+
+		// 2. Calculate New Attachment List
+		const currentAttachments = (job.attachmentUrls as string[]) || []
+		let finalAttachments: string[] = []
+		let logNote = ''
+
+		if (dto.action === 'add') {
+			// Logic: Combine arrays -> Set to remove duplicates -> Array
+			// This handles both single file adds and bulk uploads from frontend
+			finalAttachments = [
+				...new Set([...currentAttachments, ...dto.files]),
+			]
+			logNote = `Added ${dto.files.length} new attachment(s)`
+		} else {
+			// Logic: Filter out the files present in the DTO
+			finalAttachments = currentAttachments.filter(
+				(url) => !dto.files.includes(url)
+			)
+			logNote = `Removed ${dto.files.length} attachment(s)`
+		}
+
+		// 3. Execute Transaction (Update DB + Create Log)
+		const updatedJob = await this.prisma.$transaction(async (tx) => {
+			// A. Update the Job Record
+			const result = await tx.job.update({
+				where: { id: jobId },
+				data: { attachmentUrls: finalAttachments },
+				select: { id: true, no: true, displayName: true },
+			})
+
+			// B. Create Activity Log
+			// We save strict metadata so the Frontend 'JobActivityHistory'
+			// can verify 'meta.action' and render the file list 'meta.changedFiles'
+			await this.activityLogService.create(
+				{
+					jobId,
+					modifiedById: modifierId,
+					activityType: ActivityType.UPDATE_ATTACHMENTS,
+					fieldName: 'attachmentUrls',
+					notes: logNote, // Fallback text: "Added 1 new attachment(s)"
+					currentValue: `${finalAttachments.length} files total`,
+					requiredPermissionCode: undefined, // Files are generally public to the team
+					metadata: {
+						action: dto.action, // 'add' or 'remove'
+						changedFiles: dto.files, // The specific URLs changed
+						totalCount: finalAttachments.length,
+					},
+				},
+				tx
+			)
+
+			return result
+		})
+
+		// 4. Send Notifications (Only for 'add' action)
+		// We do this outside the transaction to prevent external API timeouts holding up the DB
+		if (dto.action === 'add' && job.assignments.length > 0) {
+			try {
+				await this.notificationService.sendMany(
+					job.assignments.map((assignee) => ({
+						userId: assignee.userId,
+						senderId: modifierId,
+						title: `[${updatedJob.no}] Files Updated`,
+						content: `${dto.files.length} new file(s) have been added to ${updatedJob.displayName}.`,
+						type: NotificationType.JOB_UPDATE,
+						imageUrl: job.status.thumbnailUrl || undefined,
+						// Deep link directly to the 'files' tab if your frontend supports it
+						redirectUrl: `/jobs/${updatedJob.no}?tab=files`,
+					}))
+				)
+			} catch (error) {
+				this.logger.error(
+					`Failed to send attachment notifications for Job ${updatedJob.no}`,
+					error
+				)
+			}
+		}
+
+		return {
+			id: updatedJob.id,
+			no: updatedJob.no,
+			attachments: finalAttachments,
+		}
+	}
+
 	async assignMember(
 		modifierId: string,
 		jobId: string,
@@ -1128,7 +1231,7 @@ export class JobService {
 	async deliverJob(userId: string, jobId: string, dto: DeliverJobDto) {
 		// 1. Fetch current job and status info before transaction
 		const reviewStatus = await this.prisma.jobStatus.findFirst({
-			where: { systemType: 'WAIT_REVIEW' },
+			where: { systemType: 'DELIVERED' },
 		})
 
 		if (!reviewStatus)

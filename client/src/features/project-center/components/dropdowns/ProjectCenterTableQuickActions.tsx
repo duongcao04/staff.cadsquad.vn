@@ -1,8 +1,10 @@
+import { INTERNAL_URLS } from '@/lib'
 import {
     jobsListOptions,
     useDeleteJobMutation,
     useProfile,
 } from '@/lib/queries'
+import { queryClient } from '@/main'
 import { ConfirmDeleteModal } from '@/shared/components'
 import type { TJob } from '@/shared/types'
 import {
@@ -24,11 +26,9 @@ import {
     Trash,
     UserPlus,
 } from 'lucide-react'
-import { INTERNAL_URLS } from '../../../../lib'
 import AddAttachmentsModal from '../modals/AddAttachmentsModal'
 import AssignMemberModal from '../modals/AssignMemberModal'
 import UpdateCostModal from '../modals/UpdateCostModal'
-import { queryClient } from '../../../../main'
 
 type ProjectCenterTableQuickActionsProps = {
     data: TJob

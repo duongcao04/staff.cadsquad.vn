@@ -100,28 +100,6 @@ export const activeSessionsListOptions = () => {
         },
     })
 }
-export const profileOverviewOptions = () => {
-    return queryOptions({
-        queryKey: ['profile', 'overview'],
-        queryFn: () => userApi.overview(),
-        select: (res) => {
-            console.log(res.result)
-
-            const { totalEarnings, activeJobs, hoursLogged, jobsCompleted } =
-                res.result?.stats
-
-            const data: IProfileOverview = {
-                stats: {
-                    totalEarnings,
-                    activeJobs,
-                    hoursLogged,
-                    jobsCompleted,
-                },
-            }
-            return data
-        },
-    })
-}
 export const checkUsernameTakenOptions = (username: string) => {
     return queryOptions({
         queryKey: ['users', 'username', 'taken', username],

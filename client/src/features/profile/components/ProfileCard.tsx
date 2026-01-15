@@ -74,7 +74,12 @@ export function ProfileCard() {
                         }
                         className="px-5"
                     >
-                        <ProfileOrganization />
+                        {/* TODO: implement organization */}
+                        {false ? (
+                            <ProfileOrganization />
+                        ) : (
+                            <span className="text-center">Updating...</span>
+                        )}
                     </Tab>
                 </Tabs>
             </HeroCardBody>
