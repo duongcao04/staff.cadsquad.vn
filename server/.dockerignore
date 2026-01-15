@@ -1,0 +1,42 @@
+# Node modules
+node_modules
+npm-debug.log
+yarn-error.log
+pnpm-lock.yaml
+
+# TypeScript build
+dist
+build
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Git
+.git
+.gitignore
+
+# Docker files (optional)
+Dockerfile
+docker-compose*.yml
+
+# VSCode
+.vscode
+.idea
+
+# Logs
+logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp
+*.tmp
+
+# Prisma (if you only want schema + migrations)
+prisma/.env
+prisma/.DS_Store

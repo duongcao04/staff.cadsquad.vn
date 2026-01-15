@@ -1,0 +1,2 @@
+# Ép tất cả file .sh phải dùng LF, kể cả trên Windows
+*.sh text eol=lf

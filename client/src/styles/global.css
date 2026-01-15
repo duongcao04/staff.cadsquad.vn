@@ -1,0 +1,68 @@
+@import 'tailwindcss';
+@import './foundation.css';
+@import './utility.css';
+@import "tw-animate-css";
+
+/* Tailwind v4 Plugin & Source Configuration
+*/
+@plugin '../lib/hero.ts';
+@source '../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
+
+/* 1. Font Face Definitions
+    Changed format('ttf') to format('truetype')
+*/
+@font-face {
+    font-family: 'segoeui';
+    src: url('../fonts/SegoeUI.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'inter';
+    src: url('../fonts/Inter.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'saira';
+    src: url('../fonts/Saira.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'quicksand';
+    src: url('../fonts/Quicksand.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* 2. Register Fonts in Tailwind Theme
+   This automatically creates --font-* variables and utilities
+*/
+@theme {
+    --font-segoeui: "segoeui", "Inter", Arial, Helvetica, sans-serif;
+    --font-inter: "inter", sans-serif;
+    --font-saira: "saira", sans-serif;
+    --font-quicksand: "quicksand", sans-serif;
+}
+
+/* 3. Global Styles
+*/
+@custom-variant dark (&:is(.dark *));
+
+body {
+    color: var(--color-text-default) !important;
+    /* Now you can reference the variable defined in @theme */
+    font-family: var(--font-inter);
+}
+
+a {
+    color: var(--color-text-default) !important;
+}

@@ -1,0 +1,103 @@
+<html>
+    <head>
+        <meta charset='utf-8' />
+        <style>
+            .container {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                max-width: 600px;
+                margin: 0 auto;
+                border: 1px solid #e1e4e8;
+                border-radius: 8px;
+                overflow: hidden;
+            }
+            .header {
+                background-color:{{#if
+                (eq status 'Active')
+            }}#10b981{{else}}#ef4444{{/if}};
+                                    color: white;
+                                    padding: 20px;
+                                    text-align: center;
+                                }
+                                .content {
+                                    padding: 30px;
+                                    background-color: #ffffff;
+                                }
+                                .status-badge {
+                                    display: inline-block;
+                                    padding: 4px 12px;
+                                    border-radius: 20px;
+                                    font-weight: bold;
+                                    font-size: 14px;
+                                    text-transform: uppercase;
+                                    margin: 10px 0;
+                                    background-color:{{#if
+                (eq status 'Active')
+            }}#dcfce7{{else}}#fee2e2{{/if}};
+                                    color:{{#if
+                (eq status 'Active')
+            }}#166534{{else}}#991b1b{{/if}};
+                                }
+                                .footer {
+                                    background-color: #f8fafc;
+                                    padding: 20px;
+                                    text-align: center;
+                                    font-size: 12px;
+                                    color: #64748b;
+                                }
+                                .support-link {
+                                    color: #0070f3;
+                                    text-decoration: none;
+                                }
+        </style>
+    </head>
+    <body>
+        <div class='container'>
+            <div class='header'>
+                <h1>CAD SQUAD Notification</h1>
+            </div>
+
+            <div class='content'>
+                <p>Xin chào <strong>{{name}}</strong>,</p>
+
+                <p>Chúng tôi gửi thông báo này để cập nhật về trạng thái tài
+                    khoản của bạn trên hệ thống quản lý dự án
+                    <strong>CAD SQUAD</strong>.</p>
+
+                <p>Trạng thái hiện tại:</p>
+                <div class='status-badge'>
+                    {{#if (eq status 'Active')}}ĐANG HOẠT ĐỘNG{{else}}ĐÃ VÔ HIỆU
+                        HÓA{{/if}}
+                </div>
+
+                {{#if (eq status 'Inactive')}}
+                    <div
+                        style='background-color: #fff4f4; border-left: 4px solid #ef4444; padding: 15px; margin: 20px 0;'
+                    >
+                        <p style='margin: 0; color: #991b1b;'>
+                            <strong>Lưu ý:</strong>
+                            Bạn sẽ không thể đăng nhập vào hệ thống hoặc nhận
+                            thông báo về các dự án mới cho đến khi tài khoản
+                            được kích hoạt lại bởi Quản trị viên.
+                        </p>
+                    </div>
+                {{else}}
+                    <p>Tài khoản của bạn đã sẵn sàng. Bạn có thể đăng nhập và
+                        tiếp tục công việc ngay bây giờ.</p>
+                {{/if}}
+
+                <p>Nếu bạn có bất kỳ thắc mắc nào về thay đổi này, vui lòng liên
+                    hệ với bộ phận kỹ thuật hoặc quản lý trực tiếp của bạn.</p>
+
+                <p>Trân trọng,<br /><strong>Đội ngũ Quản trị CAD SQUAD</strong></p>
+            </div>
+
+            <div class='footer'>
+                <p>&copy; 2026 CAD SQUAD Co., Ltd. Tất cả quyền được bảo lưu.</p>
+                <p>Đây là email tự động, vui lòng không phản hồi trực tiếp vào
+                    email này.</p>
+            </div>
+        </div>
+    </body>
+</html>

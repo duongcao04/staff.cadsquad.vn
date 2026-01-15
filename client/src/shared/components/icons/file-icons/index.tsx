@@ -1,0 +1,7 @@
+export * from './AutoCadIcon'
+export * from './ExcelIcon'
+export * from './FolderIcon'
+export * from './LinkIcon'
+export * from './PDFIcon'
+export * from './PowerpointIcon'
+export * from './WordIcon'

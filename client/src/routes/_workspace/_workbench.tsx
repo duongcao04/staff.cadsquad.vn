@@ -1,0 +1,301 @@
+import { PageHeading } from '@/shared/components'
+import { Button, Spinner, useDisclosure } from '@heroui/react'
+import { useSuspenseQuery } from '@tanstack/react-query'
+import { createFileRoute } from '@tanstack/react-router'
+import lodash from 'lodash'
+import { Suspense, useMemo, useState, useTransition } from 'react'
+import { ErrorBoundary } from 'react-error-boundary'
+import { z } from 'zod'
+import { getPageTitle } from '../../lib'
+import { workbenchDataOptions } from '../../lib/queries'
+import JobDetailDrawer from '../../features/job-details/components/drawers/JobDetailDrawer'
+import AssignMemberModal from '../../features/project-center/components/modals/AssignMemberModal'
+import WorkbenchMobileContent, {
+    WorkbenchMobileSkeleton,
+} from '../../features/workbench/components/views/WorkbenchMobileContent'
+import WorkbenchTable from '../../features/workbench/components/views/WorkbenchTable'
+import { useDevice } from '../../shared/hooks'
+import { jobFiltersSchema, TJobFilters } from '../../lib/validationSchemas'
+
+const DEFAULT_SORT = 'displayName:asc'
+
+export const workbenchParamsSchema = z
+    .object({
+        sort: z.string().optional().catch(DEFAULT_SORT),
+        search: z.string().trim().optional(),
+        limit: z.coerce.number().int().min(1).max(100).optional().catch(10),
+        page: z.coerce.number().int().min(1).optional().catch(1),
+    })
+    .merge(jobFiltersSchema)
+
+export type TWorkbenchSearch = z.infer<typeof workbenchParamsSchema>
+
+export const Route = createFileRoute('/_workspace/_workbench')({
+    head: () => ({
+        meta: [
+            { title: getPageTitle('Workbench Dashboard') },
+            {
+                name: 'description',
+                content:
+                    'A high-level overview of your active tasks and upcoming deadlines.',
+            },
+        ],
+    }),
+    validateSearch: (search) => workbenchParamsSchema.parse(search),
+    loaderDeps: ({ search }) => ({ search }),
+    loader: ({ context, deps }) => {
+        const {
+            limit = 10,
+            page = 1,
+            search,
+            sort = DEFAULT_SORT,
+        } = deps.search
+        void context.queryClient.ensureQueryData(
+            workbenchDataOptions({
+                limit,
+                page,
+                search,
+                sort: [sort],
+            })
+        )
+    },
+    component: () => {
+        const { isSmallView } = useDevice()
+        return (
+            <>
+                <PageHeading
+                    title="Workbench"
+                    classNames={{
+                        wrapper: `${isSmallView ? '!py-3' : '!py-2'} pl-6 pr-3.5 border-b border-border-default`,
+                    }}
+                />
+                <div
+                    className={`size-full ${isSmallView ? 'container' : 'pl-5 pr-3.5'} pt-5`}
+                >
+                    <WorkbenchPage />
+                </div>
+            </>
+        )
+    },
+})
+
+export function WorkbenchPage() {
+    const { isSmallView } = useDevice()
+    const searchParams = Route.useSearch()
+    const navigate = Route.useNavigate()
+
+    // useTransition is key to preventing the "jump" to Suspense fallback
+    const [isPending, startTransition] = useTransition()
+
+    // Generic function to handle all navigation updates with transition
+    const updateSearch = (
+        updater: (old: TWorkbenchSearch) => TWorkbenchSearch
+    ) => {
+        startTransition(() => {
+            navigate({
+                search: ((old: TWorkbenchSearch) =>
+                    updater(old as TWorkbenchSearch)) as unknown as true,
+                replace: true,
+            })
+        })
+    }
+
+    const handlePageChange = (newPage: number) =>
+        updateSearch((old) => ({ ...old, page: newPage }))
+
+    const handleSortChange = (newSort: string | null) =>
+        updateSearch((old) => ({ ...old, sort: newSort || undefined, page: 1 }))
+
+    const handleLimitChange = (newLimit: number) =>
+        updateSearch((old) => ({ ...old, limit: newLimit, page: 1 }))
+
+    const handleSearchChange = (newSearch?: string) =>
+        updateSearch((old) => ({ ...old, search: newSearch, page: 1 }))
+
+    const handleFiltersChange = (filters: TJobFilters) =>
+        updateSearch((old) => ({ ...old, ...filters, page: 1 }))
+
+    return (
+        <ErrorBoundary
+            fallback={
+                <div className="p-10 text-center text-danger">
+                    <p className="font-bold text-lg">Failed to load data</p>
+                    <Button onPress={() => window.location.reload()}>
+                        Retry
+                    </Button>
+                </div>
+            }
+        >
+            {/* Wrapping in a custom div allows us to show a subtle loading state 
+                  while useTransition is pending, instead of unmounting the whole table
+                */}
+            <div
+                className={`${
+                    isPending ? 'opacity-70 transition-opacity' : 'opacity-100'
+                } size-full min-h-[calc(100svh-122px)]!`}
+            >
+                <Suspense
+                    fallback={
+                        isSmallView ? (
+                            <WorkbenchMobileSkeleton />
+                        ) : (
+                            <TableLoadingFallback />
+                        )
+                    }
+                >
+                    {isSmallView ? (
+                        <WorkbenchMobileContent
+                            onAssignMember={() => {}}
+                            currentPage={searchParams.page ?? 1}
+                            onPageChange={handlePageChange}
+                            search={searchParams.search}
+                            onSearchChange={handleSearchChange}
+                        />
+                    ) : (
+                        <WorkbenchTableContent
+                            search={searchParams}
+                            sort={searchParams.sort || DEFAULT_SORT}
+                            limit={searchParams.limit || 10}
+                            page={searchParams.page || 1}
+                            onSortChange={handleSortChange}
+                            onPageChange={handlePageChange}
+                            onLimitChange={handleLimitChange}
+                            onSearchChange={handleSearchChange}
+                            onFiltersChange={handleFiltersChange}
+                        />
+                    )}
+                </Suspense>
+            </div>
+        </ErrorBoundary>
+    )
+}
+
+function TableLoadingFallback() {
+    return (
+        <div className="flex h-[60vh] flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-divider bg-background">
+            <Spinner size="lg" color="primary" label="Loading workbench..." />
+        </div>
+    )
+}
+
+export type WorkbenchTableContentProps = {
+    limit: number
+    page: number
+    sort: string
+    search?: TWorkbenchSearch
+    onSearchChange: (newSearch?: string) => void
+    onPageChange: (newPage: number) => void
+    onSortChange: (newSort: string) => void
+    onLimitChange: (newLimit: number) => void
+    onFiltersChange: (newFilters: TJobFilters) => void
+}
+
+function WorkbenchTableContent({
+    limit,
+    page,
+    sort,
+    search,
+    onSearchChange,
+    onSortChange,
+    onPageChange,
+    onLimitChange,
+    onFiltersChange,
+}: WorkbenchTableContentProps) {
+    const [viewDetailNo, setViewDetailNo] = useState<string | null>(null)
+    const [assignMemberTo, setAssignMemberTo] = useState<string | null>(null)
+
+    const options = workbenchDataOptions({
+        ...search,
+        limit,
+        page,
+        sort: [sort],
+    })
+
+    const {
+        data: { jobs, paginate },
+        refetch,
+        isLoading,
+        isFetching,
+    } = useSuspenseQuery(options)
+    const isLoadingData = isFetching || isLoading
+
+    const {
+        isOpen: isOpenJobDetailDrawer,
+        onOpen: onOpenJobDetailDrawer,
+        onClose: onCloseJobDetailDrawer,
+    } = useDisclosure({ id: 'JobDetailDrawer' })
+
+    const {
+        isOpen: isOpenAssignMemberModal,
+        onOpen: onOpenAssignMemberModal,
+        onClose: onCloseAssignMemberModal,
+    } = useDisclosure({ id: 'AssignMemberModal' })
+
+    const onViewDetail = (jobNo: string) => {
+        setViewDetailNo(jobNo)
+        onOpenJobDetailDrawer()
+    }
+
+    const onAssignMember = (jobNo: string) => {
+        setAssignMemberTo(jobNo)
+        onOpenAssignMemberModal()
+    }
+
+    // Debounce the search input to avoid triggering a network request for every keystroke
+    const debouncedSearchChange = useMemo(
+        () => lodash.debounce((value: string) => onSearchChange(value), 500),
+        [onSearchChange]
+    )
+
+    return (
+        <>
+            <WorkbenchTable
+                onViewDetail={onViewDetail}
+                onAssignMember={onAssignMember}
+                onRefresh={refetch}
+                pagination={{
+                    limit,
+                    page,
+                    total: paginate?.total ?? 0,
+                    totalPages: paginate?.totalPages ?? 1,
+                }}
+                onFiltersChange={onFiltersChange}
+                filters={search as TJobFilters}
+                onLimitChange={onLimitChange}
+                onPageChange={onPageChange}
+                // Use debounced function for typing, but keep standard for instant clears if needed
+                onSearchChange={(val) => {
+                    if (!val)
+                        onSearchChange(undefined) // Instant reset on clear
+                    else debouncedSearchChange(val)
+                }}
+                onSortChange={onSortChange}
+                sort={sort}
+                data={jobs}
+                isLoadingData={isLoadingData}
+            />
+
+            {isOpenJobDetailDrawer && viewDetailNo && (
+                <JobDetailDrawer
+                    jobNo={viewDetailNo}
+                    isOpen={isOpenJobDetailDrawer}
+                    onClose={() => {
+                        onCloseJobDetailDrawer()
+                        setViewDetailNo(null)
+                    }}
+                />
+            )}
+
+            {isOpenAssignMemberModal && assignMemberTo && (
+                <AssignMemberModal
+                    jobNo={assignMemberTo}
+                    isOpen={isOpenAssignMemberModal}
+                    onClose={() => {
+                        onCloseAssignMemberModal()
+                        setAssignMemberTo(null)
+                    }}
+                />
+            )}
+        </>
+    )
+}

@@ -1,0 +1,5 @@
+export enum EUserConfigCode {
+    PINNED_JOBS = 'PINNED_JOBS',
+    JOB_SHOW_COLUMNS = 'JOB_SHOW_COLUMNS',
+    THEME_COLOR = 'THEME_COLOR',
+}
