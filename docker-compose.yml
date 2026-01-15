@@ -6,6 +6,7 @@ services:
     image: postgres:16
     container_name: database
     restart: always
+    env_file: .env
     environment:
       TZ: Asia/Ho_Chi_Minh
       POSTGRES_DB: ${POSTGRES_DB}
