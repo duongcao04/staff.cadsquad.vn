@@ -7,3 +7,4 @@ export * from './_cloudinary.config';
 export * from './_database.config';
 export * from './_firebase.config';
 export * from './_mail.config';
+export * from './_prisma.config';
