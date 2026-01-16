@@ -10,6 +10,7 @@ import {
 	databaseConfig,
 	firebaseConfig,
 	mailConfig,
+	prismaConfig,
 } from '@/config'
 import { AblyModule } from '@/modules/ably/ably.module'
 import { AnalyticsModule } from '@/modules/analytics/analytics.module'
@@ -50,6 +51,7 @@ import { BullConfigProvider } from './providers/bull-mq/bull-mq.provider'
 			isGlobal: true, // Để dùng được ở mọi nơi
 			load: [
 				appConfig,
+				prismaConfig,
 				databaseConfig,
 				authConfig,
 				mailConfig,
