@@ -1,11 +1,11 @@
+import { Header, PageWithHeaderContainer, Sidebar } from '@/shared/components'
+import AppLoading from '@/shared/components/app/AppLoading'
+import MobileHeader from '@/shared/components/layouts/Header/MobileHeader'
+import { AuthGuard } from '@/shared/guards'
+import { useDevice } from '@/shared/hooks'
+import { appStore, ESidebarStatus } from '@/shared/stores'
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 import { useStore } from '@tanstack/react-store'
-import { Header, ScrollArea, ScrollBar, Sidebar } from '../shared/components'
-import AppLoading from '../shared/components/app/AppLoading'
-import MobileHeader from '../shared/components/layouts/Header/MobileHeader'
-import { AuthGuard } from '../shared/guards'
-import { useDevice } from '../shared/hooks'
-import { appStore } from '../shared/stores'
 
 export const Route = createFileRoute('/_workspace')({
     pendingComponent: AppLoading,
@@ -16,41 +16,39 @@ function WorkspaceLayout() {
     const sidebarStatus = useStore(appStore, (state) => state.sidebarStatus)
     const { isSmallView } = useDevice()
 
+    const topOffset = isSmallView ? '44px' : '56px'
+
+    const leftMargin = isSmallView
+        ? '0px'
+        : sidebarStatus === ESidebarStatus.COLLAPSE
+          ? '64px'
+          : '300px'
+
     return (
         <AuthGuard>
-            {!isSmallView ? <Header /> : <MobileHeader />}
-            {/* Height for header */}
-            <div className={!isSmallView ? 'h-14' : 'h-11'} />
-            <main className="size-full relative flex items-start justify-start">
-                {!isSmallView ? (
-                    <div className="fixed top-14 z-50">
-                        <Sidebar />
-                    </div>
-                ) : null}
-                <div
-                    className="size-full bg-background-muted"
-                    style={{
-                        paddingLeft: !isSmallView
-                            ? sidebarStatus === 'expand'
-                                ? '300px'
-                                : '64px'
-                            : undefined,
-                    }}
-                >
-                    <ScrollArea
-                        className="w-full"
+            <PageWithHeaderContainer
+                header={<Header />}
+                mobileHeader={<MobileHeader />}
+            >
+                <main className="size-full relative flex items-start justify-start">
+                    {!isSmallView && (
+                        <div className="fixed z-50" style={{ top: topOffset }}>
+                            <Sidebar />
+                        </div>
+                    )}
+
+                    <div
+                        className="size-full bg-background-muted"
                         style={{
-                            height: !isSmallView
-                                ? 'calc(100vh-57px)'
-                                : 'calc(100vh-44px)',
+                            marginLeft: leftMargin,
+                            transition:
+                                'margin 300ms cubic-bezier(0.4, 0, 0.2, 1)',
                         }}
                     >
-                        <ScrollBar orientation="horizontal" />
-                        <ScrollBar orientation="vertical" />
                         <Outlet />
-                    </ScrollArea>
-                </div>
-            </main>
+                    </div>
+                </main>
+            </PageWithHeaderContainer>
         </AuthGuard>
     )
 }

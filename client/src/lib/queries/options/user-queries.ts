@@ -1,11 +1,11 @@
+import { authApi, userApi } from '@/lib/api'
+import { IMAGES, toDate, toNullableDate } from '@/lib/utils'
+import { TUserQueryInput } from '@/lib/validationSchemas'
+import { IUserResponse } from '@/shared/interfaces'
+import { TUser } from '@/shared/types'
 import { queryOptions } from '@tanstack/react-query'
-import { IUserResponse } from '../../../shared/interfaces'
-import { TUser } from '../../../shared/types'
-import { authApi, IProfileOverview, userApi } from '../../api'
-import { IMAGES, toDate, toNullableDate } from '../../utils'
 import { mapDepartment } from './department-queries'
 import { mapJobTitle } from './job-title-queries'
-import { TUserQueryInput } from '../../validationSchemas'
 import { mapRole } from './role-queries'
 
 export const mapUser: (item?: IUserResponse) => TUser = (item) => {
@@ -13,6 +13,7 @@ export const mapUser: (item?: IUserResponse) => TUser = (item) => {
         id: item?.id ?? 'N/A',
         displayName: item?.displayName ?? 'Unknown User',
         avatar: item?.avatar ?? IMAGES.emptyAvatar,
+        personalEmail: item?.personalEmail || null,
         email: item?.email ?? 'unknown@cadsquad.vn',
         username: item?.username ?? 'unknown',
         phoneNumber: item?.phoneNumber ?? 'Unknown phone number',

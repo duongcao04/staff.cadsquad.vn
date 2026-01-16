@@ -60,20 +60,8 @@ export const Route = createFileRoute('/_administrator/admin/schedule')({
 })
 
 function ScheduleLayout({ children }: { children: React.ReactNode }) {
-    return (
-        <>
-            <AdminPageHeading title="Schedule" />
-            <AdminContentContainer className="mt-1 flex flex-col h-[calc(100vh-140px)]">
-                {children}
-            </AdminContentContainer>
-        </>
-    )
-}
-
-function SchedulePage() {
     const searchParams = Route.useSearch()
     const navigate = useNavigate({ from: Route.fullPath })
-
     // Derived Date State
     const currentDate = new Date(searchParams.year, searchParams.month - 1, 1)
 
@@ -91,6 +79,113 @@ function SchedulePage() {
             year: newDate.getFullYear(),
         })
     }
+    return (
+        <>
+            <AdminPageHeading
+                classNames={{
+                    base: 'grid grid-cols-[300px_1fr_300px]',
+                }}
+                title="Schedule"
+                actions={
+                    <>
+                        <div className="flex flex-wrap items-center justify-center gap-3">
+                            {/* Month Navigator */}
+                            <div className="flex items-center bg-background-hovered rounded-xl border border-border-default p-1 shadow-sm">
+                                <Button
+                                    isIconOnly
+                                    size="sm"
+                                    variant="light"
+                                    onPress={() =>
+                                        handleDateChange(
+                                            subMonths(currentDate, 1)
+                                        )
+                                    }
+                                >
+                                    <ChevronLeft size={18} />
+                                </Button>
+                                <div className="px-4 font-bold text-text-default min-w-35 text-center">
+                                    {format(currentDate, 'MMMM yyyy')}
+                                </div>
+                                <Button
+                                    isIconOnly
+                                    size="sm"
+                                    variant="light"
+                                    onPress={() =>
+                                        handleDateChange(
+                                            addMonths(currentDate, 1)
+                                        )
+                                    }
+                                >
+                                    <ChevronRight size={18} />
+                                </Button>
+                            </div>
+
+                            <Button
+                                variant="flat"
+                                onPress={() => handleDateChange(new Date())}
+                            >
+                                Today
+                            </Button>
+                        </div>
+
+                        <div className="flex items-center gap-3 ml-auto">
+                            {/* View Switcher */}
+                            <Tabs
+                                aria-label="View options"
+                                selectedKey={searchParams.view}
+                                onSelectionChange={(key) =>
+                                    updateParams({
+                                        view: key as 'calendar' | 'list',
+                                    })
+                                }
+                                size="sm"
+                                radius="sm"
+                                color="primary"
+                            >
+                                <Tab
+                                    key="calendar"
+                                    title={
+                                        <div className="flex items-center gap-2">
+                                            <CalendarIcon size={14} />{' '}
+                                            <span>Calendar</span>
+                                        </div>
+                                    }
+                                />
+                                <Tab
+                                    key="list"
+                                    title={
+                                        <div className="flex items-center gap-2">
+                                            <ListIcon size={14} />{' '}
+                                            <span>List</span>
+                                        </div>
+                                    }
+                                />
+                            </Tabs>
+
+                            <Divider orientation="vertical" className="h-6" />
+
+                            <Button
+                                color="primary"
+                                startContent={<Plus size={16} />}
+                            >
+                                New Job
+                            </Button>
+                        </div>
+                    </>
+                }
+            />
+            <AdminContentContainer className="mt-1 flex flex-col h-[calc(100vh-180px)]">
+                {children}
+            </AdminContentContainer>
+        </>
+    )
+}
+
+function SchedulePage() {
+    const searchParams = Route.useSearch()
+
+    // Derived Date State
+    const currentDate = new Date(searchParams.year, searchParams.month - 1, 1)
 
     const { data: jobsSchedule, isFetching } = useSuspenseQuery(
         jobScheduleOptions(searchParams.month, searchParams.year)
@@ -109,83 +204,6 @@ function SchedulePage() {
         <div
             className={`flex flex-col h-full ${isFetching ? 'opacity-70 pointer-events-none' : ''}`}
         >
-            {/* --- Toolbar --- */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4 shrink-0">
-                <div className="flex flex-wrap items-center gap-3">
-                    {/* Month Navigator */}
-                    <div className="flex items-center bg-background-hovered rounded-xl border border-border-default p-1 shadow-sm">
-                        <Button
-                            isIconOnly
-                            size="sm"
-                            variant="light"
-                            onPress={() =>
-                                handleDateChange(subMonths(currentDate, 1))
-                            }
-                        >
-                            <ChevronLeft size={18} />
-                        </Button>
-                        <div className="px-4 font-bold text-text-default min-w-35 text-center">
-                            {format(currentDate, 'MMMM yyyy')}
-                        </div>
-                        <Button
-                            isIconOnly
-                            size="sm"
-                            variant="light"
-                            onPress={() =>
-                                handleDateChange(addMonths(currentDate, 1))
-                            }
-                        >
-                            <ChevronRight size={18} />
-                        </Button>
-                    </div>
-
-                    <Button
-                        variant="flat"
-                        onPress={() => handleDateChange(new Date())}
-                    >
-                        Today
-                    </Button>
-                </div>
-
-                <div className="flex items-center gap-3 ml-auto">
-                    {/* View Switcher */}
-                    <Tabs
-                        aria-label="View options"
-                        selectedKey={searchParams.view}
-                        onSelectionChange={(key) =>
-                            updateParams({ view: key as 'calendar' | 'list' })
-                        }
-                        size="sm"
-                        radius="sm"
-                        color="primary"
-                    >
-                        <Tab
-                            key="calendar"
-                            title={
-                                <div className="flex items-center gap-2">
-                                    <CalendarIcon size={14} />{' '}
-                                    <span>Calendar</span>
-                                </div>
-                            }
-                        />
-                        <Tab
-                            key="list"
-                            title={
-                                <div className="flex items-center gap-2">
-                                    <ListIcon size={14} /> <span>List</span>
-                                </div>
-                            }
-                        />
-                    </Tabs>
-
-                    <Divider orientation="vertical" className="h-6" />
-
-                    <Button color="primary" startContent={<Plus size={16} />}>
-                        New Job
-                    </Button>
-                </div>
-            </div>
-
             {/* --- Content Views --- */}
             <div className="flex-1 overflow-hidden flex flex-col relative">
                 {searchParams.view === 'calendar' ? (

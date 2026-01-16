@@ -1,3 +1,5 @@
+import SettingTitle from '@/features/settings/components/SettingTitle'
+import { UploadAvatarModal } from '@/features/staff-directory'
 import {
     dateFormatter,
     getPageTitle,
@@ -40,8 +42,6 @@ import {
     Save,
     User,
 } from 'lucide-react'
-import SettingTitle from '../../features/settings/components/SettingTitle'
-import { UploadAvatarModal } from '../../features/staff-directory'
 
 export const Route = createFileRoute('/settings/my-profile')({
     head: () => ({

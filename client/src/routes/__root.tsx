@@ -1,3 +1,10 @@
+import { ablyClient } from '@/lib/ably'
+import { queryClient } from '@/main'
+import AppLoading from '@/shared/components/app/AppLoading'
+import {
+    AppThemeProvider,
+    useAppTheme,
+} from '@/shared/contexts/AppThemeContext'
 import { HeroUIProvider, ToastProvider } from '@heroui/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
@@ -12,13 +19,6 @@ import { ThemeProvider } from 'antd-style'
 import { AlertCircle, CheckCircle2, Info, Loader2, XCircle } from 'lucide-react'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import { Toaster } from 'sonner'
-import { ablyClient } from '../lib/ably'
-import { queryClient } from '../main'
-import AppLoading from '../shared/components/app/AppLoading'
-import {
-    AppThemeProvider,
-    useAppTheme,
-} from '../shared/contexts/AppThemeContext'
 
 // 1. Định nghĩa Interface cho Context
 interface AppRouterContext {
@@ -103,7 +103,7 @@ export const Route = createRootRouteWithContext<AppRouterContext>()({
                                         />
                                         <div
                                             id="app"
-                                            className="max-w-screen max-h-screen min-h-screen overflow-auto bg-background-muted scroll-smooth"
+                                            className="max-w-screen bg-background-muted scroll-smooth"
                                         >
                                             {/* hidden scrollbar */}
                                             {/* <style jsx global>{`

@@ -1,14 +1,13 @@
-import { RoleEnum } from '../enums/_role.enum'
 import type {
     TAccount,
     TDepartment,
     TJob,
     TJobActivityLog,
     TJobTitle,
+    TRole,
     TUserConfig,
     TUserSecurityLog,
-} from '../types'
-import { TRole } from '../types/_role.type'
+} from '@/shared/types'
 
 /**
  * Represents a user entity with profile details, relations,
@@ -20,6 +19,9 @@ export interface IUserResponse {
 
     /** Unique email address */
     email?: string
+
+    /** Personal email address */
+    personalEmail?: string | null
 
     /** Unique username */
     username?: string

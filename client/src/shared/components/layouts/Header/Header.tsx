@@ -1,15 +1,16 @@
+import NotificationDropdown from '@/features/notifications/components/views/NotificationDropdown'
 import { INTERNAL_URLS, useProfile } from '@/lib'
 import { CHANNELS } from '@/lib/ably'
-import { Button, Kbd, useDisclosure } from '@heroui/react'
+import { useDevice } from '@/shared/hooks'
+import { Button, Divider, Kbd, useDisclosure } from '@heroui/react'
 import { useRouter } from '@tanstack/react-router'
 import { ChannelProvider } from 'ably/react'
 import hotkeys from 'hotkeys-js'
 import { CircleHelpIcon, Search } from 'lucide-react'
 import { useEffect } from 'react'
 import CadsquadLogo from '../../CadsquadLogo'
-import { HeroButton } from '../../ui/hero-button'
-import NotificationDropdown from '@/features/notifications/components/views/NotificationDropdown'
 import { SearchModal } from '../../search/search-modal'
+import { HeroButton } from '../../ui/hero-button'
 import { SettingsDropdown } from './SettingsDropdown'
 import { UserDropdown } from './UserDropdown'
 
@@ -19,6 +20,9 @@ export const Header = () => {
     const { isOpen, onClose, onOpen } = useDisclosure({
         id: 'SearchModal',
     })
+    const { isSmallView } = useDevice()
+
+    const headerHeight = isSmallView ? '44px' : '56px'
 
     useEffect(() => {
         hotkeys('ctrl+k', function (event) {
@@ -29,7 +33,10 @@ export const Header = () => {
     }, [])
 
     return (
-        <div className="w-full h-14 container fixed top-0 border-b border-border-muted z-50 grid grid-cols-[130px_1fr_220px] gap-5 items-center bg-background">
+        <div
+            className="w-full container fixed top-0 border-b border-border-muted z-50 grid grid-cols-[130px_1fr_220px] gap-5 items-center bg-background"
+            style={{ height: headerHeight }}
+        >
             <CadsquadLogo
                 classNames={{
                     logo: 'h-8',
@@ -91,7 +98,13 @@ export const Header = () => {
                     <SettingsDropdown />
                 </div>
 
-                <div className="h-[50%] w-[1.5px] bg-border ml-1.5 mr-3" />
+                <Divider
+                    orientation="vertical"
+                    className="border-px"
+                    style={{
+                        height: '24px',
+                    }}
+                />
 
                 <UserDropdown />
             </div>

@@ -9,12 +9,13 @@ type Props = {
     badgeCount?: number
     actions?: React.ReactNode
     classNames?: {
+        wrapper?: string
         base?: string
         titleWrapper?: string
         title?: string
         description?: string
-        actionsWrapper?: string
     }
+    isSticky?: boolean
 } & CardProps
 export function AdminPageHeading({
     title,
@@ -23,6 +24,7 @@ export function AdminPageHeading({
     badgeCount = 0,
     actions,
     classNames,
+    isSticky = true,
     ...props
 }: Props) {
     let titleComp = (
@@ -64,7 +66,8 @@ export function AdminPageHeading({
             shadow={props.shadow ?? 'sm'}
             className={cn(
                 'border-none m-2 dark:bg-background-hovered/40',
-                props.className
+                isSticky && 'sticky top-5 z-30',
+                classNames?.wrapper
             )}
         >
             <CardBody
@@ -84,7 +87,7 @@ export function AdminPageHeading({
                         {description}
                     </p>
                 </div>
-                <div className={classNames?.actionsWrapper}>{actions}</div>
+                <>{actions}</>
             </CardBody>
         </HeroCard>
     )

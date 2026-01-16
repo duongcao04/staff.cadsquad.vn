@@ -2,8 +2,6 @@ import { Link, useLocation } from '@tanstack/react-router'
 import { useStore } from '@tanstack/react-store'
 import { type Variants } from 'motion/react'
 import React, { type SVGProps, useState } from 'react'
-
-// --- Imports từ project của bạn ---
 import { MotionAside, MotionButton, MotionDiv, MotionP } from '@/lib/motion'
 import {
     ActionButton,
@@ -94,12 +92,20 @@ export function Sidebar() {
                                     width={20}
                                     height={20}
                                     strokeWidth={0}
+                                    rotated={
+                                        sidebarStatus ===
+                                        ESidebarStatus.COLLAPSE
+                                    }
                                 />
                             ) : (
                                 <IconCollapseOutline
                                     width={20}
                                     height={20}
                                     strokeWidth={0}
+                                    rotated={
+                                        sidebarStatus ===
+                                        ESidebarStatus.COLLAPSE
+                                    }
                                 />
                             )}
                         </div>

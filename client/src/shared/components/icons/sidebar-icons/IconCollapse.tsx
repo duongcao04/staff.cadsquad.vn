@@ -1,7 +1,10 @@
+import { cn } from '@/lib'
 import type { SVGProps } from 'react'
 
-
-export function IconCollapseOutline(props: SVGProps<SVGSVGElement>) {
+interface Props extends SVGProps<SVGSVGElement> {
+    rotated?: boolean
+}
+export function IconCollapseOutline({ rotated, className, ...props }: Props) {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -9,6 +12,11 @@ export function IconCollapseOutline(props: SVGProps<SVGSVGElement>) {
             height={20}
             viewBox="0 0 20 20"
             {...props}
+            className={cn(
+                'transition-transform duration-300 ease-in-out',
+                rotated && 'rotate-180',
+                className
+            )}
         >
             <path
                 fill="currentColor"
@@ -18,13 +26,18 @@ export function IconCollapseOutline(props: SVGProps<SVGSVGElement>) {
     )
 }
 
-export function IconCollapse(props: SVGProps<SVGSVGElement>) {
+export function IconCollapse({ rotated, className, ...props }: Props) {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
             width={20}
             height={20}
             viewBox="0 0 20 20"
+            className={cn(
+                'transition-transform duration-300 ease-in-out',
+                rotated && 'rotate-180',
+                className
+            )}
             {...props}
         >
             <path
