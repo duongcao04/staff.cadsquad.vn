@@ -5,7 +5,7 @@ const schema = z.object({
 	ABLY_API_KEY: z.string().min(1),
 })
 
-export default registerAs('ably', () => {
+export const ablyConfig = registerAs('ably', () => {
 	const parsed = schema.safeParse(process.env)
 	if (!parsed.success) {
 		console.error('❌ Ably Config Error:', parsed.error.format())

@@ -8,7 +8,7 @@ const schema = z.object({
 	CLOUDINARY_FOLDER_ROOT: z.string().default('App'),
 })
 
-export default registerAs('cloudinary', () => {
+export const cloudinaryConfig = registerAs('cloudinary', () => {
 	const parsed = schema.safeParse(process.env)
 	if (!parsed.success) {
 		console.error('❌ Cloudinary Config Error:', parsed.error.format())
