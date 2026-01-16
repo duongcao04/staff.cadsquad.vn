@@ -5,10 +5,12 @@ import {
 	appConfig,
 	authConfig,
 	azureConfig,
+	bullConfig,
 	cloudinaryConfig,
 	databaseConfig,
 	firebaseConfig,
 	mailConfig,
+	prismaConfig,
 } from '@/config'
 import { AblyModule } from '@/modules/ably/ably.module'
 import { AnalyticsModule } from '@/modules/analytics/analytics.module'
@@ -35,16 +37,21 @@ import { CloudinaryModule } from '@/providers/cloudinary/cloudinary.module'
 import { MailModule } from '@/providers/mail/mail.module'
 import { PrismaModule } from '@/providers/prisma/prisma.module'
 import { RedisModule } from '@/providers/redis/redis.module'
+import { ExpressAdapter } from '@bull-board/express'
+import { BullBoardModule } from '@bull-board/nestjs'
+import { BullModule } from '@nestjs/bullmq'
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { ScheduleModule } from '@nestjs/schedule'
 import { PrometheusModule } from '@willsoto/nestjs-prometheus'
+import { BullConfigProvider } from './providers/bull-mq/bull-mq.provider'
 @Module({
 	imports: [
 		ConfigModule.forRoot({
 			isGlobal: true, // Để dùng được ở mọi nơi
 			load: [
 				appConfig,
+				prismaConfig,
 				databaseConfig,
 				authConfig,
 				mailConfig,
@@ -60,6 +67,16 @@ import { PrometheusModule } from '@willsoto/nestjs-prometheus'
 			defaultMetrics: {
 				enabled: true, // Tự động thu thập metrics mặc định (CPU, RAM, Event Loop...)
 			},
+		}),
+		// Cấu hình BullMQ
+		BullModule.forRootAsync({
+			imports: [ConfigModule.forFeature(bullConfig)],
+			useClass: BullConfigProvider,
+		}),
+		// Cấu hình Bull Board Root (Tạo route truy cập)
+		BullBoardModule.forRoot({
+			route: '/queues', // Đường dẫn truy cập UI
+			adapter: ExpressAdapter, // Dùng adapter Express
 		}),
 		ScheduleModule.forRoot(),
 		PrismaModule,

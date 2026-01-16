@@ -1,5 +1,5 @@
 import { addToast } from '@heroui/react'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { jobApi } from '@/lib/api'
 import {
@@ -14,7 +14,6 @@ import {
     TUpdateJobRevenue,
 } from '@/lib/validationSchemas'
 import { ProjectCenterTabEnum } from '@/shared/enums'
-import { queryClient } from '../../main'
 import { TJobGeneralDetails } from '../../routes/_administrator/admin/mgmt/jobs/$no'
 import { JobUpdateResponse } from '../../shared/types'
 import type { ApiResponse } from '../axios'
@@ -30,7 +29,9 @@ import {
     workbenchDataOptions,
 } from './options/job-queries'
 
-// --- QUERIES ---
+// =============================================================================
+// QUERIES (Read Operations)
+// =============================================================================
 
 export const useJobs = (
     params: TJobQueryInput = {
@@ -40,12 +41,9 @@ export const useJobs = (
         tab: ProjectCenterTabEnum.ACTIVE,
     }
 ) => {
-    // Gọi Options
     const options = jobsListOptions(params)
-
     const { data, refetch, error, isFetching, isLoading } = useQuery(options)
 
-    // Data đã được map sẵn trong options.select
     return {
         refetch,
         isLoading: isLoading || isFetching,
@@ -93,7 +91,7 @@ export const useJobByNo = (jobNo: string) => {
     return {
         refetch,
         data,
-        job: data, // data đã được map trong select
+        job: data,
         error,
         isLoading,
     }
@@ -122,8 +120,12 @@ export const useJobDetail = (id?: string) => {
     }
 }
 
-// --- MUTATIONS (Giữ nguyên logic nhưng code gọn hơn 1 chút) ---
+// =============================================================================
+// MUTATIONS (Write Operations)
+// =============================================================================
+
 export const useCreateJobMutation = () => {
+    const queryClient = useQueryClient()
     return useMutation({
         mutationKey: ['createJob'],
         mutationFn: (data: TCreateJobInput) => jobApi.create(data),
@@ -138,9 +140,12 @@ export const useCreateJobMutation = () => {
     })
 }
 
+// --- WORKFLOW MUTATIONS ---
+
 export const useChangeStatusMutation = (
     onSuccess?: (res: ApiResponse<JobUpdateResponse>) => void
 ) => {
+    const queryClient = useQueryClient()
     return useMutation({
         mutationKey: ['changeStatus', 'job'],
         mutationFn: ({
@@ -151,32 +156,57 @@ export const useChangeStatusMutation = (
             data: TChangeStatusInput
         }) => jobApi.changeStatus(jobId, data),
         onSuccess: (res) => {
+            // Invalidate Lists
             queryClient.invalidateQueries({
                 queryKey: jobsListOptions().queryKey,
             })
+
+            // Invalidate Details
             if (res.result?.no) {
                 queryClient.invalidateQueries({
-                    queryKey: jobByNoOptions(res.result?.no).queryKey,
+                    queryKey: jobByNoOptions(res.result.no).queryKey,
                 })
             }
             if (res.result?.id) {
+                // Invalidate Logs
                 queryClient.invalidateQueries({
-                    queryKey: ['jobActivityLog', String(res.result?.id)],
+                    queryKey: ['jobActivityLog', String(res.result.id)],
+                })
+                // Invalidate ID based fetch
+                queryClient.invalidateQueries({
+                    queryKey: jobDetailOptions(res.result.id).queryKey,
                 })
             }
-            if (onSuccess) {
-                onSuccess(res)
-            } else {
-                addToast({ title: res.message, color: 'success' })
-            }
+
+            if (onSuccess) onSuccess(res)
+            else addToast({ title: res.message, color: 'success' })
         },
         onError: (err) => onErrorToast(err, 'Change Status Failed'),
+    })
+}
+
+export const useBulkChangeStatusMutation = () => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationKey: ['changeStatus', 'job', 'bulk'],
+        mutationFn: ({ data }: { data: TBulkChangeStatusInput }) =>
+            jobApi.bulkChangeStatus(data),
+        onSuccess: (res) => {
+            queryClient.invalidateQueries({ queryKey: ['jobs'] })
+            addToast({
+                title: 'Bulk status update successful',
+                description: res.message,
+                color: 'success',
+            })
+        },
+        onError: (err) => onErrorToast(err, 'Bulk update failed'),
     })
 }
 
 export const useRescheduleMutation = (
     onSuccess?: (res: ApiResponse<JobUpdateResponse>) => void
 ) => {
+    const queryClient = useQueryClient()
     return useMutation({
         mutationKey: ['reschedule', 'job'],
         mutationFn: ({
@@ -190,18 +220,20 @@ export const useRescheduleMutation = (
             return jobApi.reschedule(jobId, data)
         },
         onSuccess: (res) => {
-            if (onSuccess) {
-                onSuccess(res)
-            } else {
-                addToast({ title: res.message, color: 'success' })
-            }
+            if (onSuccess) onSuccess(res)
+            else addToast({ title: res.message, color: 'success' })
+
             queryClient.invalidateQueries({ queryKey: ['jobs'] })
-            queryClient.invalidateQueries({
-                queryKey: ['jobs', 'no', res.result?.no],
-            })
-            queryClient.invalidateQueries({
-                queryKey: ['jobActivityLog', String(res.result?.id)],
-            })
+            if (res.result?.no) {
+                queryClient.invalidateQueries({
+                    queryKey: jobByNoOptions(res.result.no).queryKey,
+                })
+            }
+            if (res.result?.id) {
+                queryClient.invalidateQueries({
+                    queryKey: ['jobActivityLog', String(res.result.id)],
+                })
+            }
         },
         onError: (err) => onErrorToast(err, 'Reschedule Failed'),
     })
@@ -210,6 +242,7 @@ export const useRescheduleMutation = (
 export const useDeliverJobMutation = (
     onSuccess?: (res: ApiResponse) => void
 ) => {
+    const queryClient = useQueryClient()
     return useMutation({
         mutationKey: ['deliver', 'job'],
         mutationFn: ({
@@ -220,11 +253,8 @@ export const useDeliverJobMutation = (
             data: Omit<TDeliverJobInput, 'jobId'>
         }) => jobApi.deliverJob(jobId, data),
         onSuccess: (res) => {
-            if (onSuccess) {
-                onSuccess(res)
-            } else {
-                addToast({ title: res.message, color: 'success' })
-            }
+            if (onSuccess) onSuccess(res)
+            else addToast({ title: res.message, color: 'success' })
             queryClient.refetchQueries({ queryKey: ['jobs'] })
         },
         onError: (err) => onErrorToast(err, 'Deliver Job Failed'),
@@ -234,8 +264,9 @@ export const useDeliverJobMutation = (
 export const useAdminDeliverJobMutation = (
     onSuccess?: (res: ApiResponse) => void
 ) => {
+    const queryClient = useQueryClient()
     return useMutation({
-        mutationKey: ['deliver', 'job', 'admin-action'],
+        mutationKey: ['deliver', 'job', 'admin'],
         mutationFn: ({
             deliveryId,
             action,
@@ -246,18 +277,38 @@ export const useAdminDeliverJobMutation = (
             feedback?: string
         }) => jobApi.adminDeliverJobAction(deliveryId, action, feedback),
         onSuccess: (res) => {
-            if (onSuccess) {
-                onSuccess(res)
-            } else {
-                addToast({ title: res.message, color: 'success' })
-            }
+            if (onSuccess) onSuccess(res)
+            else addToast({ title: res.message, color: 'success' })
             queryClient.refetchQueries({ queryKey: ['jobs'] })
         },
-        onError: (err) => onErrorToast(err, 'Approve or Reject Job Failed'),
+        onError: (err) => onErrorToast(err, 'Action Failed'),
     })
 }
 
+export const useMarkPaidMutation = (
+    onSuccess?: (res: ApiResponse<{ id: string; no: string }>) => void
+) => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationKey: ['markPaid', 'job'],
+        mutationFn: (jobId: string) => jobApi.markPaid(jobId),
+        onSuccess: (res) => {
+            if (onSuccess) onSuccess(res)
+            else
+                addToast({
+                    title: `Paid job #${res.result?.no}`,
+                    color: 'success',
+                })
+            queryClient.invalidateQueries({ queryKey: ['jobs'] })
+        },
+        onError: (err) => onErrorToast(err, 'Mark as paid failed'),
+    })
+}
+
+// --- UTILS MUTATIONS ---
+
 export const useTogglePinJobMutation = () => {
+    const queryClient = useQueryClient()
     return useMutation({
         mutationKey: ['togglePin', 'job'],
         mutationFn: (jobId: string) => jobApi.togglePin(jobId),
@@ -273,54 +324,59 @@ export const useTogglePinJobMutation = () => {
     })
 }
 
-export const useBulkChangeStatusMutation = () => {
+export const useDeleteJobMutation = () => {
+    const queryClient = useQueryClient()
     return useMutation({
-        mutationKey: ['changeStatus', 'job'],
-        mutationFn: ({ data }: { data: TBulkChangeStatusInput }) =>
-            jobApi.bulkChangeStatus(data),
+        mutationKey: ['deleteJob'],
+        mutationFn: (jobId?: string) => {
+            if (!jobId) throw new Error('JobID is required')
+            return jobApi.remove(jobId)
+        },
         onSuccess: (res) => {
-            queryClient.invalidateQueries({ queryKey: ['jobs'] })
             addToast({
-                title: 'Change statuses successfully',
+                title: 'Deleted successfully',
                 description: res.message,
                 color: 'success',
             })
+            queryClient.invalidateQueries({ queryKey: ['jobs'] })
         },
-        onError: (err) => onErrorToast(err, 'Change statuses failed'),
+        onError: (err) => onErrorToast(err, 'Delete job failed'),
     })
 }
+
+// --- UPDATE & MEMBER MUTATIONS ---
 
 export const useAssignMemberMutation = (
     onSuccess?: (res: ApiResponse<JobUpdateResponse>) => void
 ) => {
+    const queryClient = useQueryClient()
     return useMutation({
         mutationKey: ['updateJob', 'assignMember'],
         mutationFn: ({ jobId, data }: { jobId: string; data: TAssignMember }) =>
             jobApi.assignMember(jobId, data),
         onSuccess: (res) => {
-            queryClient.refetchQueries({
-                queryKey: jobsListOptions({}).queryKey,
-            })
+            // Smart Invalidation
+            queryClient.refetchQueries({ queryKey: jobsListOptions().queryKey })
             queryClient.refetchQueries({
                 queryKey: workbenchDataOptions({}).queryKey,
             })
+
             if (res.result?.no) {
                 queryClient.refetchQueries({
-                    queryKey: jobByNoOptions(res.result?.no).queryKey,
+                    queryKey: jobByNoOptions(res.result.no).queryKey,
                 })
             }
-            queryClient.refetchQueries({
-                queryKey: ['jobActivityLog', String(res.result?.id)],
-            })
-            if (onSuccess) {
-                onSuccess(res)
-            } else {
-                addToast({
-                    title: 'Member assigned',
-                    description: `A member has been assigned to job ${res.result?.no}.`,
-                    color: 'success',
+            if (res.result?.id) {
+                queryClient.refetchQueries({
+                    queryKey: ['jobActivityLog', String(res.result.id)],
+                })
+                queryClient.refetchQueries({
+                    queryKey: jobAssigneesOptions(res.result.id).queryKey,
                 })
             }
+
+            if (onSuccess) onSuccess(res)
+            else addToast({ title: 'Member assigned', color: 'success' })
         },
         onError: (err) => onErrorToast(err, 'Failed to assign member'),
     })
@@ -329,6 +385,7 @@ export const useAssignMemberMutation = (
 export const useUpdateJobGeneralInfoMutation = (
     onSuccess?: (res: ApiResponse<JobUpdateResponse>) => void
 ) => {
+    const queryClient = useQueryClient()
     return useMutation({
         mutationKey: ['updateJob', 'generalInfo'],
         mutationFn: ({
@@ -339,38 +396,32 @@ export const useUpdateJobGeneralInfoMutation = (
             data: Partial<TJobGeneralDetails>
         }) => jobApi.updateGeneralInfo(jobId, data),
         onSuccess: (res) => {
-            queryClient.refetchQueries({
-                queryKey: jobsListOptions({}).queryKey,
-            })
-            queryClient.refetchQueries({
-                queryKey: workbenchDataOptions({}).queryKey,
-            })
+            queryClient.refetchQueries({ queryKey: jobsListOptions().queryKey })
+
             if (res.result?.no) {
                 queryClient.refetchQueries({
-                    queryKey: jobByNoOptions(res.result?.no).queryKey,
+                    queryKey: jobByNoOptions(res.result.no).queryKey,
                 })
             }
-            queryClient.refetchQueries({
-                queryKey: ['jobActivityLog', String(res.result?.id)],
-            })
-            if (onSuccess) {
-                onSuccess(res)
-            } else {
-                addToast({
-                    title: 'Update general info successfully',
-                    color: 'success',
+            if (res.result?.id) {
+                queryClient.refetchQueries({
+                    queryKey: ['jobActivityLog', String(res.result.id)],
                 })
             }
+
+            if (onSuccess) onSuccess(res)
+            else addToast({ title: 'Info updated', color: 'success' })
         },
-        onError: (err) => onErrorToast(err, 'Failed to update'),
+        onError: (err) => onErrorToast(err, 'Update failed'),
     })
 }
 
 export const useUpdateAssignmentCostMutation = (
     onSuccess?: (res: ApiResponse<JobUpdateResponse>) => void
 ) => {
+    const queryClient = useQueryClient()
     return useMutation({
-        mutationKey: ['updateJob', 'assignMember', 'staffCost'],
+        mutationKey: ['updateJob', 'assignmentCost'],
         mutationFn: ({
             jobId,
             memberId,
@@ -381,36 +432,34 @@ export const useUpdateAssignmentCostMutation = (
             staffCost: number
         }) => jobApi.updateAssignmentCost(jobId, memberId, staffCost),
         onSuccess: (res) => {
-            queryClient.refetchQueries({
-                queryKey: jobsListOptions({}).queryKey,
-            })
-            queryClient.refetchQueries({
-                queryKey: workbenchDataOptions({}).queryKey,
-            })
+            queryClient.refetchQueries({ queryKey: jobsListOptions().queryKey })
+
             if (res.result?.no) {
                 queryClient.refetchQueries({
-                    queryKey: jobByNoOptions(res.result?.no).queryKey,
+                    queryKey: jobByNoOptions(res.result.no).queryKey,
                 })
             }
-            queryClient.refetchQueries({
-                queryKey: ['jobActivityLog', String(res.result?.id)],
-            })
-            if (onSuccess) {
-                onSuccess(res)
-            } else {
-                addToast({
-                    title: 'Update member cost successfully',
-                    color: 'success',
+            if (res.result?.id) {
+                queryClient.refetchQueries({
+                    queryKey: ['jobActivityLog', String(res.result.id)],
+                })
+                // Important: refetch assignees so cost updates in UI
+                queryClient.refetchQueries({
+                    queryKey: jobAssigneesOptions(res.result.id).queryKey,
                 })
             }
+
+            if (onSuccess) onSuccess(res)
+            else addToast({ title: 'Cost updated', color: 'success' })
         },
-        onError: (err) => onErrorToast(err, 'Failed to update member cost'),
+        onError: (err) => onErrorToast(err, 'Update cost failed'),
     })
 }
 
 export const useRemoveMemberMutation = (
     onSuccess?: (res: ApiResponse<JobUpdateResponse>) => void
 ) => {
+    const queryClient = useQueryClient()
     return useMutation({
         mutationKey: ['updateJob', 'removeMember'],
         mutationFn: ({
@@ -421,61 +470,68 @@ export const useRemoveMemberMutation = (
             memberId: string
         }) => jobApi.removeMember(jobId, memberId),
         onSuccess: (res) => {
-            queryClient.refetchQueries({
-                queryKey: ['jobs'],
-            })
+            queryClient.refetchQueries({ queryKey: ['jobs'] })
+
             if (res.result?.no) {
                 queryClient.refetchQueries({
-                    queryKey: jobByNoOptions(res.result?.no).queryKey,
+                    queryKey: jobByNoOptions(res.result.no).queryKey,
                 })
             }
-            queryClient.refetchQueries({
-                queryKey: ['jobActivityLog', String(res.result?.id)],
-            })
-            if (onSuccess) {
-                onSuccess(res)
-            } else {
-                addToast({
-                    title: 'Member removed',
-                    description: `A member has been removed from job ${res.result?.no}.`,
-                    color: 'success',
+            if (res.result?.id) {
+                queryClient.refetchQueries({
+                    queryKey: ['jobActivityLog', String(res.result.id)],
+                })
+                queryClient.refetchQueries({
+                    queryKey: jobAssigneesOptions(res.result.id).queryKey,
                 })
             }
+
+            if (onSuccess) onSuccess(res)
+            else addToast({ title: 'Member removed', color: 'success' })
         },
-        onError: (err) => onErrorToast(err, 'Failed to remove member'),
+        onError: (err) => onErrorToast(err, 'Remove member failed'),
     })
 }
 
-type JobUpdateVariables = {
-    jobId: string
-    data: TUpdateJobInput // Your partial update type
-}
 export const useUpdateJobMutation = (
     onSuccess?: (res: ApiResponse<JobUpdateResponse>) => void
 ) => {
+    const queryClient = useQueryClient()
     return useMutation({
         mutationKey: ['updateJob'],
-        mutationFn: ({ jobId, data }: JobUpdateVariables) =>
-            jobApi.update(jobId, data),
+        mutationFn: ({
+            jobId,
+            data,
+        }: {
+            jobId: string
+            data: TUpdateJobInput
+        }) => jobApi.update(jobId, data),
         onSuccess: (res) => {
-            if (onSuccess) {
-                onSuccess(res)
-            } else {
-                addToast({ title: 'Update job successfully', color: 'success' })
+            if (onSuccess) onSuccess(res)
+            else addToast({ title: 'Updated successfully', color: 'success' })
+
+            if (res.result?.no) {
+                queryClient.invalidateQueries({
+                    queryKey: jobByNoOptions(res.result.no).queryKey,
+                })
             }
-            queryClient.invalidateQueries({
-                queryKey: ['jobs', 'no', res.result?.no],
-            })
-            queryClient.invalidateQueries({
-                queryKey: ['jobs', 'id', res.result?.id],
-            })
+            if (res.result?.id) {
+                queryClient.invalidateQueries({
+                    queryKey: jobDetailOptions(res.result.id).queryKey,
+                })
+                queryClient.invalidateQueries({
+                    queryKey: ['jobActivityLog', String(res.result.id)],
+                })
+            }
         },
+        onError: (err) => onErrorToast(err, 'Update failed'),
     })
 }
 
 export const useUpdateJobRevenueMutation = (
     onSuccess?: (res: ApiResponse<JobUpdateResponse>) => void
 ) => {
+    const queryClient = useQueryClient()
     return useMutation({
         mutationKey: ['updateJob', 'revenue'],
         mutationFn: ({
@@ -486,62 +542,48 @@ export const useUpdateJobRevenueMutation = (
             data: TUpdateJobRevenue
         }) => jobApi.updateRevenue(jobId, data),
         onSuccess: (res) => {
-            if (onSuccess) {
-                onSuccess(res)
-            } else {
-                addToast({
-                    title: 'Update job revenue successfully',
-                    color: 'success',
+            if (onSuccess) onSuccess(res)
+            else addToast({ title: 'Revenue updated', color: 'success' })
+
+            if (res.result?.no) {
+                queryClient.invalidateQueries({
+                    queryKey: jobByNoOptions(res.result.no).queryKey,
                 })
             }
-            queryClient.refetchQueries({
-                queryKey: ['jobs', 'no', res.result?.no],
-            })
-            queryClient.refetchQueries({
-                queryKey: ['jobs', 'id', res.result?.id],
-            })
+            if (res.result?.id) {
+                queryClient.invalidateQueries({
+                    queryKey: ['jobActivityLog', String(res.result.id)],
+                })
+            }
         },
+        onError: (err) => onErrorToast(err, 'Revenue update failed'),
     })
 }
 
-export const useDeleteJobMutation = () => {
-    return useMutation({
-        mutationKey: ['deleteJob'],
-        mutationFn: (jobId?: string) => {
-            if (!jobId) throw new Error('JobID is required')
-            return jobApi.remove(jobId)
-        },
-        onSuccess: (res) => {
-            addToast({
-                title: 'Delete job successfully',
-                description: `${res.message}`,
-                color: 'success',
-            })
-        },
-        onError: (err) => onErrorToast(err, 'Delete job failed'),
-    })
-}
-export const useMarkPaidMutation = (
-    onSuccess?: (res: ApiResponse<{ id: string; no: string }>) => void
+export const useUpdateAttachmentsMutation = (
+    jobId: string,
+    onSuccess?: () => void
 ) => {
+    const queryClient = useQueryClient()
     return useMutation({
-        mutationKey: ['mark-paid', 'job'],
-        mutationFn: (jobId: string) => {
-            return jobApi.markPaid(jobId)
-        },
+        mutationKey: ['updateJob', 'attachments', jobId],
+        mutationFn: (data: { action: 'add' | 'remove'; files: string[] }) =>
+            jobApi.updateAttachments(jobId, data),
         onSuccess: (res) => {
-            if (onSuccess) {
-                onSuccess(res)
-            } else {
-                addToast({
-                    title: `Pay for job #${res.result?.no} successfully`,
-                    color: 'success',
+            addToast({ title: 'Files updated', color: 'success' })
+
+            if (res.result?.no) {
+                // Invalidate detailed views
+                queryClient.invalidateQueries({
+                    queryKey: jobByNoOptions(res.result?.no).queryKey,
                 })
             }
             queryClient.invalidateQueries({
-                queryKey: ['jobs'],
+                queryKey: ['jobActivityLog', jobId],
             })
+
+            if (onSuccess) onSuccess()
         },
-        onError: (err) => onErrorToast(err, 'Mark as paid failed'),
+        onError: (err) => onErrorToast(err, 'Failed to update attachments'),
     })
 }

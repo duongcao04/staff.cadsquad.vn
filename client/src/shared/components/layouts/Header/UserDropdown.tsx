@@ -95,28 +95,36 @@ export function UserDropdown() {
                             description={`@${profile?.username}`}
                         />
                     </DropdownItem>
-                    <DropdownItem
-                        key="overview"
-                        startContent={<ChartArea size={16} />}
-                        onClick={() => {
-                            router.navigate({
-                                href: INTERNAL_URLS.userOverview,
-                            })
-                        }}
-                    >
-                        Overview
-                    </DropdownItem>
-                    <DropdownItem
-                        key="taskSummary"
-                        startContent={<ListTodo size={16} />}
-                        onClick={() => {
-                            router.navigate({
-                                href: INTERNAL_URLS.userTaskSummary,
-                            })
-                        }}
-                    >
-                        Task Summary
-                    </DropdownItem>
+
+                    {/* TODO: Implement /overview */}
+                    {false ? (
+                        <DropdownItem
+                            key="overview"
+                            startContent={<ChartArea size={16} />}
+                            onClick={() => {
+                                router.navigate({
+                                    href: INTERNAL_URLS.userOverview,
+                                })
+                            }}
+                        >
+                            Overview
+                        </DropdownItem>
+                    ) : null}
+
+                    {/* TODO: Implement /task-summary */}
+                    {false ? (
+                        <DropdownItem
+                            key="taskSummary"
+                            startContent={<ListTodo size={16} />}
+                            onClick={() => {
+                                router.navigate({
+                                    href: INTERNAL_URLS.userTaskSummary,
+                                })
+                            }}
+                        >
+                            Task Summary
+                        </DropdownItem>
+                    ) : null}
                     <DropdownItem
                         key="settings"
                         startContent={<UserCog size={16} />}

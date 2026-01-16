@@ -45,13 +45,13 @@ import { HeroTable } from '../../../../shared/components/ui/hero-table'
 import { HeroTooltip } from '../../../../shared/components/ui/hero-tooltip'
 
 const columns = [
-    { name: 'JOB INFO', uid: 'info', sortable: true },
-    { name: 'CLIENT', uid: 'clientName', sortable: true },
+    { name: 'JOB INFO', uid: 'info', sortable: false },
+    { name: 'CLIENT', uid: 'clientName', sortable: false },
     { name: 'ASSIGNEES', uid: 'assignee' },
-    { name: 'INCOME', uid: 'income', sortable: true },
-    { name: 'STATUS', uid: 'status', sortable: true },
-    { name: 'PAID STATUS', uid: 'isPaid', sortable: true },
-    { name: 'DUE DATE', uid: 'dueAt', sortable: true },
+    { name: 'INCOME', uid: 'income', sortable: false },
+    { name: 'STATUS', uid: 'status', sortable: false },
+    { name: 'PAID STATUS', uid: 'isPaid', sortable: false },
+    { name: 'DUE DATE', uid: 'dueAt', sortable: false },
     { name: 'ACTIONS', uid: 'actions' },
 ]
 
@@ -300,37 +300,41 @@ export default function AdminManagementJobsTable({
                         variant="bordered"
                     />
                     <div className="flex gap-3">
+                        {/* TODO: Implement Status */}
                         {/* Status Dropdown */}
-                        <Dropdown>
-                            <DropdownTrigger className="hidden sm:flex">
-                                <Button
-                                    endContent={
-                                        <ChevronDown className="text-small" />
-                                    }
-                                    variant="flat"
-                                    size="sm"
-                                >
-                                    Status
-                                </Button>
-                            </DropdownTrigger>
-                            <DropdownMenu
-                                disallowEmptySelection
-                                aria-label="Status Filter"
-                                closeOnSelect={false}
-                                selectedKeys={statusFilter}
-                                selectionMode="multiple"
-                                onSelectionChange={onStatusFilterChange}
-                            >
-                                {jobStatuses.map((status) => (
-                                    <DropdownItem
-                                        key={status.code}
-                                        className="capitalize"
+                        {false && (
+                            <Dropdown>
+                                <DropdownTrigger className="hidden sm:flex">
+                                    <Button
+                                        endContent={
+                                            <ChevronDown className="text-small" />
+                                        }
+                                        variant="flat"
+                                        size="sm"
                                     >
-                                        {status.displayName}
-                                    </DropdownItem>
-                                ))}
-                            </DropdownMenu>
-                        </Dropdown>
+                                        Status
+                                    </Button>
+                                </DropdownTrigger>
+
+                                <DropdownMenu
+                                    disallowEmptySelection
+                                    aria-label="Status Filter"
+                                    closeOnSelect={false}
+                                    selectedKeys={statusFilter}
+                                    selectionMode="multiple"
+                                    onSelectionChange={onStatusFilterChange}
+                                >
+                                    {jobStatuses.map((status) => (
+                                        <DropdownItem
+                                            key={status.code}
+                                            className="capitalize"
+                                        >
+                                            {status.displayName}
+                                        </DropdownItem>
+                                    ))}
+                                </DropdownMenu>
+                            </Dropdown>
+                        )}
 
                         {/* Priority Dropdown */}
                         {/* <Dropdown>

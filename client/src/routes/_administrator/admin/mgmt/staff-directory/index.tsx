@@ -46,7 +46,7 @@ const staffSearchSchema = z.object({
     limit: z.number().catch(8),
     search: z.string().optional(),
     departmentId: z.string().optional(),
-    view: z.enum(VIEW_OPTIONS.map((it) => it.key)).default(VIEW_OPTIONS[0].key),
+    view: z.enum(VIEW_OPTIONS.map((it) => it.key)).default(VIEW_OPTIONS[1].key),
 })
 export type TStaffSearch = z.infer<typeof staffSearchSchema>
 

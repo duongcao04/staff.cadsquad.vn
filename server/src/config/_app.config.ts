@@ -23,7 +23,7 @@ const appSchema = z.object({
 	LOG_PATH: z.string().default('./logs'),
 })
 
-export default registerAs('app', () => {
+export const appConfig = registerAs('app', () => {
 	const parsed = appSchema.safeParse(process.env)
 	if (!parsed.success) {
 		console.error('❌ APP Config Error:', parsed.error.format())

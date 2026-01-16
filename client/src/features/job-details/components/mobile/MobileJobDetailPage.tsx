@@ -4,6 +4,7 @@ import {
     INTERNAL_URLS,
     PAID_STATUS_COLOR,
     useProfile,
+    useUpdateJobGeneralInfoMutation,
     useUpdateJobMutation,
 } from '@/lib'
 import {
@@ -38,18 +39,21 @@ import {
 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { jobActivityLogsOptions, jobByNoOptions } from '../../../../lib/queries'
-import { JobStatusSystemTypeEnum } from '../../../../shared/enums'
 import { JobStatusChip } from '../../../../shared/components/chips/JobStatusChip'
 import JobAttachmentsField from '../../../../shared/components/form-fields/JobAttachmentsField'
+import CountdownTimer from '../../../../shared/components/ui/countdown-timer'
+import {
+    HeroCard,
+    HeroCardBody,
+} from '../../../../shared/components/ui/hero-card'
+import HtmlReactParser from '../../../../shared/components/ui/html-react-parser'
+import { JobStatusSystemTypeEnum } from '../../../../shared/enums'
 import { DeliverJobModal } from '../../../job-manage/components/modals/DeliverJobModal'
 import UpdateCostModal from '../../../project-center/components/modals/UpdateCostModal'
-import CountdownTimer from '../../../../shared/components/ui/countdown-timer'
-import { HeroCard, HeroCardBody } from '../../../../shared/components/ui/hero-card'
-import HtmlReactParser from '../../../../shared/components/ui/html-react-parser'
+import JobDescriptionModal from '../modals/JobDescriptionModal'
 import { JobActivityHistory } from '../views/JobActivityHistory'
 import JobAssigneesView from '../views/JobAssigneesView'
 import JobCommentsView from '../views/JobCommentsView'
-import JobDescriptionModal from '../modals/JobDescriptionModal'
 
 function MobileJobDetailPage() {
     const { no } = Route.useParams()
@@ -61,12 +65,10 @@ function MobileJobDetailPage() {
     const financialModal = useDisclosure()
     const fullEditorDisclosure = useDisclosure()
 
+    const updateJobGeneralInfoMutation = useUpdateJobGeneralInfoMutation()
+
     const { data: job } = useQuery({ ...jobByNoOptions(no), enabled: !!no })
-    const {
-        data: activityLogs,
-        refetch: refetchLogs,
-        isFetching: isLogsLoading,
-    } = useQuery({
+    const { data: activityLogs } = useQuery({
         ...jobActivityLogsOptions(job?.id ?? ''),
         enabled: !!job?.id,
     })
@@ -105,10 +107,21 @@ function MobileJobDetailPage() {
             </div>
         )
 
+    const handleSaveDescription = async (value: string) => {
+        if (job) {
+            await updateJobGeneralInfoMutation.mutateAsync({
+                jobId: job.id,
+                data: {
+                    description: value,
+                },
+            })
+        }
+    }
+
     const isJobActive = ![
         JobStatusSystemTypeEnum.COMPLETED,
         JobStatusSystemTypeEnum.TERMINATED,
-        JobStatusSystemTypeEnum.WAIT_REVIEW,
+        JobStatusSystemTypeEnum.DELIVERED,
     ].includes(job.status.systemType as any)
 
     return (
@@ -132,8 +145,8 @@ function MobileJobDetailPage() {
                 <JobDescriptionModal
                     isOpen={fullEditorDisclosure.isOpen}
                     onClose={fullEditorDisclosure.onClose}
-                    value={descContent}
-                    onChange={setDescContent}
+                    onSave={handleSaveDescription}
+                    defaultValue={descContent}
                     title={`Editor: #${job.no}`}
                 />
             )}

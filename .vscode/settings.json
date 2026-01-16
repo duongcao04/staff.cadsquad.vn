@@ -1,0 +1,8 @@
+{
+	"exportall.config.folderListener": [
+		"/server/src/config"
+	],
+	"exportall.config.relExclusion": [
+		"/server/src/config"
+	]
+}

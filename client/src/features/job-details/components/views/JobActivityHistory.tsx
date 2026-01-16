@@ -36,7 +36,7 @@ import type { TJobActivityLog } from '@/shared/types'
 import { ActivityTypeEnum } from '../../../../shared/enums'
 
 interface JobActivityHistoryProps {
-    logs: TJobActivityLog[]
+    logs?: TJobActivityLog[]
     isLoading?: boolean
 }
 
@@ -44,7 +44,7 @@ export const JobActivityHistory: React.FC<JobActivityHistoryProps> = ({
     logs,
     isLoading = false,
 }) => {
-    if (!isLoading && (!logs || logs.length === 0)) {
+    if (!isLoading && (!logs || logs?.length === 0)) {
         return (
             <div className="flex flex-col items-center justify-center py-16 text-text-subdued">
                 <div className="p-4 rounded-full bg-default-50 mb-4 border border-default-100">
@@ -325,17 +325,54 @@ const renderDiff = (log: TJobActivityLog) => {
                 </div>
             )
         }
-
         case ActivityTypeEnum.UPDATE_ATTACHMENTS:
+            // Check metadata to see if we have specific file info
+            const meta = log.metadata as any
+            const isAdd = meta?.action === 'add'
+
             return (
-                <div className="flex items-center gap-2">
-                    <Paperclip size={14} className="text-text-subdued" />
-                    <span className="text-default-600">
-                        Attachments updated:
-                    </span>
-                    <span className="font-medium text-default-900">
-                        {log.currentValue}
-                    </span>
+                <div className="flex flex-col gap-1.5 mt-1">
+                    {/* Header Line */}
+                    <div className="flex items-center gap-2">
+                        <span className="text-default-500">
+                            {isAdd ? 'Uploaded files:' : 'Removed files:'}
+                        </span>
+                        <Chip
+                            size="sm"
+                            color={isAdd ? 'primary' : 'danger'}
+                            variant="flat"
+                            startContent={
+                                isAdd ? (
+                                    <PlusCircle size={12} />
+                                ) : (
+                                    <Trash2 size={12} />
+                                )
+                            }
+                            className="font-bold h-6"
+                        >
+                            {meta?.changedFiles?.length || 0} Files
+                        </Chip>
+                    </div>
+
+                    {/* Optional: List filenames if available in metadata */}
+                    {meta?.changedFiles && Array.isArray(meta.changedFiles) && (
+                        <div className="flex flex-col gap-1 pl-2 border-l-2 border-default-100">
+                            {meta.changedFiles.map(
+                                (url: string, idx: number) => (
+                                    <a
+                                        key={idx}
+                                        href={url}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="text-xs text-blue-600 hover:underline truncate w-full max-w-[200px]"
+                                    >
+                                        {/* Simple logic to get filename from URL */}
+                                        {url.split('/').pop() || 'Unknown File'}
+                                    </a>
+                                )
+                            )}
+                        </div>
+                    )}
                 </div>
             )
 

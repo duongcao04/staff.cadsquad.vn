@@ -2,6 +2,10 @@
 FROM oven/bun:1-slim AS base
 WORKDIR /app
 
+# Khai báo các ARG
+ARG DATABASE_URL
+ENV DATABASE_URL="${DATABASE_URL}"
+
 # Cài đặt thư viện hệ thống cần thiết (Dùng cho Prisma và kết nối Postgres)
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -47,7 +51,7 @@ COPY --from=builder /app/prisma ./prisma
 # 5. Database (nếu dùng sqlite hoặc file seed)
 COPY --from=builder /app/database ./database
 # 7. Mail templates
-COPY --from=builder /app/src/templates /app/src/templates
+COPY --from=builder /app/src/providers/mail/templates /app/src/templates
 
 # # Copy và xử lý Entrypoint script
 # COPY --chown=nodejs:nodejs ./entrypoint.sh ./

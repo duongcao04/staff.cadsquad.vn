@@ -264,7 +264,7 @@ export type JobPriority = (typeof JobPriority)[keyof typeof JobPriority]
 
 export const JobStatusSystemType: {
   STANDARD: 'STANDARD',
-  WAIT_REVIEW: 'WAIT_REVIEW',
+  DELIVERED: 'DELIVERED',
   COMPLETED: 'COMPLETED',
   TERMINATED: 'TERMINATED'
 };

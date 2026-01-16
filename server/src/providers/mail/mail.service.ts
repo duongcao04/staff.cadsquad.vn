@@ -1,167 +1,103 @@
-import { appConfig } from '@/config'
+import { InjectQueue } from '@nestjs/bullmq'
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
+import { Queue } from 'bullmq'
 import { User } from '@/generated/prisma'
-import { ISendMailOptions, MailerService } from '@nestjs-modules/mailer'
-import { Inject, Injectable, Logger } from '@nestjs/common'
-import type { ConfigType } from '@nestjs/config'
+import { SendEmailOptions } from './interfaces/mail.interface'
+import {
+	MAIL_QUEUE,
+	JOB_SEND_EMAIL,
+	JOB_SEND_INVITATION_EMAIL,
+	JOB_SEND_JOB_ASSIGNMENT,
+	JOB_SEND_ACCOUNT_STATUS,
+	JOB_SEND_RESET_PASSWORD,
+} from './mail.constants'
 
 @Injectable()
-export class MailService {
+export class MailService implements OnModuleInit {
 	private readonly logger = new Logger(MailService.name)
-	constructor(
-		private mailerService: MailerService,
-		// Inject Config để lấy Folder Root
-		@Inject(appConfig.KEY)
-		private readonly config: ConfigType<typeof appConfig>
-	) {}
 
+	constructor(@InjectQueue(MAIL_QUEUE) private readonly mailQueue: Queue) {}
+
+	// 2. Tự động Resume khi module khởi chạy
+	async onModuleInit() {
+		const isPaused = await this.mailQueue.isPaused()
+		if (isPaused) {
+			await this.mailQueue.resume()
+			console.log('▶️ MailQueue was paused. Resumed automatically!')
+		}
+	}
 	/**
-	 * Thông báo cho nhân sự khi được giao Job mới
+	 * 1. Thông báo giao việc -> Đẩy vào Queue
 	 */
 	async sendJobAssignmentNotification(
 		user: User,
 		jobNo: string,
 		jobTitle: string
 	) {
-		try {
-			await this.mailerService.sendMail({
-				to: user.email,
-				subject: `[CAD SQUAD] Bạn có nhiệm vụ mới: ${jobNo}`,
-				template: './job-assignment', // tên file job-assignment.hbs
-				context: {
-					name: user.displayName,
-					jobNo,
-					jobTitle,
-					url: `${this.config.CLIENT_URL}/jobs/${jobNo}`,
-				},
-			})
-			this.logger.log(`Send job assignment to: ${user.email}`)
-		} catch (error) {
-			this.logger.error(
-				`Failed to send email to ${user.email}: ${error.message}`
-			)
-		}
+		await this.mailQueue.add(JOB_SEND_JOB_ASSIGNMENT, {
+			email: user.email,
+			displayName: user.displayName,
+			jobNo,
+			jobTitle,
+		})
+		this.logger.log(`📥 Queued job assignment for: ${user.email}`)
 	}
 
+	/**
+	 * 2. Thông báo trạng thái tài khoản -> Đẩy vào Queue
+	 */
 	async sendAccountStatusUpdate(
 		user: Pick<User, 'email' | 'displayName' | 'isActive'>
 	) {
-		try {
-			await this.mailerService.sendMail({
-				to: user.email,
-				subject: `[CAD SQUAD] Cập nhật trạng thái tài khoản: ${user.isActive ? 'Kích hoạt' : 'Vô hiệu hóa'}`,
-				template: './account-status',
-				context: {
-					name: user.displayName,
-					status: user.isActive ? 'Active' : 'Inactive', // Key để matching với logic trong .hbs
-				},
-			})
-			this.logger.log(`Send active account email to: ${user.email}`)
-		} catch (error) {
-			this.logger.error(
-				`Failed to send email to ${user.email}: ${error.message}`
-			)
-		}
+		await this.mailQueue.add(JOB_SEND_ACCOUNT_STATUS, {
+			email: user.email,
+			displayName: user.displayName,
+			isActive: user.isActive,
+		})
+		this.logger.log(`📥 Queued account status for: ${user.email}`)
 	}
 
+	/**
+	 * 3. Reset Password -> Đẩy vào Queue
+	 */
 	async sendResetPasswordEmail(
 		email: string,
 		token: string,
-		user: { displayName: string }
+		displayName: string
 	) {
-		try {
-			await this.mailerService.sendMail({
-				to: email,
-				subject: `[CAD SQUAD] Reset your password`,
-				template: './reset-password-email',
-				context: {
-					name: user.displayName || 'User',
-					link: `${this.config.CLIENT_URL}/auth/reset-password?token=${token}`,
-				},
-			})
-			this.logger.log(`Send email request password to: ${email}`)
-		} catch (error) {
-			this.logger.error(
-				`Failed to send email request password to ${email}: ${error.message}`
-			)
-		}
+		await this.mailQueue.add(JOB_SEND_RESET_PASSWORD, {
+			email,
+			token,
+			displayName,
+		})
+		this.logger.log(`📥 Queued reset password for: ${email}`)
 	}
 
+	/**
+	 * 4. User Invitation -> Đẩy vào Queue
+	 */
 	async sendUserInvitation(
 		email: string,
 		displayName: string,
 		password: string
 	) {
-		const loginUrl = `${this.config.CLIENT_URL}/login`
-
-		try {
-			await this.mailerService.sendMail({
-				to: email,
-				subject: '🚀 Welcome to CAD SQUAD - Your Account is Ready',
-				template: './user-invitation',
-				context: {
-					displayName,
-					email,
-					password,
-					loginUrl,
-				},
-			})
-			this.logger.log(`Invitation email sent to: ${email}`)
-		} catch (error) {
-			this.logger.error(
-				`Failed to send email to ${email}: ${error.message}`
-			)
-		}
+		await this.mailQueue.add(JOB_SEND_INVITATION_EMAIL, {
+			email,
+			displayName,
+			password,
+		})
+		return true
 	}
 
 	/**
-	 * Generic method to send emails with CC, BCC, and Attachments
+	 * 5. Generic Send Email -> Đẩy vào Queue
 	 */
-	async sendEmail(options: {
-		to: string | string[]
-		subject: string
-		content: string
-		fromName?: string // e.g., "John from CAD SQUAD"
-		fromEmail?: string // e.g, "support@cadsquad.vn"
-		cc?: string | string[]
-		bcc?: string | string[]
-		attachments?: Array<{
-			filename: string
-			path?: string
-			content?: any
-			contentType?: string
-		}>
-	}) {
-		const {
-			to,
-			subject,
-			content,
-			fromName,
-			fromEmail,
-			cc,
-			bcc,
-			attachments,
-		} = options
-		try {
-			const mailOptions: ISendMailOptions = {
-				to,
-				cc,
-				bcc,
-				subject,
-				html: content,
-				attachments, // Array of { filename, path/content }
-			}
-
-			await this.mailerService.sendMail(mailOptions)
-
-			this.logger.log(
-				`Email successfully sent to: ${Array.isArray(to) ? to.join(', ') : to}`
-			)
-		} catch (error) {
-			this.logger.error(
-				`Failed to send email to ${to}: ${error.message}`,
-				error.stack
-			)
-			throw error // Re-throw if you want the calling service to handle the error
-		}
+	async sendEmail(options: SendEmailOptions): Promise<boolean> {
+		await this.mailQueue.add(JOB_SEND_EMAIL, options, {
+			attempts: 3,
+			backoff: { type: 'exponential', delay: 2000 },
+			removeOnComplete: true,
+		})
+		return true
 	}
 }

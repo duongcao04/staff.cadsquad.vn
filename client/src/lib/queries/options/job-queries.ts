@@ -63,7 +63,9 @@ export const mapJobActivityLog = (
     item?: IJobActivityLogResponse
 ): TJobActivityLog => ({
     id: item?.id ?? 'N/A',
-    activityType: item?.activityType ?? ActivityTypeEnum.UpdateInformation,
+    activityType: item?.activityType || ActivityTypeEnum.PRIVATE,
+    metadata: item?.metadata,
+    requiredPermissionCode: item?.requiredPermissionCode || null,
     previousValue: item?.previousValue ?? null,
     currentValue: item?.currentValue ?? null,
     fieldName: item?.fieldName ?? 'Unknown field',
@@ -254,6 +256,6 @@ export const jobActivityLogsOptions = (jobId: string) =>
         queryFn: () => jobApi.getJobActivityLog(jobId),
         select: (res) => {
             const logs = res?.result
-            return lodash.isEmpty(logs) ? [] : logs
+            return lodash.isEmpty(logs) ? [] : logs?.map(mapJobActivityLog)
         },
     })

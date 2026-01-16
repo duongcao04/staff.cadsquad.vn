@@ -11,12 +11,12 @@ const dbSchema = z.object({
 	POSTGRES_HOST: z.string().min(1),
 
 	// Redis
-	REDIS_HOST: z.string().default('localhost'),
+	REDIS_HOST: z.string().default('redis'),
 	REDIS_PORT: z.coerce.number().default(6379),
-	REDIS_PASSWORD: z.string().optional(),
+	REDIS_PASSWORD: z.string().min(1),
 })
 
-export default registerAs('database', () => {
+export const databaseConfig = registerAs('database', () => {
 	const parsed = dbSchema.safeParse(process.env)
 	if (!parsed.success) {
 		console.error('❌ Database/Redis Config Error:', parsed.error.format())

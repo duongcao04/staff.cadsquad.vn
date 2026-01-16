@@ -30,9 +30,9 @@ export const BetterAuthProvider: Provider = {
 			},
 			socialProviders: {
 				microsoft: {
-					clientId: azConfig.microsoft.clientId,
-					clientSecret: azConfig.microsoft.clientSecret,
-					tenantId: azConfig.microsoft.tenantId,
+					clientId: azConfig.azure.clientId,
+					clientSecret: azConfig.azure.clientSecret,
+					tenantId: azConfig.azure.tenantId,
 				},
 			},
 			user: {

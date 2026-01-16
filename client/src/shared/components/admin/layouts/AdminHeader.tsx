@@ -5,14 +5,13 @@ import { Layout } from 'antd'
 import hotkeys from 'hotkeys-js'
 import { CircleHelpIcon, Search } from 'lucide-react'
 import { useEffect } from 'react'
-
-import { useProfile } from '../../../../lib'
-import { CHANNELS } from '../../../../lib/ably'
+import NotificationDropdown from '@/features/notifications/components/views/NotificationDropdown'
+import { useProfile } from '@/lib'
+import { CHANNELS } from '@/lib/ably'
 import CadsquadLogo from '../../CadsquadLogo'
-import NotificationDropdown from '../../../../features/notifications/components/views/NotificationDropdown'
-import { SearchModal } from '../../layouts/Header/SearchModal'
 import { SettingsDropdown } from '../../layouts/Header/SettingsDropdown'
 import { UserDropdown } from '../../layouts/Header/UserDropdown'
+import { SearchModal } from '../../search/search-modal'
 import { HeroButton } from '../../ui/hero-button'
 
 const { Header: AntHeader } = Layout

@@ -1,13 +1,21 @@
 import { azureConfig } from '@/config'
 import { ConfidentialClientApplication } from '@azure/msal-node'
 import { Client } from '@microsoft/microsoft-graph-client'
+import { InjectFlowProducer, InjectQueue } from '@nestjs/bullmq'
 import { BadRequestException, Inject, Injectable, Logger } from '@nestjs/common'
 import type { ConfigType } from '@nestjs/config'
 import 'isomorphic-fetch'
+import {
+	JOB_CREATE_FOLDER,
+	SHAREPOINT_FLOW,
+	SHAREPOINT_QUEUE,
+} from './sharepoint.constants'
+import { FlowProducer, Queue } from 'bullmq'
 
 @Injectable()
 export class SharePointService {
 	private readonly logger = new Logger(SharePointService.name)
+
 	private msalClient: ConfidentialClientApplication
 	private siteId: string
 	private driveId: string
@@ -17,8 +25,13 @@ export class SharePointService {
 	private driveEndpoint = '/sites/root/drive'
 
 	constructor(
+		// Inject FlowProducer
+		@InjectFlowProducer(SHAREPOINT_FLOW)
+		private readonly flowProducer: FlowProducer,
+		// Inject Configuration
 		@Inject(azureConfig.KEY)
-		private readonly config: ConfigType<typeof azureConfig>
+		private readonly config: ConfigType<typeof azureConfig>,
+		@InjectQueue(SHAREPOINT_QUEUE) private readonly spQueue: Queue
 	) {
 		this.msalClient = new ConfidentialClientApplication({
 			auth: {
@@ -154,31 +167,35 @@ export class SharePointService {
 	// 3. CREATE FOLDER
 	// ==========================================
 
-	async createFolder(parentId: string, folderName: string) {
-		const client = await this.getGraphClient()
+	async queueCreateFolder(parentId: string, folderName: string) {
+		await this.spQueue.add(JOB_CREATE_FOLDER, {
+			parentId,
+			folderName,
+			driveId: this.driveId,
+		})
+		this.logger.log(`Queued create folder: ${folderName}`)
+	}
 
-		// Thay vì dùng this.driveEndpoint (thường trỏ vào default drive),
-		// ta dùng endpoint trỏ thẳng vào Drive ID cụ thể mà ta đã tìm được.
-		// Điều này đảm bảo parentId (Item ID) luôn hợp lệ trong ngữ cảnh Drive này.
-		const driveBaseUrl = `/drives/${this.driveId}`
+	/**
+	 * Tạo Folder cha và tự động tạo các folder con bên trong
+	 * @param parentName Tên folder cha (VD: "Project-A")
+	 * @param childrenNames Danh sách folder con (VD: ["Design", "Source", "Docs"])
+	 */
+	async queuCreateFolderWithChildren(
+		rootParentId: string,
+		parentName: string,
+		childrenNames: string[]
+	) {
+		await this.spQueue.add(JOB_CREATE_FOLDER, {
+			parentId: rootParentId,
+			folderName: parentName,
+			driveId: this.driveId,
+			childrenToSpawn: childrenNames,
+		})
 
-		const endpoint =
-			parentId === 'root'
-				? `${driveBaseUrl}/root/children`
-				: `${driveBaseUrl}/items/${parentId}/children`
-
-		const driveItem = {
-			name: folderName,
-			folder: {}, // Đánh dấu đây là folder
-			'@microsoft.graph.conflictBehavior': 'rename', // Nếu trùng tên thì tự thêm số (1), (2)...
-		}
-
-		try {
-			return await client.api(endpoint).post(driveItem)
-		} catch (error) {
-			this.logger.error(`Create folder failed: ${error.message}`)
-			throw error
-		}
+		this.logger.log(
+			`Queued parent: ${parentName} with ${childrenNames.length} children`
+		)
 	}
 
 	// ==========================================

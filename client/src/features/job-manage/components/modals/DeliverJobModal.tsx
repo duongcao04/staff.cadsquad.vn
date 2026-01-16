@@ -202,44 +202,47 @@ export const DeliverJobContent = ({
                             onChange={formik.handleChange}
                         />
 
-                        <div className="space-y-2">
-                            <div className="flex items-center justify-between">
-                                <span className="text-sm font-medium">
-                                    Attachments
-                                </span>
-                                <label className="cursor-pointer text-xs text-primary font-bold hover:opacity-70 flex items-center gap-1">
-                                    <Paperclip size={14} /> Add Files
-                                    <input
-                                        type="file"
-                                        multiple
-                                        className="hidden"
-                                        onChange={handleFileChange}
-                                    />
-                                </label>
+                        {/* TODO: Implement Files upload */}
+                        {false && (
+                            <div className="space-y-2">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-sm font-medium">
+                                        Attachments
+                                    </span>
+                                    <label className="cursor-pointer text-xs text-primary font-bold hover:opacity-70 flex items-center gap-1">
+                                        <Paperclip size={14} /> Add Files
+                                        <input
+                                            type="file"
+                                            multiple
+                                            className="hidden"
+                                            onChange={handleFileChange}
+                                        />
+                                    </label>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    {formik.values.files?.map((_, index) => (
+                                        <Chip
+                                            key={index}
+                                            variant="flat"
+                                            color="primary"
+                                            size="sm"
+                                            onClose={() => {
+                                                const newFiles = [
+                                                    ...formik.values.files!,
+                                                ]
+                                                newFiles.splice(index, 1)
+                                                formik.setFieldValue(
+                                                    'files',
+                                                    newFiles
+                                                )
+                                            }}
+                                        >
+                                            File {index + 1}
+                                        </Chip>
+                                    ))}
+                                </div>
                             </div>
-                            <div className="flex flex-wrap gap-2">
-                                {formik.values.files?.map((_, index) => (
-                                    <Chip
-                                        key={index}
-                                        variant="flat"
-                                        color="primary"
-                                        size="sm"
-                                        onClose={() => {
-                                            const newFiles = [
-                                                ...formik.values.files!,
-                                            ]
-                                            newFiles.splice(index, 1)
-                                            formik.setFieldValue(
-                                                'files',
-                                                newFiles
-                                            )
-                                        }}
-                                    >
-                                        File {index + 1}
-                                    </Chip>
-                                ))}
-                            </div>
-                        </div>
+                        )}
 
                         <div className="bg-default-50 p-3 rounded-xl border border-default-200 flex gap-3">
                             <CheckCircle2
