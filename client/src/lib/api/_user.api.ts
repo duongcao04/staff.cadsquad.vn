@@ -8,7 +8,6 @@ import type {
 } from '@/lib/validationSchemas'
 import type { IJobResponse, IUserResponse } from '@/shared/interfaces'
 import { TRole, TUserSecurityLog } from '@/shared/types'
-import lodash from 'lodash'
 import queryString from 'query-string'
 
 export interface IProfileOverview {
@@ -29,23 +28,9 @@ export const userApi = {
         sendInviteEmail: boolean
     ) => {
         return axiosClient
-            .post<ApiResponse<IUserResponse>>(
-                `/v1/users?sendInviteEmail=${sendInviteEmail ? '1' : '0'}`,
-                {
-                    displayName: data.displayName,
-                    email: data.email,
-                    roleId: !lodash.isEmpty(data.roleId)
-                        ? data.roleId
-                        : undefined,
-                    password: data.password,
-                    jobTitleId: !lodash.isEmpty(data.jobTitleId)
-                        ? data.jobTitleId
-                        : undefined,
-                    departmentId: !lodash.isEmpty(data.departmentId)
-                        ? data.departmentId
-                        : undefined,
-                }
-            )
+            .post<
+                ApiResponse<IUserResponse>
+            >(`/v1/users?sendInviteEmail=${sendInviteEmail ? '1' : '0'}`, data)
             .then((res) => res.data)
     },
     search: async (keywords: string) => {

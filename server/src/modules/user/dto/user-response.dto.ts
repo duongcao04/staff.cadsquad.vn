@@ -1,8 +1,8 @@
+import { JobTitleResponseDto } from '@//modules/job-title/dto/job-title-response.dto'
+import { RoleResponseDto } from '@//modules/role-permissions/dtos/role-response.dto'
+import { DepartmentResponseDto } from '@/modules/department/dto/department-response.dto'
 import { ApiProperty } from '@nestjs/swagger'
 import { Exclude, Expose } from 'class-transformer'
-import { DepartmentResponseDto } from '../../department/dto/department-response.dto'
-import { JobTitleResponseDto } from '../../job-title/dto/job-title-response.dto'
-import { RoleResponseDto } from '../../role-permissions/dtos/role-response.dto'
 import { SecurityLogResponseDto } from './security-log/security-log-response.dto'
 
 export class UserResponseDto {
@@ -16,9 +16,13 @@ export class UserResponseDto {
 	@Exclude()
 	password: string
 
-	@ApiProperty({ description: 'User email', example: 'user@example.com' })
+	@ApiProperty({ description: 'User email', example: 'user@cadsquad.vn' })
 	@Expose()
 	email: string
+
+	@ApiProperty({ description: 'Personal email', example: 'user@example.com' })
+	@Expose()
+	personalEmail?: string
 
 	@ApiProperty({ description: 'Username', example: 'john.doe' })
 	@Expose()

@@ -114,7 +114,8 @@ export class UserService {
 				await this.mailService.sendUserInvitation(
 					dto.email,
 					dto.displayName,
-					dto.password
+					dto.password,
+					dto.personalEmail
 				)
 			}
 		} catch (error) {

@@ -37,6 +37,7 @@ import {
     ClipboardCheckIcon,
     KeyRoundIcon,
     MailIcon,
+    MailsIcon,
     RefreshCwIcon,
     ShieldCheckIcon,
     UserIcon,
@@ -69,6 +70,7 @@ const stepOneSchema = z.object({
                     'Only @cadsquad.vn emails are allowed for internal staff',
             }
         ),
+    personalEmail: z.string().email('Personal email is invalid').optional(),
     roleId: z.string().optional(),
 })
 const stepTwoSchema = z.object({
@@ -93,6 +95,7 @@ type UserCreatedValues = {
     password: string
     role?: TRole
     email: string
+    personalEmail?: string
 }
 export default function CreateUserModal({
     isOpen,
@@ -108,8 +111,6 @@ export default function CreateUserModal({
         null
     )
     const onConfirm = async (values: TCreateUserInput) => {
-        console.log(values)
-
         await createUserMutation.mutateAsync(values, {
             onSuccess(res) {
                 setIsSuccess(true)
@@ -118,6 +119,7 @@ export default function CreateUserModal({
                     password: values.password ?? 'Secret value',
                     email: values.email,
                     role: res.role,
+                    personalEmail: values.personalEmail,
                 })
             },
         })
@@ -156,6 +158,7 @@ export default function CreateUserModal({
                                     role: userCreated?.role ?? undefined,
                                     password:
                                         userCreated?.password ?? 'Secret value',
+                                    personalEmail: userCreated?.personalEmail,
                                 }}
                                 onClose={() => {
                                     setIsSuccess(false)
@@ -202,6 +205,7 @@ const CreateUserFormContent = ({
         initialValues: {
             displayName: '',
             email: '',
+            personalEmail: '',
             roleId: '',
             departmentId: '',
             jobTitleId: '',
@@ -263,13 +267,13 @@ const CreateUserFormContent = ({
                 <ScrollArea className="size-full h-[60vh]">
                     <ScrollBar orientation="horizontal" />
                     <ScrollBar orientation="vertical" />
-                    <div className='px-4 pt-6 pb-14'>
+                    <div className="px-4 pt-6 pb-14">
                         {step === 1 ? (
                             <div className="animate-in fade-in slide-in-from-right-4 duration-300">
                                 <p className="text-xs font-semibold text-text-subdued tracking-wider py-4">
                                     Step 1: Identity
                                 </p>
-                                <div className="space-y-4">
+                                <div className="space-y-6">
                                     <FastField name="displayName">
                                         {({ field, meta }: any) => (
                                             <HeroInput
@@ -292,7 +296,7 @@ const CreateUserFormContent = ({
                                             />
                                         )}
                                     </FastField>
-    
+
                                     <FastField name="email">
                                         {({ field, meta }: any) => (
                                             <HeroInput
@@ -320,7 +324,29 @@ const CreateUserFormContent = ({
                                             />
                                         )}
                                     </FastField>
-    
+
+                                    <FastField name="personalEmail">
+                                        {({ field, meta }: any) => (
+                                            <HeroInput
+                                                {...field}
+                                                label="Personal email (Optional)"
+                                                placeholder="personal@example.com"
+                                                variant="bordered"
+                                                labelPlacement="outside-top"
+                                                startContent={
+                                                    <MailsIcon
+                                                        size={18}
+                                                        className="text-text-subdued"
+                                                    />
+                                                }
+                                                isInvalid={
+                                                    meta.touched && !!meta.error
+                                                }
+                                                errorMessage={meta.error}
+                                            />
+                                        )}
+                                    </FastField>
+
                                     <FastField name="roleId">
                                         {({ field }: any) => (
                                             <HeroSelect
@@ -339,7 +365,9 @@ const CreateUserFormContent = ({
                                                 {roles.map((r) => (
                                                     <HeroSelectItem
                                                         key={r.id}
-                                                        textValue={r.displayName}
+                                                        textValue={
+                                                            r.displayName
+                                                        }
                                                     >
                                                         {r.displayName}
                                                     </HeroSelectItem>
@@ -362,7 +390,9 @@ const CreateUserFormContent = ({
                                                 placeholder="Select staff department"
                                                 labelPlacement="outside-top"
                                                 selectedKeys={
-                                                    field.value ? [field.value] : []
+                                                    field.value
+                                                        ? [field.value]
+                                                        : []
                                                 }
                                                 startContent={
                                                     <BuildingIcon
@@ -382,7 +412,9 @@ const CreateUserFormContent = ({
                                             >
                                                 {departments.map(
                                                     (d: TDepartment) => (
-                                                        <HeroSelectItem key={d.id}>
+                                                        <HeroSelectItem
+                                                            key={d.id}
+                                                        >
                                                             {d.displayName}
                                                         </HeroSelectItem>
                                                     )
@@ -390,7 +422,7 @@ const CreateUserFormContent = ({
                                             </HeroSelect>
                                         )}
                                     </FastField>
-    
+
                                     <FastField name="jobTitleId">
                                         {({ field, meta }: any) => (
                                             <HeroSelect
@@ -398,7 +430,9 @@ const CreateUserFormContent = ({
                                                 labelPlacement="outside-top"
                                                 placeholder="Select staff job title"
                                                 selectedKeys={
-                                                    field.value ? [field.value] : []
+                                                    field.value
+                                                        ? [field.value]
+                                                        : []
                                                 }
                                                 startContent={
                                                     <BriefcaseIcon
@@ -416,16 +450,20 @@ const CreateUserFormContent = ({
                                                     meta.touched && !!meta.error
                                                 }
                                             >
-                                                {jobTitles.map((j: TJobTitle) => (
-                                                    <HeroSelectItem key={j.id}>
-                                                        {j.displayName}
-                                                    </HeroSelectItem>
-                                                ))}
+                                                {jobTitles.map(
+                                                    (j: TJobTitle) => (
+                                                        <HeroSelectItem
+                                                            key={j.id}
+                                                        >
+                                                            {j.displayName}
+                                                        </HeroSelectItem>
+                                                    )
+                                                )}
                                             </HeroSelect>
                                         )}
                                     </FastField>
                                 </div>
-    
+
                                 <div className="mt-6 space-y-3">
                                     <div className="flex items-center justify-between">
                                         <span className="text-xs font-bold">
@@ -435,7 +473,9 @@ const CreateUserFormContent = ({
                                             size="sm"
                                             variant="bordered"
                                             selectedKey={
-                                                isManualPassword ? 'manual' : 'auto'
+                                                isManualPassword
+                                                    ? 'manual'
+                                                    : 'auto'
                                             }
                                             onSelectionChange={onTabChange}
                                         >
@@ -451,7 +491,7 @@ const CreateUserFormContent = ({
                                             />
                                         </Tabs>
                                     </div>
-    
+
                                     <div className="p-4 rounded-2xl bg-background-muted border border-border-default">
                                         {isManualPassword ? (
                                             <FastField name="password">
@@ -465,7 +505,9 @@ const CreateUserFormContent = ({
                                                             meta.touched &&
                                                             !!meta.error
                                                         }
-                                                        errorMessage={meta.error}
+                                                        errorMessage={
+                                                            meta.error
+                                                        }
                                                         startContent={
                                                             <KeyRoundIcon
                                                                 size={16}
@@ -526,7 +568,7 @@ const CreateUserFormContent = ({
                                                 />
                                             </div>
                                         )}
-    
+
                                         <FastField name="sendInviteEmail">
                                             {({ field }: any) => (
                                                 <Checkbox
@@ -654,6 +696,25 @@ export const CreateUserSuccess = ({
                         </p>
                     </div>
                 </div>
+
+                {data.personalEmail && (
+                    <div className="flex items-center gap-3">
+                        <div className="size-8 rounded-lg bg-white flex items-center justify-center border border-divider shadow-sm">
+                            <MailsIcon
+                                size={16}
+                                className="text-text-subdued"
+                            />
+                        </div>
+                        <div className="flex-1">
+                            <p className="text-[10px] uppercase font-black text-text-subdued tracking-tight">
+                                Personal Email
+                            </p>
+                            <p className="text-sm font-bold truncate">
+                                {data.personalEmail}
+                            </p>
+                        </div>
+                    </div>
+                )}
 
                 <div className="flex items-center gap-3">
                     <div className="size-8 rounded-lg bg-white flex items-center justify-center border border-divider shadow-sm">

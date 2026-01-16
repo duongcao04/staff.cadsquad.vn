@@ -1,4 +1,4 @@
-import { prismaConfig } from '@/config'
+import { appConfig, databaseConfig } from '@/config'
 import { PrismaClient } from '@/generated/prisma'
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common'
 import type { ConfigType } from '@nestjs/config'
@@ -8,13 +8,15 @@ import { Pool } from 'pg'
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
 	constructor(
-		@Inject(prismaConfig.KEY)
-		private config: ConfigType<typeof prismaConfig>
+		@Inject(databaseConfig.KEY)
+		private dbConfig: ConfigType<typeof databaseConfig>,
+		@Inject(appConfig.KEY)
+		private config: ConfigType<typeof appConfig>
 	) {
 		// 1. Tạo Connection Pool từ thư viện pg
 		const pool = new Pool({
-			connectionString: config.databaseUrl,
-			ssl: config.nodeEnv === 'production' ? true : false,
+			connectionString: dbConfig.postgres.url,
+			ssl: config.NODE_ENV === 'production' ? true : false,
 		})
 
 		// 2. Tạo Adapter
