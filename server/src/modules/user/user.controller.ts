@@ -1,3 +1,10 @@
+import { BypassTransform } from '@/common/decorators/bypass.decorator'
+import { RequirePermissions } from '@/common/decorators/require-permissions.decorator'
+import { ResponseMessage } from '@/common/decorators/responseMessage.decorator'
+import { PermissionsGuard } from '@/common/guards/permissions.guard'
+import { TokenPayload } from '@/modules/auth/dto/token-payload.dto'
+import { JwtGuard } from '@/modules/auth/jwt.guard'
+import { APP_PERMISSIONS } from '@/utils/_app-permissions'
 import {
 	Body,
 	Controller,
@@ -19,13 +26,6 @@ import {
 	ApiTags,
 } from '@nestjs/swagger'
 import { isUUID } from 'class-validator'
-import { BypassTransform } from '../../common/decorators/bypass.decorator'
-import { RequirePermissions } from '../../common/decorators/require-permissions.decorator'
-import { ResponseMessage } from '../../common/decorators/responseMessage.decorator'
-import { PermissionsGuard } from '../../common/guards/permissions.guard'
-import { APP_PERMISSIONS } from '../../utils/_app-permissions'
-import { TokenPayload } from '../auth/dto/token-payload.dto'
-import { JwtGuard } from '../auth/jwt.guard'
 import { AssignUserPermissionDto } from './dto/assign-user-permission.dto'
 import { CreateUserDto } from './dto/create-user.dto'
 import { ProtectUserResponseDto } from './dto/protect-user-response.dto'

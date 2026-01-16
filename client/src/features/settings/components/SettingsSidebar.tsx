@@ -1,15 +1,6 @@
 import { cn, Listbox, ListboxItem, ListboxSection } from '@heroui/react'
 import { useRouter, useRouterState } from '@tanstack/react-router'
-import {
-    Bell,
-    Globe,
-    HelpCircle,
-    Lock,
-    LogOut,
-    Palette,
-    User
-} from 'lucide-react'
-
+import { HelpCircle, Lock, LogOut, Palette, User } from 'lucide-react'
 import { envConfig, INTERNAL_URLS } from '@/lib'
 
 // Define the structure of the settings menu

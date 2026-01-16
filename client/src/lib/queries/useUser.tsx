@@ -16,6 +16,7 @@ import {
     profileOptions,
     usersListOptions,
 } from './options/user-queries'
+import { deepClean } from '../lodash'
 
 export const useUsers = () => {
     // Gọi Options
@@ -192,15 +193,17 @@ export const useResetPasswordMutation = () => {
 export const useCreateUserMutation = (onSuccess?: (res: TUser) => void) => {
     return useMutation({
         mutationFn: async (data: TCreateUserInput) => {
+            const formatted = deepClean({
+                personalEmail: data.personalEmail,
+                displayName: data.displayName,
+                email: data.email,
+                roleId: data.roleId,
+                departmentId: data.departmentId,
+                jobTitleId: data.jobTitleId,
+                password: data.password,
+            })
             const userCreated = await userApi.create(
-                {
-                    displayName: data.displayName,
-                    email: data.email,
-                    roleId: data.roleId,
-                    departmentId: data.departmentId,
-                    jobTitleId: data.jobTitleId,
-                    password: data.password,
-                },
+                { ...formatted },
                 data.sendInviteEmail
             )
             return mapUser(userCreated.result)

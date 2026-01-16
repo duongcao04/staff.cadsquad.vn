@@ -37,6 +37,7 @@ model UserDevices {
 model User {
     id                  String             @id @default(uuid())
     email               String             @unique
+    personalEmail       String?
     username            String             @unique
     displayName         String
     avatar              String

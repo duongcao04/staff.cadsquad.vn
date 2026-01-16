@@ -79,10 +79,12 @@ export class MailService implements OnModuleInit {
 	async sendUserInvitation(
 		email: string,
 		displayName: string,
-		password: string
+		password: string,
+		personalEmail?: string
 	) {
 		await this.mailQueue.add(JOB_SEND_INVITATION_EMAIL, {
 			email,
+			personalEmail,
 			displayName,
 			password,
 		})

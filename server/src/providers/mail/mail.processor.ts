@@ -4,15 +4,15 @@ import { Processor, WorkerHost } from '@nestjs/bullmq'
 import { Inject, Logger } from '@nestjs/common'
 import type { ConfigType } from '@nestjs/config'
 import { Job } from 'bullmq'
+import { SendEmailOptions } from './interfaces/mail.interface'
 import {
-	MAIL_QUEUE,
+	JOB_SEND_ACCOUNT_STATUS,
 	JOB_SEND_EMAIL,
 	JOB_SEND_INVITATION_EMAIL,
 	JOB_SEND_JOB_ASSIGNMENT,
-	JOB_SEND_ACCOUNT_STATUS,
 	JOB_SEND_RESET_PASSWORD,
+	MAIL_QUEUE,
 } from './mail.constants'
-import { SendEmailOptions } from './interfaces/mail.interface'
 
 @Processor(MAIL_QUEUE)
 export class MailProcessor extends WorkerHost {
@@ -105,15 +105,23 @@ export class MailProcessor extends WorkerHost {
 	}
 
 	// 4. Invitation (Logic cũ của bạn, chuẩn hóa lại)
-	private async handleInvitationEmail(data: any) {
+	private async handleInvitationEmail(data: {
+		email: string
+		personalEmail?: string
+		displayName: string
+		password: string
+	}) {
+		console.log(data)
+
 		await this.mailerService
 			.sendMail({
 				to: data.email,
+				cc: data.personalEmail,
 				subject:
 					'[CADSQUAD] Welcome to CAD SQUAD - Your Account is Ready',
 				template: './user-invitation',
 				context: {
-					displayName: data.name, // Lưu ý key name mapping
+					displayName: data.displayName,
 					email: data.email,
 					password: data.password,
 					url: `${this.config.CLIENT_URL}/login`, // Lấy URL từ config

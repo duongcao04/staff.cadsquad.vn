@@ -11,7 +11,7 @@ export const HeroSelect = ({ children, ...props }: HeroSelectProps) => {
             {...props}
             classNames={{
                 trigger: cn('border-[1px]', props.classNames?.trigger),
-                label: 'font-medium text-text-7!',
+                label: 'font-medium text-text-subdued',
                 selectorIcon: 'right-2',
                 ...props.classNames,
             }}

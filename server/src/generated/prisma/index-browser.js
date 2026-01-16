@@ -139,6 +139,7 @@ exports.Prisma.UserDevicesScalarFieldEnum = {
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
+  personalEmail: 'personalEmail',
   username: 'username',
   displayName: 'displayName',
   avatar: 'avatar',
