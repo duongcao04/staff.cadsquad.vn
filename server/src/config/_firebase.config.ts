@@ -11,7 +11,7 @@ const schema = z.object({
 	FIREBASE_APP_ID: z.string().min(1),
 })
 
-export default registerAs('firebase', () => {
+export const firebaseConfig = registerAs('firebase', () => {
 	const parsed = schema.safeParse(process.env)
 	if (!parsed.success) {
 		console.error('❌ Firebase Config Error:', parsed.error.format())

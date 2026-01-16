@@ -270,9 +270,11 @@ export class AuthService {
 
 		// 4. Send Email
 		// Link format: https://frontend.com/reset-password?token=...
-		await this.mailService.sendResetPasswordEmail(user.email, token, {
-			displayName: user.displayName,
-		})
+		await this.mailService.sendResetPasswordEmail(
+			user.email,
+			token,
+			user.displayName
+		)
 
 		return { message: 'Reset link sent' }
 	}

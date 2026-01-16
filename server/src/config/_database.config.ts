@@ -16,7 +16,7 @@ const dbSchema = z.object({
 	REDIS_PASSWORD: z.string().min(1),
 })
 
-export default registerAs('database', () => {
+export const databaseConfig = registerAs('database', () => {
 	const parsed = dbSchema.safeParse(process.env)
 	if (!parsed.success) {
 		console.error('❌ Database/Redis Config Error:', parsed.error.format())
