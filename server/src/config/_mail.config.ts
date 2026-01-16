@@ -8,9 +8,10 @@ const mailSchema = z.object({
 	MAIL_USER: z.string().email(),
 	MAIL_PASS: z.string().min(1),
 	MAIL_FROM: z.string().min(1),
+	MAIL_TEMPLATE_PATH: z.string().min(1),
 })
 
-export default registerAs('mail', () => {
+export const mailConfig = registerAs('mail', () => {
 	const parsed = mailSchema.safeParse(process.env)
 	if (!parsed.success) {
 		console.error('❌ Mail Config Error:', parsed.error.format())

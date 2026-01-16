@@ -7,7 +7,7 @@ const schema = z.object({
 	AZURE_CLIENT_SECRET: z.string().min(1),
 })
 
-export default registerAs('azure', () => {
+export const azureConfig = registerAs('azure', () => {
 	const parsed = schema.safeParse(process.env)
 	if (!parsed.success) {
 		console.error('❌ Azure Config Error:', parsed.error.format())

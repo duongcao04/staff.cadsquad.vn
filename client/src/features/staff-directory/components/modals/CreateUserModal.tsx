@@ -6,6 +6,7 @@ import {
 } from '@/lib/queries'
 import { useCreateUserMutation } from '@/lib/queries/useUser'
 import { transformEmail } from '@/lib/utils'
+import { ScrollArea, ScrollBar } from '@/shared/components'
 import HeroCopyButton from '@/shared/components/ui/hero-copy-button'
 import { HeroInput } from '@/shared/components/ui/hero-input'
 import { HeroModal, HeroModalContent } from '@/shared/components/ui/hero-modal'
@@ -258,279 +259,299 @@ const CreateUserFormContent = ({
                 </div>
             </ModalHeader>
 
-            <ModalBody className="py-0 px-8 min-h-105 overflow-x-hidden">
-                {step === 1 ? (
-                    <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-                        <p className="text-xs font-semibold text-text-subdued tracking-wider py-4">
-                            Step 1: Identity
-                        </p>
-                        <div className="space-y-4">
-                            <FastField name="displayName">
-                                {({ field, meta }: any) => (
-                                    <HeroInput
-                                        {...field}
-                                        isRequired
-                                        label="Full Name"
-                                        placeholder="John Doe"
-                                        variant="bordered"
-                                        labelPlacement="outside-top"
-                                        startContent={
-                                            <UserIcon
-                                                size={18}
-                                                className="text-text-subdued"
-                                            />
-                                        }
-                                        isInvalid={meta.touched && !!meta.error}
-                                        errorMessage={meta.error}
-                                    />
-                                )}
-                            </FastField>
-
-                            <FastField name="email">
-                                {({ field, meta }: any) => (
-                                    <HeroInput
-                                        {...field}
-                                        isRequired
-                                        label="Email"
-                                        placeholder="john.doe"
-                                        variant="bordered"
-                                        labelPlacement="outside-top"
-                                        startContent={
-                                            <MailIcon
-                                                size={18}
-                                                className="text-text-subdued"
-                                            />
-                                        }
-                                        endContent={
-                                            <p className="text-xs font-semibold text-text-subdued">
-                                                @cadsquad.vn
-                                            </p>
-                                        }
-                                        isInvalid={meta.touched && !!meta.error}
-                                        errorMessage={meta.error}
-                                    />
-                                )}
-                            </FastField>
-
-                            <FastField name="roleId">
-                                {({ field }: any) => (
-                                    <HeroSelect
-                                        label="System Role"
-                                        labelPlacement="outside-top"
-                                        placeholder="Select user system role"
-                                        selectedKeys={[field.value]}
-                                        disallowEmptySelection
-                                        onSelectionChange={(keys) =>
-                                            formik.setFieldValue(
-                                                'roleId',
-                                                Array.from(keys)[0]
-                                            )
-                                        }
-                                    >
-                                        {roles.map((r) => (
-                                            <HeroSelectItem
-                                                key={r.id}
-                                                textValue={r.displayName}
-                                            >
-                                                {r.displayName}
-                                            </HeroSelectItem>
-                                        ))}
-                                    </HeroSelect>
-                                )}
-                            </FastField>
-                        </div>
-                    </div>
-                ) : (
-                    <div className="animate-in fade-in slide-in-from-right-4 duration-300 pb-6">
-                        <p className="text-xs font-semibold text-text-subdued tracking-wider py-4">
-                            Step 2: Organization & Security
-                        </p>
-                        <div className="grid grid-cols-2 gap-4">
-                            <FastField name="departmentId">
-                                {({ field, meta }: any) => (
-                                    <HeroSelect
-                                        label="Department"
-                                        placeholder="Select staff department"
-                                        labelPlacement="outside-top"
-                                        selectedKeys={
-                                            field.value ? [field.value] : []
-                                        }
-                                        startContent={
-                                            <BuildingIcon
-                                                size={18}
-                                                className="text-text-subdued"
-                                            />
-                                        }
-                                        onSelectionChange={(keys) =>
-                                            formik.setFieldValue(
-                                                'departmentId',
-                                                Array.from(keys)[0]
-                                            )
-                                        }
-                                        isInvalid={meta.touched && !!meta.error}
-                                    >
-                                        {departments.map((d: TDepartment) => (
-                                            <HeroSelectItem key={d.id}>
-                                                {d.displayName}
-                                            </HeroSelectItem>
-                                        ))}
-                                    </HeroSelect>
-                                )}
-                            </FastField>
-
-                            <FastField name="jobTitleId">
-                                {({ field, meta }: any) => (
-                                    <HeroSelect
-                                        label="Job Title"
-                                        labelPlacement="outside-top"
-                                        placeholder="Select staff job title"
-                                        selectedKeys={
-                                            field.value ? [field.value] : []
-                                        }
-                                        startContent={
-                                            <BriefcaseIcon
-                                                size={18}
-                                                className="text-text-subdued"
-                                            />
-                                        }
-                                        onSelectionChange={(keys) =>
-                                            formik.setFieldValue(
-                                                'jobTitleId',
-                                                Array.from(keys)[0]
-                                            )
-                                        }
-                                        isInvalid={meta.touched && !!meta.error}
-                                    >
-                                        {jobTitles.map((j: TJobTitle) => (
-                                            <HeroSelectItem key={j.id}>
-                                                {j.displayName}
-                                            </HeroSelectItem>
-                                        ))}
-                                    </HeroSelect>
-                                )}
-                            </FastField>
-                        </div>
-
-                        <div className="mt-6 space-y-3">
-                            <div className="flex items-center justify-between">
-                                <span className="text-xs font-bold">
-                                    Security Credentials
-                                </span>
-                                <Tabs
-                                    size="sm"
-                                    variant="bordered"
-                                    selectedKey={
-                                        isManualPassword ? 'manual' : 'auto'
-                                    }
-                                    onSelectionChange={onTabChange}
-                                >
-                                    <Tab
-                                        key="auto"
-                                        title="Auto-Generate"
-                                        type="button"
-                                    />
-                                    <Tab
-                                        key="manual"
-                                        title="Manual Entry"
-                                        type="button"
-                                    />
-                                </Tabs>
-                            </div>
-
-                            <div className="p-4 rounded-2xl bg-background-muted border border-border-default">
-                                {isManualPassword ? (
-                                    <FastField name="password">
+            <ModalBody className="p-0 overflow-x-hidden">
+                <ScrollArea className="size-full h-[60vh]">
+                    <ScrollBar orientation="horizontal" />
+                    <ScrollBar orientation="vertical" />
+                    <div className='px-4 pt-6 pb-14'>
+                        {step === 1 ? (
+                            <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+                                <p className="text-xs font-semibold text-text-subdued tracking-wider py-4">
+                                    Step 1: Identity
+                                </p>
+                                <div className="space-y-4">
+                                    <FastField name="displayName">
                                         {({ field, meta }: any) => (
-                                            <HeroPasswordInput
+                                            <HeroInput
                                                 {...field}
-                                                label="Enter Password"
-                                                placeholder="Enter manual password"
+                                                isRequired
+                                                label="Full Name"
+                                                placeholder="John Doe"
                                                 variant="bordered"
+                                                labelPlacement="outside-top"
+                                                startContent={
+                                                    <UserIcon
+                                                        size={18}
+                                                        className="text-text-subdued"
+                                                    />
+                                                }
                                                 isInvalid={
                                                     meta.touched && !!meta.error
                                                 }
                                                 errorMessage={meta.error}
-                                                startContent={
-                                                    <KeyRoundIcon
-                                                        size={16}
-                                                        className="text-default-400"
-                                                    />
-                                                }
                                             />
                                         )}
                                     </FastField>
-                                ) : (
-                                    <div className="space-y-3">
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-xs font-medium text-text-subdued">
-                                                Generated Password
-                                            </span>
-                                            <div className="flex gap-1">
-                                                <Button
-                                                    isIconOnly
-                                                    size="sm"
-                                                    variant="light"
-                                                    onPress={() =>
-                                                        setGeneratedPwd(
-                                                            generatePassword()
+    
+                                    <FastField name="email">
+                                        {({ field, meta }: any) => (
+                                            <HeroInput
+                                                {...field}
+                                                isRequired
+                                                label="Email"
+                                                placeholder="john.doe"
+                                                variant="bordered"
+                                                labelPlacement="outside-top"
+                                                startContent={
+                                                    <MailIcon
+                                                        size={18}
+                                                        className="text-text-subdued"
+                                                    />
+                                                }
+                                                endContent={
+                                                    <p className="text-xs font-semibold text-text-subdued">
+                                                        @cadsquad.vn
+                                                    </p>
+                                                }
+                                                isInvalid={
+                                                    meta.touched && !!meta.error
+                                                }
+                                                errorMessage={meta.error}
+                                            />
+                                        )}
+                                    </FastField>
+    
+                                    <FastField name="roleId">
+                                        {({ field }: any) => (
+                                            <HeroSelect
+                                                label="System Role"
+                                                labelPlacement="outside-top"
+                                                placeholder="Select user system role"
+                                                selectedKeys={[field.value]}
+                                                disallowEmptySelection
+                                                onSelectionChange={(keys) =>
+                                                    formik.setFieldValue(
+                                                        'roleId',
+                                                        Array.from(keys)[0]
+                                                    )
+                                                }
+                                            >
+                                                {roles.map((r) => (
+                                                    <HeroSelectItem
+                                                        key={r.id}
+                                                        textValue={r.displayName}
+                                                    >
+                                                        {r.displayName}
+                                                    </HeroSelectItem>
+                                                ))}
+                                            </HeroSelect>
+                                        )}
+                                    </FastField>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="animate-in fade-in slide-in-from-right-4 duration-300 pb-6">
+                                <p className="text-xs font-semibold text-text-subdued tracking-wider py-4">
+                                    Step 2: Organization & Security
+                                </p>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <FastField name="departmentId">
+                                        {({ field, meta }: any) => (
+                                            <HeroSelect
+                                                label="Department"
+                                                placeholder="Select staff department"
+                                                labelPlacement="outside-top"
+                                                selectedKeys={
+                                                    field.value ? [field.value] : []
+                                                }
+                                                startContent={
+                                                    <BuildingIcon
+                                                        size={18}
+                                                        className="text-text-subdued"
+                                                    />
+                                                }
+                                                onSelectionChange={(keys) =>
+                                                    formik.setFieldValue(
+                                                        'departmentId',
+                                                        Array.from(keys)[0]
+                                                    )
+                                                }
+                                                isInvalid={
+                                                    meta.touched && !!meta.error
+                                                }
+                                            >
+                                                {departments.map(
+                                                    (d: TDepartment) => (
+                                                        <HeroSelectItem key={d.id}>
+                                                            {d.displayName}
+                                                        </HeroSelectItem>
+                                                    )
+                                                )}
+                                            </HeroSelect>
+                                        )}
+                                    </FastField>
+    
+                                    <FastField name="jobTitleId">
+                                        {({ field, meta }: any) => (
+                                            <HeroSelect
+                                                label="Job Title"
+                                                labelPlacement="outside-top"
+                                                placeholder="Select staff job title"
+                                                selectedKeys={
+                                                    field.value ? [field.value] : []
+                                                }
+                                                startContent={
+                                                    <BriefcaseIcon
+                                                        size={18}
+                                                        className="text-text-subdued"
+                                                    />
+                                                }
+                                                onSelectionChange={(keys) =>
+                                                    formik.setFieldValue(
+                                                        'jobTitleId',
+                                                        Array.from(keys)[0]
+                                                    )
+                                                }
+                                                isInvalid={
+                                                    meta.touched && !!meta.error
+                                                }
+                                            >
+                                                {jobTitles.map((j: TJobTitle) => (
+                                                    <HeroSelectItem key={j.id}>
+                                                        {j.displayName}
+                                                    </HeroSelectItem>
+                                                ))}
+                                            </HeroSelect>
+                                        )}
+                                    </FastField>
+                                </div>
+    
+                                <div className="mt-6 space-y-3">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-xs font-bold">
+                                            Security Credentials
+                                        </span>
+                                        <Tabs
+                                            size="sm"
+                                            variant="bordered"
+                                            selectedKey={
+                                                isManualPassword ? 'manual' : 'auto'
+                                            }
+                                            onSelectionChange={onTabChange}
+                                        >
+                                            <Tab
+                                                key="auto"
+                                                title="Auto-Generate"
+                                                type="button"
+                                            />
+                                            <Tab
+                                                key="manual"
+                                                title="Manual Entry"
+                                                type="button"
+                                            />
+                                        </Tabs>
+                                    </div>
+    
+                                    <div className="p-4 rounded-2xl bg-background-muted border border-border-default">
+                                        {isManualPassword ? (
+                                            <FastField name="password">
+                                                {({ field, meta }: any) => (
+                                                    <HeroPasswordInput
+                                                        {...field}
+                                                        label="Enter Password"
+                                                        placeholder="Enter manual password"
+                                                        variant="bordered"
+                                                        isInvalid={
+                                                            meta.touched &&
+                                                            !!meta.error
+                                                        }
+                                                        errorMessage={meta.error}
+                                                        startContent={
+                                                            <KeyRoundIcon
+                                                                size={16}
+                                                                className="text-default-400"
+                                                            />
+                                                        }
+                                                    />
+                                                )}
+                                            </FastField>
+                                        ) : (
+                                            <div className="space-y-3">
+                                                <div className="flex justify-between items-center">
+                                                    <span className="text-xs font-medium text-text-subdued">
+                                                        Generated Password
+                                                    </span>
+                                                    <div className="flex gap-1">
+                                                        <Button
+                                                            isIconOnly
+                                                            size="sm"
+                                                            variant="light"
+                                                            onPress={() =>
+                                                                setGeneratedPwd(
+                                                                    generatePassword()
+                                                                )
+                                                            }
+                                                        >
+                                                            <RefreshCwIcon
+                                                                size={14}
+                                                            />
+                                                        </Button>
+                                                        <Tooltip content="Copy Password">
+                                                            <Button
+                                                                isIconOnly
+                                                                size="sm"
+                                                                variant="flat"
+                                                                onPress={
+                                                                    handleCopyGenerated
+                                                                }
+                                                            >
+                                                                <ClipboardCheckIcon
+                                                                    size={14}
+                                                                />
+                                                            </Button>
+                                                        </Tooltip>
+                                                    </div>
+                                                </div>
+                                                <HeroInput
+                                                    readOnly
+                                                    value={generatedPwd}
+                                                    variant="bordered"
+                                                    className="text-center"
+                                                    startContent={
+                                                        <KeyRoundIcon
+                                                            size={16}
+                                                            className="text-default-400"
+                                                        />
+                                                    }
+                                                />
+                                            </div>
+                                        )}
+    
+                                        <FastField name="sendInviteEmail">
+                                            {({ field }: any) => (
+                                                <Checkbox
+                                                    className="mt-4"
+                                                    isSelected={field.value}
+                                                    onValueChange={(v) =>
+                                                        formik.setFieldValue(
+                                                            'sendInviteEmail',
+                                                            v
                                                         )
                                                     }
                                                 >
-                                                    <RefreshCwIcon size={14} />
-                                                </Button>
-                                                <Tooltip content="Copy Password">
-                                                    <Button
-                                                        isIconOnly
-                                                        size="sm"
-                                                        variant="flat"
-                                                        onPress={
-                                                            handleCopyGenerated
-                                                        }
-                                                    >
-                                                        <ClipboardCheckIcon
-                                                            size={14}
-                                                        />
-                                                    </Button>
-                                                </Tooltip>
-                                            </div>
-                                        </div>
-                                        <HeroInput
-                                            readOnly
-                                            value={generatedPwd}
-                                            variant="bordered"
-                                            className="text-center"
-                                            startContent={
-                                                <KeyRoundIcon
-                                                    size={16}
-                                                    className="text-default-400"
-                                                />
-                                            }
-                                        />
+                                                    <span className="text-xs font-medium">
+                                                        Send invitation email to
+                                                        staff
+                                                    </span>
+                                                </Checkbox>
+                                            )}
+                                        </FastField>
                                     </div>
-                                )}
-
-                                <FastField name="sendInviteEmail">
-                                    {({ field }: any) => (
-                                        <Checkbox
-                                            className="mt-4"
-                                            isSelected={field.value}
-                                            onValueChange={(v) =>
-                                                formik.setFieldValue(
-                                                    'sendInviteEmail',
-                                                    v
-                                                )
-                                            }
-                                        >
-                                            <span className="text-xs font-medium">
-                                                Send invitation email to staff
-                                            </span>
-                                        </Checkbox>
-                                    )}
-                                </FastField>
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </div>
-                )}
+                </ScrollArea>
             </ModalBody>
 
             <Divider />

@@ -42,7 +42,7 @@ export class SharePointController {
 	// Body: { parentId: "xxx", name: "New Project" }
 	@Post('folder')
 	async createFolder(@Body() body: { parentId: string; name: string }) {
-		return this.service.createFolder(body.parentId || 'root', body.name)
+		return this.service.queueCreateFolder(body.parentId || 'root', body.name)
 	}
 
 	// 4. Lấy link Download

@@ -7,7 +7,7 @@ const authSchema = z.object({
 	JWT_EXPIRES_AT: z.coerce.number().default(86400000), // Supports string like "1d" or ms number string
 })
 
-export default registerAs('auth', () => {
+export const authConfig = registerAs('auth', () => {
 	const parsed = authSchema.safeParse(process.env)
 	if (!parsed.success) {
 		console.error('❌ Auth Config Error:', parsed.error.format())
