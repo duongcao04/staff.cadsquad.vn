@@ -1,5 +1,3 @@
-'use client'
-
 import { Autocomplete, AutocompleteItem, extendVariants } from '@heroui/react'
 
 export const HeroAutocomplete = extendVariants(Autocomplete, {

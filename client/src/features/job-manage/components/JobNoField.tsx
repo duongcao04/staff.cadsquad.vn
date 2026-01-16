@@ -5,7 +5,11 @@ import { useEffect, useState } from 'react'
 import { jobApi } from '@/lib/api'
 import type { TJobType } from '@/shared/types'
 
-import { HeroAutocomplete, HeroAutocompleteItem } from '../../../shared/components/ui/hero-autocomplete'
+import {
+    HeroAutocomplete,
+    HeroAutocompleteItem,
+} from '../../../shared/components/ui/hero-autocomplete'
+import { useDevice } from '../../../shared/hooks'
 
 type JobNoFieldProps = {
     jobTypes: TJobType[]
@@ -29,6 +33,7 @@ export function JobNoField({
     isInvalid,
     isLoading,
 }: JobNoFieldProps) {
+    const { isSmallView } = useDevice()
     const [selectedKey, setSelectedKey] = useState<string | null>(
         defaultSelectedKey ? defaultSelectedKey : null
     )
@@ -91,7 +96,9 @@ export function JobNoField({
     }, [selectedKey]) // Chỉ chạy lại khi selectedKey thay đổi
 
     return (
-        <div className="grid grid-cols-3 items-end gap-4">
+        <div
+            className={`grid ${isSmallView ? 'grid-cols-2' : 'grid-cols-3'} items-end gap-4`}
+        >
             <HeroAutocomplete
                 isRequired
                 label={label}
