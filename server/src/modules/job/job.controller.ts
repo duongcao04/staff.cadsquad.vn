@@ -177,11 +177,21 @@ export class JobController {
 	async create(@Req() request: Request, @Body() createJobDto: CreateJobDto) {
 		const user: TokenPayload = request['user']
 		const created = await this.jobService.create(user.sub, createJobDto)
+		const folderID = '012FXBO3INCUN6K3IYSZDJWUU6IMK6UG7D'
 		try {
 			const folderName = createJobDto.no + '- ' + createJobDto.displayName
-			await this.sharepointService.createFolder(
-				'012FXBO3INCUN6K3IYSZDJWUU6IMK6UG7D',
-				folderName
+			const childrenFolders = [
+				'01. Resources',
+				'02. RFI',
+				'03. Results',
+				'Pictures',
+				'Temp',
+				'Working',
+			]
+			await this.sharepointService.queuCreateFolderWithChildren(
+				folderID,
+				folderName,
+				childrenFolders
 			)
 		} catch (error) {
 			throw new InternalServerErrorException(
