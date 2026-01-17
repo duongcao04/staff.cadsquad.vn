@@ -174,8 +174,9 @@ export function ProjectCenterTableQuickActions({
                         </DropdownSection>
                     ) : null}
 
+                    {/* TODO: */}
                     {/* Financial Section: Admin & Accounting Only */}
-                    {isAdmin || isAccounting ? (
+                    {false && (isAdmin || isAccounting) ? (
                         <DropdownSection title="Accounting">
                             <DropdownItem
                                 key="updateCost"

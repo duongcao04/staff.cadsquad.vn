@@ -133,7 +133,8 @@ export function ProjectCenterToolbar({
                         </DropdownTrigger>
                         <DropdownMenu
                             aria-label="Table Views"
-                            selectedKeys={new Set(['table_view'])}
+                            selectedKeys={['table_view']}
+                            disabledKeys={['gantt_view', 'kanban_view']}
                         >
                             <DropdownItem
                                 key="gantt_view"
@@ -290,18 +291,23 @@ export function ProjectCenterToolbar({
                 )}
             </div>
 
+            {/* TODO: */}
             {/* --- Right Side: Export --- */}
-            <div>
-                <HeroButton
-                    startContent={<Sheet className="text-small" size={14} />}
-                    variant="flat"
-                    size="sm"
-                    className="shadow-SM"
-                    onPress={onDownloadCsv}
-                >
-                    <span className="font-medium">Download as .csv</span>
-                </HeroButton>
-            </div>
+            {false && (
+                <div>
+                    <HeroButton
+                        startContent={
+                            <Sheet className="text-small" size={14} />
+                        }
+                        variant="flat"
+                        size="sm"
+                        className="shadow-SM"
+                        onPress={onDownloadCsv}
+                    >
+                        <span className="font-medium">Download as .csv</span>
+                    </HeroButton>
+                </div>
+            )}
         </div>
     )
 }
