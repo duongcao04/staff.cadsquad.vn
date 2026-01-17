@@ -67,6 +67,7 @@ export class UserController {
 		if (!month && !year) return []
 		return this.userService.getUserSchedule(
 			userPayload.sub,
+			userPayload.permissions,
 			month,
 			year,
 			day

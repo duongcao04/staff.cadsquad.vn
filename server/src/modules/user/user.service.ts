@@ -13,6 +13,7 @@ import { Prisma, User } from '../../generated/prisma'
 import { MailService } from '../../providers/mail/mail.service'
 import { PrismaService } from '../../providers/prisma/prisma.service'
 import { IMAGES } from '../../utils'
+import { APP_PERMISSIONS } from '../../utils/_app-permissions'
 import { BcryptService } from '../auth/bcrypt.service'
 import { NotificationService } from '../notification/notification.service'
 import {
@@ -554,6 +555,7 @@ export class UserService {
 
 	async getUserSchedule(
 		userId: string,
+		userPermissions: string[],
 		month: number,
 		year: number,
 		day?: number
@@ -577,18 +579,39 @@ export class UserService {
 			end = baseDate.endOf('month').toDate()
 		}
 
+		const buildPermission = userPermissions.includes(
+			APP_PERMISSIONS.JOB.READ_ALL
+		)
+			? {}
+			: {
+					assignments: {
+						some: {
+							userId: userId,
+						},
+					},
+				}
+
 		const jobsSchedule = await this.prismaService.job.findMany({
 			where: {
-				dueAt: {
-					gte: start,
-					lte: end,
-				},
-				assignments: {
-					some: {
-						userId: userId,
+				AND: [
+					{
+						...buildPermission,
 					},
-				},
-				deletedAt: null, // Đảm bảo job chưa bị xóa
+					{
+						dueAt: {
+							gte: start,
+							lte: end,
+						},
+					},
+					{
+						status: {
+							systemType: { notIn: ['TERMINATED', 'COMPLETED'] },
+						},
+					},
+					{
+						deletedAt: null,
+					},
+				],
 			},
 			include: {
 				status: {
@@ -596,6 +619,7 @@ export class UserService {
 						displayName: true,
 						hexColor: true,
 						code: true,
+						thumbnailUrl: true,
 					},
 				},
 				type: true,

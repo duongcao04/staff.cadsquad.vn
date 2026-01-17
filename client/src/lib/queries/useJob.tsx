@@ -328,17 +328,14 @@ export const useDeleteJobMutation = () => {
     const queryClient = useQueryClient()
     return useMutation({
         mutationKey: ['deleteJob'],
-        mutationFn: (jobId?: string) => {
-            if (!jobId) throw new Error('JobID is required')
-            return jobApi.remove(jobId)
-        },
+        mutationFn: (jobId: string) => jobApi.remove(jobId),
         onSuccess: (res) => {
             addToast({
                 title: 'Deleted successfully',
                 description: res.message,
                 color: 'success',
             })
-            queryClient.invalidateQueries({ queryKey: ['jobs'] })
+            queryClient.refetchQueries({ queryKey: ['jobs'] })
         },
         onError: (err) => onErrorToast(err, 'Delete job failed'),
     })

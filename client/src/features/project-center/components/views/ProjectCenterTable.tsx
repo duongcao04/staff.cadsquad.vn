@@ -1,135 +1,63 @@
-import { pCenterTableStore } from '@/features/project-center'
-import { optimizeCloudinary, useProfile } from '@/lib'
-import { dateFormatter } from '@/lib/dayjs'
-import { useJobStatuses } from '@/lib/queries'
 import {
-    currencyFormatter,
-    DUE_DATE_PRESETS,
-    getAllowedJobColumns,
-    getDueDateRange,
-    INTERNAL_URLS,
-    TABLE_ROW_PER_PAGE_OPTIONS,
-} from '@/lib/utils'
-import { TJobFilters } from '@/lib/validationSchemas'
+    pCenterTableStore,
+    renderProjectCenterCell,
+} from '@/features/project-center'
+import { useProfile } from '@/lib'
+import { getAllowedJobColumns } from '@/lib/utils'
 import {
-    HeroButton,
-    HeroSelect,
-    HeroSelectItem,
     HeroTable,
     HeroTableBody,
     HeroTableCell,
     HeroTableColumn,
     HeroTableHeader,
     HeroTableRow,
-    HeroTooltip,
 } from '@/shared/components'
-import JobFinishChip from '@/shared/components/chips/JobFinishChip'
-import JobStatusDropdown from '@/shared/components/dropdowns/JobStatusDropdown'
-import PaymentStatusDropdown from '@/shared/components/dropdowns/PaymentStatusDropdown'
-import CountdownTimer from '@/shared/components/ui/countdown-timer'
-import HeroCopyButton from '@/shared/components/ui/hero-copy-button'
 import { ScrollArea, ScrollBar } from '@/shared/components/ui/scroll-area'
-import { JobStatusSystemTypeEnum, ProjectCenterTabEnum } from '@/shared/enums'
-import type { JobColumnKey, TJob, TJobStatus } from '@/shared/types'
-import {
-    Button,
-    Dropdown,
-    DropdownItem,
-    DropdownMenu,
-    DropdownTrigger,
-    Input,
-    Pagination,
-    Select,
-    type Selection,
-    SelectItem,
-    Spinner,
-} from '@heroui/react'
+import { JobColumnKey, TJob } from '@/shared/types'
+import { Selection, Spinner } from '@heroui/react'
 import { useStore } from '@tanstack/react-store'
-import { Avatar, Image } from 'antd'
-import dayjs from 'dayjs'
-import lodash from 'lodash'
-import {
-    ChevronDownIcon,
-    Columns3Cog,
-    EyeIcon,
-    FilePlus,
-    RefreshCw,
-    SearchIcon,
-    Sheet,
-    SquareChartGantt,
-    SquareKanban,
-    UserRoundPlus,
-} from 'lucide-react'
-import { ReactNode, useCallback, useMemo } from 'react'
-import { FilterBuilder } from '../dropdowns/FilterDropdown'
-import ProjectCenterTableBulkActions from '../dropdowns/ProjectCenterTableBulkActions'
-import { ProjectCenterTableQuickActions } from '../dropdowns/ProjectCenterTableQuickActions'
+import { useCallback, useMemo } from 'react'
 
-type ProjectCenterTableProps = {
+type Props = {
     data: TJob[]
-    tab: ProjectCenterTabEnum
     isLoadingData: boolean
-    sort?: string
-    searchKeywords?: string
-    pagination: {
-        limit: number
-        page: number
-        totalPages: number
-        total: number
-    }
-    onRefresh: () => void
-    onSearchKeywordsChange: (newKeyword?: string) => void
-    onLimitChange: (l: number) => void
-    onPageChange: (p: number) => void
-    onSortChange: (s?: string) => void
-    onFiltersChange: (newFilters: TJobFilters) => void
-    filters: Partial<TJobFilters>
     visibleColumns: 'all' | JobColumnKey[]
-    showFinishItems: boolean
-    onDownloadCsv: () => void
-    onShowFinishItemsChange?: (state: boolean) => void
-    openViewColDrawer: () => void
+    sort?: string
+
+    onSortChange: (s: string) => void
+    onRefresh: () => void
     openJobDetailDrawer: (jobNo: string) => void
     onAssignMember: (jobNo: string) => void
     onAddAttachments: (jobNo: string) => void
 }
+
 export default function ProjectCenterTable({
     data,
-    isLoadingData = false,
+    isLoadingData,
     visibleColumns,
     sort,
-    tab,
-    searchKeywords,
-    pagination,
-    filters,
-    showFinishItems,
-    onRefresh,
-    onSearchKeywordsChange,
-    onFiltersChange,
     onSortChange,
-    onDownloadCsv,
-    openViewColDrawer,
+    onRefresh,
     openJobDetailDrawer,
     onAssignMember,
-    onLimitChange,
-    onPageChange,
     onAddAttachments,
-}: ProjectCenterTableProps) {
-    const { userRole, userPermissions } = useProfile()
-    const { data: jobStatuses } = useJobStatuses()
+}: Props) {
+    const { userPermissions } = useProfile()
+    const { userRole } = useProfile()
 
-    const hasSearchFilter = Boolean(searchKeywords)
-
-    const setContextItem = (value: TJob | null) => {
-        return pCenterTableStore.setState((state) => ({
-            ...state,
-            contextItem: value,
-        }))
-    }
+    // --- Store Logic ---
     const selectedKeys = useStore(
         pCenterTableStore,
         (state) => state.selectedKeys
     )
+
+    const setContextItem = (value: TJob | null) => {
+        pCenterTableStore.setState((state) => ({
+            ...state,
+            contextItem: value,
+        }))
+    }
+
     const setSelectedKeys = (keys: Selection) => {
         pCenterTableStore.setState((state) => ({
             ...state,
@@ -138,650 +66,48 @@ export default function ProjectCenterTable({
         }))
     }
 
-    // Role-based header logic
+    // --- Header Logic ---
     const headerColumns = useMemo(
         () => getAllowedJobColumns(visibleColumns, userPermissions),
         [visibleColumns, userRole]
     )
 
-    // eslint-disable-next-line react-hooks/preserve-manual-memoization
-    const topContent = useMemo(() => {
-        return (
-            <div className="w-full flex flex-col gap-4">
-                <div className="w-full flex justify-between gap-3 items-end">
-                    <div className="flex items-center justify-start gap-2">
-                        <Input
-                            isClearable
-                            classNames={{
-                                base: 'w-[450px]',
-                                mainWrapper: 'w-[450px]',
-                                inputWrapper:
-                                    'hover:shadow-SM bg-background border-border-default border',
-                            }}
-                            variant="bordered"
-                            size="sm"
-                            placeholder="Search by name..."
-                            startContent={
-                                <div className="w-4 flex items-center justify-center">
-                                    <SearchIcon
-                                        className="text-small text-text-6"
-                                        size={14}
-                                    />
-                                </div>
-                            }
-                            value={searchKeywords}
-                            onClear={() => onSearchKeywordsChange('')}
-                            onValueChange={(value) =>
-                                onSearchKeywordsChange(value)
-                            }
-                        />
+    // --- Cell Logic ---
+    const cellActions = useMemo(
+        () => ({
+            onViewDetail: openJobDetailDrawer,
+            onAssignMember,
+            onAddAttachments,
+            onRefresh,
+        }),
+        [openJobDetailDrawer, onAssignMember, onAddAttachments, onRefresh]
+    )
 
-                        <div className="w-px mx-3 h-5 bg-text-muted"></div>
-                        <div className="flex gap-3">
-                            <Button
-                                startContent={
-                                    <RefreshCw
-                                        size={14}
-                                        className={`text-small ${
-                                            isLoadingData
-                                                ? 'animate-spin-smooth'
-                                                : ''
-                                        }`}
-                                    />
-                                }
-                                className="border-1"
-                                variant="bordered"
-                                size="sm"
-                                onPress={onRefresh}
-                            >
-                                <span className="font-medium">Refresh</span>
-                            </Button>
-
-                            {/* TODO: Implement filter */}
-                            {false && (
-                                <FilterBuilder
-                                    defaultFilters={filters}
-                                    onApply={onFiltersChange}
-                                    className="border-1"
-                                />
-                            )}
-
-                            <Dropdown placement="bottom-start">
-                                <DropdownTrigger className="hidden sm:flex">
-                                    <Button
-                                        endContent={
-                                            <ChevronDownIcon
-                                                className="text-small"
-                                                size={14}
-                                            />
-                                        }
-                                        variant="bordered"
-                                        size="sm"
-                                        className="border-1"
-                                    >
-                                        <span className="font-medium">
-                                            View
-                                        </span>
-                                    </Button>
-                                </DropdownTrigger>
-                                <DropdownMenu
-                                    disallowEmptySelection
-                                    aria-label="Table Columns"
-                                    closeOnSelect={false}
-                                    disabledKeys={
-                                        new Set(['gantt_view', 'kanban_view'])
-                                    }
-                                    selectedKeys={new Set(['table_view'])}
-                                    // onSelectionChange={setVisibleColumns}
-                                >
-                                    <DropdownItem
-                                        key="gantt_view"
-                                        startContent={
-                                            <SquareChartGantt
-                                                size={14}
-                                                className="text-text-default"
-                                            />
-                                        }
-                                    >
-                                        Gantt
-                                    </DropdownItem>
-                                    <DropdownItem
-                                        key="kanban_view"
-                                        startContent={
-                                            <SquareKanban
-                                                size={14}
-                                                className="text-text-default"
-                                            />
-                                        }
-                                    >
-                                        Kanban
-                                    </DropdownItem>
-                                    <DropdownItem
-                                        key="table_view"
-                                        startContent={
-                                            <Sheet
-                                                size={14}
-                                                className="text-text-default"
-                                            />
-                                        }
-                                    >
-                                        Table
-                                    </DropdownItem>
-                                </DropdownMenu>
-                            </Dropdown>
-
-                            <HeroButton
-                                variant="bordered"
-                                size="sm"
-                                className="border-1"
-                                startContent={
-                                    <Columns3Cog
-                                        size={16}
-                                        className="text-text-default"
-                                    />
-                                }
-                                onPress={openViewColDrawer}
-                            >
-                                <span className="font-medium">Columns</span>
-                            </HeroButton>
-                        </div>
-
-                        <div className="w-px mx-3 h-5 bg-text-muted"></div>
-
-                        <div className="flex gap-3">
-                            {tab === 'active' ||
-                                tab === 'priority' ||
-                                tab === 'late' ||
-                                (tab === 'cancelled' && (
-                                    <HeroSelect
-                                        selectionMode="multiple"
-                                        className="min-w-34"
-                                        size="sm"
-                                        classNames={{
-                                            trigger:
-                                                'hover:shadow-SM border-border-default border cursor-pointer',
-                                            popoverContent: 'w-[200px]!',
-                                        }}
-                                        placeholder="Status"
-                                        isClearable
-                                        onClear={() => {
-                                            onFiltersChange({
-                                                ...filters,
-                                                status: undefined,
-                                            })
-                                        }}
-                                        onSelectionChange={(value) => {
-                                            const arrayToString =
-                                                Array.from(value).join(',')
-                                            onFiltersChange?.({
-                                                ...filters,
-                                                status: arrayToString,
-                                            })
-                                        }}
-                                        renderValue={(selectedItems) => {
-                                            return (
-                                                <p className="text-text-7">
-                                                    {selectedItems.length}{' '}
-                                                    status
-                                                    {selectedItems.length > 1
-                                                        ? 'es'
-                                                        : ''}
-                                                </p>
-                                            )
-                                        }}
-                                    >
-                                        {jobStatuses
-                                            .filter(
-                                                (it) =>
-                                                    it.systemType ===
-                                                        'STANDARD' ||
-                                                    it.systemType ===
-                                                        'DELIVERED'
-                                            )
-                                            .map((jobStatus) => {
-                                                return (
-                                                    <HeroSelectItem
-                                                        key={jobStatus.code}
-                                                    >
-                                                        <div className="flex items-center justify-start gap-2">
-                                                            <div
-                                                                className="size-2 rounded-full"
-                                                                style={{
-                                                                    backgroundColor:
-                                                                        jobStatus.hexColor
-                                                                            ? jobStatus.hexColor
-                                                                            : '#000000',
-                                                                }}
-                                                            />
-                                                            <p>
-                                                                {
-                                                                    jobStatus.displayName
-                                                                }
-                                                            </p>
-                                                        </div>
-                                                    </HeroSelectItem>
-                                                )
-                                            })}
-                                    </HeroSelect>
-                                ))}
-
-                            <HeroSelect
-                                className="min-w-34"
-                                size="sm"
-                                classNames={{
-                                    trigger:
-                                        'hover:shadow-SM border-border-default border cursor-pointer',
-                                    popoverContent: 'w-[200px]!',
-                                }}
-                                placeholder="Due in"
-                                isClearable
-                                onSelectionChange={(value) => {
-                                    const { dueAtFrom, dueAtTo } =
-                                        getDueDateRange(value.currentKey)
-                                    onFiltersChange?.({
-                                        ...filters,
-                                        dueAtFrom: dueAtFrom?.split('T')[0],
-                                        dueAtTo: dueAtTo?.split('T')[0],
-                                    })
-                                }}
-                                renderValue={(selectedItems) => {
-                                    return (
-                                        <p className="text-text-7">
-                                            {selectedItems[0]?.textValue}
-                                        </p>
-                                    )
-                                }}
-                            >
-                                {DUE_DATE_PRESETS.map((dueIn) => {
-                                    return (
-                                        <HeroSelectItem key={dueIn.key}>
-                                            {dueIn.label}
-                                        </HeroSelectItem>
-                                    )
-                                })}
-                            </HeroSelect>
-                        </div>
-
-                        <div className="w-px mx-3 h-5 bg-text-muted"></div>
-                        {(selectedKeys === 'all' || selectedKeys.size > 0) && (
-                            <div className="flex items-center justify-start gap-3">
-                                <p className="text-sm">
-                                    {selectedKeys === 'all'
-                                        ? 'All items selected'
-                                        : `${selectedKeys.size} selected`}
-                                </p>
-                                <ProjectCenterTableBulkActions
-                                    keys={selectedKeys}
-                                />
-                            </div>
-                        )}
-                    </div>
-                    {/* TODO: Implement Download as CSV */}
-                    {false && (
-                        <div>
-                            <Button
-                                startContent={
-                                    <Sheet className="text-small" size={14} />
-                                }
-                                variant="flat"
-                                size="sm"
-                                className="shadow-SM"
-                                onPress={onDownloadCsv}
-                            >
-                                <span className="font-medium">
-                                    Download as .csv
-                                </span>
-                            </Button>
-                        </div>
-                    )}
-                </div>
-            </div>
-        )
-    }, [
-        visibleColumns,
-        data?.length,
-        filters,
-        hasSearchFilter,
-        selectedKeys,
-        showFinishItems,
-        isLoadingData,
-        searchKeywords,
-    ])
-
-    const bottomContent = useMemo(() => {
-        return (
-            <div className="py-2 px-2 grid grid-cols-3 gap-5">
-                <Select
-                    className="w-40"
-                    label="Rows per page"
-                    variant="bordered"
-                    classNames={{
-                        trigger: 'shadow-SM',
-                    }}
-                    size="sm"
-                    selectionMode="single"
-                    defaultSelectedKeys={[pagination.limit.toString()]}
-                    onSelectionChange={(keys) => {
-                        onLimitChange(Number(keys.currentKey))
-                    }}
-                >
-                    {TABLE_ROW_PER_PAGE_OPTIONS.map((opt) => (
-                        <SelectItem key={opt.value}>
-                            {opt.displayName}
-                        </SelectItem>
-                    ))}
-                </Select>
-                <div className="flex items-center justify-center">
-                    <Pagination
-                        isCompact
-                        showControls
-                        showShadow
-                        color="primary"
-                        page={pagination.page}
-                        total={pagination.totalPages}
-                        onChange={onPageChange}
-                    />
-                </div>
-                <div className="hidden sm:flex w-[30%] justify-end gap-2"></div>
-            </div>
-        )
-    }, [selectedKeys, data?.length, pagination, hasSearchFilter])
-
-    const renderCell: (data: TJob, columnKey: JobColumnKey) => ReactNode =
-        // eslint-disable-next-line react-hooks/preserve-manual-memoization
-        useCallback((data: TJob, columnKey: JobColumnKey) => {
-            const cellValue = lodash.has(data, columnKey)
-                ? (data[columnKey] as string)
-                : ''
-
-            switch (columnKey) {
-                case 'thumbnailUrl':
-                    return (
-                        <div className="flex items-center justify-center">
-                            <div className="overflow-hidden rounded-full size-10">
-                                <Image
-                                    src={data.status.thumbnailUrl}
-                                    alt="image"
-                                    className="object-cover rounded-full size-full"
-                                    preview={false}
-                                />
-                            </div>
-                        </div>
-                    )
-                case 'clientName':
-                    return (
-                        <p className="line-clamp-1">
-                            {data.client?.name || 'Unknown client'}
-                        </p>
-                    )
-                case 'type':
-                    return (
-                        <p className="line-clamp-1">{data.type.displayName}</p>
-                    )
-                case 'no':
-                    return (
-                        <div className="flex items-center justify-between gap-2 group size-full">
-                            <span className="uppercase">{data.no}</span>
-                            <HeroTooltip content="Copy">
-                                <HeroCopyButton
-                                    textValue={data.no}
-                                    className="opacity-70!"
-                                />
-                            </HeroTooltip>
-                        </div>
-                    )
-                case 'displayName':
-                    return (
-                        <p className="w-62.5 line-clamp-1 font-medium">
-                            {data.displayName}
-                        </p>
-                    )
-                case 'incomeCost':
-                    return (
-                        <p className="font-bold text-right text-currency">
-                            {currencyFormatter(data.incomeCost)}
-                        </p>
-                    )
-                case 'totalStaffCost': // Total cost for Admin
-                    return (
-                        <p className="font-bold text-right text-currency">
-                            {currencyFormatter(
-                                data.totalStaffCost,
-                                'Vietnamese'
-                            )}
-                        </p>
-                    )
-
-                case 'staffCost': // Individual cost for User
-                    return (
-                        <>
-                            {data.staffCost ? (
-                                <p className="font-bold text-right text-currency">
-                                    {currencyFormatter(
-                                        data.staffCost,
-                                        'Vietnamese'
-                                    )}
-                                </p>
-                            ) : (
-                                <p className="text-xs italic text-text-subdued text-right">
-                                    Not assigned
-                                </p>
-                            )}
-                        </>
-                    )
-                case 'status':
-                    return (
-                        <div className="flex items-center justify-center z-0">
-                            <JobStatusDropdown
-                                jobData={data}
-                                statusData={data.status as TJobStatus}
-                                afterChangeStatus={onRefresh}
-                            />
-                        </div>
-                    )
-                case 'dueAt': {
-                    const isCompleted =
-                        data.status.systemType ===
-                        JobStatusSystemTypeEnum.COMPLETED
-                    const isFinish =
-                        data.status.systemType ===
-                        JobStatusSystemTypeEnum.TERMINATED
-
-                    const isPaused = isCompleted || isFinish
-                    const targetDate = dayjs(data.dueAt)
-
-                    return (
-                        <div className="w-full">
-                            {isPaused ? (
-                                <JobFinishChip
-                                    status={
-                                        isCompleted ? 'completed' : 'finish'
-                                    }
-                                />
-                            ) : (
-                                <CountdownTimer
-                                    targetDate={targetDate}
-                                    hiddenUnits={['second', 'year']}
-                                    paused={isPaused}
-                                    className="text-right!"
-                                />
-                            )}
-                        </div>
-                    )
-                }
-                case 'attachmentUrls':
-                    return !data.attachmentUrls?.length ? (
-                        <div className="size-full flex items-center justify-center">
-                            <HeroTooltip content={'Add attachment'}>
-                                <HeroButton
-                                    isIconOnly
-                                    variant="light"
-                                    size="sm"
-                                    className="size-8! flex items-center justify-center"
-                                    onPress={() => onAddAttachments(data.no)}
-                                    color="default"
-                                >
-                                    <p className="inline-flex items-center leading-none">
-                                        <FilePlus
-                                            size={16}
-                                            className="opacity-60"
-                                        />
-                                    </p>
-                                </HeroButton>
-                            </HeroTooltip>
-                        </div>
-                    ) : (
-                        <p className="w-full text-center font-semibold tracking-wide">
-                            x{data.attachmentUrls.length}
-                        </p>
-                    )
-                case 'assignments':
-                    return !data.assignments.length ? (
-                        <div className="size-full flex items-center justify-center">
-                            <HeroTooltip content="Assign members">
-                                <Button
-                                    isIconOnly
-                                    variant="light"
-                                    size="sm"
-                                    className="size-8! flex items-center justify-center"
-                                    onPress={() => onAssignMember(data.no)}
-                                >
-                                    <UserRoundPlus
-                                        size={16}
-                                        className="opacity-60"
-                                    />
-                                </Button>
-                            </HeroTooltip>
-                        </div>
-                    ) : (
-                        <div onClick={() => {}} className="w-fit">
-                            <Avatar.Group
-                                max={{
-                                    count: 4,
-                                    style: {
-                                        color: 'var(--color-primary)',
-                                        backgroundColor:
-                                            'var(--color-primary-50)',
-                                    },
-                                    popover: {
-                                        styles: {
-                                            body: {
-                                                borderRadius: '16px',
-                                            },
-                                        },
-                                    },
-                                }}
-                            >
-                                {data.assignments.map((ass) => (
-                                    <Avatar
-                                        key={ass.id}
-                                        src={optimizeCloudinary(
-                                            ass.user.avatar
-                                        )}
-                                    />
-                                ))}
-                            </Avatar.Group>
-                        </div>
-                    )
-                case 'isPaid':
-                    return <PaymentStatusDropdown jobData={data} />
-                case 'paymentChannel':
-                    return data.paymentChannel ? (
-                        <p className="line-clamp-1">
-                            {data.paymentChannel.displayName}
-                        </p>
-                    ) : (
-                        <p>-</p>
-                    )
-                case 'completedAt':
-                    return (
-                        data.completedAt && (
-                            <span>{dateFormatter(data.completedAt)}</span>
-                        )
-                    )
-                case 'createdAt':
-                    return data.createdAt ? (
-                        <span>{dateFormatter(data.createdAt)}</span>
-                    ) : (
-                        <span className="text-text-subdued">-</span>
-                    )
-                case 'updatedAt':
-                    return data.updatedAt ? (
-                        <span>{dateFormatter(data.updatedAt)}</span>
-                    ) : (
-                        <span className="text-text-subdued">-</span>
-                    )
-
-                case 'action':
-                    return (
-                        <div className="flex items-center justify-end gap-2">
-                            <HeroTooltip content="View details">
-                                <Button
-                                    isIconOnly
-                                    variant="light"
-                                    size="sm"
-                                    className="size-8! flex items-center justify-center"
-                                    onPress={() => {
-                                        openJobDetailDrawer(data.no)
-                                    }}
-                                >
-                                    <p className="inline-flex items-center leading-none">
-                                        <EyeIcon
-                                            size={18}
-                                            className="opacity-60"
-                                        />
-                                    </p>
-                                </Button>
-                            </HeroTooltip>
-                            <HeroTooltip content="Copy link">
-                                <HeroCopyButton
-                                    className="size-8! flex items-center justify-center"
-                                    iconSize={16}
-                                    iconClassName="opacity-60"
-                                    textValue={INTERNAL_URLS.getJobDetailUrl(
-                                        data.no
-                                    )}
-                                />
-                            </HeroTooltip>
-                            <ProjectCenterTableQuickActions data={data} />
-                        </div>
-                    )
-                default:
-                    return cellValue
-            }
-        }, [])
+    const renderCell = useCallback(
+        (item: TJob, columnKey: JobColumnKey) =>
+            renderProjectCenterCell(item, columnKey, cellActions),
+        [cellActions]
+    )
 
     return (
         <HeroTable
-            key="no"
+            key="project-center-table"
             isHeaderSticky
             aria-label="Project center table"
-            bottomContent={bottomContent}
             bottomContentPlacement="outside"
             selectedKeys={selectedKeys}
-            // TODO: Implement bulk features
-            // selectionMode="multiple"
             selectionMode="single"
-            topContent={topContent}
-            onRowAction={(key) => {
-                console.log(key)
-                openJobDetailDrawer(key as string)
-            }}
+            onSelectionChange={setSelectedKeys}
+            onRowAction={(key) => openJobDetailDrawer(key as string)}
             sortString={sort ?? undefined}
             onSortStringChange={onSortChange}
-            BaseComponent={(found) => {
-                return (
-                    <ScrollArea className="size-full h-full! border border-border p-2 rounded-md min-h-[calc(100%-150px)]">
-                        <ScrollBar orientation="horizontal" />
-                        <ScrollBar orientation="vertical" />
-                        {found.children}
-                    </ScrollArea>
-                )
-            }}
-            // sortDescriptor={sortDescriptor}
-            topContentPlacement="outside"
-            onSelectionChange={setSelectedKeys}
-            // onSortChange={setSortDescriptor}'
+            BaseComponent={(found) => (
+                <ScrollArea className="size-full h-full! border border-border p-2 rounded-md min-h-[calc(100%-150px)]">
+                    <ScrollBar orientation="horizontal" />
+                    <ScrollBar orientation="vertical" />
+                    {found.children}
+                </ScrollArea>
+            )}
             classNames={{
                 table: !isLoadingData ? 'relative' : 'relative min-h-[430px]!',
             }}
@@ -792,9 +118,7 @@ export default function ProjectCenterTable({
                         key={column.uid}
                         align={column.uid === 'action' ? 'center' : 'start'}
                         allowsSorting={column.sortable}
-                        onContextMenu={() => {
-                            setContextItem(null)
-                        }}
+                        onContextMenu={() => setContextItem(null)}
                     >
                         {column.displayName}
                     </HeroTableColumn>
@@ -803,15 +127,21 @@ export default function ProjectCenterTable({
             <HeroTableBody
                 emptyContent={'No items found'}
                 items={isLoadingData ? [] : data}
-                loadingContent={<TableLoadingFallback />}
+                loadingContent={
+                    <div className="flex w-full flex-col items-center justify-center gap-4 rounded-xl bg-content1/50">
+                        <Spinner
+                            size="lg"
+                            color="primary"
+                            label="Loading data..."
+                        />
+                    </div>
+                }
                 isLoading={isLoadingData}
             >
                 {(item) => (
                     <HeroTableRow
                         key={item.no}
-                        onContextMenu={() => {
-                            setContextItem(item)
-                        }}
+                        onContextMenu={() => setContextItem(item)}
                     >
                         {(columnKey) => (
                             <HeroTableCell>
@@ -822,13 +152,5 @@ export default function ProjectCenterTable({
                 )}
             </HeroTableBody>
         </HeroTable>
-    )
-}
-
-function TableLoadingFallback() {
-    return (
-        <div className="flex w-full flex-col items-center justify-center gap-4 rounded-xl bg-content1/50">
-            <Spinner size="lg" color="primary" label="Loading data..." />
-        </div>
     )
 }

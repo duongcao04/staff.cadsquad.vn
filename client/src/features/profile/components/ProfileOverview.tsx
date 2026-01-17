@@ -1,4 +1,4 @@
-import HeroCopyButton from '@/shared/components/ui/hero-copy-button'
+import { HeroCopyButton } from '@/shared/components/ui/hero-copy-button'
 import type { TUser } from '@/shared/types'
 import {
     Building2,

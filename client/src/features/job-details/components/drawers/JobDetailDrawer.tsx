@@ -24,7 +24,7 @@ import {
     HeroCardBody,
     HeroCardHeader,
 } from '@/shared/components/ui/hero-card'
-import HeroCopyButton from '@/shared/components/ui/hero-copy-button'
+import { HeroCopyButton } from '@/shared/components/ui/hero-copy-button'
 import {
     HeroDrawer,
     HeroDrawerBody,

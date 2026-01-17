@@ -36,7 +36,7 @@ import {
     HeroTooltip,
 } from '@/shared/components'
 import AdminContentContainer from '@/shared/components/admin/AdminContentContainer'
-import HeroCopyButton from '@/shared/components/ui/hero-copy-button'
+import { HeroCopyButton } from '@/shared/components/ui/hero-copy-button'
 import { TJob, TUser } from '@/shared/types'
 import {
     addToast,

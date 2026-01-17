@@ -1,3 +1,7 @@
+import { ChangeUserStatusModal } from '@/features/staff-directory/components/modals/ChangeUserStatusModal'
+import { DeleteUserPermanentlyModal } from '@/features/staff-directory/components/modals/DeleteUserPermanentlyModal'
+import ResetPasswordModal from '@/features/staff-directory/components/modals/ResetPasswordModal'
+import { UploadAvatarModal } from '@/features/staff-directory/components/modals/UploadAvatarModal'
 import {
     ApiResponse,
     dateFormatter,
@@ -26,11 +30,7 @@ import {
     RoleChip,
 } from '@/shared/components'
 import AdminContentContainer from '@/shared/components/admin/AdminContentContainer'
-import { ChangeUserStatusModal } from '@/features/staff-directory/components/modals/ChangeUserStatusModal'
-import { DeleteUserPermanentlyModal } from '@/features/staff-directory/components/modals/DeleteUserPermanentlyModal'
-import ResetPasswordModal from '@/features/staff-directory/components/modals/ResetPasswordModal'
-import { UploadAvatarModal } from '@/features/staff-directory/components/modals/UploadAvatarModal'
-import HeroCopyButton from '@/shared/components/ui/hero-copy-button'
+import { HeroCopyButton } from '@/shared/components/ui/hero-copy-button'
 import { TUser } from '@/shared/types'
 import {
     addToast,

@@ -519,6 +519,11 @@ export class JobService {
 			const result = await tx.job.update({
 				where: { id: jobId },
 				data: updateData,
+				include: {
+					status: {
+						select: { thumbnailUrl: true },
+					},
+				},
 			})
 
 			await this.activityLogService.create(
@@ -536,15 +541,15 @@ export class JobService {
 		})
 
 		// Notify staff if status moves from active to another state
-		if (
-			job.status.systemType !== 'TERMINATED' &&
-			job.assignments.length > 0
-		) {
+		if (job.assignments.length > 0) {
 			await this.notificationService.sendMany(
 				job.assignments.map((a) => ({
 					userId: a.userId,
 					title: 'Force Status Update',
 					content: `Job #${job.no} moved from ${job.status.displayName} to ${targetStatus.displayName}.`,
+					imageUrl:
+						updatedJob.status.thumbnailUrl ||
+						IMAGES.NOTIFICATION_DEFAULT_IMAGE,
 					type: NotificationType.JOB_UPDATE,
 					redirectUrl: `/jobs/${job.no}`,
 				}))

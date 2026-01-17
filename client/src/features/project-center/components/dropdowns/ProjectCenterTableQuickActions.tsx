@@ -51,7 +51,7 @@ export function ProjectCenterTableQuickActions({
 
     // --- Handlers ---
     const onDeleteJob = async () => {
-        await deleteJobMutation(data?.id, {
+        await deleteJobMutation(data.id, {
             onSuccess: () => {
                 queryClient.refetchQueries({
                     queryKey: jobsListOptions().queryKey,
@@ -76,18 +76,22 @@ export function ProjectCenterTableQuickActions({
     return (
         <>
             {/* 1. Assignment Modal (Member selection + Cost input) */}
-            <AssignMemberModal
-                isOpen={assignModal.isOpen}
-                onClose={assignModal.onClose}
-                jobNo={data.no}
-            />
+            {assignModal.isOpen && (
+                <AssignMemberModal
+                    isOpen={assignModal.isOpen}
+                    onClose={assignModal.onClose}
+                    jobNo={data.no}
+                />
+            )}
 
             {/* 2. Attachment Modal (URL / File links) */}
-            <AddAttachmentsModal
-                isOpen={attachmentModal.isOpen}
-                onClose={attachmentModal.onClose}
-                jobNo={data.no}
-            />
+            {attachmentModal.isOpen && (
+                <AddAttachmentsModal
+                    isOpen={attachmentModal.isOpen}
+                    onClose={attachmentModal.onClose}
+                    jobNo={data.no}
+                />
+            )}
 
             {/* 3. Delete Confirmation */}
             {deleteModal.isOpen && (

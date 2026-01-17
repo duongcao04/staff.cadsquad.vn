@@ -1,20 +1,18 @@
+import { generatePassword, ResetPasswordSchema } from '@/lib'
 import { useResetPasswordMutation } from '@/lib/queries'
-import type { TUser } from '@/shared/types'
-import { Button, Radio, RadioGroup } from '@heroui/react'
-import { useState, useMemo } from 'react'
-import * as yup from 'yup' // Import Yup
-
-// Import your schema (or define it here if not exported)
-import { generatePassword, ResetPasswordSchema } from '../../../../lib'
-import HeroCopyButton from '../../../../shared/components/ui/hero-copy-button'
+import { HeroCopyButton } from '@/shared/components/ui/hero-copy-button'
 import {
     HeroModal,
     HeroModalBody,
     HeroModalContent,
     HeroModalFooter,
     HeroModalHeader,
-} from '../../../../shared/components/ui/hero-modal'
-import { HeroPasswordInput } from '../../../../shared/components/ui/hero-password-input'
+} from '@/shared/components/ui/hero-modal'
+import { HeroPasswordInput } from '@/shared/components/ui/hero-password-input'
+import type { TUser } from '@/shared/types'
+import { Button, Radio, RadioGroup } from '@heroui/react'
+import { useMemo, useState } from 'react'
+import * as yup from 'yup'
 
 type Props = {
     isOpen: boolean

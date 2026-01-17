@@ -117,7 +117,8 @@ export const STORAGE_KEYS = {
     adminRightSidebar: 'csd_admin-right-sidebar',
     adminLeftSidebar: 'csd_admin-left-sidebar',
     communitiesLeftStatus: 'csd_communities-left-sidebar',
-    jobColumns: 'csd-job_columns',
+    jobColumns: 'csd-project-center_table_cols',
+    workbenchColumns: 'csd-workbench_table_cols',
 } as const
 
 export const IMAGES = {

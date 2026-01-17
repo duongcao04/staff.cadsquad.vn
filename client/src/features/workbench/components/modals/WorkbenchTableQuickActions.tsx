@@ -1,12 +1,16 @@
+import { DeliverJobModal } from '@/features/job-manage/components/modals/DeliverJobModal'
+import ReScheduleModal from '@/features/job-manage/components/modals/ReScheduleModal'
+import AssignMemberModal from '@/features/project-center/components/modals/AssignMemberModal'
+import UpdateCostModal from '@/features/project-center/components/modals/UpdateCostModal'
 import { INTERNAL_URLS } from '@/lib'
 import {
     useDeleteJobMutation,
     useMarkPaidMutation,
-    useProfile,
-    useTogglePinJobMutation,
     workbenchDataOptions,
 } from '@/lib/queries'
 import { APP_PERMISSIONS } from '@/lib/utils'
+import ConfirmModal from '@/shared/components/ui/confirm-modal'
+import { usePermission } from '@/shared/hooks'
 import type { TJob } from '@/shared/types'
 import {
     Button,
@@ -22,20 +26,12 @@ import {
     CircleCheck,
     CircleDollarSign,
     EllipsisVerticalIcon,
-    PinIcon,
-    PinOff,
     SquareArrowOutUpRight,
     Trash,
     TruckElectricIcon,
     UserPlus,
     WindArrowDownIcon,
 } from 'lucide-react'
-import { usePermission } from '../../../../shared/hooks'
-import { DeliverJobModal } from '../../../job-manage/components/modals/DeliverJobModal'
-import ReScheduleModal from '../../../job-manage/components/modals/ReScheduleModal'
-import AssignMemberModal from '../../../project-center/components/modals/AssignMemberModal'
-import UpdateCostModal from '../../../project-center/components/modals/UpdateCostModal'
-import ConfirmModal from '../../../../shared/components/ui/confirm-modal'
 
 type WorkbenchTableQuickActionsProps = {
     data: TJob
@@ -45,11 +41,7 @@ export function WorkbenchTableQuickActions({
 }: WorkbenchTableQuickActionsProps) {
     const { hasPermission } = usePermission()
 
-    const jobPinned = data.isPinned
-
     const markPaidMutation = useMarkPaidMutation()
-
-    const togglePinJobMutation = useTogglePinJobMutation()
 
     const canPayout = useMemo(
         () => data.status.systemType === 'COMPLETED' && !data.isPaid,
@@ -115,14 +107,6 @@ export function WorkbenchTableQuickActions({
                 },
             })
         }
-    }
-
-    const handleTogglePin = async () => {
-        togglePinJobMutation.mutateAsync(data.id, {
-            onSuccess: () => {
-                onCloseModal()
-            },
-        })
     }
 
     return (
@@ -223,25 +207,6 @@ export function WorkbenchTableQuickActions({
                                 Deliver Job
                             </DropdownItem>
                         ) : null}
-                        <DropdownItem
-                            key="pin"
-                            startContent={
-                                jobPinned ? (
-                                    <PinOff
-                                        size={14}
-                                        className="text-text-default"
-                                    />
-                                ) : (
-                                    <PinIcon
-                                        size={14}
-                                        className="text-text-default"
-                                    />
-                                )
-                            }
-                            onPress={handleTogglePin}
-                        >
-                            {jobPinned ? 'Unpin' : 'Pin'}
-                        </DropdownItem>
                         {hasPermission(APP_PERMISSIONS.JOB.ASSIGN_MEMBER) ? (
                             <DropdownItem
                                 key="assignReassign"
@@ -322,18 +287,18 @@ export function WorkbenchTableQuickActions({
     )
 }
 
-import { useNavigate } from '@tanstack/react-router'
-import { AlertCircle, CheckCircle2, ExternalLink } from 'lucide-react'
-import { useMemo } from 'react'
-import { ConfirmPaymentModal } from '../../../financial/components/modals/ConfirmPaymentModal'
+import { queryClient } from '@/main'
 import {
     HeroModal,
     HeroModalBody,
     HeroModalContent,
     HeroModalFooter,
     HeroModalHeader,
-} from '../../../../shared/components/ui/hero-modal'
-import { queryClient } from '../../../../main'
+} from '@/shared/components/ui/hero-modal'
+import { useNavigate } from '@tanstack/react-router'
+import { AlertCircle, CheckCircle2, ExternalLink } from 'lucide-react'
+import { useMemo } from 'react'
+import { ConfirmPaymentModal } from '../../../financial/components/modals/ConfirmPaymentModal'
 
 interface Props {
     isOpen: boolean

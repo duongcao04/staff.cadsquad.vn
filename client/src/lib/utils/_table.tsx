@@ -107,7 +107,7 @@ export const getAllowedJobColumns = (
     // 2. Lọc dựa trên tùy chọn hiển thị của User (UI Toggle)
     if (visibleColumns === 'all') return allowedByPermission
 
-    return allowedByPermission.filter((column) =>
-        visibleColumns?.includes(column.uid)
-    )
+    return allowedByPermission.filter((column) => {
+        return visibleColumns?.includes(column.uid)
+    })
 }
