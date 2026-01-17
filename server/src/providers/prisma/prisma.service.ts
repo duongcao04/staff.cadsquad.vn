@@ -16,7 +16,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 		// 1. Tạo Connection Pool từ thư viện pg
 		const pool = new Pool({
 			connectionString: dbConfig.postgres.url,
-			ssl: config.NODE_ENV === 'production' ? true : false,
+			ssl: false,
 		})
 
 		// 2. Tạo Adapter
