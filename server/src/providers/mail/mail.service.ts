@@ -14,6 +14,7 @@ import {
 	JOB_SEND_REJECT_MAIL,
 	JOB_SEND_APPROVE_MAIL,
 	JOB_SEND_DELIVER_MAIL,
+	JOB_SEND_FORCE_STATUS_UPDATE,
 } from './mail.constants'
 
 @Injectable()
@@ -215,6 +216,38 @@ export class MailService implements OnModuleInit {
 		await Promise.all(queueJobs)
 		this.logger.log(
 			`⚠️ Queued REJECTED notification for ${users.length} users.`
+		)
+	}
+	/**
+	 * 10. Force Status Update Notification
+	 */
+	async sendForceStatusUpdateNotification(
+		users: { email: string; personalEmail?: string; displayName: string }[],
+		data: {
+			jobNo: string
+			jobTitle: string
+			oldStatus: string
+			newStatus: string
+			modifierName: string
+		}
+	) {
+		const queueJobs = users.map((user) =>
+			this.mailQueue.add(JOB_SEND_FORCE_STATUS_UPDATE, {
+				email: user.email,
+				cc: user.personalEmail,
+				username: user.displayName,
+				// Job Details
+				jobNo: data.jobNo,
+				jobTitle: data.jobTitle,
+				oldStatus: data.oldStatus,
+				newStatus: data.newStatus,
+				modifierName: data.modifierName,
+			})
+		)
+
+		await Promise.all(queueJobs)
+		this.logger.log(
+			`🔄 Queued FORCE STATUS UPDATE email for ${users.length} users.`
 		)
 	}
 }

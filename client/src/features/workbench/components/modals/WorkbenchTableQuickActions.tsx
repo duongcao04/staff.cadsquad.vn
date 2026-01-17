@@ -221,7 +221,9 @@ export function WorkbenchTableQuickActions({
                                 Assign / Reassign
                             </DropdownItem>
                         ) : null}
-                        {hasPermission(APP_PERMISSIONS.JOB.UPDATE) ? (
+
+                        {/* TODO: */}
+                        {false && hasPermission(APP_PERMISSIONS.JOB.UPDATE) ? (
                             <DropdownItem
                                 key="reschedule"
                                 startContent={

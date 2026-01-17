@@ -601,6 +601,37 @@ export class JobService {
 			redirectUrl: `/jobs/${job.no}`,
 		})
 
+		if (uniqueIds.length > 0) {
+			const recipients = await this.prisma.user
+				.findMany({
+					where: { id: { in: uniqueIds }, isActive: true },
+					select: {
+						email: true,
+						displayName: true,
+						personalEmail: true,
+					},
+				})
+				.then((res) =>
+					res.map((it) => ({
+						email: it.email,
+						personalEmail: it.personalEmail || it.email,
+						displayName: it.displayName,
+					}))
+				)
+
+			// 6. SEND EMAIL NOTIFICATION
+			await this.mailService.sendForceStatusUpdateNotification(
+				recipients,
+				{
+					jobNo: updatedJob.no,
+					jobTitle: updatedJob.displayName,
+					oldStatus: job.status.displayName,
+					newStatus: targetStatus.displayName,
+					modifierName: 'Administrator',
+				}
+			)
+		}
+
 		return { id: jobId, no: updatedJob.no }
 	}
 

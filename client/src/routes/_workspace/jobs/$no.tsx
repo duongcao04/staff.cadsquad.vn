@@ -577,7 +577,8 @@ function JobDetailPage() {
                                                         <span className="text-xl font-black text-primary">
                                                             {currencyFormatter(
                                                                 job.totalStaffCost ||
-                                                                    0
+                                                                    0,
+                                                                'Vietnamese'
                                                             )}
                                                         </span>
                                                     </div>
@@ -703,7 +704,8 @@ function JobDetailPage() {
                                                             )
                                                                 ? currencyFormatter(
                                                                       asgn.staffCost ||
-                                                                          0
+                                                                          0,
+                                                                      'Vietnamese'
                                                                   )
                                                                 : '••••••'}
                                                         </p>
@@ -817,7 +819,8 @@ function JobDetailPage() {
                                         <span className="font-semibold text-text-default">
                                             {currencyFormatter(
                                                 job.totalStaffCost ||
-                                                    job.staffCost
+                                                    job.staffCost,
+                                                'Vietnamese'
                                             )}
                                         </span>
                                     </div>

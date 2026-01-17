@@ -50,7 +50,7 @@ export function ProfileOverview({ data }: ProfileOverviewProps) {
                                 className="text-sm font-semibold text-text-subdued hover:underline"
                                 target="_blank"
                             >
-                                {data.email}
+                                {data.personalEmail ?? data.email}
                             </a>
                         </div>
                         <HeroCopyButton textValue={data.email} />

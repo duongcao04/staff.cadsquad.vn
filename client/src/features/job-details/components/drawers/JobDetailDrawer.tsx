@@ -796,7 +796,8 @@ export default function JobDetailDrawer({
                                                                             <span className="text-xl font-black text-primary">
                                                                                 {currencyFormatter(
                                                                                     job.totalStaffCost ||
-                                                                                        0
+                                                                                        0,
+                                                                                    'Vietnamese'
                                                                                 )}
                                                                             </span>
                                                                         </div>
@@ -946,7 +947,8 @@ export default function JobDetailDrawer({
                                                                                     )
                                                                                         ? currencyFormatter(
                                                                                               asgn.staffCost ||
-                                                                                                  0
+                                                                                                  0,
+                                                                                              'Vietnamese'
                                                                                           )
                                                                                         : '••••••'}
                                                                                 </p>

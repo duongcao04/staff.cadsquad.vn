@@ -11,6 +11,7 @@ import {
 	JOB_SEND_APPROVE_MAIL,
 	JOB_SEND_DELIVER_MAIL,
 	JOB_SEND_EMAIL,
+	JOB_SEND_FORCE_STATUS_UPDATE,
 	JOB_SEND_INVITATION_EMAIL,
 	JOB_SEND_JOB_ASSIGNMENT,
 	JOB_SEND_JOB_PAID,
@@ -40,6 +41,8 @@ export class MailProcessor extends WorkerHost {
 				case JOB_SEND_EMAIL:
 					return await this.handleGenericEmail(job.data)
 
+				case JOB_SEND_FORCE_STATUS_UPDATE:
+					return await this.handleForceStatusUpdate(job.data)
 				// Auth & Account
 				case JOB_SEND_INVITATION_EMAIL:
 					return await this.handleInvitationEmail(job.data)
@@ -242,5 +245,25 @@ export class MailProcessor extends WorkerHost {
 		})
 		this.logger.log(`📧 Email '${template}' sent to: ${to}`)
 		return { sent: true, to }
+	}
+
+	private async handleForceStatusUpdate(data: any) {
+		await this.sendMail(
+			data.email,
+			data.cc,
+			`[CAD SQUAD] Status Update: ${data.jobNo}`,
+			'./force-status-update',
+			{
+				recipientName: data.username,
+				jobNo: data.jobNo,
+				jobTitle: data.jobTitle,
+				oldStatus: data.oldStatus,
+				newStatus: data.newStatus,
+				modifierName: data.modifierName,
+
+				jobLink: `${this.config.CLIENT_URL}/_workspace/job-details/${data.jobNo}`,
+				logoUrl: IMAGES.NOTIFICATION_DEFAULT_IMAGE,
+			}
+		)
 	}
 }
