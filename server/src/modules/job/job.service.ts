@@ -545,7 +545,7 @@ export class JobService {
 			await this.notificationService.sendMany(
 				job.assignments.map((a) => ({
 					userId: a.userId,
-					title: 'Force Status Update',
+					title: `[${job.no}] Force Status Update`,
 					content: `Job #${job.no} moved from ${job.status.displayName} to ${targetStatus.displayName}.`,
 					imageUrl:
 						updatedJob.status.thumbnailUrl ||

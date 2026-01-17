@@ -26,6 +26,7 @@ export const INTERNAL_URLS = {
         return '/' + locale + '/' + 'jobs' + '/' + jobNo
     },
     profile: '/' + 'profile',
+    allNotifications: '/' + 'notifications',
     userOverview: '/' + 'overview',
     userTaskSummary: '/' + 'task-summary',
     helpCenter: '/' + 'help-center',

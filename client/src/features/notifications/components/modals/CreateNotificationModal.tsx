@@ -1,9 +1,3 @@
-import { addToast, Button, type InputProps, Textarea } from '@heroui/react'
-import { Image, Modal } from 'antd'
-import { useFormik } from 'formik'
-import { capitalize } from 'lodash'
-import { useMemo } from 'react'
-
 import {
     useProfile,
     useSendNotificationMutation,
@@ -13,10 +7,13 @@ import {
     CreateNotificationInputSchema,
     type TCreateNotificationInput,
 } from '@/lib/validationSchemas'
+import { HeroInput, HeroSelect, HeroSelectItem } from '@/shared/components'
 import { NotificationTypeEnum } from '@/shared/enums'
-
-import { HeroInput } from '../../../../shared/components/ui/hero-input'
-import { HeroSelect, HeroSelectItem } from '../../../../shared/components/ui/hero-select'
+import { addToast, Button, type InputProps, Textarea } from '@heroui/react'
+import { Image, Modal } from 'antd'
+import { useFormik } from 'formik'
+import { capitalize } from 'lodash'
+import { useMemo } from 'react'
 
 const inputClassNames: InputProps['classNames'] = {
     base: 'grid grid-cols-[140px_1fr] gap-3',
@@ -232,7 +229,7 @@ export function CreateNotificationModal({ isOpen, onClose }: Props) {
                                                 <Image
                                                     src={usr.avatar as string}
                                                     alt="user avatar"
-                                                    rootClassName="!size-10 rounded-full"
+                                                    rootClassName="size-10! rounded-full"
                                                     className="size-full! rounded-full p-px border-2"
                                                     preview={false}
                                                     style={{

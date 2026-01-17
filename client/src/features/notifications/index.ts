@@ -1,2 +1,5 @@
+export * from './components/modals/CreateNotificationModal'
+export * from './components/user-notifications/NotificationItem'
+export * from './components/user-notifications/NotificationList'
 export * from './components/views/NotificationCard'
 export * from './components/views/NotificationDropdown'

@@ -185,20 +185,27 @@ export class NotificationService {
 			})
 		}
 	}
+	async findAll(userId: string, page: number = 1, limit: number = 10) {
+		// 1. Tính toán số bản ghi cần bỏ qua
+		const skip = (page - 1) * limit
 
-	// --- Các hàm Query (Giữ nguyên) ---
-	async findAll(userId: string) {
+		// 2. Chạy song song các query để tối ưu hiệu năng
 		const [notifications, totalCount, unseenCount] = await Promise.all([
 			this.prisma.notification.findMany({
 				where: { userId },
 				orderBy: { createdAt: 'desc' },
-				take: 40, // Giới hạn lấy 50 cái mới nhất
+				skip: skip,
+				take: limit, // Số lượng bản ghi trên một trang
 			}),
 			this.prisma.notification.count({ where: { userId } }),
 			this.prisma.notification.count({
 				where: { userId, status: NotificationStatus.UNSEEN },
 			}),
 		])
+
+		// 3. Tính toán thông tin phân trang (Metadata)
+		const totalPages = Math.ceil(totalCount / limit)
+
 		return {
 			notifications: plainToInstance(
 				NotificationResponseDto,
@@ -206,7 +213,14 @@ export class NotificationService {
 				{ excludeExtraneousValues: true }
 			),
 			unseenCount,
-			totalCount,
+			paginate: {
+				total: totalCount,
+				page: page,
+				limit: limit,
+				totalPages: totalPages,
+				hasNextPage: page < totalPages,
+				hasPrevPage: page > 1,
+			},
 		}
 	}
 

@@ -11,7 +11,7 @@ export const notificationApi = {
     },
     // Get all user notification
     // userId get from Authentication Header
-    findAll: async () => {
+    findAll: async (page: number, limit: number) => {
         return axiosClient
             .get<
                 ApiResponse<{
@@ -19,7 +19,7 @@ export const notificationApi = {
                     totalCount: number
                     unseenCount: number
                 }>
-            >('/v1/notifications')
+            >(`/v1/notifications?page=${page}&limit=${limit}`)
             .then((res) => res.data)
     },
     findOne: (id: string) => {
