@@ -53,7 +53,9 @@ export function ProfileOverview({ data }: ProfileOverviewProps) {
                                 {data.personalEmail ?? data.email}
                             </a>
                         </div>
-                        <HeroCopyButton textValue={data.email} />
+                        <HeroCopyButton
+                            textValue={data.personalEmail ?? data.email}
+                        />
                     </div>
                 </div>
 
@@ -65,7 +67,7 @@ export function ProfileOverview({ data }: ProfileOverviewProps) {
                     />
                     <div>
                         <p className="text-xs text-text-subdued">Department</p>
-                        <p className="mt-1 text-sm font-semibold text-text-subdued hover:underline">
+                        <p className="mt-1 text-sm font-semibold text-text-default hover:underline">
                             {data.department?.displayName}
                         </p>
                     </div>
@@ -79,7 +81,7 @@ export function ProfileOverview({ data }: ProfileOverviewProps) {
                     />
                     <div>
                         <p className="text-xs text-text-subdued">Job title</p>
-                        <p className="mt-1 text-sm font-semibold text-text-subdued hover:underline">
+                        <p className="mt-1 text-sm font-semibold text-text-default hover:underline">
                             {data.jobTitle?.displayName ?? '-'}
                         </p>
                     </div>
