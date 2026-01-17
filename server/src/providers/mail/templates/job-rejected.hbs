@@ -1,0 +1,109 @@
+<html>
+	<head>
+		<meta charset='utf-8' />
+		<title>Revision Requested</title>
+		<style>
+			/* Shared CSS... */
+			body {
+				font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+				background-color: #f4f6f8;
+				color: #334155;
+			}
+			.email-content {
+				max-width: 600px;
+				margin: 0 auto;
+				background-color: #ffffff;
+				border-radius: 8px;
+				overflow: hidden;
+			}
+			.email-body {
+				padding: 40px;
+			}
+			.job-card {
+				background-color: #fef2f2;
+				border: 1px solid #fecaca;
+				border-radius: 6px;
+				padding: 20px;
+				margin: 25px 0;
+			}
+			.label {
+				font-size: 12px;
+				text-transform: uppercase;
+				color: #64748b;
+				font-weight: 600;
+				display: block;
+				margin-bottom: 4px;
+			}
+			.value {
+				font-size: 16px;
+				font-weight: 500;
+				color: #1e293b;
+			}
+			.reason-box {
+				background-color: #fff1f2;
+				border-left: 4px solid #e11d48;
+				padding: 15px;
+				margin-top: 15px;
+				font-style: italic;
+				color: #be123c;
+			}
+			.btn {
+				display: inline-block;
+				background-color: #e11d48;
+				color: #ffffff;
+				padding: 12px 32px;
+				border-radius: 6px;
+				text-decoration: none;
+				font-weight: 600;
+			}
+		</style>
+	</head>
+	<body>
+		<div
+			class='email-wrapper'
+			style='padding: 40px 0; background-color: #f4f6f8;'
+		>
+			<table
+				class='email-content'
+				width='100%'
+				cellpadding='0'
+				cellspacing='0'
+			>
+				<tr><td
+						style='padding: 30px; text-align: center; border-bottom: 1px solid #e2e8f0;'
+					><img src='{{logoUrl}}' style='height: 40px;' /></td></tr>
+				<tr>
+					<td class='email-body'>
+						<h1 style='margin-top:0; color: #9f1239;'>Revision
+							Requested ⚠️</h1>
+						<p>Hi <strong>{{recipientName}}</strong>,</p>
+						<p>The following job has been returned for revision.</p>
+
+						<div class='job-card'>
+							<table width='100%'>
+								<tr><td style='padding-bottom: 15px;'><span
+											class='label'
+										>Job Number</span><div
+											class='value'
+										>{{jobNo}}</div></td></tr>
+								<tr>
+									<td>
+										<span class='label'>Reason / Feedback</span>
+										<div
+											class='reason-box'
+										>"{{rejectionReason}}"</div>
+									</td>
+								</tr>
+							</table>
+						</div>
+
+						<div style='text-align: center; margin-top: 30px;'><a
+								href='{{jobLink}}'
+								class='btn'
+							>Fix Issues</a></div>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</body>
+</html>

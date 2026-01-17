@@ -24,7 +24,7 @@ import {
     HeroCardBody,
     HeroCardHeader,
 } from '@/shared/components/ui/hero-card'
-import HeroCopyButton from '@/shared/components/ui/hero-copy-button'
+import { HeroCopyButton } from '@/shared/components/ui/hero-copy-button'
 import {
     HeroDrawer,
     HeroDrawerBody,
@@ -796,7 +796,8 @@ export default function JobDetailDrawer({
                                                                             <span className="text-xl font-black text-primary">
                                                                                 {currencyFormatter(
                                                                                     job.totalStaffCost ||
-                                                                                        0
+                                                                                        0,
+                                                                                    'Vietnamese'
                                                                                 )}
                                                                             </span>
                                                                         </div>
@@ -946,7 +947,8 @@ export default function JobDetailDrawer({
                                                                                     )
                                                                                         ? currencyFormatter(
                                                                                               asgn.staffCost ||
-                                                                                                  0
+                                                                                                  0,
+                                                                                              'Vietnamese'
                                                                                           )
                                                                                         : '••••••'}
                                                                                 </p>

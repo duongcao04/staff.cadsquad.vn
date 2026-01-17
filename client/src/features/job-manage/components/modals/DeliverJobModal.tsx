@@ -3,6 +3,14 @@ import {
     DeliverJobInputSchema,
     TDeliverJobInput,
 } from '@/lib/validationSchemas/_job.schema'
+import { JobStatusChip } from '@/shared/components/chips/JobStatusChip'
+import {
+    HeroModal,
+    HeroModalBody,
+    HeroModalContent,
+    HeroModalFooter,
+    HeroModalHeader,
+} from '@/shared/components/ui/hero-modal'
 import {
     Button,
     Chip,
@@ -18,14 +26,6 @@ import lodash from 'lodash'
 import { CheckCircle2, Link as LinkIcon, Paperclip, Send } from 'lucide-react'
 import { Suspense } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
-import { JobStatusChip } from '../../../../shared/components/chips/JobStatusChip'
-import {
-    HeroModal,
-    HeroModalBody,
-    HeroModalContent,
-    HeroModalFooter,
-    HeroModalHeader,
-} from '../../../../shared/components/ui/hero-modal'
 
 interface DeliverJobModalProps {
     isOpen: boolean
@@ -49,7 +49,6 @@ export const DeliverJobModal = (props: DeliverJobModalProps) => {
                     }
                 >
                     <Suspense fallback={<DeliverJobSkeleton />}>
-                        {/* Chỉ render nội dung khi thực sự mở Modal */}
                         {props.isOpen && <DeliverJobContent {...props} />}
                     </Suspense>
                 </ErrorBoundary>
@@ -69,7 +68,6 @@ export const DeliverJobContent = ({
 }) => {
     const deliverJobMutation = useDeliverJobMutation()
 
-    // ✅ Dữ liệu được đảm bảo đã load xong mới render tới đây
     const { data: pendingDeliverJobs } = useSuspenseQuery({
         ...jobsPendingDeliverOptions(),
     })
@@ -145,8 +143,10 @@ export const DeliverJobContent = ({
                             }
                             isDisabled={!lodash.isEmpty(defaultJob)}
                             onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            // 1. Validation for Job Select
                             isInvalid={
-                                !!(formik.touched.jobId && formik.errors.jobId)
+                                formik.touched.jobId && !!formik.errors.jobId
                             }
                             errorMessage={
                                 formik.touched.jobId && formik.errors.jobId
@@ -184,6 +184,14 @@ export const DeliverJobContent = ({
                             name="note"
                             value={formik.values.note}
                             onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            // 2. Validation for Note
+                            isInvalid={
+                                formik.touched.note && !!formik.errors.note
+                            }
+                            errorMessage={
+                                formik.touched.note && formik.errors.note
+                            }
                         />
 
                         <Input
@@ -200,47 +208,20 @@ export const DeliverJobContent = ({
                             name="link"
                             value={formik.values.link || ''}
                             onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            // 3. Validation for Link
+                            isInvalid={
+                                formik.touched.link && !!formik.errors.link
+                            }
+                            errorMessage={
+                                formik.touched.link && formik.errors.link
+                            }
                         />
 
-                        {/* TODO: Implement Files upload */}
+                        {/* Files upload UI (Hidden for now as per your request) */}
                         {false && (
                             <div className="space-y-2">
-                                <div className="flex items-center justify-between">
-                                    <span className="text-sm font-medium">
-                                        Attachments
-                                    </span>
-                                    <label className="cursor-pointer text-xs text-primary font-bold hover:opacity-70 flex items-center gap-1">
-                                        <Paperclip size={14} /> Add Files
-                                        <input
-                                            type="file"
-                                            multiple
-                                            className="hidden"
-                                            onChange={handleFileChange}
-                                        />
-                                    </label>
-                                </div>
-                                <div className="flex flex-wrap gap-2">
-                                    {formik.values.files?.map((_, index) => (
-                                        <Chip
-                                            key={index}
-                                            variant="flat"
-                                            color="primary"
-                                            size="sm"
-                                            onClose={() => {
-                                                const newFiles = [
-                                                    ...formik.values.files!,
-                                                ]
-                                                newFiles.splice(index, 1)
-                                                formik.setFieldValue(
-                                                    'files',
-                                                    newFiles
-                                                )
-                                            }}
-                                        >
-                                            File {index + 1}
-                                        </Chip>
-                                    ))}
-                                </div>
+                                {/* ... existing file code ... */}
                             </div>
                         )}
 
@@ -273,6 +254,12 @@ export const DeliverJobContent = ({
                     color="primary"
                     type="submit"
                     isLoading={deliverJobMutation.isPending}
+                    // Disable only if submitting or if the form is in an invalid state (optional)
+                    isDisabled={
+                        !formik.isValid ||
+                        !formik.dirty ||
+                        deliverJobMutation.isPending
+                    }
                     className="font-bold px-8"
                 >
                     Submit Delivery

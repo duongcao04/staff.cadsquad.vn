@@ -3,7 +3,9 @@ import { ActivityType, Job, NotificationType, Prisma } from '@/generated/prisma'
 import { AuthService } from '@/modules/auth/auth.service'
 import { NotificationService } from '@/modules/notification/notification.service'
 import { UserService } from '@/modules/user/user.service'
+import { MailService } from '@/providers/mail/mail.service'
 import { PrismaService } from '@/providers/prisma/prisma.service'
+import { IMAGES } from '@/utils'
 import { APP_PERMISSIONS } from '@/utils/_app-permissions'
 import {
 	BadRequestException,
@@ -17,7 +19,7 @@ import {
 import { plainToInstance } from 'class-transformer'
 import dayjs from 'dayjs'
 import slugify from 'slugify'
-import { IMAGES } from '../../utils'
+import { PermissionService } from '../role-permissions/permission.service'
 import { ActivityLogService } from './activity-log.service'
 import { AssignMemberDto, UpdateAssignmentDto } from './dto/assign-member.dto'
 import { ChangeStatusDto } from './dto/change-status.dto'
@@ -41,7 +43,9 @@ export class JobService {
 		@Inject(forwardRef(() => UserService))
 		private readonly userService: UserService,
 		private readonly authService: AuthService,
-		private readonly activityLogService: ActivityLogService
+		private readonly activityLogService: ActivityLogService,
+		private readonly permissionService: PermissionService,
+		private readonly mailService: MailService
 	) {}
 
 	/**
@@ -352,7 +356,6 @@ export class JobService {
 		}))
 		return mappedData
 	}
-
 	/**
 	 * Admin reviews a staff delivery.
 	 * If approved: Job moves to 'completed'.
@@ -364,8 +367,9 @@ export class JobService {
 		isApproved: boolean,
 		feedback?: string
 	) {
-		return this.prisma.$transaction(async (tx) => {
-			// 1. Update the delivery status
+		// 1. Perform Database Operations in Transaction
+		const result = await this.prisma.$transaction(async (tx) => {
+			// 1.1 Update the delivery status
 			const delivery = await tx.jobDelivery.update({
 				where: { id: deliveryId },
 				data: {
@@ -374,11 +378,11 @@ export class JobService {
 				},
 				include: {
 					job: { include: { status: true } },
-					user: true, // The staff who delivered
+					user: true,
 				},
 			})
 
-			// 2. Determine the next job status based on approval
+			// 1.2 Determine next status
 			const nextStatusCode = isApproved ? 'completed' : 'revision'
 			const nextStatus = await tx.jobStatus.findUnique({
 				where: { code: nextStatusCode },
@@ -390,7 +394,7 @@ export class JobService {
 				)
 			}
 
-			// 3. Update the Job
+			// 1.3 Update the Job
 			const jobUpdated = await tx.job.update({
 				where: { id: delivery.jobId },
 				data: {
@@ -401,9 +405,23 @@ export class JobService {
 					no: true,
 					displayName: true,
 					status: { select: { thumbnailUrl: true } },
+					// [UPDATED] Select full user details for Email & Notification
+					assignments: {
+						select: {
+							user: {
+								select: {
+									id: true,
+									email: true,
+									personalEmail: true,
+									displayName: true,
+								},
+							},
+						},
+					},
 				},
 			})
-			// 4. Log the activity
+
+			// 1.4 Log the activity
 			await tx.jobActivityLog.create({
 				data: {
 					jobId: delivery.jobId,
@@ -412,73 +430,96 @@ export class JobService {
 					activityType: isApproved
 						? ActivityType.APPROVE
 						: ActivityType.REJECT,
-
 					currentValue: nextStatus.displayName,
-
-					// PUBLIC: Anyone can see that the job status changed
 					notes: isApproved
 						? `Job completed and approved by Admin.`
 						: `Job sent back for revision.`,
-
-					// PRIVATE: If rejected, we store the sensitive feedback here.
-					// We set a permission so only those who can "APPROVE" can see the specific rejection notes.
 					metadata: !isApproved ? { adminFeedback: feedback } : {},
 					requiredPermissionCode: APP_PERMISSIONS.JOB.REVIEW,
 				},
 			})
 
-			// 5. Send real-time notifications
-			// Notification for the staff member
-			await this.notificationService.send({
-				userId: delivery.userId,
-				senderId: adminId,
-				title: isApproved
-					? `[${jobUpdated.no}] Delivery Approved!`
-					: `[${jobUpdated.no}] Revision Required`,
-				content: isApproved
-					? `Your delivery for ${jobUpdated.displayName} was approved.`
-					: `Your delivery was rejected. Feedback: ${feedback}`,
-				type: isApproved
-					? NotificationType.SUCCESS
-					: NotificationType.WARNING,
-				imageUrl:
-					jobUpdated.status.thumbnailUrl ||
-					IMAGES.NOTIFICATION_DEFAULT_IMAGE,
-				redirectUrl: `/jobs/${jobUpdated.no}`,
-			})
+			return { delivery, jobUpdated }
+		})
 
-			// If approved, notify Accounting to prepare payout
+		// --- POST-TRANSACTION NOTIFICATIONS ---
+		const { delivery, jobUpdated } = result
+
+		// Extract Users from assignments
+		const assignees = jobUpdated.assignments.map((it) => ({
+			email: it.user.email,
+			displayName: it.user.displayName,
+			personalEmail: it.user.personalEmail || it.user.email,
+			id: it.user.id,
+		}))
+		const assigneeIds = assignees.map((u) => u.id)
+
+		// 2. Send In-App Notifications
+		await this.notificationService.sendToUsers(assigneeIds, {
+			senderId: adminId,
+			title: isApproved
+				? `[${jobUpdated.no}] Delivery Approved!`
+				: `[${jobUpdated.no}] Revision Required`,
+			content: isApproved
+				? `Your delivery for ${jobUpdated.displayName} was approved.`
+				: `Your delivery was rejected. Feedback: ${feedback}`,
+			type: isApproved
+				? NotificationType.SUCCESS
+				: NotificationType.WARNING,
+			imageUrl:
+				jobUpdated.status.thumbnailUrl ||
+				IMAGES.NOTIFICATION_DEFAULT_IMAGE,
+			redirectUrl: `/jobs/${jobUpdated.no}`,
+		})
+
+		// 3. Send Email Notifications (New)
+		if (assignees.length > 0) {
 			if (isApproved) {
-				const accountants = await tx.user.findMany({
-					where: {
-						role: {
-							permissions: {
-								some: {
-									entityAction: APP_PERMISSIONS.JOB.PAID,
-								},
-							},
-						},
+				// Send "Job Approved" Email
+				await this.mailService.sendJobApprovedNotification(assignees, {
+					no: jobUpdated.no,
+					displayName: jobUpdated.displayName,
+				})
+			} else {
+				// Send "Job Rejected" Email
+				await this.mailService.sendJobRejectedNotification(
+					assignees,
+					{
+						no: jobUpdated.no,
+						displayName: jobUpdated.displayName,
 					},
+					feedback || 'Please review the comments in the system.'
+				)
+			}
+		}
+
+		// 4. Notify Managers (Only if Approved)
+		if (isApproved) {
+			const managerIds = await this.permissionService
+				.findUserHasAnyPermission([
+					APP_PERMISSIONS.JOB.MANAGE,
+					APP_PERMISSIONS.SYSTEM.MANAGE,
+					APP_PERMISSIONS.JOB.PAID,
+				])
+				.then((res) => {
+					return res.filter((it) => !assigneeIds.includes(it))
 				})
 
-				if (accountants.length > 0) {
-					await this.notificationService.sendMany(
-						accountants.map((acc) => ({
-							userId: acc.id,
-							title: `[${jobUpdated.no}] New Payout Pending`,
-							content: `Job #${jobUpdated.no} is completed and ready for payment.`,
-							type: NotificationType.JOB_UPDATE,
-							imageUrl:
-								jobUpdated.status.thumbnailUrl ||
-								IMAGES.NOTIFICATION_DEFAULT_IMAGE,
-							redirectUrl: `/financial/pending-payouts`,
-						}))
-					)
-				}
+			if (managerIds.length > 0) {
+				await this.notificationService.sendToUsers(managerIds, {
+					senderId: adminId,
+					title: `[${jobUpdated.no}] New Payout Pending`,
+					content: `Job #${jobUpdated.no} is completed and ready for payment.`,
+					type: NotificationType.JOB_UPDATE,
+					imageUrl:
+						jobUpdated.status.thumbnailUrl ||
+						IMAGES.NOTIFICATION_DEFAULT_IMAGE,
+					redirectUrl: `/financial/pending-payouts`,
+				})
 			}
+		}
 
-			return delivery
-		})
+		return delivery
 	}
 
 	/**
@@ -519,6 +560,11 @@ export class JobService {
 			const result = await tx.job.update({
 				where: { id: jobId },
 				data: updateData,
+				include: {
+					status: {
+						select: { thumbnailUrl: true },
+					},
+				},
 			})
 
 			await this.activityLogService.create(
@@ -535,19 +581,54 @@ export class JobService {
 			return result
 		})
 
+		const jobAssignmentIds = job.assignments.map((it) => it.userId)
+		const managerIds =
+			await this.permissionService.findUserHasAnyPermission([
+				APP_PERMISSIONS.JOB.MANAGE,
+				APP_PERMISSIONS.SYSTEM.MANAGE,
+				APP_PERMISSIONS.JOB.PAID,
+			])
+		const uniqueIds = [...new Set([...jobAssignmentIds, ...managerIds])]
+
 		// Notify staff if status moves from active to another state
-		if (
-			job.status.systemType !== 'TERMINATED' &&
-			job.assignments.length > 0
-		) {
-			await this.notificationService.sendMany(
-				job.assignments.map((a) => ({
-					userId: a.userId,
-					title: 'Force Status Update',
-					content: `Job #${job.no} moved from ${job.status.displayName} to ${targetStatus.displayName}.`,
-					type: NotificationType.JOB_UPDATE,
-					redirectUrl: `/jobs/${job.no}`,
-				}))
+		await this.notificationService.sendToUsers(uniqueIds, {
+			title: `[${job.no}] Force Status Update`,
+			content: `Job #${job.no} moved from ${job.status.displayName} to ${targetStatus.displayName}.`,
+			imageUrl:
+				updatedJob.status.thumbnailUrl ||
+				IMAGES.NOTIFICATION_DEFAULT_IMAGE,
+			type: NotificationType.JOB_UPDATE,
+			redirectUrl: `/jobs/${job.no}`,
+		})
+
+		if (uniqueIds.length > 0) {
+			const recipients = await this.prisma.user
+				.findMany({
+					where: { id: { in: uniqueIds }, isActive: true },
+					select: {
+						email: true,
+						displayName: true,
+						personalEmail: true,
+					},
+				})
+				.then((res) =>
+					res.map((it) => ({
+						email: it.email,
+						personalEmail: it.personalEmail || it.email,
+						displayName: it.displayName,
+					}))
+				)
+
+			// 6. SEND EMAIL NOTIFICATION
+			await this.mailService.sendForceStatusUpdateNotification(
+				recipients,
+				{
+					jobNo: updatedJob.no,
+					jobTitle: updatedJob.displayName,
+					oldStatus: job.status.displayName,
+					newStatus: targetStatus.displayName,
+					modifierName: 'Administrator',
+				}
 			)
 		}
 
@@ -626,7 +707,14 @@ export class JobService {
 					status: true,
 					assignments: {
 						include: {
-							user: { select: { id: true, displayName: true } },
+							user: {
+								select: {
+									id: true,
+									displayName: true,
+									email: true,
+									personalEmail: true,
+								},
+							},
 							job: {
 								select: {
 									status: { select: { thumbnailUrl: true } },
@@ -663,26 +751,58 @@ export class JobService {
 
 		// 4. Send Notifications to Assigned Staff (Outside Transaction)
 		try {
-			if (job.assignments && job.assignments.length > 0) {
-				await this.notificationService.sendMany(
-					job.assignments.map((asgn) => ({
-						userId: asgn.userId,
-						senderId: createdById,
-						title: `[${job.no}] New Project Assignment`,
-						content: `You have been assigned to Job #${job.no}- ${job.displayName}.`,
-						type: NotificationType.JOB_ASSIGNED_MEMBER,
-						imageUrl:
-							asgn.job.status.thumbnailUrl ||
-							IMAGES.NOTIFICATION_DEFAULT_IMAGE,
-						redirectUrl: `/jobs/${job.no}`,
-					}))
-				)
-			}
+			const jobAssignmentIds = job.assignments.map((it) => it.userId)
+			await this.notificationService.sendToUsers(jobAssignmentIds, {
+				senderId: createdById,
+				title: `[${job.no}] New Project Assignment`,
+				content: `You have been assigned to Job #${job.no}- ${job.displayName}.`,
+				type: NotificationType.JOB_ASSIGNED_MEMBER,
+				redirectUrl: `/jobs/${job.no}`,
+				imageUrl:
+					job.status.thumbnailUrl ||
+					IMAGES.NOTIFICATION_DEFAULT_IMAGE,
+			})
+			const managerIds = await this.permissionService
+				.findUserHasAnyPermission([
+					APP_PERMISSIONS.JOB.MANAGE,
+					APP_PERMISSIONS.SYSTEM.MANAGE,
+					APP_PERMISSIONS.JOB.PAID,
+				])
+				.then((res) => {
+					// Lấy ra admin không được assign
+					return res.filter((it) => !jobAssignmentIds.includes(it))
+				})
+			await this.notificationService.sendToUsers(managerIds, {
+				senderId: createdById,
+				title: `[${job.no}] New Project Created`,
+				content: `New project created Job #${job.no}- ${job.displayName}.`,
+				type: NotificationType.JOB_ASSIGNED_MEMBER,
+				redirectUrl: `/jobs/${job.no}`,
+				imageUrl:
+					job.status.thumbnailUrl ||
+					IMAGES.NOTIFICATION_DEFAULT_IMAGE,
+			})
 		} catch (error) {
 			this.logger.error(
 				`Notification failed for new job ${job.no}:`,
 				error
 			)
+		}
+
+		try {
+			const users = job.assignments.map((it) => ({
+				email: it.user.email,
+				personalEmail: it.user.personalEmail ?? undefined,
+				displayName: it.user.displayName,
+			}))
+			await this.mailService.sendJobAssignmentNotification(users, {
+				no: job.no,
+				displayName: job.displayName,
+				clientName: job.client?.name,
+				dueAt: job.dueAt,
+			})
+		} catch (error) {
+			this.logger.error('Error send mail to assignments')
 		}
 
 		return plainToInstance(JobResponseDto, job, {
@@ -1229,38 +1349,43 @@ export class JobService {
 	}
 
 	async deliverJob(userId: string, jobId: string, dto: DeliverJobDto) {
-		// 1. Fetch current job and status info before transaction
+		// 1. Fetch info & Validation...
 		const reviewStatus = await this.prisma.jobStatus.findFirst({
 			where: { systemType: 'DELIVERED' },
 		})
-
 		if (!reviewStatus)
-			throw new BadRequestException(
-				'WAIT_REVIEW status missing in system'
-			)
+			throw new BadRequestException('WAIT_REVIEW status missing')
 
 		const jobBefore = await this.prisma.job.findUnique({
 			where: { id: jobId },
 			include: { status: true },
 		})
-
 		if (!jobBefore) throw new NotFoundException('Job not found')
 
-		// 2. Perform Database updates in a transaction
+		// 2. Transaction...
 		const result = await this.prisma.$transaction(async (tx) => {
-			// Create the delivery record
 			const delivery = await tx.jobDelivery.create({
 				data: {
 					jobId,
 					userId,
 					link: dto.link,
 					note: dto.note,
-					files: dto.files, // Assuming dto contains file URLs
+					files: dto.files,
 					status: 'PENDING',
+				},
+				include: {
+					// Get Staff info for email
+					user: {
+						select: {
+							id: true,
+							email: true,
+							personalEmail: true,
+							displayName: true,
+						},
+					},
 				},
 			})
 
-			// Update Job Status
 			const updatedJob = await tx.job.update({
 				where: { id: jobId },
 				data: { statusId: reviewStatus.id },
@@ -1271,7 +1396,6 @@ export class JobService {
 				},
 			})
 
-			// 3. Log the Activity
 			await this.activityLogService.create(
 				{
 					jobId,
@@ -1280,14 +1404,7 @@ export class JobService {
 					fieldName: 'Status',
 					currentValue: reviewStatus.displayName,
 					notes: `[${updatedJob.no}] Staff submitted a new delivery for review.`,
-					// Store delivery details in metadata for easy admin access
-					metadata: {
-						deliveryId: delivery.id,
-						hasLink: !!dto.link,
-						fileCount: dto.files?.length || 0,
-						notePreview: dto.note?.substring(0, 50),
-					},
-					// Public log: Staff can see that they successfully submitted
+					metadata: { deliveryId: delivery.id },
 					requiredPermissionCode: APP_PERMISSIONS.JOB.READ_SENSITIVE,
 				},
 				tx
@@ -1301,40 +1418,73 @@ export class JobService {
 			}
 		})
 
-		// 4. Send Notifications OUTSIDE the transaction (Timeout Safety)
+		// 3. Send Notifications
 		try {
-			// Find all users with permission to review jobs (Admins/Managers)
+			// 3.1 Fetch Approvers (Admins/Managers) with Email fields
 			const approvers = await this.prisma.user.findMany({
 				where: {
 					role: {
 						permissions: {
-							some: {
-								entityAction: APP_PERMISSIONS.JOB.REVIEW,
-							},
+							some: { entityAction: APP_PERMISSIONS.JOB.REVIEW },
 						},
 					},
-					deletedAt: null, // Only active users
+					deletedAt: null,
+				},
+				// [IMPORTANT] Select email fields for sending mail
+				select: {
+					id: true,
+					email: true,
+					personalEmail: true,
+					displayName: true,
 				},
 			})
 
 			if (approvers.length > 0) {
+				// A. Send In-App Notifications to Approvers
 				await this.notificationService.sendMany(
 					approvers.map((admin) => ({
 						userId: admin.id,
 						senderId: userId,
-						// Professional Title: Concise and includes the specific action required
 						title: `[${result.jobUpdated.no}] New Delivery Pending Review`,
-						// Professional Content: Clear context using Job Number and Name
-						content: `A new delivery has been submitted for Job #${result.jobNo}- ${result.jobName}.`,
+						content: `A new delivery has been submitted for Job #${result.jobNo}.`,
 						type: NotificationType.JOB_DELIVERED,
 						imageUrl:
 							result.jobUpdated.status.thumbnailUrl ||
 							IMAGES.NOTIFICATION_DEFAULT_IMAGE,
-						// Maintains the deep link to the specific tab
 						redirectUrl: `/admin/mgmt/jobs/${result.jobNo}?tab=deliveries`,
 					}))
 				)
+
+				// B. Send Email to Approvers (New)
+				await this.mailService.sendJobDeliveredNotification(
+					approvers.map((it) => ({
+						email: it.email,
+						personalEmail: it.personalEmail || it.email,
+						displayName: it.displayName,
+					})),
+					{
+						no: result.jobNo,
+						displayName: result.jobName,
+					}
+				)
 			}
+
+			// 3.2 Send Email Confirmation to the Staff Member
+			const staffUser = result.delivery.user
+			await this.mailService.sendJobDeliveredNotification(
+				[
+					{
+						email: staffUser.email,
+						personalEmail:
+							staffUser.personalEmail || staffUser.email,
+						displayName: staffUser.displayName,
+					},
+				],
+				{
+					no: result.jobNo,
+					displayName: result.jobName,
+				}
+			)
 		} catch (error) {
 			this.logger.error(
 				`Notification failed for delivery on Job ${result.jobNo}:`,
@@ -1457,7 +1607,9 @@ export class JobService {
 			where: { id: jobId },
 			include: {
 				status: true,
-				assignments: true,
+				assignments: {
+					include: { user: true },
+				},
 				client: true,
 				jobDeliveries: true,
 				paymentChannel: true,
@@ -1513,6 +1665,25 @@ export class JobService {
 				tx
 			)
 
+			try {
+				try {
+					const users = job.assignments.map((it) => ({
+						email: it.user.email,
+						personalEmail: it.user.personalEmail ?? undefined,
+						displayName: it.user.displayName,
+					}))
+					await this.mailService.sendJobPaidNotification(users, {
+						no: job.no,
+						displayName: job.displayName,
+						incomeCost: job.incomeCost,
+						paidAt: job.paidAt ?? undefined,
+					})
+				} catch (error) {
+					this.logger.error('Error send mail to assignments')
+				}
+			} catch (error) {
+				this.logger.error('Send email paid error')
+			}
 			return updated
 		})
 
@@ -1605,18 +1776,31 @@ export class JobService {
 		// Condition: Only send if the job was NOT already in a TERMINATED system status
 		try {
 			const isNotTerminated = job.status.systemType !== 'TERMINATED'
-
-			if (isNotTerminated && job.assignments.length > 0) {
-				await this.notificationService.sendMany(
-					job.assignments.map((assignment) => ({
-						userId: assignment.userId,
-						senderId: modifierId,
-						title: 'Job Cancelled/Deleted',
-						content: `Job #${job.no} has been removed from the system.`,
-						type: NotificationType.JOB_DELETED,
-						redirectUrl: `/project-center`, // Redirect to list since job is now hidden
-					}))
+			const notiData = {
+				title: 'Job Cancelled/Deleted',
+				content: `Job #${job.no} has been removed from the system.`,
+				type: NotificationType.JOB_DELETED,
+				redirectUrl: `/project-center`, // Redirect to list since job is now hidden
+			}
+			const jobAssignmentIds = job.assignments.map((it) => it.userId)
+			const managerIds = await this.permissionService
+				.findUserHasAnyPermission([
+					APP_PERMISSIONS.JOB.MANAGE,
+					APP_PERMISSIONS.SYSTEM.MANAGE,
+					APP_PERMISSIONS.JOB.PAID,
+				])
+				.then((res) =>
+					res.filter((it) => !jobAssignmentIds.includes(it))
 				)
+			await this.notificationService.sendToUsers(managerIds, {
+				senderId: modifierId,
+				...notiData,
+			})
+			if (isNotTerminated && job.assignments.length > 0) {
+				await this.notificationService.sendToUsers(jobAssignmentIds, {
+					senderId: modifierId,
+					...notiData,
+				})
 			}
 		} catch (error) {
 			this.logger.error(

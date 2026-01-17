@@ -27,13 +27,14 @@ import { Route as WorkspaceScheduleRouteImport } from './routes/_workspace/sched
 import { Route as WorkspaceProjectCenterRouteImport } from './routes/_workspace/project-center'
 import { Route as WorkspaceProfileRouteImport } from './routes/_workspace/profile'
 import { Route as WorkspaceOverviewRouteImport } from './routes/_workspace/overview'
-import { Route as WorkspaceWorkbenchRouteImport } from './routes/_workspace/_workbench'
 import { Route as PublicHelpCenterRouteImport } from './routes/_public/help-center'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as AdministratorFinancialRouteImport } from './routes/_administrator/financial'
 import { Route as CommunitiesCodeIndexRouteImport } from './routes/communities/$code/index'
 import { Route as WorkspaceProjectCenterIndexRouteImport } from './routes/_workspace/project-center/index'
+import { Route as WorkspaceNotificationsIndexRouteImport } from './routes/_workspace/notifications/index'
 import { Route as WorkspaceJobsIndexRouteImport } from './routes/_workspace/jobs/index'
+import { Route as WorkspaceWorkbenchIndexRouteImport } from './routes/_workspace/_workbench/index'
 import { Route as AdministratorAdminIndexRouteImport } from './routes/_administrator/admin/index'
 import { Route as WorkspaceProjectCenterTabRouteImport } from './routes/_workspace/project-center/$tab'
 import { Route as WorkspaceJobsNoRouteImport } from './routes/_workspace/jobs/$no'
@@ -158,10 +159,6 @@ const WorkspaceOverviewRoute = WorkspaceOverviewRouteImport.update({
   path: '/overview',
   getParentRoute: () => WorkspaceRoute,
 } as any)
-const WorkspaceWorkbenchRoute = WorkspaceWorkbenchRouteImport.update({
-  id: '/_workbench',
-  getParentRoute: () => WorkspaceRoute,
-} as any)
 const PublicHelpCenterRoute = PublicHelpCenterRouteImport.update({
   id: '/help-center',
   path: '/help-center',
@@ -188,9 +185,20 @@ const WorkspaceProjectCenterIndexRoute =
     path: '/',
     getParentRoute: () => WorkspaceProjectCenterRoute,
   } as any)
+const WorkspaceNotificationsIndexRoute =
+  WorkspaceNotificationsIndexRouteImport.update({
+    id: '/notifications/',
+    path: '/notifications/',
+    getParentRoute: () => WorkspaceRoute,
+  } as any)
 const WorkspaceJobsIndexRoute = WorkspaceJobsIndexRouteImport.update({
   id: '/jobs/',
   path: '/jobs/',
+  getParentRoute: () => WorkspaceRoute,
+} as any)
+const WorkspaceWorkbenchIndexRoute = WorkspaceWorkbenchIndexRouteImport.update({
+  id: '/_workbench/',
+  path: '/',
   getParentRoute: () => WorkspaceRoute,
 } as any)
 const AdministratorAdminIndexRoute = AdministratorAdminIndexRouteImport.update({
@@ -432,7 +440,9 @@ export interface FileRoutesByFullPath {
   '/jobs/$no': typeof WorkspaceJobsNoRoute
   '/project-center/$tab': typeof WorkspaceProjectCenterTabRoute
   '/admin': typeof AdministratorAdminIndexRoute
+  '/': typeof WorkspaceWorkbenchIndexRoute
   '/jobs': typeof WorkspaceJobsIndexRoute
+  '/notifications': typeof WorkspaceNotificationsIndexRoute
   '/project-center/': typeof WorkspaceProjectCenterIndexRoute
   '/communities/$code': typeof CommunitiesCodeIndexRoute
   '/admin/departments/$code': typeof AdministratorAdminDepartmentsCodeRoute
@@ -486,7 +496,9 @@ export interface FileRoutesByTo {
   '/jobs/$no': typeof WorkspaceJobsNoRoute
   '/project-center/$tab': typeof WorkspaceProjectCenterTabRoute
   '/admin': typeof AdministratorAdminIndexRoute
+  '/': typeof WorkspaceWorkbenchIndexRoute
   '/jobs': typeof WorkspaceJobsIndexRoute
+  '/notifications': typeof WorkspaceNotificationsIndexRoute
   '/project-center': typeof WorkspaceProjectCenterIndexRoute
   '/communities/$code': typeof CommunitiesCodeIndexRoute
   '/admin/departments/$code': typeof AdministratorAdminDepartmentsCodeRoute
@@ -520,7 +532,6 @@ export interface FileRoutesById {
   '/_administrator/financial': typeof AdministratorFinancialRouteWithChildren
   '/_auth/login': typeof AuthLoginRoute
   '/_public/help-center': typeof PublicHelpCenterRoute
-  '/_workspace/_workbench': typeof WorkspaceWorkbenchRoute
   '/_workspace/overview': typeof WorkspaceOverviewRoute
   '/_workspace/profile': typeof WorkspaceProfileRoute
   '/_workspace/project-center': typeof WorkspaceProjectCenterRouteWithChildren
@@ -547,7 +558,9 @@ export interface FileRoutesById {
   '/_workspace/jobs/$no': typeof WorkspaceJobsNoRoute
   '/_workspace/project-center/$tab': typeof WorkspaceProjectCenterTabRoute
   '/_administrator/admin/': typeof AdministratorAdminIndexRoute
+  '/_workspace/_workbench/': typeof WorkspaceWorkbenchIndexRoute
   '/_workspace/jobs/': typeof WorkspaceJobsIndexRoute
+  '/_workspace/notifications/': typeof WorkspaceNotificationsIndexRoute
   '/_workspace/project-center/': typeof WorkspaceProjectCenterIndexRoute
   '/communities/$code/': typeof CommunitiesCodeIndexRoute
   '/_administrator/admin/departments/$code': typeof AdministratorAdminDepartmentsCodeRoute
@@ -606,7 +619,9 @@ export interface FileRouteTypes {
     | '/jobs/$no'
     | '/project-center/$tab'
     | '/admin'
+    | '/'
     | '/jobs'
+    | '/notifications'
     | '/project-center/'
     | '/communities/$code'
     | '/admin/departments/$code'
@@ -660,7 +675,9 @@ export interface FileRouteTypes {
     | '/jobs/$no'
     | '/project-center/$tab'
     | '/admin'
+    | '/'
     | '/jobs'
+    | '/notifications'
     | '/project-center'
     | '/communities/$code'
     | '/admin/departments/$code'
@@ -693,7 +710,6 @@ export interface FileRouteTypes {
     | '/_administrator/financial'
     | '/_auth/login'
     | '/_public/help-center'
-    | '/_workspace/_workbench'
     | '/_workspace/overview'
     | '/_workspace/profile'
     | '/_workspace/project-center'
@@ -720,7 +736,9 @@ export interface FileRouteTypes {
     | '/_workspace/jobs/$no'
     | '/_workspace/project-center/$tab'
     | '/_administrator/admin/'
+    | '/_workspace/_workbench/'
     | '/_workspace/jobs/'
+    | '/_workspace/notifications/'
     | '/_workspace/project-center/'
     | '/communities/$code/'
     | '/_administrator/admin/departments/$code'
@@ -883,13 +901,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkspaceOverviewRouteImport
       parentRoute: typeof WorkspaceRoute
     }
-    '/_workspace/_workbench': {
-      id: '/_workspace/_workbench'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof WorkspaceWorkbenchRouteImport
-      parentRoute: typeof WorkspaceRoute
-    }
     '/_public/help-center': {
       id: '/_public/help-center'
       path: '/help-center'
@@ -925,11 +936,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkspaceProjectCenterIndexRouteImport
       parentRoute: typeof WorkspaceProjectCenterRoute
     }
+    '/_workspace/notifications/': {
+      id: '/_workspace/notifications/'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof WorkspaceNotificationsIndexRouteImport
+      parentRoute: typeof WorkspaceRoute
+    }
     '/_workspace/jobs/': {
       id: '/_workspace/jobs/'
       path: '/jobs'
       fullPath: '/jobs'
       preLoaderRoute: typeof WorkspaceJobsIndexRouteImport
+      parentRoute: typeof WorkspaceRoute
+    }
+    '/_workspace/_workbench/': {
+      id: '/_workspace/_workbench/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof WorkspaceWorkbenchIndexRouteImport
       parentRoute: typeof WorkspaceRoute
     }
     '/_administrator/admin/': {
@@ -1348,25 +1373,27 @@ const WorkspaceProjectCenterRouteWithChildren =
   )
 
 interface WorkspaceRouteChildren {
-  WorkspaceWorkbenchRoute: typeof WorkspaceWorkbenchRoute
   WorkspaceOverviewRoute: typeof WorkspaceOverviewRoute
   WorkspaceProfileRoute: typeof WorkspaceProfileRoute
   WorkspaceProjectCenterRoute: typeof WorkspaceProjectCenterRouteWithChildren
   WorkspaceScheduleRoute: typeof WorkspaceScheduleRoute
   WorkspaceTaskSummaryRoute: typeof WorkspaceTaskSummaryRoute
   WorkspaceJobsNoRoute: typeof WorkspaceJobsNoRoute
+  WorkspaceWorkbenchIndexRoute: typeof WorkspaceWorkbenchIndexRoute
   WorkspaceJobsIndexRoute: typeof WorkspaceJobsIndexRoute
+  WorkspaceNotificationsIndexRoute: typeof WorkspaceNotificationsIndexRoute
 }
 
 const WorkspaceRouteChildren: WorkspaceRouteChildren = {
-  WorkspaceWorkbenchRoute: WorkspaceWorkbenchRoute,
   WorkspaceOverviewRoute: WorkspaceOverviewRoute,
   WorkspaceProfileRoute: WorkspaceProfileRoute,
   WorkspaceProjectCenterRoute: WorkspaceProjectCenterRouteWithChildren,
   WorkspaceScheduleRoute: WorkspaceScheduleRoute,
   WorkspaceTaskSummaryRoute: WorkspaceTaskSummaryRoute,
   WorkspaceJobsNoRoute: WorkspaceJobsNoRoute,
+  WorkspaceWorkbenchIndexRoute: WorkspaceWorkbenchIndexRoute,
   WorkspaceJobsIndexRoute: WorkspaceJobsIndexRoute,
+  WorkspaceNotificationsIndexRoute: WorkspaceNotificationsIndexRoute,
 }
 
 const WorkspaceRouteWithChildren = WorkspaceRoute._addFileChildren(

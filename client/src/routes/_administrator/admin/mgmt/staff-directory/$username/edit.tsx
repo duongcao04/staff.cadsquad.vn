@@ -1,3 +1,7 @@
+import { ChangeUserStatusModal } from '@/features/staff-directory/components/modals/ChangeUserStatusModal'
+import { DeleteUserPermanentlyModal } from '@/features/staff-directory/components/modals/DeleteUserPermanentlyModal'
+import ResetPasswordModal from '@/features/staff-directory/components/modals/ResetPasswordModal'
+import { UploadAvatarModal } from '@/features/staff-directory/components/modals/UploadAvatarModal'
 import {
     ApiResponse,
     dateFormatter,
@@ -26,11 +30,7 @@ import {
     RoleChip,
 } from '@/shared/components'
 import AdminContentContainer from '@/shared/components/admin/AdminContentContainer'
-import { ChangeUserStatusModal } from '@/features/staff-directory/components/modals/ChangeUserStatusModal'
-import { DeleteUserPermanentlyModal } from '@/features/staff-directory/components/modals/DeleteUserPermanentlyModal'
-import ResetPasswordModal from '@/features/staff-directory/components/modals/ResetPasswordModal'
-import { UploadAvatarModal } from '@/features/staff-directory/components/modals/UploadAvatarModal'
-import HeroCopyButton from '@/shared/components/ui/hero-copy-button'
+import { HeroCopyButton } from '@/shared/components/ui/hero-copy-button'
 import { TUser } from '@/shared/types'
 import {
     addToast,
@@ -482,10 +482,10 @@ function EditStaffPage() {
         </>
     )
 }
-
 function EditProfileTab({ user }: { user: TUser }) {
     const router = useRouter()
     const updateUserMutation = useUpdateUserMutation()
+
     // 2. Initialize Formik
     const formik = useFormik<TEditUser>({
         initialValues: {
@@ -493,6 +493,7 @@ function EditProfileTab({ user }: { user: TUser }) {
             username: user.username,
             email: user.email,
             phoneNumber: user.phoneNumber || '',
+            personalEmail: user.personalEmail || '', // 1. Added initial value
         },
         enableReinitialize: true,
         validate: toFormikValidate(editUserSchema),
@@ -519,6 +520,7 @@ function EditProfileTab({ user }: { user: TUser }) {
             }
         },
     })
+
     return (
         <div className="space-y-6 animate-in fade-in">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -542,6 +544,7 @@ function EditProfileTab({ user }: { user: TUser }) {
                     }
                     onBlur={formik.handleBlur}
                 />
+
                 <Input
                     label="Username"
                     labelPlacement="outside-top"
@@ -562,8 +565,9 @@ function EditProfileTab({ user }: { user: TUser }) {
                     }
                     onBlur={formik.handleBlur}
                 />
+
                 <Input
-                    label="Email Address"
+                    label="Work Email Address"
                     labelPlacement="outside-top"
                     placeholder="sarah@company.com"
                     description="Used for system notifications and secure account login."
@@ -578,6 +582,33 @@ function EditProfileTab({ user }: { user: TUser }) {
                     errorMessage={formik.touched.email && formik.errors.email}
                     onBlur={formik.handleBlur}
                 />
+
+                {/* 2. New Field: Personal Email */}
+                <Input
+                    label="Personal Email (Optional)"
+                    labelPlacement="outside-top"
+                    placeholder="sarah.personal@gmail.com"
+                    description="Secondary contact email for recovery or urgent notifications."
+                    variant="bordered"
+                    startContent={
+                        <Mail className="text-text-subdued" size={16} />
+                    }
+                    name="personalEmail"
+                    value={formik.values.personalEmail}
+                    onValueChange={(v) =>
+                        formik.setFieldValue('personalEmail', v)
+                    }
+                    isInvalid={
+                        !!formik.errors.personalEmail &&
+                        formik.touched.personalEmail
+                    }
+                    errorMessage={
+                        formik.touched.personalEmail &&
+                        formik.errors.personalEmail
+                    }
+                    onBlur={formik.handleBlur}
+                />
+
                 <Input
                     label="Phone Number"
                     labelPlacement="outside-top"
@@ -602,6 +633,7 @@ function EditProfileTab({ user }: { user: TUser }) {
                     onBlur={formik.handleBlur}
                 />
             </div>
+
             <div className="flex items-center justify-end">
                 <HeroButton
                     color="primary"

@@ -48,12 +48,12 @@ export const ProjectCenterCard = ({
                             {job.no}
                         </span>
                     </div>
-                    <JobStatusChip data={job.status} props={{size:"sm"}} />
+                    <JobStatusChip data={job.status} props={{ size: 'sm' }} />
                 </div>
 
                 {/* Job Info */}
                 <div>
-                    <h4 className="text-base font-bold leading-tight line-clamp-2 min-h-[3rem]">
+                    <h4 className="text-base font-bold leading-tight line-clamp-2 min-h-12">
                         {job.displayName}
                     </h4>
                     <div className="flex items-center gap-2 mt-2 text-text-subdued">

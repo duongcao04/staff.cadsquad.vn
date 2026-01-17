@@ -12,7 +12,7 @@ type Props = ButtonProps & {
     onCopySuccess?: () => void
 }
 
-export default function HeroCopyButton({
+export function HeroCopyButton({
     textValue,
     iconSize = 12,
     iconClassName,

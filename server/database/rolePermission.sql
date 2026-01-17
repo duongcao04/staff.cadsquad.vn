@@ -44,6 +44,7 @@ INSERT INTO "Permission" ("id", "displayName", "code", "entity", "action", "enti
 (gen_random_uuid(), 'Deliver Jobs',         'JOB_DELIVER',        'JOB'::"EntityEnum", 'deliver',       'job.deliver',       'group-0000-0000-0000-0000-000000000001', 'Ability to mark a job or task as completed and submit deliverables.'),
 (gen_random_uuid(), 'Review Jobs',          'JOB_REVIEW',         'JOB'::"EntityEnum", 'review',        'job.review',        'group-0000-0000-0000-0000-000000000001', 'Authority to approve or reject submitted deliverables from staff.'),
 (gen_random_uuid(), 'Assign Member',        'JOB_ASSIGN_MEMBER',  'JOB'::"EntityEnum", 'assignMember',  'job.assignMember',  'group-0000-0000-0000-0000-000000000001', 'Ability to assign specific staff members or teams to a job.'),
+(gen_random_uuid(), 'Manage Jobs',        'JOB_MANAGE',  'JOB'::"EntityEnum", 'manage',  'job.manage',  'group-0000-0000-0000-0000-000000000001', 'Full administrative control to assign members, edit details, and oversee the lifecycle of jobs.'),
 
 -- === GROUP 2: HUMAN RESOURCE MANAGEMENT ===
 (gen_random_uuid(), 'Create Users',         'USER_CREATE',        'USER'::"EntityEnum", 'create',        'user.create',        'group-0000-0000-0000-0000-000000000002', 'Ability to invite new staff members or create user accounts.'),

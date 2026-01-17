@@ -7,7 +7,7 @@ import {
 import { useCreateUserMutation } from '@/lib/queries/useUser'
 import { transformEmail } from '@/lib/utils'
 import { ScrollArea, ScrollBar } from '@/shared/components'
-import HeroCopyButton from '@/shared/components/ui/hero-copy-button'
+import { HeroCopyButton } from '@/shared/components/ui/hero-copy-button'
 import { HeroInput } from '@/shared/components/ui/hero-input'
 import { HeroModal, HeroModalContent } from '@/shared/components/ui/hero-modal'
 import { HeroPasswordInput } from '@/shared/components/ui/hero-password-input'

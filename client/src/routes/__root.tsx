@@ -44,7 +44,7 @@ export const Route = createRootRouteWithContext<AppRouterContext>()({
                                     <AntdProvider>
                                         <ToastProvider
                                             placement="bottom-right"
-                                            maxVisibleToasts={10}
+                                            maxVisibleToasts={1}
                                             toastOffset={20}
                                             toastProps={{
                                                 radius: 'sm',

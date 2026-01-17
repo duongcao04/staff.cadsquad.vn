@@ -1,8 +1,7 @@
 import { currencyFormatter, INTERNAL_URLS } from '@/lib'
-import { formatCurrencyVND } from '@/lib/formatCurrency'
 import { JobStatusChip } from '@/shared/components'
 import CountdownTimer from '@/shared/components/ui/countdown-timer'
-import HeroCopyButton from '@/shared/components/ui/hero-copy-button'
+import { HeroCopyButton } from '@/shared/components/ui/hero-copy-button'
 import { useDevice } from '@/shared/hooks'
 import type { TJob } from '@/shared/types'
 import { Skeleton } from '@heroui/react'
@@ -41,9 +40,9 @@ function JobCard({ data, onPress }: Props) {
         >
             <div className="flex items-center justify-start gap-4">
                 <Image
-                    src={String(data.status.thumbnailUrl)}
+                    src={data.status.thumbnailUrl}
                     alt={data.displayName}
-                    rootClassName="!size-16 rounded-full !aspect-square"
+                    rootClassName="size-16! rounded-full aspect-square!"
                     className="size-full! rounded-full aspect-square!"
                     preview={false}
                 />
@@ -71,9 +70,15 @@ function JobCard({ data, onPress }: Props) {
             </div>
             <div className="flex flex-col items-center justify-center gap-1">
                 <p className="text-xs text-text-subdued">Staff cost</p>
-                <p className="font-bold text-currency">
-                    {currencyFormatter(data.staffCost, 'Vietnamese')}
-                </p>
+                {data.staffCost ? (
+                    <p className="font-bold text-currency">
+                        {currencyFormatter(data.staffCost, 'Vietnamese')}
+                    </p>
+                ) : (
+                    <p className="text-xs italic text-text-subdued text-right">
+                        Not assigned
+                    </p>
+                )}
             </div>
             <div className="flex flex-col items-center justify-center gap-0.5">
                 <p className="text-xs  text-text-subdued">Due on</p>

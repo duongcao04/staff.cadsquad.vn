@@ -74,14 +74,12 @@ function SettingsProfilePage() {
 
     const handleAvatarSave = async (imageFile: File) => {
         try {
-            // Step 1: Upload the file to get the URL
             console.log('Uploading image...')
             const newAvatarUrl =
                 await uploadImageMutation.mutateAsync(imageFile)
 
             if (!newAvatarUrl) throw new Error('Failed to get image URL')
 
-            // Step 2: Update the user record with this URL
             console.log('Updating user profile...', newAvatarUrl)
             await updateProfileMutation.mutateAsync({
                 avatar: newAvatarUrl,
@@ -100,16 +98,17 @@ function SettingsProfilePage() {
         initialValues: {
             displayName: user?.displayName || '',
             username: user?.username || '',
-            email: user?.email || '', // Sử dụng formatter để hiển thị số điện thoại quốc tế (ví dụ: +84 862...)
+            email: user?.email || '',
             phoneNumber: phoneNumberFormatter(user?.phoneNumber || '')
                 .formatted,
+            personalEmail: user?.personalEmail || '',
         },
-        // We reuse the schema but might want to omit role/active checks for self-update
         validationSchema: updateProfileSchema,
         onSubmit: (values) => {
             updateProfileMutation.mutateAsync({
                 displayName: values.displayName,
                 phoneNumber: values.phoneNumber,
+                personalEmail: values.personalEmail,
             })
         },
     })
@@ -235,6 +234,7 @@ function SettingsProfilePage() {
                             </HeroCardHeader>
                             <HeroCardBody className="p-6 gap-6">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    {/* Display Name */}
                                     <Input
                                         isRequired
                                         name="displayName"
@@ -269,6 +269,72 @@ function SettingsProfilePage() {
                                                 .displayName as string)
                                         }
                                     />
+
+                                    {/* Username (Read-only) */}
+                                    <Input
+                                        label="Username"
+                                        labelPlacement="outside-top"
+                                        variant="flat"
+                                        isReadOnly
+                                        startContent={
+                                            <User
+                                                size={16}
+                                                className="text-text-subdued"
+                                            />
+                                        }
+                                        value={formik.values.username}
+                                        description="Contact admin to change username"
+                                        className="opacity-70"
+                                    />
+                                    {/* 3. Personal Email (New Field) */}
+                                    <Input
+                                        name="personalEmail"
+                                        label="Personal Email"
+                                        labelPlacement="outside-top"
+                                        placeholder="you@example.com"
+                                        variant="bordered"
+                                        value={formik.values.personalEmail}
+                                        startContent={
+                                            <Mail
+                                                size={16}
+                                                className="text-text-subdued"
+                                            />
+                                        }
+                                        onValueChange={(v) =>
+                                            formik.setFieldValue(
+                                                'personalEmail',
+                                                v
+                                            )
+                                        }
+                                        isInvalid={
+                                            formik.touched.personalEmail &&
+                                            !!formik.errors.personalEmail
+                                        }
+                                        errorMessage={
+                                            formik.errors
+                                                .personalEmail as string
+                                        }
+                                        description="Optional secondary email for notifications."
+                                    />
+
+                                    {/* Work Email (Read-only) */}
+                                    <Input
+                                        label="Work Email"
+                                        labelPlacement="outside-top"
+                                        variant="flat"
+                                        isReadOnly
+                                        startContent={
+                                            <Mail
+                                                size={16}
+                                                className="text-text-subdued"
+                                            />
+                                        }
+                                        value={formik.values.email}
+                                        description="Contact admin to change work email."
+                                        className="opacity-70"
+                                    />
+
+                                    {/* Phone Number */}
                                     <Input
                                         name="phoneNumber"
                                         label="Phone Number"
@@ -288,7 +354,6 @@ function SettingsProfilePage() {
                                                 v
                                             )
                                         }
-                                        // Khi rời khỏi ô nhập liệu, tự động chuyển 0 -> +84
                                         onBlur={() => {
                                             const result = phoneNumberFormatter(
                                                 formik.values.phoneNumber,
@@ -310,37 +375,8 @@ function SettingsProfilePage() {
                                         }
                                         description="Automatically converts 0 to +84 for Vietnam numbers"
                                     />
-                                    <Input
-                                        label="Email"
-                                        labelPlacement="outside"
-                                        variant="flat"
-                                        isReadOnly
-                                        startContent={
-                                            <Mail
-                                                size={16}
-                                                className="text-text-subdued"
-                                            />
-                                        }
-                                        value={formik.values.email}
-                                        description="Contact admin to change email."
-                                        className="opacity-70"
-                                    />
-                                    <Input
-                                        label="Username"
-                                        labelPlacement="outside"
-                                        variant="flat"
-                                        isReadOnly
-                                        startContent={
-                                            <User
-                                                size={16}
-                                                className="text-text-subdued"
-                                            />
-                                        }
-                                        value={formik.values.username}
-                                        description="Contact admin to change username"
-                                        className="opacity-70"
-                                    />
                                 </div>
+
                                 <div className="flex justify-end pt-4">
                                     <Button
                                         color="primary"

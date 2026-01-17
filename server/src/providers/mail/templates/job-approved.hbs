@@ -1,0 +1,97 @@
+<html>
+	<head>
+		<meta charset='utf-8' />
+		<title>Job Approved</title>
+		<style>
+			/* Shared CSS... */
+			body {
+				font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+				background-color: #f4f6f8;
+				color: #334155;
+			}
+			.email-content {
+				max-width: 600px;
+				margin: 0 auto;
+				background-color: #ffffff;
+				border-radius: 8px;
+				overflow: hidden;
+			}
+			.email-body {
+				padding: 40px;
+			}
+			.job-card {
+				background-color: #f0fdf4;
+				border: 1px solid #bbf7d0;
+				border-radius: 6px;
+				padding: 20px;
+				margin: 25px 0;
+			}
+			.label {
+				font-size: 12px;
+				text-transform: uppercase;
+				color: #64748b;
+				font-weight: 600;
+				display: block;
+				margin-bottom: 4px;
+			}
+			.value {
+				font-size: 16px;
+				font-weight: 500;
+				color: #1e293b;
+			}
+			.btn {
+				display: inline-block;
+				background-color: #16a34a;
+				color: #ffffff;
+				padding: 12px 32px;
+				border-radius: 6px;
+				text-decoration: none;
+				font-weight: 600;
+			}
+		</style>
+	</head>
+	<body>
+		<div
+			class='email-wrapper'
+			style='padding: 40px 0; background-color: #f4f6f8;'
+		>
+			<table
+				class='email-content'
+				width='100%'
+				cellpadding='0'
+				cellspacing='0'
+			>
+				<tr><td
+						style='padding: 30px; text-align: center; border-bottom: 1px solid #e2e8f0;'
+					><img src='{{logoUrl}}' style='height: 40px;' /></td></tr>
+				<tr>
+					<td class='email-body'>
+						<h1 style='margin-top:0; color: #166534;'>Job Approved
+							✅</h1>
+						<p>Hi <strong>{{recipientName}}</strong>,</p>
+						<p>Great work! The client has approved the following
+							job.</p>
+
+						<div class='job-card'>
+							<table width='100%'>
+								<tr><td style='padding-bottom: 15px;'><span
+											class='label'
+										>Job Number</span><div
+											class='value'
+										>{{jobNo}}</div></td></tr>
+								<tr><td><span class='label'>Project</span><div
+											class='value'
+										>{{jobTitle}}</div></td></tr>
+							</table>
+						</div>
+
+						<div style='text-align: center; margin-top: 30px;'><a
+								href='{{jobLink}}'
+								class='btn'
+							>View Details</a></div>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</body>
+</html>

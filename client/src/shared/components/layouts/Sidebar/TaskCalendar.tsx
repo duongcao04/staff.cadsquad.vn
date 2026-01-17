@@ -1,12 +1,12 @@
 import JobDueModal from '@/features/job-manage/components/modals/JobDueModal'
+import { profileScheduleOptions } from '@/lib/queries'
 import { Calendar } from '@/shared/components/ui/calendar'
 import { useDisclosure } from '@heroui/react'
-import DayButton from './DayButton'
 import { useSuspenseQuery } from '@tanstack/react-query'
-import { profileScheduleOptions } from '../../../../lib/queries/options/profile-queries'
+import { isSameDay } from 'date-fns'
 import dayjs from 'dayjs'
 import { useMemo, useState } from 'react'
-import { isSameDay } from 'date-fns'
+import DayButton from './DayButton'
 
 export default function TaskCalendar() {
     const { isOpen, onClose, onOpen } = useDisclosure({ id: 'JobDueModal' })
@@ -38,9 +38,6 @@ export default function TaskCalendar() {
         )
     }
 
-    // const isToday = dayjs(today).isSame('2025-11-10', 'date')
-    // console.log(isToday)
-
     return (
         <>
             {date && (
@@ -60,8 +57,6 @@ export default function TaskCalendar() {
                 components={{
                     DayButton: ({ day }) => {
                         const dayJobs = getJobsForDay(day.date)
-                        console.log(dayJobs)
-
                         const isHighlight = dayJobs.length > 0
                         return (
                             <DayButton

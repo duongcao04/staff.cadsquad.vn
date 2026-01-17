@@ -1,29 +1,24 @@
-import { INTERNAL_URLS } from '@/lib'
 import { workbenchDataOptions } from '@/lib/queries'
+import { JobMobileCard } from '@/shared/components'
 import { HeroCard, HeroCardBody } from '@/shared/components/ui/hero-card'
 import { HeroInput } from '@/shared/components/ui/hero-input'
 import { Pagination, Skeleton } from '@heroui/react'
 import { useSuspenseQuery } from '@tanstack/react-query'
-import { useRouter } from '@tanstack/react-router'
 import lodash from 'lodash'
 import { useMemo } from 'react'
-import JobMobileCard from './JobMobileCard'
 
 type Props = {
-    onAssignMember: (jobNo: string) => void
     currentPage: number
-    onPageChange: (newPage: number) => void
     search?: string
+    onPageChange: (newPage: number) => void
     onSearchChange: (newSearch?: string) => void
 }
-export default function WorkbenchMobileContent({
-    onAssignMember,
+export function WorkbenchMobileContent({
     currentPage,
     search,
     onPageChange,
     onSearchChange,
 }: Props) {
-    const router = useRouter()
     const debouncedSearchChange = useMemo(
         () => lodash.debounce((value: string) => onSearchChange(value), 500),
         [onSearchChange]
@@ -51,16 +46,7 @@ export default function WorkbenchMobileContent({
                 />
             </div>
             {jobs.map((job) => (
-                <JobMobileCard
-                    key={job.no}
-                    job={job}
-                    onViewDetail={() => {
-                        router.navigate({
-                            href: INTERNAL_URLS.getJobDetailUrl(job.no),
-                        })
-                    }}
-                    onAssignMember={onAssignMember}
-                />
+                <JobMobileCard key={job.no} job={job} />
             ))}
 
             {/* Mobile Pagination */}

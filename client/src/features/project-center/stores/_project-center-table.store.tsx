@@ -1,16 +1,18 @@
+import { STORAGE_KEYS } from '@/lib'
+import { getAllowedJobColumns } from '@/lib/utils'
+import type { JobColumnKey, TJob } from '@/shared/types'
 import { Store } from '@tanstack/react-store'
-import { STORAGE_KEYS } from '../../../lib'
-import { getAllowedJobColumns } from '../../../lib/utils'
-import type { JobColumnKey, TJob } from '../../../shared/types'
 
 const DEFAULT_COLUMNS: JobColumnKey[] = [
+    'thumbnailUrl',
     'no',
     'displayName',
-    'staffCost',
+    'totalStaffCost',
     'status',
+    'totalStaffCost',
+    'staffCost',
     'dueAt',
     'assignments',
-    'isPaid',
     'action',
 ]
 

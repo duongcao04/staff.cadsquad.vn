@@ -12,6 +12,7 @@ export const APP_PERMISSIONS = {
         ASSIGN_MEMBER: 'job.assignMember',
         REVIEW: 'job.review', // Manager: Approve/Reject
         PUBLISH: 'job.publish', // Manager: Publish to external
+        MANAGE: 'job.manage', // All permission manage
     },
 
     USER: {

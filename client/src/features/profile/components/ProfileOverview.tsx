@@ -1,4 +1,4 @@
-import HeroCopyButton from '@/shared/components/ui/hero-copy-button'
+import { HeroCopyButton } from '@/shared/components/ui/hero-copy-button'
 import type { TUser } from '@/shared/types'
 import {
     Building2,
@@ -50,7 +50,7 @@ export function ProfileOverview({ data }: ProfileOverviewProps) {
                                 className="text-sm font-semibold text-text-subdued hover:underline"
                                 target="_blank"
                             >
-                                {data.email}
+                                {data.personalEmail ?? data.email}
                             </a>
                         </div>
                         <HeroCopyButton textValue={data.email} />

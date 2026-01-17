@@ -1,4 +1,4 @@
-import { cn, useMarkAllSeenMutation } from '@/lib'
+import { cn, INTERNAL_URLS, useMarkAllSeenMutation } from '@/lib'
 import { CHANNELS } from '@/lib/ably'
 import { jobsListOptions, useProfile } from '@/lib/queries'
 import { workbenchDataOptions } from '@/lib/queries/options/job-queries'
@@ -242,6 +242,11 @@ export default function NotificationDropdown() {
                         variant="light"
                         fullWidth
                         className="text-text-subdued h-8 font-medium"
+                        onPress={() =>
+                            router.navigate({
+                                href: INTERNAL_URLS.allNotifications,
+                            })
+                        }
                     >
                         View all history
                     </Button>

@@ -51,6 +51,8 @@ export const updateProfileSchema = yup.object({
         .nullable()
         .optional(),
 
+    personalEmail: yup.string().email('Personal email is invalid').optional(),
+
     phoneNumber: yup
         .string()
         .test(

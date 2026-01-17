@@ -31,6 +31,7 @@ export const editUserSchema = z.object({
             'Username can only contain letters, numbers, underscores, and dots'
         ),
     email: z.string().email('Please enter a valid email address'),
+    personalEmail: z.string().email('Personal email is invalid').optional(),
     phoneNumber: z.string().optional().or(z.literal('')),
 })
 
