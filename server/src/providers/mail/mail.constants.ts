@@ -6,4 +6,8 @@ export const JOB_SEND_INVITATION_EMAIL = 'send-invitation-job'
 // Thêm các job mới
 export const JOB_SEND_JOB_ASSIGNMENT = 'send-job-assignment'
 export const JOB_SEND_ACCOUNT_STATUS = 'send-account-status'
+export const JOB_SEND_JOB_PAID = 'send-job-paid'
 export const JOB_SEND_RESET_PASSWORD = 'send-reset-password'
+export const JOB_SEND_REJECT_MAIL = 'send-reject-mail'
+export const JOB_SEND_APPROVE_MAIL = 'send-approve-mail'
+export const JOB_SEND_DELIVER_MAIL = 'send-deliver-mail'

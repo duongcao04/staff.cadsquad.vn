@@ -1,18 +1,220 @@
-<div style='font-family: sans-serif; padding: 20px; border: 1px solid #eee;'>
-    <h2>Xin chào {{name}},</h2>
-    <p>Bạn vừa được phân công vào một dự án mới trên hệ thống
-        <b>CAD SQUAD</b>.</p>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Job Assignment</title>
+    <style>
+        /* General Resets */
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            color: #334155;
+        }
+        table {
+            border-spacing: 0;
+            width: 100%;
+        }
+        td {
+            padding: 0;
+        }
+        img {
+            border: 0;
+        }
+        
+        /* Container */
+        .email-wrapper {
+            width: 100%;
+            background-color: #f4f6f8;
+            padding: 40px 0;
+        }
+        .email-content {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
 
-    <div style='background: #f9f9f9; padding: 15px; border-radius: 8px;'>
-        <p><b>Mã dự án:</b> {{jobNo}}</p>
-        <p><b>Tên dự án:</b> {{jobTitle}}</p>
+        /* Header */
+        .email-header {
+            background-color: #ffffff;
+            padding: 30px 40px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .email-logo {
+            max-height: 40px;
+            width: auto;
+        }
+
+        /* Body */
+        .email-body {
+            padding: 40px;
+        }
+        .h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0 0 20px;
+        }
+        .text {
+            font-size: 16px;
+            line-height: 24px;
+            margin: 0 0 20px;
+            color: #475569;
+        }
+
+        /* Job Card */
+        .job-card {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+        .job-detail-row {
+            margin-bottom: 12px;
+        }
+        .job-detail-row:last-child {
+            margin-bottom: 0;
+        }
+        .label {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #64748b;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .value {
+            font-size: 16px;
+            font-weight: 500;
+            color: #1e293b;
+        }
+
+        /* Button */
+        .btn-container {
+            text-align: center;
+            margin: 35px 0 10px;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #2563eb; /* Primary Color */
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 14px 32px;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+        .btn:hover {
+            background-color: #1d4ed8;
+        }
+
+        /* Footer */
+        .email-footer {
+            background-color: #f1f5f9;
+            padding: 30px;
+            text-align: center;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        .footer-link {
+            color: #64748b;
+            text-decoration: underline;
+        }
+
+        /* Mobile Responsive */
+        @media only screen and (max-width: 600px) {
+            .email-content {
+                width: 100% !important;
+                border-radius: 0 !important;
+            }
+            .email-body {
+                padding: 25px !important;
+            }
+            .h1 {
+                font-size: 20px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-wrapper">
+        <table class="email-content">
+            <tr>
+                <td class="email-header">
+                    <img src="{{logoUrl}}" alt="Cadsquad" class="email-logo">
+                </td>
+            </tr>
+
+            <tr>
+                <td class="email-body">
+                    <h1 class="h1">New Job Assignment 📋</h1>
+                    <p class="text">Hi <strong>{{recipientName}}</strong>,</p>
+                    <p class="text">
+                        You have been assigned to a new job. Please review the details below and check your workbench to start tracking your progress.
+                    </p>
+
+                    <div class="job-card">
+                        <table width="100%">
+                            <tr>
+                                <td class="job-detail-row">
+                                    <span class="label">Job Number</span>
+                                    <div class="value">{{jobNo}}</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="job-detail-row">
+                                    <span class="label">Project / Title</span>
+                                    <div class="value">{{jobTitle}}</div>
+                                </td>
+                            </tr>
+                            {{#if clientName}}
+                            <tr>
+                                <td class="job-detail-row">
+                                    <span class="label">Client</span>
+                                    <div class="value">{{clientName}}</div>
+                                </td>
+                            </tr>
+                            {{/if}}
+                            <tr>
+                                <td class="job-detail-row">
+                                    <span class="label">Due Date</span>
+                                    <div class="value" style="color: #ea580c;">{{dueDate}}</div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="btn-container">
+                        <a href="{{jobLink}}" class="btn" target="_blank">View Job Details</a>
+                    </div>
+
+                    <p class="text" style="margin-top: 30px; font-size: 14px;">
+                        If you have any questions about this assignment, please contact your project manager directly.
+                    </p>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="email-footer">
+                    <p>&copy; {{currentYear}} Cadsquad. All rights reserved.</p>
+                    <p>
+                        You are receiving this email because you are a registered member of the Cadsquad team.
+                        <br>
+                        <a href="{{settingsLink}}" class="footer-link">Notification Settings</a>
+                    </p>
+                </td>
+            </tr>
+        </table>
     </div>
-
-    <p>Vui lòng nhấn vào nút bên dưới để xem chi tiết và bắt đầu công việc:</p>
-    <a
-        href='{{url}}'
-        style='display: inline-block; padding: 10px 20px; background: #0070f3; color: white; text-decoration: none; border-radius: 5px;'
-    >
-        Xem dự án
-    </a>
-</div>
+</body>
+</html>

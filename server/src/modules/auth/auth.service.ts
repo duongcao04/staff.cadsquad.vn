@@ -195,6 +195,7 @@ export class AuthService {
 				displayName: data.displayName,
 				avatar: data.avatar,
 				phoneNumber: data.phoneNumber,
+				personalEmail: data.personalEmail,
 			},
 			include: {
 				role: {

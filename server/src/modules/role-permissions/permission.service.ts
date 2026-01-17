@@ -106,4 +106,66 @@ export class PermissionService {
 			},
 		})
 	}
+
+	/**
+	 * 🔍 Find all users who possess a specific permission.
+	 * Useful for sending notifications (e.g., "Find all users who can MANAGE JOBS").
+	 * * @param entityAction The permission string (e.g., 'job.manage', 'user.delete')
+	 */
+	async findUsersByPermission(entityAction: string) {
+		return this.prisma.user.findMany({
+			where: {
+				isActive: true,
+				deletedAt: null,
+				role: {
+					permissions: {
+						some: {
+							entityAction: entityAction,
+						},
+					},
+				},
+			},
+			select: {
+				id: true,
+				displayName: true,
+				email: true,
+				role: {
+					select: {
+						id: true,
+						code: true,
+						displayName: true,
+					},
+				},
+			},
+		})
+	}
+
+	/**
+	 * 🔍 Find Users with ANY of the given permissions (OR Logic).
+	 * Example: ['job.manage', 'system.manage'] -> Returns users who have EITHER.
+	 * @param permissions Array of permission strings (entityAction)
+	 * @returns Promise<string[]> Array of User IDs
+	 */
+	async findUserHasAnyPermission(permissions: string[]): Promise<string[]> {
+		if (!permissions.length) return []
+
+		const users = await this.prisma.user.findMany({
+			where: {
+				isActive: true,
+				deletedAt: null,
+				role: {
+					permissions: {
+						some: {
+							entityAction: {
+								in: permissions,
+							},
+						},
+					},
+				},
+			},
+			select: { id: true },
+		})
+
+		return users.map((u) => u.id)
+	}
 }

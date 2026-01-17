@@ -10,6 +10,8 @@ import { JobTypeModule } from '../job-type/job-type.module'
 import { JobCommentService } from './job-comment.service'
 import { JobReminderService } from './job-reminder.service'
 import { SharePointModule } from '../sharepoint/sharepoint.module'
+import { RoleModule } from '../role-permissions/role.module'
+import { MailModule } from '../../providers/mail/mail.module'
 
 @Module({
 	imports: [
@@ -19,6 +21,8 @@ import { SharePointModule } from '../sharepoint/sharepoint.module'
 		NotificationModule,
 		JobTypeModule,
 		SharePointModule,
+		MailModule,
+		RoleModule,
 	],
 	controllers: [JobController],
 	providers: [
