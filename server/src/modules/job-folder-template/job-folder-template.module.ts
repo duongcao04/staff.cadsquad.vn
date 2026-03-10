@@ -4,9 +4,9 @@ import { JobFolderTemplateController } from './job-folder-template.controller';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [AuthModule],
-  controllers: [JobFolderTemplateController],
-  providers: [JobFolderTemplateService],
-  exports: [JobFolderTemplateService],
+	imports: [AuthModule],
+	controllers: [JobFolderTemplateController],
+	providers: [JobFolderTemplateService],
+	exports: [JobFolderTemplateService],
 })
 export class JobFolderTemplateModule { }

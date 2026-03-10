@@ -5,6 +5,7 @@ import {
 	Delete,
 	Get,
 	InternalServerErrorException,
+	Logger,
 	Param,
 	Patch,
 	Post,
@@ -39,13 +40,14 @@ import { UpdateAttachmentsDto } from './dto/update-attachments.dto'
 @UseGuards(JwtGuard)
 @ApiBearerAuth()
 export class JobController {
+	private readonly logger = new Logger(JobController.name)
 	constructor(
 		private readonly jobService: JobService,
 		private readonly jobTypeService: JobTypeService,
 		private readonly activityLogService: ActivityLogService,
 		private readonly commentService: JobCommentService,
 		private readonly sharepointService: SharePointService
-	) {}
+	) { }
 
 	// -------------------------------------------------------------------------
 	// READ OPERATIONS
@@ -179,7 +181,7 @@ export class JobController {
 		const created = await this.jobService.create(user.sub, createJobDto)
 		const folderID = '012FXBO3INCUN6K3IYSZDJWUU6IMK6UG7D'
 		try {
-			const folderName = createJobDto.no + '- ' + createJobDto.displayName
+			const folderName = `${createJobDto.no}- ${createJobDto.clientName.toUpperCase() ?? "UNKNOWN"}_${createJobDto.displayName}`
 			const childrenFolders = [
 				'01. Resources',
 				'02. RFI',
@@ -188,11 +190,19 @@ export class JobController {
 				'Temp',
 				'Working',
 			]
-			await this.sharepointService.queuCreateFolderWithChildren(
-				folderID,
-				folderName,
-				childrenFolders
-			)
+			// 3.5. Create SharePoint Folder if requested
+			if (createJobDto.isCreateSharepointFolder && createJobDto.sharepointTemplateId) {
+				try {
+					await this.sharepointService.queueCopyItem(
+						createJobDto.sharepointTemplateId,
+						'012FXBO3INCUN6K3IYSZDJWUU6IMK6UG7D', // Destination Project Center Folder Id
+						folderName
+					)
+				} catch (error) {
+					this.logger.error(`Failed to create SharePoint folder for job ${createJobDto.no}:`, error)
+					// Don't fail the job creation if SharePoint folder creation fails
+				}
+			}
 		} catch (error) {
 			throw new InternalServerErrorException(
 				'Create sharepoint folder failded'

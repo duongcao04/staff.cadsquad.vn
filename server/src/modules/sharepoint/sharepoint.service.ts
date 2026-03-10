@@ -4,21 +4,22 @@ import { Client } from '@microsoft/microsoft-graph-client'
 import { InjectFlowProducer, InjectQueue } from '@nestjs/bullmq'
 import { BadRequestException, Inject, Injectable, Logger } from '@nestjs/common'
 import type { ConfigType } from '@nestjs/config'
+import { FlowProducer, Queue } from 'bullmq'
 import 'isomorphic-fetch'
 import {
+	JOB_COPY_ITEM,
 	JOB_CREATE_FOLDER,
 	SHAREPOINT_FLOW,
 	SHAREPOINT_QUEUE,
 } from './sharepoint.constants'
-import { FlowProducer, Queue } from 'bullmq'
 
 @Injectable()
 export class SharePointService {
 	private readonly logger = new Logger(SharePointService.name)
 
 	private msalClient: ConfidentialClientApplication
-	private siteId: string
-	private driveId: string
+	private siteId: string | undefined
+	private driveId: string | undefined
 
 	// Cấu hình ID của Drive (Mặc định lấy Drive chính của Root Site)
 	// Nếu bạn muốn trỏ vào Site khác, bạn cần thay đổi logic lấy Drive ID này.
@@ -127,7 +128,7 @@ export class SharePointService {
 				createdBy: item.createdBy?.user?.displayName || 'System',
 			}))
 		} catch (error) {
-			this.logger.error(`List items failed: ${error.message}`)
+			this.logger.error(`List items failed: ${(error as { message: string }).message}`)
 			throw new BadRequestException('Cannot list items from SharePoint')
 		}
 	}
@@ -139,7 +140,7 @@ export class SharePointService {
 	/**
 	 * Upload file vào một folder cụ thể
 	 */
-	async uploadFile(parentId: string, file: Express.Multer.File) {
+	async uploadFile(parentId: string, file: any) {
 		const client = await this.getGraphClient()
 
 		// Endpoint: /drive/items/{parent-id}:/{filename}:/content
@@ -158,7 +159,7 @@ export class SharePointService {
 			const response = await client.api(endpoint).put(file.buffer)
 			return response
 		} catch (error) {
-			this.logger.error(`Upload failed: ${error.message}`)
+			this.logger.error(`Upload failed: ${(error as { message: string }).message}`)
 			throw new BadRequestException('Upload to SharePoint failed')
 		}
 	}
@@ -196,6 +197,22 @@ export class SharePointService {
 		this.logger.log(
 			`Queued parent: ${parentName} with ${childrenNames.length} children`
 		)
+	}
+
+	/**
+	 * Queue copy item operation
+	 * @param itemId ID of the item to copy
+	 * @param destinationFolderId ID of the destination folder
+	 * @param newName Optional new name for the copied item
+	 */
+	async queueCopyItem(itemId: string, destinationFolderId: string, newName?: string) {
+		await this.spQueue.add(JOB_COPY_ITEM, {
+			itemId,
+			destinationFolderId,
+			newName,
+			driveId: this.driveId,
+		})
+		this.logger.log(`Queued copy item: ${itemId} to ${destinationFolderId}`)
 	}
 
 	// ==========================================
@@ -299,15 +316,8 @@ export class SharePointService {
 				message: 'Copy operation started. Large folders may take a few moments.'
 			};
 		} catch (error) {
-			this.logger.error(`Copy failed: ${error.message}`);
+			this.logger.error(`Copy failed: ${(error as { message: string }).message}`);
 			throw new BadRequestException('Cannot copy item in SharePoint. Verify permissions or IDs.');
 		}
-	}
-
-	/**
-	 * Get the current drive ID
-	 */
-	getDriveId(): string {
-		return this.driveId
 	}
 }

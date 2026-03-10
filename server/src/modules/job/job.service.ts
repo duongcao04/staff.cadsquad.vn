@@ -48,7 +48,7 @@ export class JobService {
 		private readonly permissionService: PermissionService,
 		private readonly mailService: MailService,
 		private readonly sharePointService: SharePointService
-	) {}
+	) { }
 
 	/**
 	 * PRIVATE HELPER: Handles data privacy.
@@ -85,12 +85,12 @@ export class JobService {
 					staffCost: canReadSensitiveData ? asm.staffCost : undefined,
 					user: asm.user
 						? {
-								id: asm.user.id,
-								displayName: asm.user.displayName,
-								username: asm.user.username,
-								avatar: asm.user.avatar,
-								department: asm.user.department,
-							}
+							id: asm.user.id,
+							displayName: asm.user.displayName,
+							username: asm.user.username,
+							avatar: asm.user.avatar,
+							department: asm.user.department,
+						}
 						: undefined,
 				})),
 			}
@@ -753,29 +753,6 @@ export class JobService {
 			return newJob
 		})
 
-		// 3.5. Create SharePoint Folder if requested
-		if (isCreateSharepointFolder && sharepointTemplateId) {
-			try {
-				// Get the folder template
-				const template = await this.prisma.jobFolderTemplate.findUnique({
-					where: { id: sharepointTemplateId }
-				})
-
-				if (template) {
-					// For now, create a simple folder with the job name under the drive root
-					// In the future, this could create a folder structure based on the template
-					await this.sharePointService.queueCreateFolder(
-						'root', // Use drive root
-						`${job.no}-${job.displayName}`
-					)
-					this.logger.log(`Queued SharePoint folder creation for job ${job.no}`)
-				}
-			} catch (error) {
-				this.logger.error(`Failed to create SharePoint folder for job ${job.no}:`, error)
-				// Don't fail the job creation if SharePoint folder creation fails
-			}
-		}
-
 		// 4. Send Notifications to Assigned Staff (Outside Transaction)
 		try {
 			const jobAssignmentIds = job.assignments.map((it) => it.userId)
@@ -1192,7 +1169,7 @@ export class JobService {
 				redirectUrl: `/jobs/${jobAssigned.no}`,
 			})
 		} catch (error) {
-			this.logger.error('Send notification error', error.stack)
+			this.logger.error('Send notification error', (error as { stack: string }).stack)
 		}
 		return jobAssigned
 	}
@@ -1932,7 +1909,7 @@ export class JobService {
 		} catch (error) {
 			// We log the error but don't throw it, so the main updateGeneralInfo doesn't fail
 			this.logger.error(
-				`Failed to send deadline notifications for Job ${jobNo}: ${error.message}`
+				`Failed to send deadline notifications for Job ${jobNo}: ${(error as { message: string }).message}`
 			)
 		}
 	}

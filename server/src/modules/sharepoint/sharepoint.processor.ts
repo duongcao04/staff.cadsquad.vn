@@ -8,10 +8,26 @@ import { Job, Queue } from 'bullmq'
 import * as fs from 'fs'
 import 'isomorphic-fetch'
 import {
+	JOB_COPY_ITEM,
 	JOB_CREATE_FOLDER,
 	JOB_UPLOAD_FILE,
 	SHAREPOINT_QUEUE,
 } from './sharepoint.constants'
+
+interface SharepointJobData {
+	// For file upload
+	parentId?: string
+	filePath?: string
+	originalName?: string
+	// For folder creation
+	folderName?: string
+	driveId?: string
+	childrenToSpawn?: string[]
+	// For copy item
+	sourceItemId?: string
+	destinationFolderId?: string
+	newName?: string
+}
 
 @Processor(SHAREPOINT_QUEUE)
 export class SharePointProcessor extends WorkerHost {
@@ -34,20 +50,22 @@ export class SharePointProcessor extends WorkerHost {
 		})
 	}
 
-	async process(job: Job<any>): Promise<any> {
+	async process(job: Job<SharepointJobData>): Promise<any> {
 		switch (job.name) {
 			case JOB_UPLOAD_FILE:
 				return await this.handleFileUpload(job.data)
 			case JOB_CREATE_FOLDER:
 				return await this.handleCreateFolder(job.data)
+			case JOB_COPY_ITEM:
+				return await this.handleCopyItem(job.data)
 		}
 	}
 
-	private async handleFileUpload(data: {
-		parentId: string
-		filePath: string
-		originalName: string
-	}) {
+	private async handleFileUpload(data: SharepointJobData) {
+		if (!data.parentId || !data.filePath || !data.originalName) {
+			throw new Error('Missing required file upload data')
+		}
+
 		const client = await this.getGraphClient()
 		const fileBuffer = fs.readFileSync(data.filePath)
 
@@ -65,22 +83,13 @@ export class SharePointProcessor extends WorkerHost {
 
 			return response
 		} catch (error) {
-			this.logger.error(`❌ SharePoint Upload Failed: ${error.message}`)
+			this.logger.error(`❌ SharePoint Upload Failed: ${(error as { message: string }).message}`)
 			throw error // Để BullMQ retry
 		}
 	}
 
-	async handleCreateFolder({
-		parentId,
-		folderName,
-		driveId,
-		childrenToSpawn, // <--- 1. Nhận thêm tham số này
-	}: {
-		parentId: string
-		folderName: string
-		driveId: string
-		childrenToSpawn?: string[] // Optional
-	}) {
+	async handleCreateFolder(data: SharepointJobData): Promise<void> {
+		const { parentId, folderName, driveId, childrenToSpawn } = data
 		const client = await this.getGraphClient()
 		const driveBaseUrl = `/drives/${driveId}`
 
@@ -134,7 +143,38 @@ export class SharePointProcessor extends WorkerHost {
 
 			return newFolder // Return object để log hoặc debug nếu cần
 		} catch (error) {
-			this.logger.error(`Create folder failed: ${error.message}`)
+			this.logger.error(`Create folder failed: ${(error as { message: string }).message}`)
+			throw error // Ném lỗi để BullMQ biết và retry
+		}
+	}
+
+	private async handleCopyItem(data: any): Promise<void> {
+		const { itemId, destinationFolderId, driveId, newName } = data
+
+		try {
+			const client = await this.getGraphClient()
+
+			// Build the copy request
+			const copyRequest = {
+				parentReference: {
+					driveId: driveId,
+					id: destinationFolderId,
+				},
+				name: newName || undefined, // Optional new name
+			}
+
+			// Execute the copy operation
+			const copyResult = await client
+				.api(`/drives/${driveId}/items/${itemId}/copy`)
+				.post(copyRequest)
+
+			this.logger.log(
+				`✅ Copied item ${itemId} to ${destinationFolderId} (New ID: ${copyResult.id})`
+			)
+
+			return copyResult
+		} catch (error) {
+			this.logger.error(`Copy item failed: ${(error as { message: string }).message}`)
 			throw error // Ném lỗi để BullMQ biết và retry
 		}
 	}

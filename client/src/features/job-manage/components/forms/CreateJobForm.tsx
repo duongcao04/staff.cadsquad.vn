@@ -683,7 +683,7 @@ export default function CreateJobForm({
                                                         (template) => (
                                                             <SelectItem
                                                                 key={
-                                                                    template.id
+                                                                    template.folderId
                                                                 }
                                                                 textValue={
                                                                     template.displayName
