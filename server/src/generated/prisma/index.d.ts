@@ -109,6 +109,11 @@ export type Job = $Result.DefaultSelection<Prisma.$JobPayload>
  */
 export type JobAssignment = $Result.DefaultSelection<Prisma.$JobAssignmentPayload>
 /**
+ * Model JobFolderTemplate
+ * 
+ */
+export type JobFolderTemplate = $Result.DefaultSelection<Prisma.$JobFolderTemplatePayload>
+/**
  * Model Client
  * 
  */
@@ -203,6 +208,7 @@ export const EntityEnum: {
   JOB_TITLE: 'JOB_TITLE',
   JOB_TYPE: 'JOB_TYPE',
   JOB_STATUS: 'JOB_STATUS',
+  JOB_FOLDER_TEMPLATE: 'JOB_FOLDER_TEMPLATE',
   COMMUNITY: 'COMMUNITY',
   TOPIC: 'TOPIC',
   POST: 'POST',
@@ -716,6 +722,16 @@ export class PrismaClient<
     * ```
     */
   get jobAssignment(): Prisma.JobAssignmentDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.jobFolderTemplate`: Exposes CRUD operations for the **JobFolderTemplate** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more JobFolderTemplates
+    * const jobFolderTemplates = await prisma.jobFolderTemplate.findMany()
+    * ```
+    */
+  get jobFolderTemplate(): Prisma.JobFolderTemplateDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.client`: Exposes CRUD operations for the **Client** model.
@@ -1309,6 +1325,7 @@ export namespace Prisma {
     FileSystem: 'FileSystem',
     Job: 'Job',
     JobAssignment: 'JobAssignment',
+    JobFolderTemplate: 'JobFolderTemplate',
     Client: 'Client',
     PinnedJob: 'PinnedJob',
     PaymentChannel: 'PaymentChannel',
@@ -1338,7 +1355,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "browserSubscribes" | "userDevices" | "user" | "userSecurityLog" | "role" | "permission" | "userPermission" | "permissionGroup" | "session" | "account" | "verification" | "gallery" | "jobComment" | "jobTitle" | "department" | "userConfig" | "fileSystem" | "job" | "jobAssignment" | "client" | "pinnedJob" | "paymentChannel" | "jobType" | "jobStatus" | "jobDelivery" | "jobStatusHistory" | "jobActivityLog" | "notification" | "community" | "communityMember" | "topic" | "post" | "postEvent"
+      modelProps: "browserSubscribes" | "userDevices" | "user" | "userSecurityLog" | "role" | "permission" | "userPermission" | "permissionGroup" | "session" | "account" | "verification" | "gallery" | "jobComment" | "jobTitle" | "department" | "userConfig" | "fileSystem" | "job" | "jobAssignment" | "jobFolderTemplate" | "client" | "pinnedJob" | "paymentChannel" | "jobType" | "jobStatus" | "jobDelivery" | "jobStatusHistory" | "jobActivityLog" | "notification" | "community" | "communityMember" | "topic" | "post" | "postEvent"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2748,6 +2765,80 @@ export namespace Prisma {
           }
         }
       }
+      JobFolderTemplate: {
+        payload: Prisma.$JobFolderTemplatePayload<ExtArgs>
+        fields: Prisma.JobFolderTemplateFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.JobFolderTemplateFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobFolderTemplatePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.JobFolderTemplateFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobFolderTemplatePayload>
+          }
+          findFirst: {
+            args: Prisma.JobFolderTemplateFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobFolderTemplatePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.JobFolderTemplateFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobFolderTemplatePayload>
+          }
+          findMany: {
+            args: Prisma.JobFolderTemplateFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobFolderTemplatePayload>[]
+          }
+          create: {
+            args: Prisma.JobFolderTemplateCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobFolderTemplatePayload>
+          }
+          createMany: {
+            args: Prisma.JobFolderTemplateCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.JobFolderTemplateCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobFolderTemplatePayload>[]
+          }
+          delete: {
+            args: Prisma.JobFolderTemplateDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobFolderTemplatePayload>
+          }
+          update: {
+            args: Prisma.JobFolderTemplateUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobFolderTemplatePayload>
+          }
+          deleteMany: {
+            args: Prisma.JobFolderTemplateDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.JobFolderTemplateUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.JobFolderTemplateUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobFolderTemplatePayload>[]
+          }
+          upsert: {
+            args: Prisma.JobFolderTemplateUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobFolderTemplatePayload>
+          }
+          aggregate: {
+            args: Prisma.JobFolderTemplateAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateJobFolderTemplate>
+          }
+          groupBy: {
+            args: Prisma.JobFolderTemplateGroupByArgs<ExtArgs>
+            result: $Utils.Optional<JobFolderTemplateGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.JobFolderTemplateCountArgs<ExtArgs>
+            result: $Utils.Optional<JobFolderTemplateCountAggregateOutputType> | number
+          }
+        }
+      }
       Client: {
         payload: Prisma.$ClientPayload<ExtArgs>
         fields: Prisma.ClientFieldRefs
@@ -3911,6 +4002,7 @@ export namespace Prisma {
     fileSystem?: FileSystemOmit
     job?: JobOmit
     jobAssignment?: JobAssignmentOmit
+    jobFolderTemplate?: JobFolderTemplateOmit
     client?: ClientOmit
     pinnedJob?: PinnedJobOmit
     paymentChannel?: PaymentChannelOmit
@@ -26931,6 +27023,1074 @@ export namespace Prisma {
 
 
   /**
+   * Model JobFolderTemplate
+   */
+
+  export type AggregateJobFolderTemplate = {
+    _count: JobFolderTemplateCountAggregateOutputType | null
+    _avg: JobFolderTemplateAvgAggregateOutputType | null
+    _sum: JobFolderTemplateSumAggregateOutputType | null
+    _min: JobFolderTemplateMinAggregateOutputType | null
+    _max: JobFolderTemplateMaxAggregateOutputType | null
+  }
+
+  export type JobFolderTemplateAvgAggregateOutputType = {
+    size: number | null
+  }
+
+  export type JobFolderTemplateSumAggregateOutputType = {
+    size: number | null
+  }
+
+  export type JobFolderTemplateMinAggregateOutputType = {
+    id: string | null
+    displayName: string | null
+    folderId: string | null
+    folderName: string | null
+    size: number | null
+    webUrl: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type JobFolderTemplateMaxAggregateOutputType = {
+    id: string | null
+    displayName: string | null
+    folderId: string | null
+    folderName: string | null
+    size: number | null
+    webUrl: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type JobFolderTemplateCountAggregateOutputType = {
+    id: number
+    displayName: number
+    folderId: number
+    folderName: number
+    size: number
+    webUrl: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type JobFolderTemplateAvgAggregateInputType = {
+    size?: true
+  }
+
+  export type JobFolderTemplateSumAggregateInputType = {
+    size?: true
+  }
+
+  export type JobFolderTemplateMinAggregateInputType = {
+    id?: true
+    displayName?: true
+    folderId?: true
+    folderName?: true
+    size?: true
+    webUrl?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type JobFolderTemplateMaxAggregateInputType = {
+    id?: true
+    displayName?: true
+    folderId?: true
+    folderName?: true
+    size?: true
+    webUrl?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type JobFolderTemplateCountAggregateInputType = {
+    id?: true
+    displayName?: true
+    folderId?: true
+    folderName?: true
+    size?: true
+    webUrl?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type JobFolderTemplateAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which JobFolderTemplate to aggregate.
+     */
+    where?: JobFolderTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JobFolderTemplates to fetch.
+     */
+    orderBy?: JobFolderTemplateOrderByWithRelationInput | JobFolderTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: JobFolderTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JobFolderTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JobFolderTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned JobFolderTemplates
+    **/
+    _count?: true | JobFolderTemplateCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: JobFolderTemplateAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: JobFolderTemplateSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: JobFolderTemplateMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: JobFolderTemplateMaxAggregateInputType
+  }
+
+  export type GetJobFolderTemplateAggregateType<T extends JobFolderTemplateAggregateArgs> = {
+        [P in keyof T & keyof AggregateJobFolderTemplate]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateJobFolderTemplate[P]>
+      : GetScalarType<T[P], AggregateJobFolderTemplate[P]>
+  }
+
+
+
+
+  export type JobFolderTemplateGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JobFolderTemplateWhereInput
+    orderBy?: JobFolderTemplateOrderByWithAggregationInput | JobFolderTemplateOrderByWithAggregationInput[]
+    by: JobFolderTemplateScalarFieldEnum[] | JobFolderTemplateScalarFieldEnum
+    having?: JobFolderTemplateScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: JobFolderTemplateCountAggregateInputType | true
+    _avg?: JobFolderTemplateAvgAggregateInputType
+    _sum?: JobFolderTemplateSumAggregateInputType
+    _min?: JobFolderTemplateMinAggregateInputType
+    _max?: JobFolderTemplateMaxAggregateInputType
+  }
+
+  export type JobFolderTemplateGroupByOutputType = {
+    id: string
+    displayName: string
+    folderId: string
+    folderName: string
+    size: number
+    webUrl: string
+    createdAt: Date
+    updatedAt: Date
+    _count: JobFolderTemplateCountAggregateOutputType | null
+    _avg: JobFolderTemplateAvgAggregateOutputType | null
+    _sum: JobFolderTemplateSumAggregateOutputType | null
+    _min: JobFolderTemplateMinAggregateOutputType | null
+    _max: JobFolderTemplateMaxAggregateOutputType | null
+  }
+
+  type GetJobFolderTemplateGroupByPayload<T extends JobFolderTemplateGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<JobFolderTemplateGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof JobFolderTemplateGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], JobFolderTemplateGroupByOutputType[P]>
+            : GetScalarType<T[P], JobFolderTemplateGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type JobFolderTemplateSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    displayName?: boolean
+    folderId?: boolean
+    folderName?: boolean
+    size?: boolean
+    webUrl?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["jobFolderTemplate"]>
+
+  export type JobFolderTemplateSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    displayName?: boolean
+    folderId?: boolean
+    folderName?: boolean
+    size?: boolean
+    webUrl?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["jobFolderTemplate"]>
+
+  export type JobFolderTemplateSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    displayName?: boolean
+    folderId?: boolean
+    folderName?: boolean
+    size?: boolean
+    webUrl?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["jobFolderTemplate"]>
+
+  export type JobFolderTemplateSelectScalar = {
+    id?: boolean
+    displayName?: boolean
+    folderId?: boolean
+    folderName?: boolean
+    size?: boolean
+    webUrl?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type JobFolderTemplateOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "displayName" | "folderId" | "folderName" | "size" | "webUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["jobFolderTemplate"]>
+
+  export type $JobFolderTemplatePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "JobFolderTemplate"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      displayName: string
+      folderId: string
+      folderName: string
+      size: number
+      webUrl: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["jobFolderTemplate"]>
+    composites: {}
+  }
+
+  type JobFolderTemplateGetPayload<S extends boolean | null | undefined | JobFolderTemplateDefaultArgs> = $Result.GetResult<Prisma.$JobFolderTemplatePayload, S>
+
+  type JobFolderTemplateCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<JobFolderTemplateFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: JobFolderTemplateCountAggregateInputType | true
+    }
+
+  export interface JobFolderTemplateDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['JobFolderTemplate'], meta: { name: 'JobFolderTemplate' } }
+    /**
+     * Find zero or one JobFolderTemplate that matches the filter.
+     * @param {JobFolderTemplateFindUniqueArgs} args - Arguments to find a JobFolderTemplate
+     * @example
+     * // Get one JobFolderTemplate
+     * const jobFolderTemplate = await prisma.jobFolderTemplate.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends JobFolderTemplateFindUniqueArgs>(args: SelectSubset<T, JobFolderTemplateFindUniqueArgs<ExtArgs>>): Prisma__JobFolderTemplateClient<$Result.GetResult<Prisma.$JobFolderTemplatePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one JobFolderTemplate that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {JobFolderTemplateFindUniqueOrThrowArgs} args - Arguments to find a JobFolderTemplate
+     * @example
+     * // Get one JobFolderTemplate
+     * const jobFolderTemplate = await prisma.jobFolderTemplate.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends JobFolderTemplateFindUniqueOrThrowArgs>(args: SelectSubset<T, JobFolderTemplateFindUniqueOrThrowArgs<ExtArgs>>): Prisma__JobFolderTemplateClient<$Result.GetResult<Prisma.$JobFolderTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first JobFolderTemplate that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobFolderTemplateFindFirstArgs} args - Arguments to find a JobFolderTemplate
+     * @example
+     * // Get one JobFolderTemplate
+     * const jobFolderTemplate = await prisma.jobFolderTemplate.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends JobFolderTemplateFindFirstArgs>(args?: SelectSubset<T, JobFolderTemplateFindFirstArgs<ExtArgs>>): Prisma__JobFolderTemplateClient<$Result.GetResult<Prisma.$JobFolderTemplatePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first JobFolderTemplate that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobFolderTemplateFindFirstOrThrowArgs} args - Arguments to find a JobFolderTemplate
+     * @example
+     * // Get one JobFolderTemplate
+     * const jobFolderTemplate = await prisma.jobFolderTemplate.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends JobFolderTemplateFindFirstOrThrowArgs>(args?: SelectSubset<T, JobFolderTemplateFindFirstOrThrowArgs<ExtArgs>>): Prisma__JobFolderTemplateClient<$Result.GetResult<Prisma.$JobFolderTemplatePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more JobFolderTemplates that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobFolderTemplateFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all JobFolderTemplates
+     * const jobFolderTemplates = await prisma.jobFolderTemplate.findMany()
+     * 
+     * // Get first 10 JobFolderTemplates
+     * const jobFolderTemplates = await prisma.jobFolderTemplate.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const jobFolderTemplateWithIdOnly = await prisma.jobFolderTemplate.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends JobFolderTemplateFindManyArgs>(args?: SelectSubset<T, JobFolderTemplateFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobFolderTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a JobFolderTemplate.
+     * @param {JobFolderTemplateCreateArgs} args - Arguments to create a JobFolderTemplate.
+     * @example
+     * // Create one JobFolderTemplate
+     * const JobFolderTemplate = await prisma.jobFolderTemplate.create({
+     *   data: {
+     *     // ... data to create a JobFolderTemplate
+     *   }
+     * })
+     * 
+     */
+    create<T extends JobFolderTemplateCreateArgs>(args: SelectSubset<T, JobFolderTemplateCreateArgs<ExtArgs>>): Prisma__JobFolderTemplateClient<$Result.GetResult<Prisma.$JobFolderTemplatePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many JobFolderTemplates.
+     * @param {JobFolderTemplateCreateManyArgs} args - Arguments to create many JobFolderTemplates.
+     * @example
+     * // Create many JobFolderTemplates
+     * const jobFolderTemplate = await prisma.jobFolderTemplate.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends JobFolderTemplateCreateManyArgs>(args?: SelectSubset<T, JobFolderTemplateCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many JobFolderTemplates and returns the data saved in the database.
+     * @param {JobFolderTemplateCreateManyAndReturnArgs} args - Arguments to create many JobFolderTemplates.
+     * @example
+     * // Create many JobFolderTemplates
+     * const jobFolderTemplate = await prisma.jobFolderTemplate.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many JobFolderTemplates and only return the `id`
+     * const jobFolderTemplateWithIdOnly = await prisma.jobFolderTemplate.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends JobFolderTemplateCreateManyAndReturnArgs>(args?: SelectSubset<T, JobFolderTemplateCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobFolderTemplatePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a JobFolderTemplate.
+     * @param {JobFolderTemplateDeleteArgs} args - Arguments to delete one JobFolderTemplate.
+     * @example
+     * // Delete one JobFolderTemplate
+     * const JobFolderTemplate = await prisma.jobFolderTemplate.delete({
+     *   where: {
+     *     // ... filter to delete one JobFolderTemplate
+     *   }
+     * })
+     * 
+     */
+    delete<T extends JobFolderTemplateDeleteArgs>(args: SelectSubset<T, JobFolderTemplateDeleteArgs<ExtArgs>>): Prisma__JobFolderTemplateClient<$Result.GetResult<Prisma.$JobFolderTemplatePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one JobFolderTemplate.
+     * @param {JobFolderTemplateUpdateArgs} args - Arguments to update one JobFolderTemplate.
+     * @example
+     * // Update one JobFolderTemplate
+     * const jobFolderTemplate = await prisma.jobFolderTemplate.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends JobFolderTemplateUpdateArgs>(args: SelectSubset<T, JobFolderTemplateUpdateArgs<ExtArgs>>): Prisma__JobFolderTemplateClient<$Result.GetResult<Prisma.$JobFolderTemplatePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more JobFolderTemplates.
+     * @param {JobFolderTemplateDeleteManyArgs} args - Arguments to filter JobFolderTemplates to delete.
+     * @example
+     * // Delete a few JobFolderTemplates
+     * const { count } = await prisma.jobFolderTemplate.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends JobFolderTemplateDeleteManyArgs>(args?: SelectSubset<T, JobFolderTemplateDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more JobFolderTemplates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobFolderTemplateUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many JobFolderTemplates
+     * const jobFolderTemplate = await prisma.jobFolderTemplate.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends JobFolderTemplateUpdateManyArgs>(args: SelectSubset<T, JobFolderTemplateUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more JobFolderTemplates and returns the data updated in the database.
+     * @param {JobFolderTemplateUpdateManyAndReturnArgs} args - Arguments to update many JobFolderTemplates.
+     * @example
+     * // Update many JobFolderTemplates
+     * const jobFolderTemplate = await prisma.jobFolderTemplate.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more JobFolderTemplates and only return the `id`
+     * const jobFolderTemplateWithIdOnly = await prisma.jobFolderTemplate.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends JobFolderTemplateUpdateManyAndReturnArgs>(args: SelectSubset<T, JobFolderTemplateUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobFolderTemplatePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one JobFolderTemplate.
+     * @param {JobFolderTemplateUpsertArgs} args - Arguments to update or create a JobFolderTemplate.
+     * @example
+     * // Update or create a JobFolderTemplate
+     * const jobFolderTemplate = await prisma.jobFolderTemplate.upsert({
+     *   create: {
+     *     // ... data to create a JobFolderTemplate
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the JobFolderTemplate we want to update
+     *   }
+     * })
+     */
+    upsert<T extends JobFolderTemplateUpsertArgs>(args: SelectSubset<T, JobFolderTemplateUpsertArgs<ExtArgs>>): Prisma__JobFolderTemplateClient<$Result.GetResult<Prisma.$JobFolderTemplatePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of JobFolderTemplates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobFolderTemplateCountArgs} args - Arguments to filter JobFolderTemplates to count.
+     * @example
+     * // Count the number of JobFolderTemplates
+     * const count = await prisma.jobFolderTemplate.count({
+     *   where: {
+     *     // ... the filter for the JobFolderTemplates we want to count
+     *   }
+     * })
+    **/
+    count<T extends JobFolderTemplateCountArgs>(
+      args?: Subset<T, JobFolderTemplateCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], JobFolderTemplateCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a JobFolderTemplate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobFolderTemplateAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends JobFolderTemplateAggregateArgs>(args: Subset<T, JobFolderTemplateAggregateArgs>): Prisma.PrismaPromise<GetJobFolderTemplateAggregateType<T>>
+
+    /**
+     * Group by JobFolderTemplate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobFolderTemplateGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends JobFolderTemplateGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: JobFolderTemplateGroupByArgs['orderBy'] }
+        : { orderBy?: JobFolderTemplateGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, JobFolderTemplateGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetJobFolderTemplateGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the JobFolderTemplate model
+   */
+  readonly fields: JobFolderTemplateFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for JobFolderTemplate.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__JobFolderTemplateClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the JobFolderTemplate model
+   */
+  interface JobFolderTemplateFieldRefs {
+    readonly id: FieldRef<"JobFolderTemplate", 'String'>
+    readonly displayName: FieldRef<"JobFolderTemplate", 'String'>
+    readonly folderId: FieldRef<"JobFolderTemplate", 'String'>
+    readonly folderName: FieldRef<"JobFolderTemplate", 'String'>
+    readonly size: FieldRef<"JobFolderTemplate", 'Int'>
+    readonly webUrl: FieldRef<"JobFolderTemplate", 'String'>
+    readonly createdAt: FieldRef<"JobFolderTemplate", 'DateTime'>
+    readonly updatedAt: FieldRef<"JobFolderTemplate", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * JobFolderTemplate findUnique
+   */
+  export type JobFolderTemplateFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobFolderTemplate
+     */
+    select?: JobFolderTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobFolderTemplate
+     */
+    omit?: JobFolderTemplateOmit<ExtArgs> | null
+    /**
+     * Filter, which JobFolderTemplate to fetch.
+     */
+    where: JobFolderTemplateWhereUniqueInput
+  }
+
+  /**
+   * JobFolderTemplate findUniqueOrThrow
+   */
+  export type JobFolderTemplateFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobFolderTemplate
+     */
+    select?: JobFolderTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobFolderTemplate
+     */
+    omit?: JobFolderTemplateOmit<ExtArgs> | null
+    /**
+     * Filter, which JobFolderTemplate to fetch.
+     */
+    where: JobFolderTemplateWhereUniqueInput
+  }
+
+  /**
+   * JobFolderTemplate findFirst
+   */
+  export type JobFolderTemplateFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobFolderTemplate
+     */
+    select?: JobFolderTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobFolderTemplate
+     */
+    omit?: JobFolderTemplateOmit<ExtArgs> | null
+    /**
+     * Filter, which JobFolderTemplate to fetch.
+     */
+    where?: JobFolderTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JobFolderTemplates to fetch.
+     */
+    orderBy?: JobFolderTemplateOrderByWithRelationInput | JobFolderTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for JobFolderTemplates.
+     */
+    cursor?: JobFolderTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JobFolderTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JobFolderTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobFolderTemplates.
+     */
+    distinct?: JobFolderTemplateScalarFieldEnum | JobFolderTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * JobFolderTemplate findFirstOrThrow
+   */
+  export type JobFolderTemplateFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobFolderTemplate
+     */
+    select?: JobFolderTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobFolderTemplate
+     */
+    omit?: JobFolderTemplateOmit<ExtArgs> | null
+    /**
+     * Filter, which JobFolderTemplate to fetch.
+     */
+    where?: JobFolderTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JobFolderTemplates to fetch.
+     */
+    orderBy?: JobFolderTemplateOrderByWithRelationInput | JobFolderTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for JobFolderTemplates.
+     */
+    cursor?: JobFolderTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JobFolderTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JobFolderTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobFolderTemplates.
+     */
+    distinct?: JobFolderTemplateScalarFieldEnum | JobFolderTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * JobFolderTemplate findMany
+   */
+  export type JobFolderTemplateFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobFolderTemplate
+     */
+    select?: JobFolderTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobFolderTemplate
+     */
+    omit?: JobFolderTemplateOmit<ExtArgs> | null
+    /**
+     * Filter, which JobFolderTemplates to fetch.
+     */
+    where?: JobFolderTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JobFolderTemplates to fetch.
+     */
+    orderBy?: JobFolderTemplateOrderByWithRelationInput | JobFolderTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing JobFolderTemplates.
+     */
+    cursor?: JobFolderTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JobFolderTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JobFolderTemplates.
+     */
+    skip?: number
+    distinct?: JobFolderTemplateScalarFieldEnum | JobFolderTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * JobFolderTemplate create
+   */
+  export type JobFolderTemplateCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobFolderTemplate
+     */
+    select?: JobFolderTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobFolderTemplate
+     */
+    omit?: JobFolderTemplateOmit<ExtArgs> | null
+    /**
+     * The data needed to create a JobFolderTemplate.
+     */
+    data: XOR<JobFolderTemplateCreateInput, JobFolderTemplateUncheckedCreateInput>
+  }
+
+  /**
+   * JobFolderTemplate createMany
+   */
+  export type JobFolderTemplateCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many JobFolderTemplates.
+     */
+    data: JobFolderTemplateCreateManyInput | JobFolderTemplateCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * JobFolderTemplate createManyAndReturn
+   */
+  export type JobFolderTemplateCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobFolderTemplate
+     */
+    select?: JobFolderTemplateSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobFolderTemplate
+     */
+    omit?: JobFolderTemplateOmit<ExtArgs> | null
+    /**
+     * The data used to create many JobFolderTemplates.
+     */
+    data: JobFolderTemplateCreateManyInput | JobFolderTemplateCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * JobFolderTemplate update
+   */
+  export type JobFolderTemplateUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobFolderTemplate
+     */
+    select?: JobFolderTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobFolderTemplate
+     */
+    omit?: JobFolderTemplateOmit<ExtArgs> | null
+    /**
+     * The data needed to update a JobFolderTemplate.
+     */
+    data: XOR<JobFolderTemplateUpdateInput, JobFolderTemplateUncheckedUpdateInput>
+    /**
+     * Choose, which JobFolderTemplate to update.
+     */
+    where: JobFolderTemplateWhereUniqueInput
+  }
+
+  /**
+   * JobFolderTemplate updateMany
+   */
+  export type JobFolderTemplateUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update JobFolderTemplates.
+     */
+    data: XOR<JobFolderTemplateUpdateManyMutationInput, JobFolderTemplateUncheckedUpdateManyInput>
+    /**
+     * Filter which JobFolderTemplates to update
+     */
+    where?: JobFolderTemplateWhereInput
+    /**
+     * Limit how many JobFolderTemplates to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * JobFolderTemplate updateManyAndReturn
+   */
+  export type JobFolderTemplateUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobFolderTemplate
+     */
+    select?: JobFolderTemplateSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobFolderTemplate
+     */
+    omit?: JobFolderTemplateOmit<ExtArgs> | null
+    /**
+     * The data used to update JobFolderTemplates.
+     */
+    data: XOR<JobFolderTemplateUpdateManyMutationInput, JobFolderTemplateUncheckedUpdateManyInput>
+    /**
+     * Filter which JobFolderTemplates to update
+     */
+    where?: JobFolderTemplateWhereInput
+    /**
+     * Limit how many JobFolderTemplates to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * JobFolderTemplate upsert
+   */
+  export type JobFolderTemplateUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobFolderTemplate
+     */
+    select?: JobFolderTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobFolderTemplate
+     */
+    omit?: JobFolderTemplateOmit<ExtArgs> | null
+    /**
+     * The filter to search for the JobFolderTemplate to update in case it exists.
+     */
+    where: JobFolderTemplateWhereUniqueInput
+    /**
+     * In case the JobFolderTemplate found by the `where` argument doesn't exist, create a new JobFolderTemplate with this data.
+     */
+    create: XOR<JobFolderTemplateCreateInput, JobFolderTemplateUncheckedCreateInput>
+    /**
+     * In case the JobFolderTemplate was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<JobFolderTemplateUpdateInput, JobFolderTemplateUncheckedUpdateInput>
+  }
+
+  /**
+   * JobFolderTemplate delete
+   */
+  export type JobFolderTemplateDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobFolderTemplate
+     */
+    select?: JobFolderTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobFolderTemplate
+     */
+    omit?: JobFolderTemplateOmit<ExtArgs> | null
+    /**
+     * Filter which JobFolderTemplate to delete.
+     */
+    where: JobFolderTemplateWhereUniqueInput
+  }
+
+  /**
+   * JobFolderTemplate deleteMany
+   */
+  export type JobFolderTemplateDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which JobFolderTemplates to delete
+     */
+    where?: JobFolderTemplateWhereInput
+    /**
+     * Limit how many JobFolderTemplates to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * JobFolderTemplate without action
+   */
+  export type JobFolderTemplateDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobFolderTemplate
+     */
+    select?: JobFolderTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobFolderTemplate
+     */
+    omit?: JobFolderTemplateOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Model Client
    */
 
@@ -43140,6 +44300,20 @@ export namespace Prisma {
   export type JobAssignmentScalarFieldEnum = (typeof JobAssignmentScalarFieldEnum)[keyof typeof JobAssignmentScalarFieldEnum]
 
 
+  export const JobFolderTemplateScalarFieldEnum: {
+    id: 'id',
+    displayName: 'displayName',
+    folderId: 'folderId',
+    folderName: 'folderName',
+    size: 'size',
+    webUrl: 'webUrl',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type JobFolderTemplateScalarFieldEnum = (typeof JobFolderTemplateScalarFieldEnum)[keyof typeof JobFolderTemplateScalarFieldEnum]
+
+
   export const ClientScalarFieldEnum: {
     id: 'id',
     name: 'name',
@@ -45165,6 +46339,75 @@ export namespace Prisma {
     userId?: StringWithAggregatesFilter<"JobAssignment"> | string
     staffCost?: FloatWithAggregatesFilter<"JobAssignment"> | number
     assignedAt?: DateTimeWithAggregatesFilter<"JobAssignment"> | Date | string
+  }
+
+  export type JobFolderTemplateWhereInput = {
+    AND?: JobFolderTemplateWhereInput | JobFolderTemplateWhereInput[]
+    OR?: JobFolderTemplateWhereInput[]
+    NOT?: JobFolderTemplateWhereInput | JobFolderTemplateWhereInput[]
+    id?: StringFilter<"JobFolderTemplate"> | string
+    displayName?: StringFilter<"JobFolderTemplate"> | string
+    folderId?: StringFilter<"JobFolderTemplate"> | string
+    folderName?: StringFilter<"JobFolderTemplate"> | string
+    size?: IntFilter<"JobFolderTemplate"> | number
+    webUrl?: StringFilter<"JobFolderTemplate"> | string
+    createdAt?: DateTimeFilter<"JobFolderTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"JobFolderTemplate"> | Date | string
+  }
+
+  export type JobFolderTemplateOrderByWithRelationInput = {
+    id?: SortOrder
+    displayName?: SortOrder
+    folderId?: SortOrder
+    folderName?: SortOrder
+    size?: SortOrder
+    webUrl?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type JobFolderTemplateWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: JobFolderTemplateWhereInput | JobFolderTemplateWhereInput[]
+    OR?: JobFolderTemplateWhereInput[]
+    NOT?: JobFolderTemplateWhereInput | JobFolderTemplateWhereInput[]
+    displayName?: StringFilter<"JobFolderTemplate"> | string
+    folderId?: StringFilter<"JobFolderTemplate"> | string
+    folderName?: StringFilter<"JobFolderTemplate"> | string
+    size?: IntFilter<"JobFolderTemplate"> | number
+    webUrl?: StringFilter<"JobFolderTemplate"> | string
+    createdAt?: DateTimeFilter<"JobFolderTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"JobFolderTemplate"> | Date | string
+  }, "id">
+
+  export type JobFolderTemplateOrderByWithAggregationInput = {
+    id?: SortOrder
+    displayName?: SortOrder
+    folderId?: SortOrder
+    folderName?: SortOrder
+    size?: SortOrder
+    webUrl?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: JobFolderTemplateCountOrderByAggregateInput
+    _avg?: JobFolderTemplateAvgOrderByAggregateInput
+    _max?: JobFolderTemplateMaxOrderByAggregateInput
+    _min?: JobFolderTemplateMinOrderByAggregateInput
+    _sum?: JobFolderTemplateSumOrderByAggregateInput
+  }
+
+  export type JobFolderTemplateScalarWhereWithAggregatesInput = {
+    AND?: JobFolderTemplateScalarWhereWithAggregatesInput | JobFolderTemplateScalarWhereWithAggregatesInput[]
+    OR?: JobFolderTemplateScalarWhereWithAggregatesInput[]
+    NOT?: JobFolderTemplateScalarWhereWithAggregatesInput | JobFolderTemplateScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"JobFolderTemplate"> | string
+    displayName?: StringWithAggregatesFilter<"JobFolderTemplate"> | string
+    folderId?: StringWithAggregatesFilter<"JobFolderTemplate"> | string
+    folderName?: StringWithAggregatesFilter<"JobFolderTemplate"> | string
+    size?: IntWithAggregatesFilter<"JobFolderTemplate"> | number
+    webUrl?: StringWithAggregatesFilter<"JobFolderTemplate"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"JobFolderTemplate"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"JobFolderTemplate"> | Date | string
   }
 
   export type ClientWhereInput = {
@@ -47891,6 +49134,83 @@ export namespace Prisma {
     assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type JobFolderTemplateCreateInput = {
+    id?: string
+    displayName: string
+    folderId: string
+    folderName: string
+    size: number
+    webUrl: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type JobFolderTemplateUncheckedCreateInput = {
+    id?: string
+    displayName: string
+    folderId: string
+    folderName: string
+    size: number
+    webUrl: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type JobFolderTemplateUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    folderId?: StringFieldUpdateOperationsInput | string
+    folderName?: StringFieldUpdateOperationsInput | string
+    size?: IntFieldUpdateOperationsInput | number
+    webUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobFolderTemplateUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    folderId?: StringFieldUpdateOperationsInput | string
+    folderName?: StringFieldUpdateOperationsInput | string
+    size?: IntFieldUpdateOperationsInput | number
+    webUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobFolderTemplateCreateManyInput = {
+    id?: string
+    displayName: string
+    folderId: string
+    folderName: string
+    size: number
+    webUrl: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type JobFolderTemplateUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    folderId?: StringFieldUpdateOperationsInput | string
+    folderName?: StringFieldUpdateOperationsInput | string
+    size?: IntFieldUpdateOperationsInput | number
+    webUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobFolderTemplateUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    folderId?: StringFieldUpdateOperationsInput | string
+    folderName?: StringFieldUpdateOperationsInput | string
+    size?: IntFieldUpdateOperationsInput | number
+    webUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ClientCreateInput = {
     id?: string
     name: string
@@ -50402,6 +51722,47 @@ export namespace Prisma {
 
   export type JobAssignmentSumOrderByAggregateInput = {
     staffCost?: SortOrder
+  }
+
+  export type JobFolderTemplateCountOrderByAggregateInput = {
+    id?: SortOrder
+    displayName?: SortOrder
+    folderId?: SortOrder
+    folderName?: SortOrder
+    size?: SortOrder
+    webUrl?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type JobFolderTemplateAvgOrderByAggregateInput = {
+    size?: SortOrder
+  }
+
+  export type JobFolderTemplateMaxOrderByAggregateInput = {
+    id?: SortOrder
+    displayName?: SortOrder
+    folderId?: SortOrder
+    folderName?: SortOrder
+    size?: SortOrder
+    webUrl?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type JobFolderTemplateMinOrderByAggregateInput = {
+    id?: SortOrder
+    displayName?: SortOrder
+    folderId?: SortOrder
+    folderName?: SortOrder
+    size?: SortOrder
+    webUrl?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type JobFolderTemplateSumOrderByAggregateInput = {
+    size?: SortOrder
   }
 
   export type EnumClientTypeFilter<$PrismaModel = never> = {

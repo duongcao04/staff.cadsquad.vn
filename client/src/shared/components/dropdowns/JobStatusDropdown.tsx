@@ -8,17 +8,16 @@ import {
     Tab,
     Tabs,
 } from '@heroui/react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { ChevronDown } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { useState } from 'react'
 
+import { useChangeStatusMutation, useProfile } from '@/lib/queries'
 import {
-    useChangeStatusMutation,
-    useJobStatuses,
-    useProfile,
-} from '@/lib/queries'
-import { statusByOrderOptions } from '@/lib/queries/options/job-status-queries'
+    jobStatusesListOptions,
+    statusByOrderOptions,
+} from '@/lib/queries/options/job-status-queries'
 import { darkenHexColor, JOB_STATUS_CODES, lightenHexColor } from '@/lib/utils'
 import type { TJob, TJobStatus } from '@/shared/types'
 
@@ -73,7 +72,9 @@ export default function JobStatusDropdown({
             statusData.prevStatusOrder !== null,
     })
 
-    const { data: jobStatuses } = useJobStatuses()
+    const {
+        data: { jobStatuses },
+    } = useSuspenseQuery(jobStatusesListOptions())
 
     const canClickable =
         isAdmin && statusData.systemType !== JobStatusSystemTypeEnum.TERMINATED

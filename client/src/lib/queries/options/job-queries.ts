@@ -1,80 +1,12 @@
+import { jobApi } from '@/lib/api'
+import { JobActivityLogSchema, JobSchema, TJobQueryInput, UserSchema } from '@/lib/validationSchemas'
+import { ProjectCenterTabEnum } from '@/shared/enums'
 import { queryOptions } from '@tanstack/react-query'
 import lodash from 'lodash'
 import queryString from 'query-string'
+import { parseList } from '../../zod'
 
-import { jobApi } from '@/lib/api'
-import { TJobQueryInput } from '@/lib/validationSchemas'
-import { ActivityTypeEnum, ProjectCenterTabEnum } from '@/shared/enums'
-import { IJobActivityLogResponse, IJobResponse } from '@/shared/interfaces'
-import { TJob, TJobActivityLog } from '@/shared/types'
-
-import { toDate, toNullableDate } from '../../utils'
-import { mapClient } from './client-queries'
-import { mapJobStatus } from './job-status-queries'
-import { mapJobType } from './job-type-queries'
-import { mapPaymentChannel } from './payment-channel-queries'
-import { mapUser } from './user-queries'
-
-// --- Mappers (Chuyển đổi dữ liệu) ---
-export const mapJob = (item?: IJobResponse): TJob => ({
-    id: item?.id ?? 'N/A',
-    no: item?.no ?? 'UNKNOWN',
-    displayName: item?.displayName || 'Untitled Job',
-    assignments: item?.assignments ?? [],
-    activityLog: item?.activityLog ?? [],
-    attachmentUrls: item?.attachmentUrls ?? [],
-    createdBy: mapUser(item?.createdBy),
-    files: item?.files ?? [],
-    client: item?.client ? mapClient(item?.client) : null,
-    comments: item?.comments ?? [],
-    jobDeliveries: item?.jobDeliveries ?? [],
-    incomeCost:
-        typeof item?.incomeCost === 'number'
-            ? item?.incomeCost
-            : parseFloat(item?.incomeCost ?? ''),
-    staffCost:
-        typeof item?.staffCost === 'number'
-            ? item?.staffCost
-            : parseFloat(item?.staffCost ?? ''),
-    totalStaffCost:
-        typeof item?.totalStaffCost === 'number'
-            ? item?.totalStaffCost
-            : parseFloat(item?.totalStaffCost ?? ''),
-    isPaid: Boolean(item?.isPaid),
-    isPinned: Boolean(item?.isPinned),
-    isPublished: Boolean(item?.isPublished),
-    paymentChannel: item?.paymentChannel
-        ? mapPaymentChannel(item?.paymentChannel)
-        : null,
-    status: mapJobStatus(item?.status),
-    description: item?.description ?? null,
-    paidAt: toNullableDate(item?.paidAt),
-    type: mapJobType(item?.type),
-    finishedAt: item?.finishedAt ? toDate(item?.finishedAt) : null,
-    createdAt: toDate(item?.createdAt ?? ''),
-    dueAt: toDate(item?.dueAt ?? ''),
-    completedAt: toNullableDate(item?.completedAt),
-    deletedAt: toNullableDate(item?.deletedAt),
-    startedAt: toDate(item?.startedAt),
-    updatedAt: toDate(item?.updatedAt),
-})
-
-export const mapJobActivityLog = (
-    item?: IJobActivityLogResponse
-): TJobActivityLog => ({
-    id: item?.id ?? 'N/A',
-    activityType: item?.activityType || ActivityTypeEnum.PRIVATE,
-    metadata: item?.metadata,
-    requiredPermissionCode: item?.requiredPermissionCode || null,
-    previousValue: item?.previousValue ?? null,
-    currentValue: item?.currentValue ?? null,
-    fieldName: item?.fieldName ?? 'Unknown field',
-    modifiedBy: mapUser(item?.modifiedBy),
-    notes: item?.notes ?? null,
-    modifiedAt: toDate(item?.modifiedAt),
-})
 // --- Query Options ---
-
 // 1. Danh sách Jobs
 export const jobsListOptions = (
     params: TJobQueryInput = {
@@ -106,9 +38,7 @@ export const jobsListOptions = (
         },
         // ✅ Select & Map data ngay tại đây
         select: (res) => ({
-            jobs: Array.isArray(res.result?.data)
-                ? res.result.data.map(mapJob)
-                : [],
+            jobs: parseList(res.result?.data, JobSchema),
             paginate: res.result?.paginate,
         }),
     })
@@ -142,9 +72,7 @@ export const workbenchDataOptions = (
         },
         // ✅ Select & Map data ngay tại đây
         select: (res) => ({
-            jobs: Array.isArray(res.result?.data)
-                ? res.result.data.map(mapJob)
-                : [],
+            jobs: parseList(res.result?.data, JobSchema),
             paginate: res.result?.paginate,
         }),
     })
@@ -160,7 +88,7 @@ export const jobsSearchOptions = (keywords?: string) =>
         },
         enabled: !!keywords,
         select: (res) =>
-            Array.isArray(res?.result) ? res?.result.map(mapJob) : [],
+            parseList(res?.result, JobSchema),
     })
 
 export const jobDeliveriesListOptions = (jobId: string) =>
@@ -174,23 +102,20 @@ export const jobsPendingDeliverOptions = () =>
     queryOptions({
         queryKey: ['jobs', 'pending-deliver'],
         queryFn: () => jobApi.pendingDeliver(),
-        select: (res) =>
-            Array.isArray(res.result) ? res.result.map(mapJob) : [],
+        select: (res) => parseList(res.result, JobSchema),
     })
 
 export const jobsPendingPayoutsOptions = () =>
     queryOptions({
         queryKey: ['jobs', 'pending-payouts'],
         queryFn: () => jobApi.pendingPayouts(),
-        select: (res) =>
-            Array.isArray(res.result) ? res.result.map(mapJob) : [],
+        select: (res) => parseList(res.result, JobSchema),
     })
 export const jobScheduleOptions = (month: number, year: number) =>
     queryOptions({
         queryKey: ['jobs', 'schedule', `${month}/${year}`],
         queryFn: () => jobApi.jobsDueInMonth(month, year),
-        select: (res) =>
-            Array.isArray(res.result) ? res.result.map(mapJob) : [],
+        select: (res) => parseList(res.result, JobSchema),
     })
 
 // 3. Jobs theo Deadline
@@ -200,16 +125,8 @@ export const jobsDueOnDateOptions = (isoDate: string) =>
         queryFn: () => jobApi.getJobsDueOnDate(isoDate),
         enabled: !!isoDate,
         select: (res) => {
-            return Array.isArray(res.result) ? res.result.map(mapJob) : []
+            return parseList(res.result, JobSchema)
         },
-    })
-
-// 6. Count Jobs By Tab
-export const countJobByTabOptions = (tab: ProjectCenterTabEnum) =>
-    queryOptions({
-        queryKey: ['jobs', 'count', tab ?? 'active'],
-        queryFn: () => jobApi.countTab(tab),
-        select: (res) => res?.result,
     })
 
 // 7. Job By No (Chi tiết theo mã)
@@ -220,7 +137,7 @@ export const jobByNoOptions = (jobNo: string) =>
         enabled: !!jobNo,
         select: (res) => {
             const jobData = res?.result
-            return mapJob(jobData)
+            return parseList(jobData, JobSchema)
         },
     })
 
@@ -231,9 +148,7 @@ export const jobAssigneesOptions = (jobId: string) =>
         queryFn: () => jobApi.getAssignees(jobId),
         enabled: !!jobId,
         select: (res) => ({
-            assignees: Array.isArray(res?.result?.assignees)
-                ? res.result.assignees.map(mapUser)
-                : [],
+            assignees: parseList(res.result.assignees, UserSchema),
             totalAssignees: res?.result?.totalAssignees ?? 0,
         }),
     })
@@ -256,6 +171,6 @@ export const jobActivityLogsOptions = (jobId: string) =>
         queryFn: () => jobApi.getJobActivityLog(jobId),
         select: (res) => {
             const logs = res?.result
-            return lodash.isEmpty(logs) ? [] : logs?.map(mapJobActivityLog)
+            return parseList(logs, JobActivityLogSchema)
         },
     })

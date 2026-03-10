@@ -1,7 +1,7 @@
 import {
     useProfile,
+    usersListOptions,
     useSendNotificationMutation,
-    useUsers,
 } from '@/lib/queries'
 import {
     CreateNotificationInputSchema,
@@ -10,6 +10,7 @@ import {
 import { HeroInput, HeroSelect, HeroSelectItem } from '@/shared/components'
 import { NotificationTypeEnum } from '@/shared/enums'
 import { addToast, Button, type InputProps, Textarea } from '@heroui/react'
+import { useSuspenseQuery } from '@tanstack/react-query'
 import { Image, Modal } from 'antd'
 import { useFormik } from 'formik'
 import { capitalize } from 'lodash'
@@ -27,7 +28,10 @@ type Props = {
     onClose: () => void
 }
 export function CreateNotificationModal({ isOpen, onClose }: Props) {
-    const { data: users, isLoading: loadingUsers } = useUsers()
+    const {
+        data: { users },
+        isLoading: loadingUsers,
+    } = useSuspenseQuery(usersListOptions())
     const { profile } = useProfile()
 
     const { isPending: isSendingNotification } = useSendNotificationMutation()

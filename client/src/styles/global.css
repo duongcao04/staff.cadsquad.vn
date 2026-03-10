@@ -60,7 +60,7 @@
 body {
     color: var(--color-text-default) !important;
     /* Now you can reference the variable defined in @theme */
-    font-family: var(--font-inter);
+    font-family: var(--font-segoeui);
 }
 
 a {

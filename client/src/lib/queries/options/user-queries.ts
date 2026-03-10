@@ -1,40 +1,8 @@
 import { authApi, userApi } from '@/lib/api'
-import { IMAGES, toDate, toNullableDate } from '@/lib/utils'
-import { TUserQueryInput } from '@/lib/validationSchemas'
-import { IUserResponse } from '@/shared/interfaces'
-import { TUser } from '@/shared/types'
+import { TUserQueryInput, UserSchema } from '@/lib/validationSchemas'
 import { queryOptions } from '@tanstack/react-query'
-import { mapDepartment } from './department-queries'
-import { mapJobTitle } from './job-title-queries'
-import { mapRole } from './role-queries'
-
-export const mapUser: (item?: IUserResponse) => TUser = (item) => {
-    return {
-        id: item?.id ?? 'N/A',
-        displayName: item?.displayName ?? 'Unknown User',
-        avatar: item?.avatar ?? IMAGES.emptyAvatar,
-        personalEmail: item?.personalEmail || null,
-        email: item?.email ?? 'unknown@cadsquad.vn',
-        username: item?.username ?? 'unknown',
-        phoneNumber: item?.phoneNumber ?? 'Unknown phone number',
-        department: mapDepartment(item?.department ?? undefined) ?? null,
-        jobTitle: mapJobTitle(item?.jobTitle ?? undefined) ?? null,
-        isActive: Boolean(item?.isActive),
-        role: mapRole(item?.role),
-        files: item?.files ?? [],
-        accounts: item?.accounts ?? [],
-        notifications: item?.notifications ?? [],
-        configs: item?.configs ?? [],
-        securityLogs: item?.securityLogs ?? [],
-        filesCreated: item?.filesCreated ?? [],
-        jobActivityLog: item?.jobActivityLog ?? [],
-        jobsCreated: item?.jobsCreated ?? [],
-        sendedNotifications: item?.sendedNotifications ?? [],
-        lastLoginAt: toNullableDate(item?.lastLoginAt),
-        createdAt: toDate(item?.createdAt),
-        updatedAt: toDate(item?.updatedAt),
-    }
-}
+import z from 'zod'
+import { parseData, parseList } from '../../zod'
 
 export const usersListOptions = (
     params: TUserQueryInput = {
@@ -50,63 +18,74 @@ export const usersListOptions = (
             `sort=${params.sortBy}:${params.sortOrder}`,
             `search=${params.search}`,
         ],
-        queryFn: () => userApi.findAll(params),
-        select: (res) => {
-            const userData = res?.result?.users
+        queryFn: async () => {
+            const res = await userApi.findAll(params);
+            const result = res?.result;
+
+            // Parse danh sách user bằng helper
             return {
-                users: Array.isArray(userData) ? userData.map(mapUser) : [],
-                total: res.result?.total ?? 0,
-                currentPage: res.result?.currentPage ?? 1,
-                totalPages: res.result?.totalPages ?? 1,
-            }
+                users: parseList(UserSchema, result?.users),
+                total: result?.total ?? 0,
+                currentPage: result?.currentPage ?? 1,
+                totalPages: result?.totalPages ?? 1,
+            };
+        },
+        // Lúc này data trong select đã là data đã parse
+        select: (data) => data,
+    })
+}
+export const userOptions = (username: string) => {
+    return queryOptions({
+        queryKey: ['users', 'username', username],
+        queryFn: async () => {
+            const res = await userApi.findOne(username);
+            return parseData(UserSchema, res?.result);
         },
     })
 }
 
-export const userOptions = (username: string) => {
-    return queryOptions({
-        queryKey: ['users', 'username', username],
-        queryFn: () => userApi.findOne(username),
-        select: (res) => {
-            const userData = res?.result
-            return mapUser(userData)
-        },
-    })
-}
 export const profileOptions = () => {
     return queryOptions({
         queryKey: ['profile'],
-        queryFn: () => authApi.getProfile(),
-        select: (res) => {
-            const userData = res?.data.result
-            return mapUser(userData)
+        queryFn: async () => {
+            const res = await authApi.getProfile();
+            // Tùy theo cấu trúc API trả về res.data.result hay res.result
+            return parseData(UserSchema, res?.result ?? res?.result);
         },
     })
 }
+
 export const securityLogsListOptions = () => {
     return queryOptions({
         queryKey: ['user', 'securityLogs'],
-        queryFn: () => userApi.getSecurityLogs(),
-        select: (res) => {
-            return { securityLogs: res?.data.result }
+        queryFn: async () => {
+            const res = await userApi.getSecurityLogs();
+            // Nếu SecurityLogs có Schema riêng, hãy thay z.any() bằng Schema đó
+            return {
+                securityLogs: parseList(z.any(), res?.result)
+            };
         },
     })
 }
+
 export const activeSessionsListOptions = () => {
     return queryOptions({
         queryKey: ['user', 'activeSessions'],
-        queryFn: () => authApi.activeSessions(),
-        select: (res) => {
-            return { activeSessions: res?.data.result ?? [] }
+        queryFn: async () => {
+            const res = await authApi.activeSessions();
+            return {
+                activeSessions: parseList(z.any(), res?.result)
+            };
         },
     })
 }
+
 export const checkUsernameTakenOptions = (username: string) => {
     return queryOptions({
         queryKey: ['users', 'username', 'taken', username],
-        queryFn: () => userApi.checkUsernameTaken(username),
-        select: (res) => {
-            return { isTaken: res.result?.isExist }
+        queryFn: async () => {
+            const res = await userApi.checkUsernameTaken(username);
+            return { isTaken: Boolean(res.result?.isExist) };
         },
     })
 }

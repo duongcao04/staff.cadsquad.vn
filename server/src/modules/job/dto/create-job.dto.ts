@@ -79,4 +79,14 @@ export class CreateJobDto {
     @ApiProperty({ description: 'Due date of the job' })
     @IsDateString()
     dueAt: Date
+
+    @ApiProperty({ description: 'Whether to create SharePoint folder', required: false })
+    @IsOptional()
+    @IsBoolean()
+    isCreateSharepointFolder?: boolean
+
+    @ApiProperty({ description: 'ID of the SharePoint folder template', required: false })
+    @IsOptional()
+    @IsString()
+    sharepointTemplateId?: string
 }

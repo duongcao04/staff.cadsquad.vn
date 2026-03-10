@@ -24,6 +24,7 @@ import { HealthModule } from '@/modules/health/health.module'
 import { JobStatusModule } from '@/modules/job-status/job-status.module'
 import { JobTitleModule } from '@/modules/job-title/job-title.module'
 import { JobTypeModule } from '@/modules/job-type/job-type.module'
+import { JobFolderTemplateModule } from '@/modules/job-folder-template/job-folder-template.module'
 import { JobModule } from '@/modules/job/job.module'
 import { NotificationModule } from '@/modules/notification/notification.module'
 import { PaymentChannelModule } from '@/modules/payment-channel/payment-channel.module'
@@ -94,6 +95,7 @@ import { BullConfigProvider } from './providers/bull-mq/bull-mq.provider'
 		NotificationModule,
 		DepartmentModule,
 		JobTitleModule,
+		JobFolderTemplateModule,
 		GalleryModule,
 		BrowserSubscribesModule,
 		UploadModule,

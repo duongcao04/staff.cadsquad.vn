@@ -263,4 +263,51 @@ export class SharePointService {
 			description: drive.description,
 		}))
 	}
+
+	// ==========================================
+	// 6. COPY ITEM (FILE/FOLDER)
+	// ==========================================
+
+	/**
+	 * Sao chép một item (file hoặc folder) sang một thư mục đích.
+	 * @param itemId ID của item cần copy (nguồn)
+	 * @param destinationFolderId ID của folder đích (nơi dán)
+	 * @param newName (Optional) Tên mới nếu muốn đổi tên khi copy
+	 */
+	async copyItem(itemId: string, destinationFolderId: string, newName?: string) {
+		const client = await this.getGraphClient();
+
+		// Body yêu cầu của Graph API
+		const copyOptions = {
+			parentReference: {
+				id: destinationFolderId,
+			},
+			name: newName, // Nếu truyền newName, item copy sẽ có tên này
+		};
+
+		try {
+			// API Copy trả về 202 Accepted và một header 'Location' để check progress
+			const response = await client
+				.api(`${this.driveEndpoint}/items/${itemId}/copy`)
+				.post(copyOptions);
+
+			this.logger.log(`Copy initiated for item ${itemId} to folder ${destinationFolderId}`);
+
+			// Vì đây là async operation, response thường rỗng nhưng status là 202.
+			return {
+				success: true,
+				message: 'Copy operation started. Large folders may take a few moments.'
+			};
+		} catch (error) {
+			this.logger.error(`Copy failed: ${error.message}`);
+			throw new BadRequestException('Cannot copy item in SharePoint. Verify permissions or IDs.');
+		}
+	}
+
+	/**
+	 * Get the current drive ID
+	 */
+	getDriveId(): string {
+		return this.driveId
+	}
 }

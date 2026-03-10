@@ -1,18 +1,7 @@
 import { queryOptions } from '@tanstack/react-query'
-
-import { IJobTypeResponse } from '@/shared/interfaces'
-import { TJobType } from '@/shared/types'
-
 import { jobTypeApi } from '../../api'
-
-export const mapJobType: (item?: IJobTypeResponse) => TJobType = (item) => ({
-    code: item?.code,
-    id: item?.id,
-    displayName: item?.displayName ?? '',
-    jobs: item?.jobs ?? [],
-    hexColor: item?.hexColor ?? '',
-    _count: item?._count ?? undefined,
-})
+import { JobTypeSchema } from '../../validationSchemas'
+import { parseList } from '../../zod'
 
 export const jobTypesListOptions = () => {
     return queryOptions({
@@ -21,9 +10,7 @@ export const jobTypesListOptions = () => {
         select: (res) => {
             const jobTypesData = res?.result
             return {
-                jobTypes: Array.isArray(jobTypesData)
-                    ? jobTypesData.map(mapJobType)
-                    : [],
+                jobTypes: parseList(JobTypeSchema, jobTypesData),
             }
         },
     })

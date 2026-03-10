@@ -3,19 +3,18 @@ import type {
     TCreatePaymentChannelInput,
     TUpdatePaymentChannelInput,
 } from '@/lib/validationSchemas'
-import type { IPaymentChannelResponse } from '@/shared/interfaces'
 
 export const paymentChannelApi = {
     create: (data: TCreatePaymentChannelInput) => {
         return axiosClient.post('/v1/payment-channels', data)
     },
     findAll: async () => {
-        return axiosClient.get<ApiResponse<IPaymentChannelResponse[]>>(
+        return axiosClient.get<ApiResponse<any[]>>(
             '/v1/payment-channels'
         ).then(res => res.data)
     },
     findOne: (id: string) => {
-        return axiosClient.get<ApiResponse<IPaymentChannelResponse>>(
+        return axiosClient.get<ApiResponse<any>>(
             `/v1/payment-channels/${id}`
         )
     },

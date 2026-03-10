@@ -1,5 +1,43 @@
-import * as yup from 'yup'
-import { z } from 'zod'
+import * as yup from 'yup';
+import { z, ZodType } from 'zod';
+import { TRole, TUser } from '../../shared/types';
+import { IMAGES } from '../utils';
+import { DepartmentSchema } from './_department.schema';
+import { JobTitleSchema } from './_job-title.schema';
+import { RoleSchema } from './_role.schema';
+
+export const UserSchema: ZodType<TUser> = z.lazy(() => z.object({
+    id: z.string().catch('N/A'),
+    displayName: z.string().catch('Unknown User'),
+    avatar: z.string().default(IMAGES.emptyAvatar),
+
+    personalEmail: z.string().nullable().catch(null),
+    email: z.string().email().catch('unknown@cadsquad.vn'),
+
+    username: z.string().catch('unknown'),
+    phoneNumber: z.string().nullable().catch('Unknown phone number'),
+
+    department: DepartmentSchema.nullable().catch(null),
+    jobTitle: JobTitleSchema.nullable().catch(null),
+    role: RoleSchema.catch({} as TRole),
+
+    isActive: z.preprocess((val) => Boolean(val), z.boolean().default(false)),
+
+    // Mảng: Định nghĩa schema cho item trong mảng sẽ tốt hơn z.any()
+    files: z.array(z.any()).default([]),
+    accounts: z.array(z.any()).default([]),
+    notifications: z.array(z.any()).default([]),
+    configs: z.array(z.any()).default([]),
+    securityLogs: z.array(z.any()).default([]),
+    filesCreated: z.array(z.any()).default([]),
+    jobActivityLog: z.array(z.any()).default([]),
+    jobsCreated: z.array(z.any()).default([]),
+    sendedNotifications: z.array(z.any()).default([]),
+
+    lastLoginAt: z.coerce.date().nullable().catch(null),
+    createdAt: z.coerce.date().catch(new Date()),
+    updatedAt: z.coerce.date().catch(new Date()),
+}));
 
 export const UpdateUserSchema = yup.object().shape({
     email: yup.string().optional(),

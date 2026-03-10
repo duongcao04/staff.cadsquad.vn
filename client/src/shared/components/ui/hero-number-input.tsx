@@ -10,7 +10,7 @@ const StyledNumberInput = extendVariants(NumberInput, {
             minimal: {
                 inputWrapper: [
                     'shadow-none',
-                    'border',
+                    'border-2',
                     'border-border-default',
                     '!bg-background',
                     'transition',
@@ -18,7 +18,7 @@ const StyledNumberInput = extendVariants(NumberInput, {
                     'focus-within:border-primary',
                     'data-[hover=true]:border-primary',
                 ],
-                label: ['text-text-default', 'font-medium'],
+                label: ['text-text-default', 'font-semibold'],
                 input: [
                     'text-base',
                     'text-foreground',

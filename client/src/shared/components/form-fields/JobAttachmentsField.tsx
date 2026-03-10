@@ -12,8 +12,9 @@ import { usePermission } from '../../hooks'
 import { HeroButton } from '../ui/hero-button'
 import { HeroCard, HeroCardBody, HeroCardHeader } from '../ui/hero-card'
 import { HeroInput } from '../ui/hero-input'
+import { CardProps, Divider } from '@heroui/react'
 
-type JobAttachmentsFieldProps = {
+type JobAttachmentsFieldProps = CardProps & {
     defaultAttachments?: string[]
     // Emits the NEW full list (for local state sync if needed)
     onChange?: (attachments: string[]) => void
@@ -28,6 +29,7 @@ export default function JobAttachmentsField({
     onChange,
     onRemove,
     onAdd,
+    ...props
 }: JobAttachmentsFieldProps) {
     const { hasPermission } = usePermission()
     const [attachments, setAttachments] = useState<string[]>(defaultAttachments)
@@ -58,10 +60,10 @@ export default function JobAttachmentsField({
     }
 
     return (
-        <HeroCard>
+        <HeroCard shadow="none" {...props}>
             <HeroCardHeader>
                 {/* Header Actions */}
-                <div className="w-full flex items-center justify-between border-b border-default-100">
+                <div className="w-full flex items-center justify-between">
                     <h3 className="text-sm font-semibold text-default-700">
                         Attachments ({attachments.length})
                     </h3>
@@ -77,6 +79,7 @@ export default function JobAttachmentsField({
                     )}
                 </div>
             </HeroCardHeader>
+            <Divider className="w-[calc(100%-32px)] mx-auto bg-text-muted" />
             <HeroCardBody className="p-0">
                 {/* Empty State */}
                 {attachments.length === 0 && !isAdding && (

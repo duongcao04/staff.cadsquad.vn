@@ -1,6 +1,5 @@
 import { INTERNAL_URLS, SYSTEM_ROUTES } from '@/lib/utils' // Assuming you have this
 import { queryOptions } from '@tanstack/react-query'
-import { IJobResponse, IUserResponse } from '../../../shared/interfaces'
 import { jobApi, userApi } from '../../api'
 
 export type SearchCategory =
@@ -54,7 +53,7 @@ export const searchOptions = (
                             limit: 20,
                         })
                         .then((res) =>
-                            res.result?.data.map((item: IJobResponse) => ({
+                            res.result?.data.map((item: any) => ({
                                 id: `job-${item.id}`,
                                 title: item.displayName || item.no,
                                 subtitle: item.client?.name || 'Unknown Client',
@@ -116,7 +115,7 @@ export const searchOptions = (
                 if (isAdmin) {
                     promises.push(
                         userApi.search(query).then((data) => {
-                            return data.result?.map((item: IUserResponse) => ({
+                            return data.result?.map((item: any) => ({
                                 id: `users-${item.id}`,
                                 title: item.displayName,
                                 subtitle:

@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query'
 import { queryClient } from '../../main'
 import { clientApi, UpdateClientResponse } from '../api'
 import { ApiResponse } from '../axios'
-import { TClientInput } from '../validationSchemas'
+import { TEditClientFormValues } from '../validationSchemas'
 
 export const useUpdateClientMutation = (
     onSuccess?: (res: ApiResponse<UpdateClientResponse>) => void
@@ -15,7 +15,7 @@ export const useUpdateClientMutation = (
             data,
         }: {
             clientId: string
-            data: TClientInput
+            data: TEditClientFormValues
         }) => clientApi.updateClient(clientId, data),
         onSuccess: (res) => {
             if (onSuccess) {

@@ -33,3 +33,37 @@ export const toFormikValidate = <T extends z.ZodType<any, any>>(schema: T) => {
         return {}
     }
 }
+
+
+
+/**
+ * Helper để parse một Object đơn lẻ.
+ * Nếu parse lỗi, trả về giá trị mặc định của Schema đó.
+ */
+export const parseData = <T>(schema: z.ZodType<T>, data: any): T => {
+    const result = schema.safeParse(data ?? {});
+    if (!result.success) {
+        console.warn("⚠️ Zod Parse Object Error:", result.error.format());
+        // Fallback về object default đã định nghĩa trong schema
+        return schema.parse({});
+    }
+    return result.data;
+};
+
+/**
+ * Helper để parse một Mảng.
+ * Cơ chế: Duyệt từng phần tử, cái nào lỗi thì 'rào' bằng giá trị default 
+ * để không làm chết cả danh sách.
+ */
+export const parseList = <T>(schema: z.ZodType<T>, data: any): T[] => {
+    const rawList = Array.isArray(data) ? data : [];
+
+    return rawList.map((item) => {
+        const result = schema.safeParse(item);
+        if (!result.success) {
+            console.warn("⚠️ Zod Parse Item in List Error:", result.error._zod.def);
+            return schema.parse({}); // Gán giá trị an toàn cho item lỗi
+        }
+        return result.data;
+    });
+};

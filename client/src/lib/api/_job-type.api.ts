@@ -3,20 +3,19 @@ import type {
     TCreateJobTypeInput,
     TUpdateJobTypeInput,
 } from '@/lib/validationSchemas'
-import type { IJobTypeResponse } from '@/shared/interfaces'
 
 export const jobTypeApi = {
     create: (data: TCreateJobTypeInput) => {
-        return axiosClient.post<ApiResponse<IJobTypeResponse>>(
+        return axiosClient.post<ApiResponse<any>>(
             '/v1/job-types',
             data
         )
     },
     findAll: async () => {
-        return axiosClient.get<ApiResponse<IJobTypeResponse[]>>('/v1/job-types').then(res => res.data)
+        return axiosClient.get<ApiResponse<any[]>>('/v1/job-types').then(res => res.data)
     },
     findOne: (id: string) => {
-        return axiosClient.get<ApiResponse<IJobTypeResponse>>(
+        return axiosClient.get<ApiResponse<any>>(
             `/v1/job-types/${id}`
         )
     },

@@ -335,6 +335,17 @@ exports.Prisma.JobAssignmentScalarFieldEnum = {
   assignedAt: 'assignedAt'
 };
 
+exports.Prisma.JobFolderTemplateScalarFieldEnum = {
+  id: 'id',
+  displayName: 'displayName',
+  folderId: 'folderId',
+  folderName: 'folderName',
+  size: 'size',
+  webUrl: 'webUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.ClientScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -549,6 +560,7 @@ exports.EntityEnum = exports.$Enums.EntityEnum = {
   JOB_TITLE: 'JOB_TITLE',
   JOB_TYPE: 'JOB_TYPE',
   JOB_STATUS: 'JOB_STATUS',
+  JOB_FOLDER_TEMPLATE: 'JOB_FOLDER_TEMPLATE',
   COMMUNITY: 'COMMUNITY',
   TOPIC: 'TOPIC',
   POST: 'POST',
@@ -672,6 +684,7 @@ exports.Prisma.ModelName = {
   FileSystem: 'FileSystem',
   Job: 'Job',
   JobAssignment: 'JobAssignment',
+  JobFolderTemplate: 'JobFolderTemplate',
   Client: 'Client',
   PinnedJob: 'PinnedJob',
   PaymentChannel: 'PaymentChannel',

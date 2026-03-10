@@ -144,6 +144,7 @@ export const STORAGE_DEFAULTS = {
 
 export const COLORS = {
     white: '#ffffff',
+    black: '#000000',
 }
 
 export const UI_APPLICATION_NAME = envConfig.APP_TITLE ?? 'Cadsquad Staff'
@@ -332,4 +333,8 @@ export const ROLES_LIST = Object.entries(RoleEnum).map(([key, value]) => {
 // TO VND
 export const EXCHANGE_RATE = {
     USD: 26000,
+}
+
+export const SHAREPOINT = {
+    JOB_FOLDER_TEMPLATE_ID: '012FXBO3JVVTBEJ7GGK5EI3NVZS2HFFAXK'
 }

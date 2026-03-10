@@ -1,4 +1,38 @@
-import type { IUserResponse } from '../interfaces'
+import { TDepartment } from './_department.type';
+import { TJobTitle } from './_job-title.type';
+import { TRole } from './_role.type';
+
+export interface TUser {
+    id: string;
+    displayName: string;
+    avatar: string;
+    personalEmail: string | null;
+    email: string;
+    username: string;
+    phoneNumber: string | null;
+
+    department: TDepartment | null;
+    jobTitle: TJobTitle | null;
+    role: TRole;
+
+    isActive: boolean;
+
+    // Arrays
+    files: any[];
+    accounts: any[];
+    notifications: any[];
+    configs: any[];
+    securityLogs: any[];
+    filesCreated: any[];
+    jobActivityLog: any[];
+    jobsCreated: any[];
+    sendedNotifications: any[];
+
+    // Dates
+    lastLoginAt: string | Date | null;
+    createdAt: string | Date;
+    updatedAt: string | Date;
+}
 
 /**
  * Example of a user-related type.
@@ -39,11 +73,6 @@ export type UserColumnKey =
     | 'createdAt'
     | 'updatedAt'
     | 'action'
-
-export type TUser = Omit<
-    Required<IUserResponse>,
-    'password' | 'departmentId' | 'jobTitleId'
->
 
 export type TUserSecurityLog = {
     id: string

@@ -1,6 +1,11 @@
-import { currencyFormatter, optimizeCloudinary } from '@/lib'
-import { useJobTypes, usePaymentChannels, useUsers } from '@/lib/queries'
-import { CreateJobSchema, type TCreateJobInput } from '@/lib/validationSchemas'
+import {
+    currencyFormatter,
+    jobTypesListOptions,
+    optimizeCloudinary,
+    paymentChannelsListOptions,
+    usersListOptions,
+} from '@/lib'
+import { CreateJobFormSchema, type TCreateJobFormValues } from '@/lib/validationSchemas'
 import AssignMemberField from '@/shared/components/form-fields/AssignMemberField'
 import JobAttachmentsField from '@/shared/components/form-fields/JobAttachmentsField'
 import { PaymentChannelSelect } from '@/shared/components/form-fields/PaymentChannelSelect'
@@ -10,6 +15,7 @@ import { HeroInput } from '@/shared/components/ui/hero-input'
 import { HeroNumberInput } from '@/shared/components/ui/hero-number-input'
 import { ScrollArea, ScrollBar } from '@/shared/components/ui/scroll-area'
 import { addToast, Divider, Progress, User } from '@heroui/react'
+import { useSuspenseQueries } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { useFormik } from 'formik'
 import lodash from 'lodash'
@@ -18,8 +24,8 @@ import { useEffect, useMemo, useState } from 'react'
 import { JobNoField } from '../JobNoField'
 
 type CreateJobFormProps = {
-    onSubmit?: (values: TCreateJobInput) => void
-    afterSubmit?: (values?: TCreateJobInput) => void
+    onSubmit?: (values: TCreateJobFormValues) => void
+    afterSubmit?: (values?: TCreateJobFormValues) => void
     isSubmitting?: boolean
 }
 
@@ -28,9 +34,23 @@ export default function CreateJobFormMobile({
     isSubmitting = false,
     afterSubmit,
 }: CreateJobFormProps) {
-    const { data: users = [] } = useUsers()
-    const { data: jobTypes = [] } = useJobTypes()
-    const { data: paymentChannels = [] } = usePaymentChannels()
+    const [
+        {
+            data: { users },
+        },
+        {
+            data: { jobTypes },
+        },
+        {
+            data: { paymentChannels },
+        },
+    ] = useSuspenseQueries({
+        queries: [
+            usersListOptions(),
+            jobTypesListOptions(),
+            paymentChannelsListOptions(),
+        ],
+    })
 
     const [currentStep, setCurrentStep] = useState(0)
 
@@ -55,7 +75,7 @@ export default function CreateJobFormMobile({
         ['jobAssignments'],
     ]
 
-    const formik = useFormik<TCreateJobInput & { totalStaffCost: number }>({
+    const formik = useFormik<TCreateJobFormValues & { totalStaffCost: number }>({
         initialValues: {
             clientName: '',
             typeId: '',
@@ -74,7 +94,7 @@ export default function CreateJobFormMobile({
             incomeCost: 0,
             paymentChannelId: null,
         },
-        validationSchema: CreateJobSchema,
+        validationSchema: CreateJobFormSchema,
         onSubmit: async (values) => {
             onSubmit?.(values)
             if (afterSubmit) {
@@ -155,7 +175,7 @@ export default function CreateJobFormMobile({
                 <ScrollArea className="size-full h-[60vh]">
                     <ScrollBar orientation="horizontal" />
                     <ScrollBar orientation="vertical" />
-                    <div className='px-4 pt-6 pb-14'>
+                    <div className="px-4 pt-6 pb-14">
                         {/* STEP 0: JOB DETAILS */}
                         {currentStep === 0 && (
                             <div className="space-y-5 animate-in fade-in slide-in-from-right-4 duration-300">
@@ -241,7 +261,10 @@ export default function CreateJobFormMobile({
                                         labelPlacement="outside-top"
                                         value={formik.values.incomeCost}
                                         onChange={(val) =>
-                                            formik.setFieldValue('incomeCost', val)
+                                            formik.setFieldValue(
+                                                'incomeCost',
+                                                val
+                                            )
                                         }
                                         startContent={
                                             <span className="text-default-400 text-small">
@@ -264,7 +287,9 @@ export default function CreateJobFormMobile({
                                                 key
                                             )
                                         }
-                                        selectedKey={formik.values.paymentChannelId}
+                                        selectedKey={
+                                            formik.values.paymentChannelId
+                                        }
                                         isInvalid={Boolean(
                                             formik.touched.paymentChannelId &&
                                             formik.errors.paymentChannelId
@@ -273,7 +298,7 @@ export default function CreateJobFormMobile({
                                 </div>
                             </div>
                         )}
-    
+
                         {/* STEP 1: DOCUMENTS */}
                         {currentStep === 1 && (
                             <div className="animate-in fade-in slide-in-from-right-4 duration-300">
@@ -282,12 +307,15 @@ export default function CreateJobFormMobile({
                                         formik.values.attachmentUrls
                                     }
                                     onChange={(urls) =>
-                                        formik.setFieldValue('attachmentUrls', urls)
+                                        formik.setFieldValue(
+                                            'attachmentUrls',
+                                            urls
+                                        )
                                     }
                                 />
                             </div>
                         )}
-    
+
                         {/* STEP 2: ASSIGNEES */}
                         {currentStep === 2 && (
                             <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
@@ -315,7 +343,7 @@ export default function CreateJobFormMobile({
                                         )
                                     }}
                                 />
-    
+
                                 <div className="space-y-3">
                                     <p className="text-sm font-bold text-default-600">
                                         Distribution
@@ -323,7 +351,8 @@ export default function CreateJobFormMobile({
                                     {formik.values.jobAssignments?.map(
                                         (assignment, index) => {
                                             const user = users.find(
-                                                (u) => u.id === assignment.userId
+                                                (u) =>
+                                                    u.id === assignment.userId
                                             )
                                             return (
                                                 <div
@@ -333,7 +362,8 @@ export default function CreateJobFormMobile({
                                                     <User
                                                         avatarProps={{
                                                             src: optimizeCloudinary(
-                                                                user?.avatar ?? '',
+                                                                user?.avatar ??
+                                                                    '',
                                                                 {
                                                                     width: 100,
                                                                     height: 100,
@@ -342,13 +372,16 @@ export default function CreateJobFormMobile({
                                                         }}
                                                         name={
                                                             <p className="text-sm font-bold">
-                                                                {user?.displayName}
+                                                                {
+                                                                    user?.displayName
+                                                                }
                                                             </p>
                                                         }
                                                         description={
                                                             <p className="text-xs">
                                                                 {
-                                                                    user?.department
+                                                                    user
+                                                                        ?.department
                                                                         ?.displayName
                                                                 }
                                                             </p>
@@ -382,7 +415,10 @@ export default function CreateJobFormMobile({
                                                             onPress={() => {
                                                                 const remaining =
                                                                     formik.values.jobAssignments.filter(
-                                                                        (_, i) =>
+                                                                        (
+                                                                            _,
+                                                                            i
+                                                                        ) =>
                                                                             i !==
                                                                             index
                                                                     )
@@ -400,7 +436,7 @@ export default function CreateJobFormMobile({
                                         }
                                     )}
                                 </div>
-    
+
                                 <div className="p-4 bg-primary-50 rounded-2xl border border-primary-100 flex justify-between items-center">
                                     <span className="text-xs font-bold text-primary-700 uppercase">
                                         Total Payout

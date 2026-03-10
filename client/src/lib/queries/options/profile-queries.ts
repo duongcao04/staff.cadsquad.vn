@@ -1,6 +1,7 @@
 import { userApi } from '@/lib/api'
 import { queryOptions } from '@tanstack/react-query'
-import { mapJob } from './job-queries'
+import { parseList } from '../../zod'
+import { JobSchema } from '../../validationSchemas'
 
 export const profileScheduleOptions = (
     year: number,
@@ -13,9 +14,7 @@ export const profileScheduleOptions = (
         select: (res) => {
             const jobsData = res?.result?.jobsSchedule
             return {
-                jobsSchedule: Array.isArray(jobsData)
-                    ? jobsData.map(mapJob)
-                    : [],
+                jobsSchedule: parseList(jobsData, JobSchema),
                 total: jobsData?.length ?? 0,
             }
         },

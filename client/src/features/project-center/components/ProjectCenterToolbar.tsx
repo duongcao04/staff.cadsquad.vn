@@ -1,4 +1,4 @@
-import { useJobStatuses } from '@/lib/queries'
+import { jobStatusesListOptions } from '@/lib/queries'
 import { DUE_DATE_PRESETS, getDueDateRange } from '@/lib/utils'
 import { TJobFilters } from '@/lib/validationSchemas'
 import { HeroButton, HeroSelect, HeroSelectItem } from '@/shared/components'
@@ -24,6 +24,7 @@ import {
 } from 'lucide-react'
 import ProjectCenterTableBulkActions from './dropdowns/ProjectCenterTableBulkActions'
 import { FilterBuilder } from './dropdowns/FilterDropdown'
+import { useSuspenseQuery } from '@tanstack/react-query'
 
 type Props = {
     searchKeywords?: string
@@ -50,7 +51,9 @@ export function ProjectCenterToolbar({
     tab,
     selectedKeys,
 }: Props) {
-    const { data: jobStatuses } = useJobStatuses()
+    const {
+        data: { jobStatuses },
+    } = useSuspenseQuery(jobStatusesListOptions())
 
     const canShowStatusFilter = [
         'active',

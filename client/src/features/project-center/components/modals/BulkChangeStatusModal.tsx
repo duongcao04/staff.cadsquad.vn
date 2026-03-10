@@ -1,5 +1,8 @@
 import { pCenterTableStore } from '@/features/project-center'
-import { useBulkChangeStatusMutation, useJobStatuses } from '@/lib/queries'
+import {
+    jobStatusesListOptions,
+    useBulkChangeStatusMutation,
+} from '@/lib/queries'
 import { HeroSelect, HeroSelectItem } from '@/shared/components'
 import {
     Button,
@@ -9,6 +12,7 @@ import {
     ModalFooter,
     ModalHeader,
 } from '@heroui/react'
+import { useSuspenseQuery } from '@tanstack/react-query'
 import { useStore } from '@tanstack/react-store'
 import { useState } from 'react'
 
@@ -28,8 +32,10 @@ export default function BulkChangeStatusModal({
         (state) => state.selectedKeys
     )
 
-    const { data: jobStatuses, isLoading: loadingJobStatuses } =
-        useJobStatuses()
+    const {
+        data: { jobStatuses },
+        isLoading: loadingJobStatuses,
+    } = useSuspenseQuery(jobStatusesListOptions())
 
     const { mutateAsync: bulkChangeStatusMutate, isPending: isUpdating } =
         useBulkChangeStatusMutation()

@@ -186,6 +186,7 @@ enum EntityEnum {
   JOB_TITLE
   JOB_TYPE // <--- Added this (Fixes your SQL error)
   JOB_STATUS // <--- Added this (For status management)
+  JOB_FOLDER_TEMPLATE
 
   // Social / Community
   COMMUNITY
@@ -416,6 +417,21 @@ model JobAssignment {
   assignedAt DateTime @default(now())
 
   @@unique([jobId, userId]) // Prevents assigning the same person twice
+}
+
+model JobFolderTemplate {
+  id          String   @id @default(uuid())
+  displayName String
+  folderId    String
+  folderName  String
+  size        Int
+  webUrl      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([folderId])
+  @@index([id])
+  @@index([createdAt])
 }
 
 model Client {

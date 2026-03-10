@@ -1,16 +1,15 @@
 import { type ApiResponse, axiosClient } from '@/lib/axios'
 import type { TUpdateUserConfigInput } from '@/lib/validationSchemas'
-import type { IConfigResponse } from '@/shared/interfaces'
 
 export const userConfigApi = {
     getAllUserConfigs: async () => {
         return axiosClient
-            .get<ApiResponse<IConfigResponse[]>>('/v1/config')
+            .get<ApiResponse<any[]>>('/v1/config')
             .then((res) => res.data)
     },
     getByCode: async (code: string) => {
         return axiosClient
-            .get<ApiResponse<IConfigResponse>>(`/v1/config/${code}`)
+            .get<ApiResponse<any>>(`/v1/config/${code}`)
             .then((res) => res.data)
     },
     getJobShowColumns: async () => {

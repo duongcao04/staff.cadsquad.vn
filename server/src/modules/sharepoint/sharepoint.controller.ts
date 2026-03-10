@@ -15,7 +15,7 @@ import { SharePointService } from './sharepoint.service'
 @Controller('sharepoint')
 // @UseGuards(JwtGuard) // Bảo vệ toàn bộ API bằng Token Local
 export class SharePointController {
-	constructor(private readonly service: SharePointService) {}
+	constructor(private readonly service: SharePointService) { }
 
 	// 1. Lấy danh sách file
 	// GET /api/v1/sharepoint/items?folderId=xxx
@@ -72,5 +72,23 @@ export class SharePointController {
 	@Get('drives')
 	async getDrives() {
 		return this.service.listDrives()
+	}
+
+	// 8. Sao chép File/Folder
+	// POST /api/v1/sharepoint/copy
+	// Body: { itemId: "xxx", destinationFolderId: "yyy", newName: "Optional Name" }
+	@Post('copy')
+	async copyItem(
+		@Body() body: {
+			itemId: string;
+			destinationFolderId: string;
+			newName?: string
+		}
+	) {
+		return this.service.copyItem(
+			body.itemId,
+			body.destinationFolderId,
+			body.newName
+		);
 	}
 }

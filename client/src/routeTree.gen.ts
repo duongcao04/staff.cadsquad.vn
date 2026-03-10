@@ -59,6 +59,7 @@ import { Route as AdministratorAdminMgmtAccessControlRouteImport } from './route
 import { Route as AdministratorAdminDepartmentsCodeRouteImport } from './routes/_administrator/admin/departments/$code'
 import { Route as AdministratorAdminMgmtStaffDirectoryIndexRouteImport } from './routes/_administrator/admin/mgmt/staff-directory/index'
 import { Route as AdministratorAdminMgmtJobsIndexRouteImport } from './routes/_administrator/admin/mgmt/jobs/index'
+import { Route as AdministratorAdminMgmtJobFolderTemplatesIndexRouteImport } from './routes/_administrator/admin/mgmt/job-folder-templates/index'
 import { Route as AdministratorAdminMgmtFileDocsIndexRouteImport } from './routes/_administrator/admin/mgmt/file-docs/index'
 import { Route as AdministratorAdminMgmtAccessControlIndexRouteImport } from './routes/_administrator/admin/mgmt/access-control/index'
 import { Route as AdministratorAdminMgmtJobsNoRouteImport } from './routes/_administrator/admin/mgmt/jobs/$no'
@@ -341,6 +342,12 @@ const AdministratorAdminMgmtJobsIndexRoute =
     path: '/admin/mgmt/jobs/',
     getParentRoute: () => AdministratorRoute,
   } as any)
+const AdministratorAdminMgmtJobFolderTemplatesIndexRoute =
+  AdministratorAdminMgmtJobFolderTemplatesIndexRouteImport.update({
+    id: '/admin/mgmt/job-folder-templates/',
+    path: '/admin/mgmt/job-folder-templates/',
+    getParentRoute: () => AdministratorRoute,
+  } as any)
 const AdministratorAdminMgmtFileDocsIndexRoute =
   AdministratorAdminMgmtFileDocsIndexRouteImport.update({
     id: '/admin/mgmt/file-docs/',
@@ -458,6 +465,7 @@ export interface FileRoutesByFullPath {
   '/admin/mgmt/jobs/$no': typeof AdministratorAdminMgmtJobsNoRoute
   '/admin/mgmt/access-control/': typeof AdministratorAdminMgmtAccessControlIndexRoute
   '/admin/mgmt/file-docs': typeof AdministratorAdminMgmtFileDocsIndexRoute
+  '/admin/mgmt/job-folder-templates': typeof AdministratorAdminMgmtJobFolderTemplatesIndexRoute
   '/admin/mgmt/jobs': typeof AdministratorAdminMgmtJobsIndexRoute
   '/admin/mgmt/staff-directory/': typeof AdministratorAdminMgmtStaffDirectoryIndexRoute
   '/admin/mgmt/access-control/users/$username': typeof AdministratorAdminMgmtAccessControlUsersUsernameRoute
@@ -512,6 +520,7 @@ export interface FileRoutesByTo {
   '/admin/mgmt/jobs/$no': typeof AdministratorAdminMgmtJobsNoRoute
   '/admin/mgmt/access-control': typeof AdministratorAdminMgmtAccessControlIndexRoute
   '/admin/mgmt/file-docs': typeof AdministratorAdminMgmtFileDocsIndexRoute
+  '/admin/mgmt/job-folder-templates': typeof AdministratorAdminMgmtJobFolderTemplatesIndexRoute
   '/admin/mgmt/jobs': typeof AdministratorAdminMgmtJobsIndexRoute
   '/admin/mgmt/staff-directory': typeof AdministratorAdminMgmtStaffDirectoryIndexRoute
   '/admin/mgmt/access-control/users/$username': typeof AdministratorAdminMgmtAccessControlUsersUsernameRoute
@@ -576,6 +585,7 @@ export interface FileRoutesById {
   '/_administrator/admin/mgmt/jobs/$no': typeof AdministratorAdminMgmtJobsNoRoute
   '/_administrator/admin/mgmt/access-control/': typeof AdministratorAdminMgmtAccessControlIndexRoute
   '/_administrator/admin/mgmt/file-docs/': typeof AdministratorAdminMgmtFileDocsIndexRoute
+  '/_administrator/admin/mgmt/job-folder-templates/': typeof AdministratorAdminMgmtJobFolderTemplatesIndexRoute
   '/_administrator/admin/mgmt/jobs/': typeof AdministratorAdminMgmtJobsIndexRoute
   '/_administrator/admin/mgmt/staff-directory/': typeof AdministratorAdminMgmtStaffDirectoryIndexRoute
   '/_administrator/admin/mgmt/access-control/users/$username': typeof AdministratorAdminMgmtAccessControlUsersUsernameRoute
@@ -637,6 +647,7 @@ export interface FileRouteTypes {
     | '/admin/mgmt/jobs/$no'
     | '/admin/mgmt/access-control/'
     | '/admin/mgmt/file-docs'
+    | '/admin/mgmt/job-folder-templates'
     | '/admin/mgmt/jobs'
     | '/admin/mgmt/staff-directory/'
     | '/admin/mgmt/access-control/users/$username'
@@ -691,6 +702,7 @@ export interface FileRouteTypes {
     | '/admin/mgmt/jobs/$no'
     | '/admin/mgmt/access-control'
     | '/admin/mgmt/file-docs'
+    | '/admin/mgmt/job-folder-templates'
     | '/admin/mgmt/jobs'
     | '/admin/mgmt/staff-directory'
     | '/admin/mgmt/access-control/users/$username'
@@ -754,6 +766,7 @@ export interface FileRouteTypes {
     | '/_administrator/admin/mgmt/jobs/$no'
     | '/_administrator/admin/mgmt/access-control/'
     | '/_administrator/admin/mgmt/file-docs/'
+    | '/_administrator/admin/mgmt/job-folder-templates/'
     | '/_administrator/admin/mgmt/jobs/'
     | '/_administrator/admin/mgmt/staff-directory/'
     | '/_administrator/admin/mgmt/access-control/users/$username'
@@ -1125,6 +1138,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdministratorAdminMgmtJobsIndexRouteImport
       parentRoute: typeof AdministratorRoute
     }
+    '/_administrator/admin/mgmt/job-folder-templates/': {
+      id: '/_administrator/admin/mgmt/job-folder-templates/'
+      path: '/admin/mgmt/job-folder-templates'
+      fullPath: '/admin/mgmt/job-folder-templates'
+      preLoaderRoute: typeof AdministratorAdminMgmtJobFolderTemplatesIndexRouteImport
+      parentRoute: typeof AdministratorRoute
+    }
     '/_administrator/admin/mgmt/file-docs/': {
       id: '/_administrator/admin/mgmt/file-docs/'
       path: '/admin/mgmt/file-docs'
@@ -1303,6 +1323,7 @@ interface AdministratorRouteChildren {
   AdministratorAdminDepartmentsIndexRoute: typeof AdministratorAdminDepartmentsIndexRoute
   AdministratorAdminMgmtJobsNoRoute: typeof AdministratorAdminMgmtJobsNoRoute
   AdministratorAdminMgmtFileDocsIndexRoute: typeof AdministratorAdminMgmtFileDocsIndexRoute
+  AdministratorAdminMgmtJobFolderTemplatesIndexRoute: typeof AdministratorAdminMgmtJobFolderTemplatesIndexRoute
   AdministratorAdminMgmtJobsIndexRoute: typeof AdministratorAdminMgmtJobsIndexRoute
 }
 
@@ -1326,6 +1347,8 @@ const AdministratorRouteChildren: AdministratorRouteChildren = {
   AdministratorAdminMgmtJobsNoRoute: AdministratorAdminMgmtJobsNoRoute,
   AdministratorAdminMgmtFileDocsIndexRoute:
     AdministratorAdminMgmtFileDocsIndexRoute,
+  AdministratorAdminMgmtJobFolderTemplatesIndexRoute:
+    AdministratorAdminMgmtJobFolderTemplatesIndexRoute,
   AdministratorAdminMgmtJobsIndexRoute: AdministratorAdminMgmtJobsIndexRoute,
 }
 

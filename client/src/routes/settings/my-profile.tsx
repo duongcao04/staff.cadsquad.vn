@@ -185,7 +185,7 @@ function SettingsProfilePage() {
                                     color="primary"
                                     className="mb-6"
                                 >
-                                    {user?.role.displayName}
+                                    {user?.role?.displayName}
                                 </Chip>
 
                                 <Divider className="my-3" />

@@ -8,16 +8,3 @@ export interface ILoginResponse {
     }
     sessionId: string
 }
-
-export interface IRegisterUserInput {
-    firstName: string
-    lastName: string
-    dob?: Date
-    email: string
-    password?: string
-}
-
-export interface LoginUserDto {
-    email: string
-    password?: string
-}

@@ -2,6 +2,7 @@ import { PaginationMeta } from '@/common/interfaces/pagination-meta.interface'
 import { ActivityType, Job, NotificationType, Prisma } from '@/generated/prisma'
 import { AuthService } from '@/modules/auth/auth.service'
 import { NotificationService } from '@/modules/notification/notification.service'
+import { SharePointService } from '@/modules/sharepoint/sharepoint.service'
 import { UserService } from '@/modules/user/user.service'
 import { MailService } from '@/providers/mail/mail.service'
 import { PrismaService } from '@/providers/prisma/prisma.service'
@@ -45,7 +46,8 @@ export class JobService {
 		private readonly authService: AuthService,
 		private readonly activityLogService: ActivityLogService,
 		private readonly permissionService: PermissionService,
-		private readonly mailService: MailService
+		private readonly mailService: MailService,
+		private readonly sharePointService: SharePointService
 	) {}
 
 	/**
@@ -658,6 +660,8 @@ export class JobService {
 			incomeCost,
 			totalStaffCost,
 			attachmentUrls,
+			isCreateSharepointFolder,
+			sharepointTemplateId,
 			...jobData
 		} = data
 
@@ -748,6 +752,29 @@ export class JobService {
 
 			return newJob
 		})
+
+		// 3.5. Create SharePoint Folder if requested
+		if (isCreateSharepointFolder && sharepointTemplateId) {
+			try {
+				// Get the folder template
+				const template = await this.prisma.jobFolderTemplate.findUnique({
+					where: { id: sharepointTemplateId }
+				})
+
+				if (template) {
+					// For now, create a simple folder with the job name under the drive root
+					// In the future, this could create a folder structure based on the template
+					await this.sharePointService.queueCreateFolder(
+						'root', // Use drive root
+						`${job.no}-${job.displayName}`
+					)
+					this.logger.log(`Queued SharePoint folder creation for job ${job.no}`)
+				}
+			} catch (error) {
+				this.logger.error(`Failed to create SharePoint folder for job ${job.no}:`, error)
+				// Don't fail the job creation if SharePoint folder creation fails
+			}
+		}
 
 		// 4. Send Notifications to Assigned Staff (Outside Transaction)
 		try {

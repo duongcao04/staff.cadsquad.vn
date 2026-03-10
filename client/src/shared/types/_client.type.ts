@@ -1,3 +1,22 @@
-import { IClientResponse } from '../interfaces/_client.interface'
+import { EClientType } from '../enums'
+import { TJob } from './_job.type'
 
-export type TClient = Required<IClientResponse>
+export type TClient = {
+	id: string
+	name: string
+	code: string
+	type: EClientType
+	region?: string
+	country?: string
+	address?: string
+	timezone?: string
+	email?: string
+	phoneNumber?: string
+	billingEmail?: string
+	taxId?: string
+	currency?: string
+	paymentTerms?: number
+	jobs: TJob[]
+	createdAt: Date | string
+	updatedAt: Date | string
+}

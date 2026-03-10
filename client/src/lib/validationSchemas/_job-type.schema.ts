@@ -1,4 +1,24 @@
-import * as yup from "yup"
+import * as yup from "yup";
+import { ZodType, z } from "zod";
+import { TJobType } from "../../shared/types";
+import { JobSchema } from "./_job.schema";
+
+export const JobTypeSchema: ZodType<TJobType> = z.lazy(() => z.object({
+	id: z.string().catch('N/A'),
+
+	code: z.string().catch('UNKNOWN'),
+
+	displayName: z.string().catch('Unknown Type'),
+
+	// Rào màu sắc, nếu không có thì để undefined hoặc mã màu mặc định
+	hexColor: z.string().optional(),
+
+	// Quan hệ với Jobs: Sử dụng lazy để tránh lỗi khởi tạo vòng
+	jobs: z.array(z.lazy(() => JobSchema)).default([]),
+
+	// Xử lý object _count: Đảm bảo luôn là một object, không bị undefined
+	_count: z.record(z.string(), z.union([z.string(), z.number()])).default({}),
+}) as any);
 
 export const CreateJobTypeSchema = yup.object({
 	code: yup

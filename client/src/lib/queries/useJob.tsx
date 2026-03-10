@@ -1,134 +1,36 @@
-import { addToast } from '@heroui/react'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-
 import { jobApi } from '@/lib/api'
 import {
     TAssignMember,
     type TBulkChangeStatusInput,
     type TChangeStatusInput,
-    type TCreateJobInput,
+    type TCreateJobFormValues,
     TDeliverJobInput,
-    type TJobQueryInput,
     type TRescheduleJob,
     type TUpdateJobInput,
     TUpdateJobRevenue,
 } from '@/lib/validationSchemas'
-import { ProjectCenterTabEnum } from '@/shared/enums'
+import { addToast } from '@heroui/react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { TJobGeneralDetails } from '../../routes/_administrator/admin/mgmt/jobs/$no'
 import { JobUpdateResponse } from '../../shared/types'
 import type { ApiResponse } from '../axios'
 import { onErrorToast } from './helper'
 import {
-    countJobByTabOptions,
     jobAssigneesOptions,
     jobByNoOptions,
     jobDetailOptions,
-    jobsDueOnDateOptions,
     jobsListOptions,
-    jobsSearchOptions,
     workbenchDataOptions,
 } from './options/job-queries'
 
 // =============================================================================
-// QUERIES (Read Operations)
-// =============================================================================
-
-export const useJobs = (
-    params: TJobQueryInput = {
-        hideFinishItems: '0',
-        page: 1,
-        limit: 10,
-        tab: ProjectCenterTabEnum.ACTIVE,
-    }
-) => {
-    const options = jobsListOptions(params)
-    const { data, refetch, error, isFetching, isLoading } = useQuery(options)
-
-    return {
-        refetch,
-        isLoading: isLoading || isFetching,
-        error,
-        jobs: data?.jobs ?? [],
-        data: data?.jobs ?? [],
-        paginate: data?.paginate,
-    }
-}
-
-export const useSearchJobs = (keywords?: string) => {
-    const { data, isFetching, isLoading } = useQuery(
-        jobsSearchOptions(keywords)
-    )
-    return {
-        isLoading: isLoading || isFetching,
-        jobs: data,
-    }
-}
-
-export const useJobsDueOnDate = (isoDate: string) => {
-    const { data, isFetching, isLoading } = useQuery(
-        jobsDueOnDateOptions(isoDate)
-    )
-    return {
-        data,
-        isLoading: isLoading || isFetching,
-    }
-}
-
-export const useCountJobByTab = (tab: ProjectCenterTabEnum) => {
-    const { data, refetch, error, isFetching, isLoading } = useQuery(
-        countJobByTabOptions(tab)
-    )
-    return {
-        refetch,
-        isLoading: isLoading || isFetching,
-        error,
-        data,
-    }
-}
-
-export const useJobByNo = (jobNo: string) => {
-    const { data, refetch, error, isLoading } = useQuery(jobByNoOptions(jobNo))
-    return {
-        refetch,
-        data,
-        job: data,
-        error,
-        isLoading,
-    }
-}
-
-export const useJobAssignees = (jobId: string) => {
-    const { data, refetch, error, isLoading } = useQuery(
-        jobAssigneesOptions(jobId)
-    )
-    return {
-        refetch,
-        data: data?.assignees ?? [],
-        totalAssignees: data?.totalAssignees ?? 0,
-        error,
-        isLoading,
-    }
-}
-
-export const useJobDetail = (id?: string) => {
-    const { data, refetch, error, isLoading } = useQuery(jobDetailOptions(id))
-    return {
-        refetch,
-        job: data,
-        error,
-        isLoading,
-    }
-}
-
-// =============================================================================
 // MUTATIONS (Write Operations)
 // =============================================================================
-
 export const useCreateJobMutation = () => {
     const queryClient = useQueryClient()
     return useMutation({
         mutationKey: ['createJob'],
-        mutationFn: (data: TCreateJobInput) => jobApi.create(data),
+        mutationFn: (data: TCreateJobFormValues) => jobApi.create(data),
         onSuccess: (res) => {
             addToast({ title: res.message, color: 'success' })
             queryClient.invalidateQueries({

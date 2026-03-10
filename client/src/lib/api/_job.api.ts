@@ -4,7 +4,7 @@ import {
     type TBulkChangeStatusInput,
     type TChangeStatusInput,
     TCreateCommentInput,
-    type TCreateJobInput,
+    type TCreateJobFormValues,
     TDeliverJobInput,
     type TJobQueryInput,
     type TRescheduleJob,
@@ -14,11 +14,8 @@ import {
 import { TJobGeneralDetails } from '@/routes/_administrator/admin/mgmt/jobs/$no'
 import { ProjectCenterTabEnum } from '@/shared/enums'
 import type {
-    IJobActivityLogResponse,
     IJobDelivery,
-    IJobResponse,
     IPaginate,
-    IUserResponse,
 } from '@/shared/interfaces'
 import type {
     JobColumnKey,
@@ -32,9 +29,9 @@ export const jobApi = {
     // =========================================================================
     // CORE CRUD (Create, Read, Update, Delete)
     // =========================================================================
-    create: async (data: TCreateJobInput) => {
+    create: async (data: TCreateJobFormValues) => {
         return axiosClient
-            .post<ApiResponse<IJobResponse>>('/v1/jobs', {
+            .post<ApiResponse<any>>('/v1/jobs', {
                 ...data,
                 startedAt: new Date(data.startedAt).toISOString(),
                 dueAt: new Date(data.dueAt).toISOString(),
@@ -54,20 +51,20 @@ export const jobApi = {
         })
         return axiosClient
             .get<
-                ApiResponse<{ data: IJobResponse[]; paginate: IPaginate }>
+                ApiResponse<{ data: any[]; paginate: IPaginate }>
             >(`/v1/jobs?${queryStringFormatter}`)
             .then((res) => res.data)
     },
 
     findOne: async (id: string) => {
         return axiosClient
-            .get<ApiResponse<IJobResponse>>(`/v1/jobs/${id}`)
+            .get<ApiResponse<any>>(`/v1/jobs/${id}`)
             .then((res) => res.data)
     },
 
     findByJobNo: async (jobNo: string) => {
         return axiosClient
-            .get<ApiResponse<IJobResponse>>(`/v1/jobs/no/${jobNo}`)
+            .get<ApiResponse<any>>(`/v1/jobs/no/${jobNo}`)
             .then((res) => res.data)
     },
 
@@ -166,7 +163,7 @@ export const jobApi = {
         return axiosClient
             .get<
                 ApiResponse<{
-                    assignees: IUserResponse[]
+                    assignees: any[]
                     totalAssignees: number
                 }>
             >(`/v1/jobs/${id}/assignees`)
@@ -254,14 +251,14 @@ export const jobApi = {
         })
         return axiosClient
             .get<
-                ApiResponse<{ data: IJobResponse[]; paginate: IPaginate }>
+                ApiResponse<{ data: any[]; paginate: IPaginate }>
             >(`/v1/jobs/workbench?${queryStringFormatter}`)
             .then((res) => res.data)
     },
 
     searchJobs: async (keywords: string) => {
         return axiosClient
-            .get<ApiResponse<IJobResponse[]>>('/v1/jobs/search', {
+            .get<ApiResponse<any[]>>('/v1/jobs/search', {
                 params: { keywords },
             })
             .then((res) => res.data)
@@ -275,27 +272,27 @@ export const jobApi = {
 
     pendingDeliver: async () => {
         return axiosClient
-            .get<ApiResponse<IJobResponse[]>>(`/v1/jobs/pending-deliver`)
+            .get<ApiResponse<any[]>>(`/v1/jobs/pending-deliver`)
             .then((res) => res.data)
     },
 
     pendingPayouts: async () => {
         return axiosClient
-            .get<ApiResponse<IJobResponse[]>>(`/v1/jobs/pending-payouts`)
+            .get<ApiResponse<any[]>>(`/v1/jobs/pending-payouts`)
             .then((res) => res.data)
     },
 
     jobsDueInMonth: async (month: number, year: number) => {
         return axiosClient
             .get<
-                ApiResponse<IJobResponse[]>
+                ApiResponse<any[]>
             >(`/v1/jobs/due-monthly?month=${month}&year=${year}`)
             .then((res) => res.data)
     },
 
     getJobsDueOnDate: async (isoDate: string) => {
         return axiosClient
-            .get<ApiResponse<IJobResponse[]>>(`/v1/jobs/due-at/${isoDate}`)
+            .get<ApiResponse<any[]>>(`/v1/jobs/due-at/${isoDate}`)
             .then((res) => res.data)
     },
 
@@ -303,7 +300,7 @@ export const jobApi = {
         // You might want to type the response here if you have TJobActivityLog
         return axiosClient
             .get<
-                ApiResponse<IJobActivityLogResponse[]>
+                ApiResponse<any[]>
             >(`/v1/jobs/${id}/activity-logs`)
             .then((res) => res.data)
     },

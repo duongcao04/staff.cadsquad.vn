@@ -3,11 +3,10 @@ import type {
     TCreateDepartmentInput,
     TUpdateDepartmentInput,
 } from '@/lib/validationSchemas'
-import type { IDepartmentResponse } from '@/shared/interfaces'
 
 export const departmentApi = {
     create: (data: TCreateDepartmentInput) => {
-        return axiosClient.post<ApiResponse<IDepartmentResponse>>(
+        return axiosClient.post<ApiResponse<any>>(
             '/v1/departments',
             data
         )
@@ -15,18 +14,18 @@ export const departmentApi = {
 
     findAll: async () => {
         return axiosClient
-            .get<ApiResponse<IDepartmentResponse[]>>('/v1/departments')
+            .get<ApiResponse<any[]>>('/v1/departments')
             .then((res) => res.data)
     },
 
     findOne: async (id: string) => {
         return axiosClient
-            .get<ApiResponse<IDepartmentResponse>>(`/v1/departments/${id}`)
+            .get<ApiResponse<any>>(`/v1/departments/${id}`)
             .then((res) => res.data)
     },
 
     update: (id: string, data: TUpdateDepartmentInput) => {
-        return axiosClient.patch<ApiResponse<{ id: string }>>(
+        return axiosClient.patch(
             `/v1/departments/${id}`,
             data
         )

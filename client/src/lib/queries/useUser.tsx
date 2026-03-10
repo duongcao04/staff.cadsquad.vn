@@ -1,37 +1,20 @@
 import { TCreateUserInput } from '@/features/staff-directory'
 import { userApi } from '@/lib/api'
-import { type ApiError, ApiResponse } from '@/lib/axios'
+import { ApiResponse, type ApiError } from '@/lib/axios'
 import { queryClient } from '@/main'
 import { TRole, TUser } from '@/shared/types'
 import { addToast } from '@heroui/react'
-import { useMutation, useQuery } from '@tanstack/react-query'
-import type {
-    TResetPasswordInput,
-    TUpdatePasswordInput,
-    TUpdateUserInput,
-} from '../validationSchemas'
-import { onErrorToast } from './helper'
-import {
-    mapUser,
-    profileOptions,
-    usersListOptions,
-} from './options/user-queries'
+import { useMutation } from '@tanstack/react-query'
 import { deepClean } from '../lodash'
-
-export const useUsers = () => {
-    // Gọi Options
-    const options = usersListOptions()
-
-    const { data, refetch, error, isFetching, isLoading } = useQuery(options)
-
-    // Data đã được map sẵn trong options.select
-    return {
-        refetch,
-        isLoading: isLoading || isFetching,
-        error,
-        data: data?.users ?? [],
-    }
-}
+import {
+    UserSchema,
+    type TResetPasswordInput,
+    type TUpdatePasswordInput,
+    type TUpdateUserInput,
+} from '../validationSchemas'
+import { parseData } from '../zod'
+import { onErrorToast } from './helper'
+import { profileOptions } from './options/user-queries'
 
 export const useUpdateUserMutation = (
     onSuccess?: (res: ApiResponse<{ id: string; username: string }>) => void
@@ -190,7 +173,9 @@ export const useResetPasswordMutation = () => {
     })
 }
 
-export const useCreateUserMutation = (onSuccess?: (res: TUser) => void) => {
+export const useCreateUserMutation = (
+    onSuccess?: (res: TUser | any) => void
+) => {
     return useMutation({
         mutationFn: async (data: TCreateUserInput) => {
             const formatted = deepClean({
@@ -206,7 +191,7 @@ export const useCreateUserMutation = (onSuccess?: (res: TUser) => void) => {
                 { ...formatted },
                 data.sendInviteEmail
             )
-            return mapUser(userCreated.result)
+            return parseData(UserSchema, userCreated.result)
         },
 
         onSuccess: (res) => {

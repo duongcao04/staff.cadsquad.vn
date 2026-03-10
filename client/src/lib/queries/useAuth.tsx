@@ -1,7 +1,11 @@
 import { authApi } from '@/lib/api'
 import { cookie } from '@/lib/cookie'
 import { COOKIES } from '@/lib/utils'
-import type { TLoginInput, TUpdateProfileInput } from '@/lib/validationSchemas'
+import {
+    UserSchema,
+    type TLoginInput,
+    type TUpdateProfileInput,
+} from '@/lib/validationSchemas'
 import type { TUser } from '@/shared/types'
 import { addToast } from '@heroui/react'
 import { useMutation, useQuery } from '@tanstack/react-query'
@@ -11,9 +15,9 @@ import { ApiResponse } from '../axios'
 import { onErrorToast } from './helper'
 import {
     activeSessionsListOptions,
-    mapUser,
     profileOptions,
 } from './options/user-queries'
+import { parseData } from '../zod'
 
 function parseExpires(expiresAt: string | number) {
     if (typeof expiresAt === 'number') {
@@ -130,12 +134,12 @@ export function useProfile() {
     } = useQuery({
         queryKey: ['profile'],
         queryFn: () => authApi.getProfile(),
-        select: (res) => res.data.result,
+        select: (res) => res.result,
     })
 
     const accessToken = cookie.get(COOKIES.authentication)
 
-    const profile = useMemo(() => mapUser(data), [data])
+    const profile = useMemo(() => parseData(UserSchema, data), [data])
 
     const userRole = profile?.role
 
@@ -167,7 +171,7 @@ export function useAuth() {
     } = useQuery({
         queryKey: ['profile'],
         queryFn: () => authApi.getProfile(),
-        select: (res) => res.data.result,
+        select: (res) => res.result,
     })
 
     const userRole = profile?.role
