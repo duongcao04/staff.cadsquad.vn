@@ -412,7 +412,7 @@ function PaymentChannelFlowPage() {
                                 </TableCell>
                                 <TableCell>
                                     <div>
-                                        <p className="font-semibold text-slate-700">
+                                        <p className="font-medium text-slate-700">
                                             {tx.description}
                                         </p>
                                         {tx.refId && (

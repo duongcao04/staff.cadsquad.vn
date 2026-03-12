@@ -328,7 +328,7 @@ function SettingsLanguageAndRegionPage() {
                                 onPress={handleSave}
                                 isLoading={isSaving}
                                 startContent={!isSaving && <Save size={18} />}
-                                className="font-semibold shadow-md shadow-blue-500/20"
+                                className="font-medium shadow-md shadow-blue-500/20"
                             >
                                 {isSaving ? 'Saving...' : 'Save Preferences'}
                             </Button>

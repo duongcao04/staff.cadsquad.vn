@@ -660,8 +660,7 @@ export class JobService {
 			incomeCost,
 			totalStaffCost,
 			attachmentUrls,
-			isCreateSharepointFolder,
-			sharepointTemplateId,
+			sharepointFolderId,
 			...jobData
 		} = data
 
@@ -695,6 +694,7 @@ export class JobService {
 					incomeCost: parseFloat(incomeCost as any) || 0,
 					totalStaffCost: parseFloat(totalStaffCost as any) || 0,
 					client: { connect: { id: client.id } },
+					sharepointFolderId: sharepointFolderId || undefined,
 					attachmentUrls: Array.isArray(attachmentUrls)
 						? attachmentUrls
 						: [],

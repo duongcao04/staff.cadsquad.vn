@@ -95,7 +95,7 @@ export const AccountingFinishModal = ({
                                     isSelected={isPaid}
                                     onValueChange={setIsPaid}
                                     classNames={{
-                                        label: 'text-sm font-semibold text-slate-700',
+                                        label: 'text-sm font-medium text-slate-700',
                                     }}
                                 >
                                     I confirm payment has been received from{' '}

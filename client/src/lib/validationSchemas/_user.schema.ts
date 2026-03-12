@@ -1,6 +1,7 @@
 import * as yup from 'yup';
 import { z, ZodType } from 'zod';
 import { TRole, TUser } from '../../shared/types';
+import { optimizeCloudinary } from '../cloudinary';
 import { IMAGES } from '../utils';
 import { DepartmentSchema } from './_department.schema';
 import { JobTitleSchema } from './_job-title.schema';
@@ -9,7 +10,9 @@ import { RoleSchema } from './_role.schema';
 export const UserSchema: ZodType<TUser> = z.lazy(() => z.object({
     id: z.string().catch('N/A'),
     displayName: z.string().catch('Unknown User'),
-    avatar: z.string().default(IMAGES.emptyAvatar),
+    avatar: z.string().default(IMAGES.emptyAvatar).transform((val) => {
+        return optimizeCloudinary(val);
+    }),
 
     personalEmail: z.string().nullable().catch(null),
     email: z.string().email().catch('unknown@cadsquad.vn'),

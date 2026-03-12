@@ -39,7 +39,7 @@ export default function ApproveDeliveryModal({
                             <div className="flex items-center gap-4 p-4 bg-primary-50 rounded-lg text-primary-600 dark:bg-primary-900/20">
                                 <AlertTriangle className="size-6 shrink-0" />
                                 <div className="text-sm">
-                                    <p className="font-semibold">
+                                    <p className="font-medium">
                                         This action cannot be undone.
                                     </p>
                                     <p>

@@ -139,7 +139,7 @@ export default function AdminDeliveryCard({
                                     <div className="flex gap-3">
                                         <Button
                                             color="success"
-                                            className="text-white font-semibold shadow-md shadow-green-200"
+                                            className="text-white font-medium shadow-md shadow-green-200"
                                             startContent={
                                                 <CheckCircle2 size={18} />
                                             }

@@ -55,7 +55,7 @@ function JobCard({ data, onPress }: Props) {
                     </div>
                     <Link
                         to={INTERNAL_URLS.getJobDetailUrl(data.no)}
-                        className="mt-0.5 block font-semibold line-clamp-1! hover:underline"
+                        className="mt-0.5 block font-medium line-clamp-1! hover:underline"
                         title="View detail"
                     >
                         {data.displayName}
@@ -64,7 +64,7 @@ function JobCard({ data, onPress }: Props) {
             </div>
             <div className="hidden lg:flex flex-col items-center justify-center gap-1">
                 <p className="text-xs text-text-subdued">Client name</p>
-                <p className="text-sm font-semibold text-center">
+                <p className="text-sm font-medium text-center">
                     {data.client?.name ?? 'Unknown client'}
                 </p>
             </div>
@@ -82,7 +82,7 @@ function JobCard({ data, onPress }: Props) {
             </div>
             <div className="flex flex-col items-center justify-center gap-0.5">
                 <p className="text-xs  text-text-subdued">Due on</p>
-                <div className="font-semibold text-sm flex items-center justify-center">
+                <div className="font-medium text-sm flex items-center justify-center">
                     <Clock2 size={14} className="text-text-subdued mr-2" />
                     <CountdownTimer
                         targetDate={targetDate}
@@ -96,7 +96,7 @@ function JobCard({ data, onPress }: Props) {
             </div>
             <Link
                 to={INTERNAL_URLS.getJobDetailUrl(data.no)}
-                className="hidden lg:block text-sm font-semibold hover:underline! underline-offset-2 text-end text-link!"
+                className="hidden lg:block text-sm font-medium hover:underline! underline-offset-2 text-end text-link!"
             >
                 View
             </Link>

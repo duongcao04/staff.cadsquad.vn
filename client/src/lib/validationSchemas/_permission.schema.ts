@@ -22,4 +22,8 @@ export const PermissionSchema: ZodType<TPermission> = z.lazy(() => z.object({
 
 	// Quan hệ n-n với Roles: Sử dụng z.lazy để gọi RoleSchema
 	roles: z.array(z.lazy(() => RoleSchema)).default([]),
-}) as any);
+
+	createdAt: z.coerce.date().catch(new Date()),
+
+	updatedAt: z.coerce.date().catch(new Date()),
+}));

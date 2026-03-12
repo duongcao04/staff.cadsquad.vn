@@ -47,7 +47,7 @@ export const INTERNAL_URLS = {
      * ADMIN ROUTES
      */
     admin: '/' + 'admin',
-    systemConfiguration: '/' + 'admin/settings',
+    adminSettings: '/' + 'admin/settings',
     schedule: '/' + 'admin/schedule',
     // MANAGEMENT
     appearance: '/' + 'settings/appearance',
@@ -66,6 +66,7 @@ export const INTERNAL_URLS = {
     userRolePermissionManage: (username: string) =>
         '/' + 'admin/mgmt/access-control/users/' + username,
     jobManage: '/' + 'admin/mgmt/jobs',
+    jobFolderTemplateManage: '/' + 'admin/mgmt/jobs/folder-templates',
     departmentsManage: '/' + 'admin/departments',
     departmentItemManage: (departmentCode: string) =>
         '/' + 'admin/departments/' + departmentCode,

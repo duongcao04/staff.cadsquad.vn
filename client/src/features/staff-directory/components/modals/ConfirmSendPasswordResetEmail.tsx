@@ -91,7 +91,7 @@ export const ConfirmSendPasswordResetEmail = ({
                                         Are you sure you want to send a password
                                         reset link to:
                                     </p>
-                                    <div className="font-semibold text-text-default bg-background-hovered border border-border-default rounded px-2 py-1 inline-block mt-1">
+                                    <div className="font-medium text-text-default bg-background-hovered border border-border-default rounded px-2 py-1 inline-block mt-1">
                                         {user.displayName
                                             ? `${user.displayName} <${user.email}>`
                                             : user.email}

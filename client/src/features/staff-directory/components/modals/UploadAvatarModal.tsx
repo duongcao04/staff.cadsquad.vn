@@ -226,7 +226,7 @@ export const UploadAvatarModal = ({
                                         <div className="p-3 bg-slate-100 text-text-subdued rounded-full mb-3 group-hover:bg-primary-50 group-hover:text-primary transition-colors">
                                             <UploadCloud size={24} />
                                         </div>
-                                        <p className="text-sm font-semibold text-slate-700">
+                                        <p className="text-sm font-medium text-slate-700">
                                             <span className="text-primary">
                                                 Click to upload
                                             </span>{' '}
@@ -264,7 +264,7 @@ export const UploadAvatarModal = ({
                                     </div>
 
                                     <div className="flex items-center gap-4 px-2">
-                                        <span className="text-xs font-semibold text-slate-500">
+                                        <span className="text-xs font-medium text-slate-500">
                                             Zoom
                                         </span>
                                         <Slider
@@ -317,7 +317,7 @@ export const UploadAvatarModal = ({
                                 onPress={handleSubmit}
                                 isLoading={isUploading}
                                 isDisabled={!selectedFile && !imageSrc}
-                                className="font-semibold"
+                                className="font-medium"
                                 startContent={
                                     !isUploading && imageSrc ? (
                                         <CropIcon size={16} />

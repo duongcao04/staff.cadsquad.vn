@@ -86,7 +86,7 @@ export default function ProfilePage() {
                                     <HeroCard className="border-none">
                                         <HeroCardHeader className="px-3 text-text-default">
                                             <div>
-                                                <p className="text-base font-semibold">
+                                                <p className="text-base font-medium">
                                                     Active jobs -{' '}
                                                     <span className="text-base font-medium text-text-subdued">
                                                         ({activeJobs?.length})
@@ -121,7 +121,7 @@ export default function ProfilePage() {
                                                     </ul>
                                                 ) : (
                                                     <div className="py-12 flex flex-col items-center justify-center gap-2 text-text-muted">
-                                                        <p className="text-base font-semibold">
+                                                        <p className="text-base font-medium">
                                                             No active job found.
                                                         </p>
                                                         <p className="tracking-wide text-sm">
@@ -148,7 +148,7 @@ export default function ProfilePage() {
                                     <HeroCard className="border-none">
                                         <HeroCardHeader className="px-3 text-text-default">
                                             <div>
-                                                <p className="text-base font-semibold">
+                                                <p className="text-base font-medium">
                                                     Awaiting response{' '}
                                                     <span className="text-base font-medium text-text-subdued">
                                                         - (
@@ -182,7 +182,7 @@ export default function ProfilePage() {
                                                     </ul>
                                                 ) : (
                                                     <div className="py-12 flex flex-col items-center justify-center gap-2 text-text-muted">
-                                                        <p className="text-base font-semibold">
+                                                        <p className="text-base font-medium">
                                                             No awaiting response
                                                             found.
                                                         </p>

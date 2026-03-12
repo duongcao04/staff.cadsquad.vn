@@ -105,7 +105,7 @@ export function ProjectCenterToolbar({
                         size="sm"
                         onPress={onRefresh}
                     >
-                        <span className="font-medium">Refresh</span>
+                        Refresh
                     </HeroButton>
 
                     {/* TODO: */}

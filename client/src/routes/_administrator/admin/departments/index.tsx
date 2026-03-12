@@ -190,7 +190,7 @@ function DepartmentsSettingsPage() {
                         color="primary"
                         startContent={<Plus size={18} />}
                         onPress={handleOpenAdd}
-                        className="font-semibold shadow-md shadow-blue-500/20"
+                        className="font-medium shadow-md shadow-blue-500/20"
                     >
                         Add Department
                     </Button>

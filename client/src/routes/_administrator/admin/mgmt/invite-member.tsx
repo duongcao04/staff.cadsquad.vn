@@ -135,7 +135,7 @@ function InviteMember() {
                                     <form className="flex flex-col gap-6 mt-6">
                                         {/* Email Input */}
                                         <div>
-                                            <label className="block text-sm font-semibold text-slate-700 mb-2">
+                                            <label className="block text-sm font-medium text-slate-700 mb-2">
                                                 Email Address
                                             </label>
                                             <Input
@@ -159,7 +159,7 @@ function InviteMember() {
                                         {/* Role & Access Grid */}
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                             <div>
-                                                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                                                <label className="block text-sm font-medium text-slate-700 mb-2">
                                                     Assign Role
                                                 </label>
                                                 <Select
@@ -198,7 +198,7 @@ function InviteMember() {
                                             </div>
 
                                             <div>
-                                                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                                                <label className="block text-sm font-medium text-slate-700 mb-2">
                                                     Department
                                                 </label>
                                                 <Select
@@ -225,7 +225,7 @@ function InviteMember() {
                                             </div>
 
                                             <div className="md:col-span-2">
-                                                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                                                <label className="block text-sm font-medium text-slate-700 mb-2">
                                                     Job Title
                                                 </label>
                                                 <Select
@@ -254,7 +254,7 @@ function InviteMember() {
 
                                         {/* Message */}
                                         <div>
-                                            <label className="block text-sm font-semibold text-slate-700 mb-2">
+                                            <label className="block text-sm font-medium text-slate-700 mb-2">
                                                 Personal Message (Optional)
                                             </label>
                                             <Textarea
@@ -271,7 +271,7 @@ function InviteMember() {
                                             <Button
                                                 color="primary"
                                                 endContent={<Send size={18} />}
-                                                className="font-semibold px-8"
+                                                className="font-medium px-8"
                                                 onPress={handleSendInvite}
                                             >
                                                 Send Invitation
@@ -311,7 +311,7 @@ function InviteMember() {
                                         </div>
 
                                         <div>
-                                            <label className="block text-sm font-semibold text-slate-700 mb-2">
+                                            <label className="block text-sm font-medium text-slate-700 mb-2">
                                                 Share this link
                                             </label>
                                             <Snippet

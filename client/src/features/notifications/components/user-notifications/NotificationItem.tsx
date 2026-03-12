@@ -75,7 +75,7 @@ export const NotificationItem = ({
                     <div className="flex justify-between items-start">
                         <h4
                             className={cn(
-                                'text-sm font-semibold',
+                                'text-sm font-medium',
                                 isRead
                                     ? 'text-text-subdued'
                                     : 'text-text-default'

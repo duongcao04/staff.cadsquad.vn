@@ -39,7 +39,7 @@ export default function CancelModal({
             <HeroModalContent>
                 {(onClose) => (
                     <>
-                        <HeroModalHeader className="flex flex-col gap-1">
+                        <HeroModalHeader className="flex flex-col gap-1 text-danger">
                             {title}
                         </HeroModalHeader>
                         <HeroModalBody>

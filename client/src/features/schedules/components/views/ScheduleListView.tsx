@@ -89,7 +89,7 @@ export default function ScheduleListView({
 
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center gap-2 mb-0.5">
-                                                <h4 className="text-sm font-semibold truncate text-foreground group-hover:text-primary transition-colors">
+                                                <h4 className="text-sm font-medium truncate text-foreground group-hover:text-primary transition-colors">
                                                     {job.displayName}
                                                 </h4>
                                                 <Chip

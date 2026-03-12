@@ -330,7 +330,7 @@ function AdminSettingsPage() {
                                             <ClockIcon size={24} />
                                         </div>
                                         <div className="flex flex-col">
-                                            <span className="text-medium font-semibold text-foreground">
+                                            <span className="text-medium font-medium text-foreground">
                                                 Upcoming Deadline Alert
                                             </span>
                                             <span className="text-small text-default-500">

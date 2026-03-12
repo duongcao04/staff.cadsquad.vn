@@ -4,13 +4,12 @@ import { ProjectCenterTabEnum } from '@/shared/enums'
 import { queryOptions } from '@tanstack/react-query'
 import lodash from 'lodash'
 import queryString from 'query-string'
-import { parseList } from '../../zod'
+import { parseData, parseList } from '../../zod'
 
 // --- Query Options ---
 // 1. Danh sách Jobs
 export const jobsListOptions = (
     params: TJobQueryInput = {
-        hideFinishItems: '0',
         page: 1,
         limit: 10,
         tab: ProjectCenterTabEnum.ACTIVE,
@@ -18,7 +17,7 @@ export const jobsListOptions = (
         sort: ['displayName:asc'],
     }
 ) => {
-    const { hideFinishItems, page, limit, search, tab, sort, ...filters } =
+    const { page, limit, search, tab, sort, ...filters } =
         params
 
     return queryOptions({
@@ -28,7 +27,6 @@ export const jobsListOptions = (
             `limit=${limit}`,
             `page=${page}`,
             `keywords=${search}`,
-            `isHideFinishItems=${hideFinishItems}`,
             `sort=${sort}`,
             `filters=${queryString.stringify(filters)}`,
         ],
@@ -36,9 +34,8 @@ export const jobsListOptions = (
             const newParams = lodash.omitBy(params, lodash.isUndefined)
             return jobApi.findAll(newParams)
         },
-        // ✅ Select & Map data ngay tại đây
         select: (res) => ({
-            jobs: parseList(res.result?.data, JobSchema),
+            jobs: parseList(JobSchema, res.result?.data),
             paginate: res.result?.paginate,
         }),
     })
@@ -67,14 +64,15 @@ export const workbenchDataOptions = (
             const newParams = lodash.omitBy(params, lodash.isUndefined)
             return jobApi.workbenchData({
                 ...newParams,
-                hideFinishItems: '1',
             })
         },
         // ✅ Select & Map data ngay tại đây
-        select: (res) => ({
-            jobs: parseList(res.result?.data, JobSchema),
-            paginate: res.result?.paginate,
-        }),
+        select: (res) => {
+            return ({
+                jobs: parseList(JobSchema, res.result?.data),
+                paginate: res.result?.paginate,
+            })
+        },
     })
 }
 
@@ -88,7 +86,7 @@ export const jobsSearchOptions = (keywords?: string) =>
         },
         enabled: !!keywords,
         select: (res) =>
-            parseList(res?.result, JobSchema),
+            parseList(JobSchema, res?.result),
     })
 
 export const jobDeliveriesListOptions = (jobId: string) =>
@@ -102,20 +100,20 @@ export const jobsPendingDeliverOptions = () =>
     queryOptions({
         queryKey: ['jobs', 'pending-deliver'],
         queryFn: () => jobApi.pendingDeliver(),
-        select: (res) => parseList(res.result, JobSchema),
+        select: (res) => parseList(JobSchema, res.result),
     })
 
 export const jobsPendingPayoutsOptions = () =>
     queryOptions({
         queryKey: ['jobs', 'pending-payouts'],
         queryFn: () => jobApi.pendingPayouts(),
-        select: (res) => parseList(res.result, JobSchema),
+        select: (res) => parseList(JobSchema, res.result),
     })
 export const jobScheduleOptions = (month: number, year: number) =>
     queryOptions({
         queryKey: ['jobs', 'schedule', `${month}/${year}`],
         queryFn: () => jobApi.jobsDueInMonth(month, year),
-        select: (res) => parseList(res.result, JobSchema),
+        select: (res) => parseList(JobSchema, res.result),
     })
 
 // 3. Jobs theo Deadline
@@ -125,7 +123,7 @@ export const jobsDueOnDateOptions = (isoDate: string) =>
         queryFn: () => jobApi.getJobsDueOnDate(isoDate),
         enabled: !!isoDate,
         select: (res) => {
-            return parseList(res.result, JobSchema)
+            return parseList(JobSchema, res.result)
         },
     })
 
@@ -137,7 +135,7 @@ export const jobByNoOptions = (jobNo: string) =>
         enabled: !!jobNo,
         select: (res) => {
             const jobData = res?.result
-            return parseList(jobData, JobSchema)
+            return parseData(JobSchema, jobData)
         },
     })
 
@@ -148,7 +146,7 @@ export const jobAssigneesOptions = (jobId: string) =>
         queryFn: () => jobApi.getAssignees(jobId),
         enabled: !!jobId,
         select: (res) => ({
-            assignees: parseList(res.result.assignees, UserSchema),
+            assignees: parseList(UserSchema, res.result?.assignees),
             totalAssignees: res?.result?.totalAssignees ?? 0,
         }),
     })
@@ -171,6 +169,6 @@ export const jobActivityLogsOptions = (jobId: string) =>
         queryFn: () => jobApi.getJobActivityLog(jobId),
         select: (res) => {
             const logs = res?.result
-            return parseList(logs, JobActivityLogSchema)
+            return parseList(JobActivityLogSchema, logs)
         },
     })

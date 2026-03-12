@@ -113,7 +113,7 @@ const KpiCard = ({ title, value, subValue, trend, icon: Icon, color }: any) => (
                     {value}
                 </h3>
                 <div
-                    className={`flex items-center gap-1 mt-2 text-xs font-semibold ${trend === `up` ? `text-success` : `text-danger`}`}
+                    className={`flex items-center gap-1 mt-2 text-xs font-medium ${trend === `up` ? `text-success` : `text-danger`}`}
                 >
                     {trend === 'up' ? (
                         <TrendingUp size={14} />
@@ -161,7 +161,7 @@ function RevenueReports() {
                         color="primary"
                         variant="flat"
                         startContent={<Download size={16} />}
-                        className="font-semibold"
+                        className="font-medium"
                         size="md"
                     >
                         Export CSV

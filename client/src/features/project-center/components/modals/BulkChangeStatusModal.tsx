@@ -87,7 +87,7 @@ export default function BulkChangeStatusModal({
                     }}
                 >
                     <div className="space-y-1">
-                        <p className="font-semibold text-lg">
+                        <p className="font-medium text-lg">
                             Bulk change status for{' '}
                             {selectedKeys === 'all'
                                 ? 'all items'

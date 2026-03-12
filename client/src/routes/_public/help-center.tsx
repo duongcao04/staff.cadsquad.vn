@@ -183,7 +183,7 @@ function HelpCenterPage() {
                                             title: 'cursor-pointer',
                                         }}
                                         title={
-                                            <span className="font-semibold text-text-default">
+                                            <span className="font-medium text-text-default">
                                                 {faq.question}
                                             </span>
                                         }

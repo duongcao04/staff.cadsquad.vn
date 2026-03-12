@@ -1016,7 +1016,7 @@ function JobEditPage() {
                                                                         />
                                                                     </div>
                                                                     <div>
-                                                                        <p className="text-sm font-semibold text-text-subdued hover:text-primary hover:underline cursor-pointer">
+                                                                        <p className="text-sm font-medium text-text-subdued hover:text-primary hover:underline cursor-pointer">
                                                                             {
                                                                                 file.name
                                                                             }
@@ -1127,7 +1127,7 @@ function JobEditPage() {
                                         <span className="text-sm text-text-subdued">
                                             Created
                                         </span>
-                                        <span className="text-sm font-semibold">
+                                        <span className="text-sm font-medium">
                                             {data?.createdBy.displayName}
                                         </span>
                                     </div>

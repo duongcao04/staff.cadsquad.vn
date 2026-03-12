@@ -171,7 +171,7 @@ export default function AdminManagementJobsTable({
                         classNames={{
                             base: '!w-[120px]',
                             content:
-                                'uppercase text-xs font-semibold font-saira !w-[120px] text-nowrap line-clamp-1',
+                                'uppercase text-xs font-medium font-saira !w-[120px] text-nowrap line-clamp-1',
                         }}
                     />
                 )
@@ -373,7 +373,7 @@ export default function AdminManagementJobsTable({
                 {/* Bulk Action Bar */}
                 {selectedCount > 0 && (
                     <div className="bg-primary-50 px-4 py-2 rounded-lg flex items-center justify-between animate-in fade-in slide-in-from-top-2">
-                        <span className="text-sm text-primary-700 font-semibold">
+                        <span className="text-sm text-primary-700 font-medium">
                             {selectedCount} jobs selected
                         </span>
                         <div className="flex gap-2">

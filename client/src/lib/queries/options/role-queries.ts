@@ -1,34 +1,7 @@
-import { TPermission, TRole } from '@/shared/types/_role.type'
 import { queryOptions } from '@tanstack/react-query'
-import { EntityEnum } from '../../../shared/enums/_entity.enum'
 import { roleApi } from '../../api'
-import { COLORS } from '../../utils'
-
-export const mapRole: (item?: Partial<TRole>) => TRole = (item) => {
-    return {
-        id: item?.id ?? 'N/A',
-        displayName: item?.displayName ?? 'Unknown role',
-        permissions: item?.permissions ?? [],
-        users: item?.users ?? [],
-        code: item?.code ?? 'UNKNOWN',
-        hexColor: item?.hexColor ?? COLORS.white,
-    }
-}
-
-export const mapPermission: (item?: Partial<TPermission>) => TPermission = (
-    item
-) => {
-    return {
-        id: item?.id ?? 'N/A',
-        displayName: item?.displayName ?? 'Unknown role',
-        action: item?.action ?? '',
-        entity: item?.entity ?? ('' as EntityEnum.JOB_TITLE),
-        entityAction: item?.entity ?? '',
-        roles: item?.roles ?? [],
-        description: item?.description ?? '',
-        code: item?.code ?? 'UNKNOWN',
-    }
-}
+import { PermissionSchema, RoleSchema } from '../../validationSchemas'
+import { parseData, parseList } from '../../zod'
 
 export const rolesListOptions = () => {
     return queryOptions({
@@ -37,7 +10,7 @@ export const rolesListOptions = () => {
         select: (res) => {
             const rolesData = res?.result?.roles
             return {
-                roles: Array.isArray(rolesData) ? rolesData.map(mapRole) : [],
+                roles: parseList(RoleSchema, rolesData),
                 total: res.result?.total ?? 0,
             }
         },
@@ -46,10 +19,10 @@ export const rolesListOptions = () => {
 
 export const roleOptions = (identify: string) => {
     return queryOptions({
-        queryKey: ['roles', identify],
+        queryKey: ['roles', 'identify', identify],
         queryFn: () => roleApi.findOneRole(identify),
         select: (res) => {
-            const role = mapRole(res?.result)
+            const role = parseData(RoleSchema, res.result)
             const permissions = role.permissions.map((it) => it.entityAction)
             return {
                 role,
@@ -76,9 +49,7 @@ export const permissionsListOptions = () => {
         select: (res) => {
             const permissionData = res?.result?.permissions
             return {
-                permissions: Array.isArray(permissionData)
-                    ? permissionData.map(mapPermission)
-                    : [],
+                permissions: parseList(PermissionSchema, permissionData),
                 total: res.result?.total ?? 0,
             }
         },

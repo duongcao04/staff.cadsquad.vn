@@ -4,7 +4,6 @@ import {
     ScrollBar,
 } from '@/shared/components'
 import { DashboardRightPanel } from '@/shared/components/admin/DashboardRightPanel'
-import { AdminHeader } from '@/shared/components/admin/layouts/AdminHeader'
 import { AdminSidebar } from '@/shared/components/admin/layouts/AdminSidebar'
 import MobileHeader from '@/shared/components/layouts/Header/MobileHeader'
 import { AdministratorGuard } from '@/shared/guards'
@@ -33,7 +32,7 @@ function AdminLayout() {
         ? '0px'
         : adminLeftSidebar === ESidebarStatus.COLLAPSE
           ? '80px'
-          : '256px'
+          : '231px'
 
     const rightMargin = isSmallView
         ? '0px'
@@ -41,26 +40,29 @@ function AdminLayout() {
           ? '64px'
           : '290px'
 
-    const topOffset = isSmallView ? '44px' : '56px'
+    const IS_SHOW_HEADER = false
+    const topOffset = IS_SHOW_HEADER ? (isSmallView ? '44px' : '56px') : 0
 
     return (
         <AdministratorGuard>
             <PageWithHeaderContainer
-                header={<AdminHeader />}
+                // header={<AdminHeader />}
+                header={<></>}
                 mobileHeader={<MobileHeader />}
                 scrollable={false}
+                showHeader={IS_SHOW_HEADER}
             >
                 <div className="relative w-full h-full flex items-start justify-start">
                     {/* Left Sidebar */}
                     {!isSmallView && (
                         <div
-                            className="fixed left-0 z-40 space-y-6 border-r border-border-default h-full bg-background"
+                            className="fixed left-0 z-40 space-y-6 h-full border-r border-border-muted bg-background"
                             style={{
                                 top: topOffset,
                                 width:
                                     adminLeftSidebar === ESidebarStatus.COLLAPSE
                                         ? '80px'
-                                        : '256px',
+                                        : '231px',
                                 transition:
                                     'width 300ms cubic-bezier(0.4, 0, 0.2, 1)',
                             }}
@@ -87,9 +89,9 @@ function AdminLayout() {
                         <ScrollBar orientation="vertical" />
                         <div
                             style={{
-                                paddingTop: isSmallView ? '12px' : '20px',
+                                paddingTop: isSmallView ? '12px' : '0',
                                 paddingBottom: isSmallView ? '80px' : '32px',
-                                paddingInline: isSmallView ? '20px' : '20px',
+                                paddingInline: isSmallView ? '20px' : '12px',
                             }}
                         >
                             <Outlet />
@@ -99,7 +101,7 @@ function AdminLayout() {
                     {/* Right Sidebar */}
                     {!isSmallView && (
                         <div
-                            className="fixed right-0 z-40 border-l border-border-default h-full space-y-6 bg-background"
+                            className="fixed right-0 z-40 border-l border-border-muted h-full space-y-6 bg-background"
                             style={{
                                 top: topOffset,
                                 width:

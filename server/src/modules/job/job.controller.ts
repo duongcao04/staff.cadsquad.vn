@@ -179,35 +179,6 @@ export class JobController {
 	async create(@Req() request: Request, @Body() createJobDto: CreateJobDto) {
 		const user: TokenPayload = request['user']
 		const created = await this.jobService.create(user.sub, createJobDto)
-		const folderID = '012FXBO3INCUN6K3IYSZDJWUU6IMK6UG7D'
-		try {
-			const folderName = `${createJobDto.no}- ${createJobDto.clientName.toUpperCase() ?? "UNKNOWN"}_${createJobDto.displayName}`
-			const childrenFolders = [
-				'01. Resources',
-				'02. RFI',
-				'03. Results',
-				'Pictures',
-				'Temp',
-				'Working',
-			]
-			// 3.5. Create SharePoint Folder if requested
-			if (createJobDto.isCreateSharepointFolder && createJobDto.sharepointTemplateId) {
-				try {
-					await this.sharepointService.queueCopyItem(
-						createJobDto.sharepointTemplateId,
-						'012FXBO3INCUN6K3IYSZDJWUU6IMK6UG7D', // Destination Project Center Folder Id
-						folderName
-					)
-				} catch (error) {
-					this.logger.error(`Failed to create SharePoint folder for job ${createJobDto.no}:`, error)
-					// Don't fail the job creation if SharePoint folder creation fails
-				}
-			}
-		} catch (error) {
-			throw new InternalServerErrorException(
-				'Create sharepoint folder failded'
-			)
-		}
 		return created
 	}
 

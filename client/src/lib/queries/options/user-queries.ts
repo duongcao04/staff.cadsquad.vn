@@ -47,10 +47,9 @@ export const userOptions = (username: string) => {
 export const profileOptions = () => {
     return queryOptions({
         queryKey: ['profile'],
-        queryFn: async () => {
-            const res = await authApi.getProfile();
-            // Tùy theo cấu trúc API trả về res.data.result hay res.result
-            return parseData(UserSchema, res?.result ?? res?.result);
+        queryFn: async () => await authApi.getProfile(),
+        select(res) {
+            return { profile: parseData(UserSchema, res?.result) };
         },
     })
 }

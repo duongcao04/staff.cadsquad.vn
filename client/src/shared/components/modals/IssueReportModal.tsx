@@ -213,7 +213,7 @@ export const IssueReportModal = ({
                                 className={
                                     isBlocking
                                         ? 'bg-red-600 text-white font-bold shadow-md shadow-red-200'
-                                        : 'text-white font-semibold'
+                                        : 'text-white font-medium'
                                 }
                                 isLoading={isSubmitting}
                                 onPress={handleSubmit}

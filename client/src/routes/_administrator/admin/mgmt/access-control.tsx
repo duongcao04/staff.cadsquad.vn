@@ -63,7 +63,9 @@ export const Route = createFileRoute(
                         </div>
                     }
                 />
-                <Outlet />
+                <div className='px-2'>
+                    <Outlet />
+                </div>
             </>
         )
     },

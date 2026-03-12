@@ -24356,6 +24356,7 @@ export namespace Prisma {
     typeId: string | null
     displayName: string | null
     description: string | null
+    sharepointFolderId: string | null
     clientId: string | null
     incomeCost: number | null
     totalStaffCost: number | null
@@ -24381,6 +24382,7 @@ export namespace Prisma {
     typeId: string | null
     displayName: string | null
     description: string | null
+    sharepointFolderId: string | null
     clientId: string | null
     incomeCost: number | null
     totalStaffCost: number | null
@@ -24407,6 +24409,7 @@ export namespace Prisma {
     displayName: number
     description: number
     attachmentUrls: number
+    sharepointFolderId: number
     clientId: number
     incomeCost: number
     totalStaffCost: number
@@ -24444,6 +24447,7 @@ export namespace Prisma {
     typeId?: true
     displayName?: true
     description?: true
+    sharepointFolderId?: true
     clientId?: true
     incomeCost?: true
     totalStaffCost?: true
@@ -24469,6 +24473,7 @@ export namespace Prisma {
     typeId?: true
     displayName?: true
     description?: true
+    sharepointFolderId?: true
     clientId?: true
     incomeCost?: true
     totalStaffCost?: true
@@ -24495,6 +24500,7 @@ export namespace Prisma {
     displayName?: true
     description?: true
     attachmentUrls?: true
+    sharepointFolderId?: true
     clientId?: true
     incomeCost?: true
     totalStaffCost?: true
@@ -24608,6 +24614,7 @@ export namespace Prisma {
     displayName: string
     description: string | null
     attachmentUrls: string[]
+    sharepointFolderId: string | null
     clientId: string | null
     incomeCost: number
     totalStaffCost: number
@@ -24653,6 +24660,7 @@ export namespace Prisma {
     displayName?: boolean
     description?: boolean
     attachmentUrls?: boolean
+    sharepointFolderId?: boolean
     clientId?: boolean
     incomeCost?: boolean
     totalStaffCost?: boolean
@@ -24692,6 +24700,7 @@ export namespace Prisma {
     displayName?: boolean
     description?: boolean
     attachmentUrls?: boolean
+    sharepointFolderId?: boolean
     clientId?: boolean
     incomeCost?: boolean
     totalStaffCost?: boolean
@@ -24723,6 +24732,7 @@ export namespace Prisma {
     displayName?: boolean
     description?: boolean
     attachmentUrls?: boolean
+    sharepointFolderId?: boolean
     clientId?: boolean
     incomeCost?: boolean
     totalStaffCost?: boolean
@@ -24754,6 +24764,7 @@ export namespace Prisma {
     displayName?: boolean
     description?: boolean
     attachmentUrls?: boolean
+    sharepointFolderId?: boolean
     clientId?: boolean
     incomeCost?: boolean
     totalStaffCost?: boolean
@@ -24773,7 +24784,7 @@ export namespace Prisma {
     deletedAt?: boolean
   }
 
-  export type JobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "no" | "typeId" | "displayName" | "description" | "attachmentUrls" | "clientId" | "incomeCost" | "totalStaffCost" | "createdById" | "paymentChannelId" | "statusId" | "startedAt" | "priority" | "isPublished" | "isPaid" | "dueAt" | "completedAt" | "finishedAt" | "paidAt" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["job"]>
+  export type JobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "no" | "typeId" | "displayName" | "description" | "attachmentUrls" | "sharepointFolderId" | "clientId" | "incomeCost" | "totalStaffCost" | "createdById" | "paymentChannelId" | "statusId" | "startedAt" | "priority" | "isPublished" | "isPaid" | "dueAt" | "completedAt" | "finishedAt" | "paidAt" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["job"]>
   export type JobInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     type?: boolean | JobTypeDefaultArgs<ExtArgs>
     client?: boolean | Job$clientArgs<ExtArgs>
@@ -24827,6 +24838,7 @@ export namespace Prisma {
       displayName: string
       description: string | null
       attachmentUrls: string[]
+      sharepointFolderId: string | null
       clientId: string | null
       incomeCost: number
       totalStaffCost: number
@@ -25285,6 +25297,7 @@ export namespace Prisma {
     readonly displayName: FieldRef<"Job", 'String'>
     readonly description: FieldRef<"Job", 'String'>
     readonly attachmentUrls: FieldRef<"Job", 'String[]'>
+    readonly sharepointFolderId: FieldRef<"Job", 'String'>
     readonly clientId: FieldRef<"Job", 'String'>
     readonly incomeCost: FieldRef<"Job", 'Float'>
     readonly totalStaffCost: FieldRef<"Job", 'Float'>
@@ -31499,6 +31512,7 @@ export namespace Prisma {
   export type JobTypeMinAggregateOutputType = {
     id: string | null
     code: string | null
+    sharepointFolderId: string | null
     displayName: string | null
     hexColor: string | null
     createdAt: Date | null
@@ -31508,6 +31522,7 @@ export namespace Prisma {
   export type JobTypeMaxAggregateOutputType = {
     id: string | null
     code: string | null
+    sharepointFolderId: string | null
     displayName: string | null
     hexColor: string | null
     createdAt: Date | null
@@ -31517,6 +31532,7 @@ export namespace Prisma {
   export type JobTypeCountAggregateOutputType = {
     id: number
     code: number
+    sharepointFolderId: number
     displayName: number
     hexColor: number
     createdAt: number
@@ -31528,6 +31544,7 @@ export namespace Prisma {
   export type JobTypeMinAggregateInputType = {
     id?: true
     code?: true
+    sharepointFolderId?: true
     displayName?: true
     hexColor?: true
     createdAt?: true
@@ -31537,6 +31554,7 @@ export namespace Prisma {
   export type JobTypeMaxAggregateInputType = {
     id?: true
     code?: true
+    sharepointFolderId?: true
     displayName?: true
     hexColor?: true
     createdAt?: true
@@ -31546,6 +31564,7 @@ export namespace Prisma {
   export type JobTypeCountAggregateInputType = {
     id?: true
     code?: true
+    sharepointFolderId?: true
     displayName?: true
     hexColor?: true
     createdAt?: true
@@ -31628,6 +31647,7 @@ export namespace Prisma {
   export type JobTypeGroupByOutputType = {
     id: string
     code: string
+    sharepointFolderId: string | null
     displayName: string
     hexColor: string | null
     createdAt: Date
@@ -31654,6 +31674,7 @@ export namespace Prisma {
   export type JobTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     code?: boolean
+    sharepointFolderId?: boolean
     displayName?: boolean
     hexColor?: boolean
     createdAt?: boolean
@@ -31665,6 +31686,7 @@ export namespace Prisma {
   export type JobTypeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     code?: boolean
+    sharepointFolderId?: boolean
     displayName?: boolean
     hexColor?: boolean
     createdAt?: boolean
@@ -31674,6 +31696,7 @@ export namespace Prisma {
   export type JobTypeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     code?: boolean
+    sharepointFolderId?: boolean
     displayName?: boolean
     hexColor?: boolean
     createdAt?: boolean
@@ -31683,13 +31706,14 @@ export namespace Prisma {
   export type JobTypeSelectScalar = {
     id?: boolean
     code?: boolean
+    sharepointFolderId?: boolean
     displayName?: boolean
     hexColor?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type JobTypeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "code" | "displayName" | "hexColor" | "createdAt" | "updatedAt", ExtArgs["result"]["jobType"]>
+  export type JobTypeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "code" | "sharepointFolderId" | "displayName" | "hexColor" | "createdAt" | "updatedAt", ExtArgs["result"]["jobType"]>
   export type JobTypeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     jobs?: boolean | JobType$jobsArgs<ExtArgs>
     _count?: boolean | JobTypeCountOutputTypeDefaultArgs<ExtArgs>
@@ -31705,6 +31729,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       code: string
+      sharepointFolderId: string | null
       displayName: string
       hexColor: string | null
       createdAt: Date
@@ -32135,6 +32160,7 @@ export namespace Prisma {
   interface JobTypeFieldRefs {
     readonly id: FieldRef<"JobType", 'String'>
     readonly code: FieldRef<"JobType", 'String'>
+    readonly sharepointFolderId: FieldRef<"JobType", 'String'>
     readonly displayName: FieldRef<"JobType", 'String'>
     readonly hexColor: FieldRef<"JobType", 'String'>
     readonly createdAt: FieldRef<"JobType", 'DateTime'>
@@ -44267,6 +44293,7 @@ export namespace Prisma {
     displayName: 'displayName',
     description: 'description',
     attachmentUrls: 'attachmentUrls',
+    sharepointFolderId: 'sharepointFolderId',
     clientId: 'clientId',
     incomeCost: 'incomeCost',
     totalStaffCost: 'totalStaffCost',
@@ -44362,6 +44389,7 @@ export namespace Prisma {
   export const JobTypeScalarFieldEnum: {
     id: 'id',
     code: 'code',
+    sharepointFolderId: 'sharepointFolderId',
     displayName: 'displayName',
     hexColor: 'hexColor',
     createdAt: 'createdAt',
@@ -46110,6 +46138,7 @@ export namespace Prisma {
     displayName?: StringFilter<"Job"> | string
     description?: StringNullableFilter<"Job"> | string | null
     attachmentUrls?: StringNullableListFilter<"Job">
+    sharepointFolderId?: StringNullableFilter<"Job"> | string | null
     clientId?: StringNullableFilter<"Job"> | string | null
     incomeCost?: FloatFilter<"Job"> | number
     totalStaffCost?: FloatFilter<"Job"> | number
@@ -46148,6 +46177,7 @@ export namespace Prisma {
     displayName?: SortOrder
     description?: SortOrderInput | SortOrder
     attachmentUrls?: SortOrder
+    sharepointFolderId?: SortOrderInput | SortOrder
     clientId?: SortOrderInput | SortOrder
     incomeCost?: SortOrder
     totalStaffCost?: SortOrder
@@ -46189,6 +46219,7 @@ export namespace Prisma {
     displayName?: StringFilter<"Job"> | string
     description?: StringNullableFilter<"Job"> | string | null
     attachmentUrls?: StringNullableListFilter<"Job">
+    sharepointFolderId?: StringNullableFilter<"Job"> | string | null
     clientId?: StringNullableFilter<"Job"> | string | null
     incomeCost?: FloatFilter<"Job"> | number
     totalStaffCost?: FloatFilter<"Job"> | number
@@ -46227,6 +46258,7 @@ export namespace Prisma {
     displayName?: SortOrder
     description?: SortOrderInput | SortOrder
     attachmentUrls?: SortOrder
+    sharepointFolderId?: SortOrderInput | SortOrder
     clientId?: SortOrderInput | SortOrder
     incomeCost?: SortOrder
     totalStaffCost?: SortOrder
@@ -46261,6 +46293,7 @@ export namespace Prisma {
     displayName?: StringWithAggregatesFilter<"Job"> | string
     description?: StringNullableWithAggregatesFilter<"Job"> | string | null
     attachmentUrls?: StringNullableListFilter<"Job">
+    sharepointFolderId?: StringNullableWithAggregatesFilter<"Job"> | string | null
     clientId?: StringNullableWithAggregatesFilter<"Job"> | string | null
     incomeCost?: FloatWithAggregatesFilter<"Job"> | number
     totalStaffCost?: FloatWithAggregatesFilter<"Job"> | number
@@ -46647,6 +46680,7 @@ export namespace Prisma {
     NOT?: JobTypeWhereInput | JobTypeWhereInput[]
     id?: StringFilter<"JobType"> | string
     code?: StringFilter<"JobType"> | string
+    sharepointFolderId?: StringNullableFilter<"JobType"> | string | null
     displayName?: StringFilter<"JobType"> | string
     hexColor?: StringNullableFilter<"JobType"> | string | null
     createdAt?: DateTimeFilter<"JobType"> | Date | string
@@ -46657,6 +46691,7 @@ export namespace Prisma {
   export type JobTypeOrderByWithRelationInput = {
     id?: SortOrder
     code?: SortOrder
+    sharepointFolderId?: SortOrderInput | SortOrder
     displayName?: SortOrder
     hexColor?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -46670,6 +46705,7 @@ export namespace Prisma {
     OR?: JobTypeWhereInput[]
     NOT?: JobTypeWhereInput | JobTypeWhereInput[]
     code?: StringFilter<"JobType"> | string
+    sharepointFolderId?: StringNullableFilter<"JobType"> | string | null
     displayName?: StringFilter<"JobType"> | string
     hexColor?: StringNullableFilter<"JobType"> | string | null
     createdAt?: DateTimeFilter<"JobType"> | Date | string
@@ -46680,6 +46716,7 @@ export namespace Prisma {
   export type JobTypeOrderByWithAggregationInput = {
     id?: SortOrder
     code?: SortOrder
+    sharepointFolderId?: SortOrderInput | SortOrder
     displayName?: SortOrder
     hexColor?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -46695,6 +46732,7 @@ export namespace Prisma {
     NOT?: JobTypeScalarWhereWithAggregatesInput | JobTypeScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"JobType"> | string
     code?: StringWithAggregatesFilter<"JobType"> | string
+    sharepointFolderId?: StringNullableWithAggregatesFilter<"JobType"> | string | null
     displayName?: StringWithAggregatesFilter<"JobType"> | string
     hexColor?: StringNullableWithAggregatesFilter<"JobType"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"JobType"> | Date | string
@@ -48881,6 +48919,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
@@ -48915,6 +48954,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
     totalStaffCost?: number
@@ -48947,6 +48987,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -48981,6 +49022,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
@@ -49014,6 +49056,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
     totalStaffCost?: number
@@ -49039,6 +49082,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -49061,6 +49105,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
@@ -49472,6 +49517,7 @@ export namespace Prisma {
   export type JobTypeCreateInput = {
     id?: string
     code: string
+    sharepointFolderId?: string | null
     displayName: string
     hexColor?: string | null
     createdAt?: Date | string
@@ -49482,6 +49528,7 @@ export namespace Prisma {
   export type JobTypeUncheckedCreateInput = {
     id?: string
     code: string
+    sharepointFolderId?: string | null
     displayName: string
     hexColor?: string | null
     createdAt?: Date | string
@@ -49492,6 +49539,7 @@ export namespace Prisma {
   export type JobTypeUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     code?: StringFieldUpdateOperationsInput | string
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     displayName?: StringFieldUpdateOperationsInput | string
     hexColor?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -49502,6 +49550,7 @@ export namespace Prisma {
   export type JobTypeUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     code?: StringFieldUpdateOperationsInput | string
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     displayName?: StringFieldUpdateOperationsInput | string
     hexColor?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -49512,6 +49561,7 @@ export namespace Prisma {
   export type JobTypeCreateManyInput = {
     id?: string
     code: string
+    sharepointFolderId?: string | null
     displayName: string
     hexColor?: string | null
     createdAt?: Date | string
@@ -49521,6 +49571,7 @@ export namespace Prisma {
   export type JobTypeUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     code?: StringFieldUpdateOperationsInput | string
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     displayName?: StringFieldUpdateOperationsInput | string
     hexColor?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -49530,6 +49581,7 @@ export namespace Prisma {
   export type JobTypeUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     code?: StringFieldUpdateOperationsInput | string
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     displayName?: StringFieldUpdateOperationsInput | string
     hexColor?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -51582,6 +51634,7 @@ export namespace Prisma {
     displayName?: SortOrder
     description?: SortOrder
     attachmentUrls?: SortOrder
+    sharepointFolderId?: SortOrder
     clientId?: SortOrder
     incomeCost?: SortOrder
     totalStaffCost?: SortOrder
@@ -51612,6 +51665,7 @@ export namespace Prisma {
     typeId?: SortOrder
     displayName?: SortOrder
     description?: SortOrder
+    sharepointFolderId?: SortOrder
     clientId?: SortOrder
     incomeCost?: SortOrder
     totalStaffCost?: SortOrder
@@ -51637,6 +51691,7 @@ export namespace Prisma {
     typeId?: SortOrder
     displayName?: SortOrder
     description?: SortOrder
+    sharepointFolderId?: SortOrder
     clientId?: SortOrder
     incomeCost?: SortOrder
     totalStaffCost?: SortOrder
@@ -51906,6 +51961,7 @@ export namespace Prisma {
   export type JobTypeCountOrderByAggregateInput = {
     id?: SortOrder
     code?: SortOrder
+    sharepointFolderId?: SortOrder
     displayName?: SortOrder
     hexColor?: SortOrder
     createdAt?: SortOrder
@@ -51915,6 +51971,7 @@ export namespace Prisma {
   export type JobTypeMaxOrderByAggregateInput = {
     id?: SortOrder
     code?: SortOrder
+    sharepointFolderId?: SortOrder
     displayName?: SortOrder
     hexColor?: SortOrder
     createdAt?: SortOrder
@@ -51924,6 +51981,7 @@ export namespace Prisma {
   export type JobTypeMinOrderByAggregateInput = {
     id?: SortOrder
     code?: SortOrder
+    sharepointFolderId?: SortOrder
     displayName?: SortOrder
     hexColor?: SortOrder
     createdAt?: SortOrder
@@ -55920,6 +55978,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
@@ -55953,6 +56012,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
     totalStaffCost?: number
@@ -56850,6 +56910,7 @@ export namespace Prisma {
     displayName?: StringFilter<"Job"> | string
     description?: StringNullableFilter<"Job"> | string | null
     attachmentUrls?: StringNullableListFilter<"Job">
+    sharepointFolderId?: StringNullableFilter<"Job"> | string | null
     clientId?: StringNullableFilter<"Job"> | string | null
     incomeCost?: FloatFilter<"Job"> | number
     totalStaffCost?: FloatFilter<"Job"> | number
@@ -58863,6 +58924,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
@@ -58896,6 +58958,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
     totalStaffCost?: number
@@ -59085,6 +59148,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -59118,6 +59182,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
@@ -59859,6 +59924,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
@@ -59892,6 +59958,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
     totalStaffCost?: number
@@ -60048,6 +60115,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -60081,6 +60149,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
@@ -60109,6 +60178,7 @@ export namespace Prisma {
   export type JobTypeCreateWithoutJobsInput = {
     id?: string
     code: string
+    sharepointFolderId?: string | null
     displayName: string
     hexColor?: string | null
     createdAt?: Date | string
@@ -60118,6 +60188,7 @@ export namespace Prisma {
   export type JobTypeUncheckedCreateWithoutJobsInput = {
     id?: string
     code: string
+    sharepointFolderId?: string | null
     displayName: string
     hexColor?: string | null
     createdAt?: Date | string
@@ -60551,6 +60622,7 @@ export namespace Prisma {
   export type JobTypeUpdateWithoutJobsInput = {
     id?: StringFieldUpdateOperationsInput | string
     code?: StringFieldUpdateOperationsInput | string
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     displayName?: StringFieldUpdateOperationsInput | string
     hexColor?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -60560,6 +60632,7 @@ export namespace Prisma {
   export type JobTypeUncheckedUpdateWithoutJobsInput = {
     id?: StringFieldUpdateOperationsInput | string
     code?: StringFieldUpdateOperationsInput | string
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     displayName?: StringFieldUpdateOperationsInput | string
     hexColor?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -60904,6 +60977,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
@@ -60937,6 +61011,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
     totalStaffCost?: number
@@ -61071,6 +61146,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -61104,6 +61180,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
@@ -61228,6 +61305,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
@@ -61261,6 +61339,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     createdById: string
@@ -61405,6 +61484,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
@@ -61438,6 +61518,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
     totalStaffCost?: number
@@ -61578,6 +61659,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -61611,6 +61693,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
@@ -61642,6 +61725,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
@@ -61675,6 +61759,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
     totalStaffCost?: number
@@ -61732,6 +61817,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
@@ -61764,6 +61850,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
     totalStaffCost?: number
@@ -61822,6 +61909,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
@@ -61855,6 +61943,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
     totalStaffCost?: number
@@ -61960,6 +62049,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
@@ -61993,6 +62083,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
     totalStaffCost?: number
@@ -62127,6 +62218,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -62160,6 +62252,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
@@ -62284,6 +62377,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
@@ -62317,6 +62411,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
     totalStaffCost?: number
@@ -62490,6 +62585,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -62523,6 +62619,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
@@ -62692,6 +62789,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
@@ -62725,6 +62823,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
     totalStaffCost?: number
@@ -62859,6 +62958,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -62892,6 +62992,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
@@ -64227,6 +64328,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
     totalStaffCost?: number
@@ -64477,6 +64579,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -64510,6 +64613,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
@@ -64542,6 +64646,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
@@ -66139,6 +66244,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     createdById: string
@@ -66163,6 +66269,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -66196,6 +66303,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
@@ -66228,6 +66336,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
@@ -66253,6 +66362,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
     totalStaffCost?: number
@@ -66277,6 +66387,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -66310,6 +66421,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
@@ -66342,6 +66454,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
@@ -66366,6 +66479,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
     totalStaffCost?: number
@@ -66391,6 +66505,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -66423,6 +66538,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
@@ -66455,6 +66571,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
@@ -66481,6 +66598,7 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
     totalStaffCost?: number
@@ -66516,6 +66634,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -66549,6 +66668,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
@@ -66581,6 +66701,7 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number

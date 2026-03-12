@@ -194,7 +194,7 @@ function FileManagerPage() {
             <div className="w-64 bg-white border-r border-slate-200 flex-col p-6 hidden lg:flex">
                 <Button
                     color="primary"
-                    className="w-full mb-8 font-semibold shadow-lg shadow-blue-500/20"
+                    className="w-full mb-8 font-medium shadow-lg shadow-blue-500/20"
                     startContent={<UploadCloud size={20} />}
                 >
                     Upload New File
@@ -348,7 +348,7 @@ function FileManagerPage() {
                                         <div className="flex items-center gap-3">
                                             {getFileIcon(folder.type)}
                                             <div className="text-left">
-                                                <p className="font-semibold text-slate-800 text-sm truncate max-w-[120px]">
+                                                <p className="font-medium text-slate-800 text-sm truncate max-w-[120px]">
                                                     {folder.name}
                                                 </p>
                                                 <p className="text-xs text-slate-400">
@@ -373,7 +373,7 @@ function FileManagerPage() {
                             ))}
 
                             {/* Add Folder Button */}
-                            <button className="border-2 border-dashed border-slate-300 rounded-xl flex items-center justify-center gap-2 text-slate-500 font-semibold hover:border-blue-400 hover:text-blue-500 hover:bg-blue-50 transition-all h-[80px]">
+                            <button className="border-2 border-dashed border-slate-300 rounded-xl flex items-center justify-center gap-2 text-slate-500 font-medium hover:border-blue-400 hover:text-blue-500 hover:bg-blue-50 transition-all h-[80px]">
                                 <Plus size={20} />
                                 Create Folder
                             </button>
@@ -517,7 +517,7 @@ function FileManagerPage() {
                                             <div className="p-3">
                                                 <div className="flex justify-between items-start mb-1">
                                                     <p
-                                                        className="font-semibold text-slate-700 text-sm truncate pr-2 flex-1"
+                                                        className="font-medium text-slate-700 text-sm truncate pr-2 flex-1"
                                                         title={file.name}
                                                     >
                                                         {file.name}

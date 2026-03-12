@@ -88,7 +88,7 @@ export const DashboardRightPanel = ({
                     {!isCollapsed && (
                         <div className="w-full flex items-end justify-between">
                             <div>
-                                <h3 className="text-sm font-semibold text-text-subdued">
+                                <h3 className="text-sm font-medium text-text-subdued">
                                     Events for{' '}
                                 </h3>
                                 <h4 className="text-base font-medium text-text-7">

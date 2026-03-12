@@ -177,7 +177,7 @@ const OrgCard = ({
             </Badge>
             <div className="flex flex-col overflow-hidden w-full">
                 <span
-                    className={`font-semibold text-small truncate ${isActive ? 'text-primary' : ''}`}
+                    className={`font-medium text-small truncate ${isActive ? 'text-primary' : ''}`}
                 >
                     {user.name}
                 </span>

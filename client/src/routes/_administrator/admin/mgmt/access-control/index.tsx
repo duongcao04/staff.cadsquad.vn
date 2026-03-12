@@ -62,7 +62,7 @@ export default function RolePermissionOverviewPage() {
                     icon={<Users className="text-success" />}
                 />
                 <StatCard
-                    title="Audits"
+                    title="Administrators"
                     value="24h"
                     icon={<Activity className="text-warning" />}
                 />
@@ -74,7 +74,7 @@ export default function RolePermissionOverviewPage() {
                 <HeroCard className="lg:col-span-2 border-divider shadow-sm">
                     <CardBody className="p-6">
                         <div className="flex justify-between items-center mb-6">
-                            <h3 className="font-bold text-lg">
+                            <h3 className="font-medium text-lg">
                                 Authority Matrix Summary
                             </h3>
                             <Button size="sm" color="primary" variant="flat">
@@ -107,13 +107,13 @@ export default function RolePermissionOverviewPage() {
 
 function StatCard({ title, value, icon }: any) {
     return (
-        <HeroCard>
+        <HeroCard shadow="none" className="border border-border-muted">
             <HeroCardBody className="flex flex-row items-center gap-4 p-5">
-                <div className="p-3 bg-background rounded-2xl shadow-sm">
+                <div className="p-3 bg-background-muted rounded-2xl">
                     {icon}
                 </div>
                 <div>
-                    <p className="text-xs font-bold text-text-subdued uppercase tracking-widest">
+                    <p className="text-xs font-medium text-text-subdued tracking-widest">
                         {title}
                     </p>
                     <p className="text-2xl font-black">{value}</p>
@@ -216,7 +216,7 @@ export const PermissionMatrixPreview = () => {
                             key={index}
                             className="hover:bg-default-50/50 transition-colors"
                         >
-                            <TableCell className="font-semibold text-sm text-text-default">
+                            <TableCell className="font-medium text-sm text-text-default">
                                 {row.entity}
                             </TableCell>
                             <TableCell>

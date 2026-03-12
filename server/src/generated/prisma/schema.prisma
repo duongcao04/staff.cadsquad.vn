@@ -365,12 +365,13 @@ model Job {
   type   JobType @relation(fields: [typeId], references: [id])
   typeId String
 
-  displayName    String
-  description    String?
-  attachmentUrls String[] @default([])
-  client         Client?  @relation(fields: [clientId], references: [id])
-  clientId       String?
-  incomeCost     Float
+  displayName        String
+  description        String?
+  attachmentUrls     String[] @default([])
+  sharepointFolderId String? // optionally store linked existing SharePoint folder ID
+  client             Client?  @relation(fields: [clientId], references: [id])
+  clientId           String?
+  incomeCost         Float
 
   totalStaffCost Float @default(0)
 
@@ -501,13 +502,14 @@ model PaymentChannel {
 }
 
 model JobType {
-  id          String   @id @default(uuid())
-  code        String
-  displayName String
-  hexColor    String?
-  jobs        Job[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                 String   @id @default(uuid())
+  code               String
+  sharepointFolderId String?
+  displayName        String
+  hexColor           String?
+  jobs               Job[]
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 }
 
 model JobStatus {

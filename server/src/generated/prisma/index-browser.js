@@ -308,6 +308,7 @@ exports.Prisma.JobScalarFieldEnum = {
   displayName: 'displayName',
   description: 'description',
   attachmentUrls: 'attachmentUrls',
+  sharepointFolderId: 'sharepointFolderId',
   clientId: 'clientId',
   incomeCost: 'incomeCost',
   totalStaffCost: 'totalStaffCost',
@@ -385,6 +386,7 @@ exports.Prisma.PaymentChannelScalarFieldEnum = {
 exports.Prisma.JobTypeScalarFieldEnum = {
   id: 'id',
   code: 'code',
+  sharepointFolderId: 'sharepointFolderId',
   displayName: 'displayName',
   hexColor: 'hexColor',
   createdAt: 'createdAt',

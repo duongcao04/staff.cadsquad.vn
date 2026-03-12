@@ -342,7 +342,7 @@ function EditStaffPage() {
                                         <span className="text-text-subdued flex items-center gap-2">
                                             <Calendar size={14} /> Joined
                                         </span>
-                                        <span className="font-semibold text-text-default">
+                                        <span className="font-medium text-text-default">
                                             {dateFormatter(user.createdAt, {
                                                 format: 'longDate',
                                             })}
@@ -384,7 +384,7 @@ function EditStaffPage() {
                                     access to the dashboard immediately.
                                 </p>
                                 <div className="flex items-center justify-between">
-                                    <span className="font-semibold text-sm text-text-subdued">
+                                    <span className="font-medium text-sm text-text-subdued">
                                         Account Status
                                     </span>
                                     {toggleUserStatusMutation.isPending ? (
@@ -424,7 +424,7 @@ function EditStaffPage() {
                                         cursor: 'w-full bg-primary',
                                         tab: 'max-w-fit px-0 h-10',
                                         tabContent:
-                                            'group-data-[selected=true]:text-primary font-semibold text-text-subdued',
+                                            'group-data-[selected=true]:text-primary font-medium text-text-subdued',
                                     }}
                                     selectedKey={activeTab}
                                     onSelectionChange={(k) =>
@@ -883,7 +883,7 @@ function SecurityTab({ user }: { user: TUser }) {
                     </h3>
                     <div className="flex justify-between items-center p-4 border border-border-default rounded-xl">
                         <div>
-                            <p className="font-semibold text-text-default">
+                            <p className="font-medium text-text-default">
                                 Send Password Reset Email
                             </p>
                             <p className="text-xs text-text-subdued">
@@ -911,7 +911,7 @@ function SecurityTab({ user }: { user: TUser }) {
                     </h3>
                     <div className="flex justify-between items-center p-4 border border-border-default rounded-xl bg-slate-50">
                         <div>
-                            <p className="font-semibold text-text-default">
+                            <p className="font-medium text-text-default">
                                 Force Logout
                             </p>
                             <p className="text-xs text-text-subdued">

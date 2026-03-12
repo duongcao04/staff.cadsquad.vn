@@ -7,6 +7,7 @@ type Props = {
     mobileHeader?: React.ReactNode
     children: React.ReactNode
     scrollable?: boolean // Add this prop
+    showHeader?: boolean
 }
 
 export function PageWithHeaderContainer({
@@ -14,11 +15,16 @@ export function PageWithHeaderContainer({
     children,
     mobileHeader,
     scrollable = true,
+    showHeader = true,
 }: Props) {
     const { isSmallView } = useDevice()
 
     const hasResponsive = Boolean(mobileHeader)
-    const headerHeight = isSmallView && hasResponsive ? '44px' : '56px'
+    const headerHeight = showHeader
+        ? isSmallView && hasResponsive
+            ? '44px'
+            : '56px'
+        : 0
 
     return (
         <>

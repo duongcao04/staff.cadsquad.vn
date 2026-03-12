@@ -26,7 +26,7 @@ export function ProfileOverview({ data }: ProfileOverviewProps) {
                             <p className="text-xs text-text-subdued">Email</p>
                             <a
                                 href={`mailto:${data?.email}`}
-                                className="text-sm font-semibold text-text-subdued hover:underline"
+                                className="text-sm font-medium text-text-subdued hover:underline"
                                 target="_blank"
                             >
                                 {data.email}
@@ -47,7 +47,7 @@ export function ProfileOverview({ data }: ProfileOverviewProps) {
                             <p className="text-xs text-text-subdued">Chat</p>
                             <a
                                 href={`mailto:${data?.email}`}
-                                className="text-sm font-semibold text-text-subdued hover:underline"
+                                className="text-sm font-medium text-text-subdued hover:underline"
                                 target="_blank"
                             >
                                 {data.personalEmail ?? data.email}
@@ -67,7 +67,7 @@ export function ProfileOverview({ data }: ProfileOverviewProps) {
                     />
                     <div>
                         <p className="text-xs text-text-subdued">Department</p>
-                        <p className="mt-1 text-sm font-semibold text-text-default hover:underline">
+                        <p className="mt-1 text-sm font-medium text-text-default hover:underline">
                             {data.department?.displayName}
                         </p>
                     </div>
@@ -81,7 +81,7 @@ export function ProfileOverview({ data }: ProfileOverviewProps) {
                     />
                     <div>
                         <p className="text-xs text-text-subdued">Job title</p>
-                        <p className="mt-1 text-sm font-semibold text-text-default hover:underline">
+                        <p className="mt-1 text-sm font-medium text-text-default hover:underline">
                             {data.jobTitle?.displayName ?? '-'}
                         </p>
                     </div>
@@ -100,7 +100,7 @@ export function ProfileOverview({ data }: ProfileOverviewProps) {
                             </p>
                             <a
                                 href={`tel:${data?.phoneNumber}`}
-                                className="text-sm font-semibold text-text-subdued hover:underline"
+                                className="text-sm font-medium text-text-subdued hover:underline"
                                 target="_blank"
                             >
                                 {data.phoneNumber}

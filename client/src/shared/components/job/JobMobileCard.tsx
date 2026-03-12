@@ -247,7 +247,7 @@ export function JobMobileCard({ job }: JobMobileCardProps) {
                         variant="light"
                         startContent={<EyeIcon size={16} />}
                         onPress={onViewDetail}
-                        className="font-semibold text-xs h-8 data-[hover=true]:bg-default/40"
+                        className="font-medium text-xs h-8 data-[hover=true]:bg-default/40"
                     >
                         Details
                     </Button>
@@ -261,7 +261,7 @@ export function JobMobileCard({ job }: JobMobileCardProps) {
                         variant="flat"
                         startContent={<UserPlusIcon size={16} />}
                         onPress={onAssignMember}
-                        className="font-semibold text-xs h-8"
+                        className="font-medium text-xs h-8"
                     >
                         Assign
                     </Button>

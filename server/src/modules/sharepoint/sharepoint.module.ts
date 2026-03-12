@@ -6,6 +6,7 @@ import { SHAREPOINT_FLOW, SHAREPOINT_QUEUE } from './sharepoint.constants'
 import { SharePointController } from './sharepoint.controller'
 import { SharePointProcessor } from './sharepoint.processor'
 import { SharePointService } from './sharepoint.service'
+import { HttpModule } from '@nestjs/axios'
 
 @Module({
 	imports: [
@@ -19,9 +20,10 @@ import { SharePointService } from './sharepoint.service'
 		BullModule.registerFlowProducer({
 			name: SHAREPOINT_FLOW,
 		}),
+		HttpModule
 	],
 	controllers: [SharePointController],
 	providers: [SharePointService, SharePointProcessor],
 	exports: [SharePointService],
 })
-export class SharePointModule {}
+export class SharePointModule { }

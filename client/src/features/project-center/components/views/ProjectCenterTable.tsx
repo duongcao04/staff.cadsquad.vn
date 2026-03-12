@@ -98,7 +98,8 @@ export default function ProjectCenterTable({
             selectedKeys={selectedKeys}
             selectionMode="single"
             onSelectionChange={setSelectedKeys}
-            onRowAction={(key) => openJobDetailDrawer(key as string)}
+            // onRowAction={(key) => openJobDetailDrawer(key as string)}
+            onRowAction={() => {}}
             sortString={sort ?? undefined}
             onSortStringChange={onSortChange}
             BaseComponent={(found) => (

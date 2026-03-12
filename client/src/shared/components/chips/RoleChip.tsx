@@ -31,7 +31,7 @@ export function RoleChip({
             variant="solid"
             classNames={{
                 ...classNames,
-                content: cn('text-xs font-semibold px-4', classNames?.content),
+                content: cn('text-xs font-medium px-4', classNames?.content),
             }}
             {...props}
         >

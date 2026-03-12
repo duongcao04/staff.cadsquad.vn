@@ -160,7 +160,7 @@ export default function JobStatusDropdown({
                             classNames={{
                                 base: '!w-[120px]',
                                 content:
-                                    'uppercase text-xs font-semibold font-saira !w-[120px] text-nowrap line-clamp-1',
+                                    'uppercase text-xs font-medium font-saira !w-[120px] text-nowrap line-clamp-1',
                             }}
                             childrenRender={(statusData) => {
                                 return (
@@ -178,7 +178,7 @@ export default function JobStatusDropdown({
                         classNames={{
                             base: '!w-[120px]',
                             content:
-                                'uppercase text-xs font-semibold font-saira !w-[120px] text-nowrap line-clamp-1',
+                                'uppercase text-xs font-medium font-saira !w-[120px] text-nowrap line-clamp-1',
                         }}
                     />
                 )}
@@ -226,7 +226,7 @@ export default function JobStatusDropdown({
                                                         }}
                                                     />
                                                     <p
-                                                        className="font-semibold"
+                                                        className="font-medium"
                                                         style={{
                                                             color: item.data
                                                                 ?.hexColor
@@ -284,7 +284,7 @@ export default function JobStatusDropdown({
                                                             }}
                                                         />
                                                         <p
-                                                            className="font-semibold"
+                                                            className="font-medium"
                                                             style={{
                                                                 color: item?.hexColor
                                                                     ? item?.hexColor
@@ -307,7 +307,7 @@ export default function JobStatusDropdown({
                 <Divider className="bg-text-muted" />
 
                 <p className="text-xs pt-1.5 w-full text-center text-text-subdued">
-                    <span className="font-semibold">#{jobData?.no}</span>
+                    <span className="font-medium">#{jobData?.no}</span>
                     <span className="px-0.5">/</span>
                     <span>Update status</span>
                 </p>

@@ -21,7 +21,7 @@ export function PageHeading({
             <div className="flex items-center justify-between">
                 <div className="flex items-center justify-start">
                     <div>
-                        <h1 className="text-sm lg:text-base align-middle font-semibold text-text-default">
+                        <h1 className="text-sm lg:text-base align-middle font-medium text-text-default">
                             {title}
                         </h1>
                         {description && (

@@ -5,8 +5,6 @@ import {
     BreadcrumbItem,
     Breadcrumbs,
     Button,
-    Card,
-    CardBody,
     Chip,
     Dropdown,
     DropdownItem,
@@ -41,12 +39,16 @@ import {
     UserPlus,
 } from 'lucide-react'
 import { useState } from 'react'
+import { AddRoleMemberModal } from '../../../../../../../features/user-access/components/modals/AddRoleMemberModal'
 import {
     useAddMemberToRoleMutation,
     useRemoveMemberRoleMutation,
 } from '../../../../../../../lib/queries/useRole'
-import { HeroTable } from '../../../../../../../shared/components'
-import { AddRoleMemberModal } from '../../../../../../../features/user-access/components/modals/AddRoleMemberModal'
+import {
+    HeroCard,
+    HeroCardBody,
+    HeroTable,
+} from '../../../../../../../shared/components'
 import { TRole, TUser } from '../../../../../../../shared/types'
 
 export const Route = createFileRoute(
@@ -102,7 +104,7 @@ export default function RoleDetailPage() {
                     user={selectedUser}
                 />
             )}
-            <div className="p-8 animate-in fade-in duration-500">
+            <div className="space-y-4 animate-in fade-in duration-500">
                 <Breadcrumbs variant="light">
                     <BreadcrumbItem
                         onPress={() =>
@@ -116,7 +118,7 @@ export default function RoleDetailPage() {
                     <BreadcrumbItem>{role.displayName}</BreadcrumbItem>
                 </Breadcrumbs>
                 {/* Breadcrumbs / Back */}
-                <div className="mt-5 flex items-center gap-4">
+                <div className="flex items-center gap-4">
                     <Button
                         isIconOnly
                         variant="flat"
@@ -138,8 +140,8 @@ export default function RoleDetailPage() {
                 <div className="mt-7 grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Left Column: Role Stats */}
                     <div className="space-y-6">
-                        <Card shadow="sm" className="border-none">
-                            <CardBody className="p-6 space-y-4">
+                        <HeroCard shadow="sm" className="border-none">
+                            <HeroCardBody className="p-6 space-y-4">
                                 <div className="flex justify-between items-start">
                                     <div
                                         className="w-12 h-12 rounded-2xl flex items-center justify-center text-white"
@@ -152,8 +154,8 @@ export default function RoleDetailPage() {
                                     <QuickActionsDropdown role={role} />
                                 </div>
                                 <div>
-                                    <h4 className="font-bold text-lg">
-                                        Identity Details
+                                    <h4 className="font-medium text-lg">
+                                        Role Details
                                     </h4>
                                     <p className="text-sm text-text-subdued mt-1">
                                         {/* {role.description} */}
@@ -187,29 +189,32 @@ export default function RoleDetailPage() {
                                 >
                                     Edit Permissions Matrix
                                 </Button>
-                            </CardBody>
-                        </Card>
+                            </HeroCardBody>
+                        </HeroCard>
                     </div>
 
                     {/* Right Column: Member Table */}
                     <div className="lg:col-span-2 space-y-4">
-                        <Card shadow="sm" className="border-none">
-                            <CardBody className="p-0">
+                        <HeroCard
+                            shadow="none"
+                            className="border border-border-muted"
+                        >
+                            <HeroCardBody className="p-0">
                                 <div className="p-6 border-b border-divider flex justify-between items-center">
-                                    <h3 className="font-bold text-lg">
+                                    <h3 className="font-medium text-lg">
                                         Assigned Members
                                     </h3>
                                     <Chip
                                         size="sm"
                                         variant="dot"
                                         color="success"
-                                        className="font-bold"
+                                        className="font-medium"
                                     >
                                         {role.users.length} Active Users
                                     </Chip>
                                 </div>
-                            </CardBody>
-                        </Card>
+                            </HeroCardBody>
+                        </HeroCard>
                         <HeroTable
                             aria-label="Members table"
                             className="bg-background"

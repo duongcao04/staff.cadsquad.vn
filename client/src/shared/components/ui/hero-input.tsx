@@ -15,7 +15,7 @@ export const HeroInput = extendVariants(Input, {
                     'focus-within:border-primary',
                     'data-[hover=true]:border-primary',
                 ],
-                label: ['text-text-default', 'font-semibold'],
+                label: ['text-text-default', 'font-medium'],
                 input: [
                     'text-base',
                     'text-foreground',

@@ -4,6 +4,7 @@ import {
     jobTypesListOptions,
     optimizeCloudinary,
     paymentChannelsListOptions,
+    sharepointFolderItemsOptions,
     usersListOptions,
 } from '@/lib'
 import {
@@ -28,27 +29,34 @@ import {
     Switch,
     User,
 } from '@heroui/react'
-import { useSuspenseQueries } from '@tanstack/react-query'
+import { useQuery, useSuspenseQueries } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { useFormik } from 'formik'
-import lodash from 'lodash'
-import { BriefcaseIcon, CircleAlertIcon } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
-import { toFormikValidationSchema } from 'zod-formik-adapter'
-import { JobNoField } from '../JobNoField'
 import HTMLReactParser from 'html-react-parser/lib/index'
+import lodash from 'lodash'
+import { BriefcaseIcon, CircleAlertIcon, Folder } from 'lucide-react'
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
+import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { flattenErrors } from '../../../../lib/formik'
+import { JobNoField } from '../JobNoField'
 
 type CreateJobFormProps = {
     onSubmit?: (values: TCreateJobFormValues) => void
     afterSubmit?: (values?: TCreateJobFormValues) => void
     isSubmitting?: boolean
+    rootSharepointFolderId: string | null
+    setRootSharepointFolderId: Dispatch<SetStateAction<string | null>>
 }
 export default function CreateJobForm({
     onSubmit,
     isSubmitting = false,
     afterSubmit,
+    rootSharepointFolderId,
+    setRootSharepointFolderId,
 }: CreateJobFormProps) {
+    const [folderPath, setFolderPath] = useState<
+        Array<{ id: string; name: string }>
+    >([])
     const [
         {
             data: { users },
@@ -70,6 +78,7 @@ export default function CreateJobForm({
             jobFolderTemplatesListOptions(),
         ],
     })
+
     const [currentStep, setCurrentStep] = useState(0)
 
     const steps = [
@@ -115,6 +124,8 @@ export default function CreateJobForm({
                 paymentChannelId: null,
                 isCreateSharepointFolder: true, // or false
                 sharepointTemplateId: '',
+                sharepointFolderId: '',
+                useExistingSharepointFolder: false,
             },
             validationSchema: toFormikValidationSchema(CreateJobFormSchema),
             onSubmit: async (values) => {
@@ -126,6 +137,16 @@ export default function CreateJobForm({
             },
         }
     )
+
+    const { data } = useQuery({
+        ...sharepointFolderItemsOptions(rootSharepointFolderId ?? '-1'),
+        enabled: !!rootSharepointFolderId,
+    })
+
+    // Safely access items
+    const existingSharepointFolders = data?.items ?? []
+
+    console.log(existingSharepointFolders)
 
     // Memoized Total Calculation
     const calculatedTotal = useMemo(
@@ -220,6 +241,28 @@ export default function CreateJobForm({
                                     onSelectionChange={(key, jobNoResult) => {
                                         formik.setFieldValue('typeId', key)
                                         formik.setFieldValue('no', jobNoResult)
+
+                                        const selectedJobType = jobTypes.find(
+                                            (it) => it.id === key
+                                        )
+
+                                        if (
+                                            selectedJobType?.sharepointFolderId
+                                        ) {
+                                            setRootSharepointFolderId(
+                                                selectedJobType.sharepointFolderId
+                                            )
+                                            setFolderPath([
+                                                {
+                                                    id: selectedJobType.sharepointFolderId,
+                                                    name: 'Project Center',
+                                                },
+                                                {
+                                                    id: selectedJobType.sharepointFolderId,
+                                                    name: selectedJobType.displayName,
+                                                },
+                                            ])
+                                        }
                                     }}
                                 />
                                 {/* Job Name */}
@@ -395,7 +438,7 @@ export default function CreateJobForm({
                         {currentStep === 2 && (
                             <div className="animate-in fade-in slide-in-from-right-4 duration-300">
                                 <div className="px-5 py-3">
-                                    <p className="font-semibold text-sm pb-1 pl-1">
+                                    <p className="font-medium text-sm pb-1 pl-1">
                                         Search member
                                     </p>
                                     <AssignMemberField
@@ -428,7 +471,7 @@ export default function CreateJobForm({
 
                                 <div className="relative mt-4">
                                     <div className="pl-7 pr-6 space-y-3">
-                                        <p className="font-semibold text-sm">
+                                        <p className="font-medium text-sm">
                                             Cost Distribution
                                         </p>
                                         {formik.values.jobAssignments?.map(
@@ -592,7 +635,7 @@ export default function CreateJobForm({
                         {/* STEP 3: FOLDER OPTIONS */}
                         {currentStep === 3 && (
                             <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-                                <p className="text-sm font-semibold px-6 py-3">
+                                <p className="text-sm font-medium px-6 py-3">
                                     SharePoint Integration
                                 </p>
                                 <div className="px-5">
@@ -608,6 +651,17 @@ export default function CreateJobForm({
                                                     'isCreateSharepointFolder',
                                                     val
                                                 )
+                                                // clear existing mode/selection when toggling
+                                                if (val) {
+                                                    formik.setFieldValue(
+                                                        'useExistingSharepointFolder',
+                                                        false
+                                                    )
+                                                    formik.setFieldValue(
+                                                        'sharepointFolderId',
+                                                        ''
+                                                    )
+                                                }
                                                 // Optional: reset template if turned off
                                                 if (!val)
                                                     formik.setFieldValue(
@@ -625,6 +679,47 @@ export default function CreateJobForm({
                                                     Automatically generate a
                                                     structured workspace for
                                                     this job after creation.
+                                                </p>
+                                            </div>
+                                        </Switch>
+
+                                        <Switch
+                                            isSelected={
+                                                formik.values
+                                                    .useExistingSharepointFolder
+                                            }
+                                            onValueChange={(val) => {
+                                                formik.setFieldValue(
+                                                    'useExistingSharepointFolder',
+                                                    val
+                                                )
+                                                if (val) {
+                                                    formik.setFieldValue(
+                                                        'isCreateSharepointFolder',
+                                                        false
+                                                    )
+                                                    formik.setFieldValue(
+                                                        'sharepointTemplateId',
+                                                        ''
+                                                    )
+                                                } else {
+                                                    formik.setFieldValue(
+                                                        'sharepointFolderId',
+                                                        ''
+                                                    )
+                                                }
+                                            }}
+                                            color="primary"
+                                        >
+                                            <div className="flex flex-col gap-1 ml-2 mt-1">
+                                                <p className="text-sm font-bold text-default-800">
+                                                    Choose Existing SharePoint
+                                                    Folder
+                                                </p>
+                                                <p className="text-xs text-default-500">
+                                                    Link to a folder you already
+                                                    created under the job
+                                                    templates root.
                                                 </p>
                                             </div>
                                         </Switch>
@@ -710,6 +805,202 @@ export default function CreateJobForm({
                                                         )
                                                     )}
                                                 </Select>
+                                            </div>
+                                        )}
+
+                                        {/* existing-folder picker (conditional) - hierarchical navigation */}
+                                        {formik.values
+                                            .useExistingSharepointFolder && (
+                                            <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+                                                {/* Breadcrumb navigation */}
+                                                {folderPath.length > 1 && (
+                                                    <div className="mb-3 flex items-center gap-1 text-sm">
+                                                        <p className="text-primary">
+                                                            Project Center
+                                                        </p>
+                                                        {folderPath
+                                                            .slice(1)
+                                                            .map(
+                                                                (item, idx) => (
+                                                                    <div
+                                                                        key={
+                                                                            item.id
+                                                                        }
+                                                                        className="flex items-center gap-1"
+                                                                    >
+                                                                        <span className="text-default-400">
+                                                                            /
+                                                                        </span>
+                                                                        <button
+                                                                            type="button"
+                                                                            onClick={() => {
+                                                                                setRootSharepointFolderId(
+                                                                                    item.id
+                                                                                )
+                                                                                setFolderPath(
+                                                                                    folderPath.slice(
+                                                                                        0,
+                                                                                        idx +
+                                                                                            2
+                                                                                    )
+                                                                                )
+                                                                                formik.setFieldValue(
+                                                                                    'sharepointFolderId',
+                                                                                    ''
+                                                                                )
+                                                                            }}
+                                                                            className="text-primary hover:underline cursor-pointer"
+                                                                        >
+                                                                            {
+                                                                                item.name
+                                                                            }
+                                                                        </button>
+                                                                    </div>
+                                                                )
+                                                            )}
+                                                    </div>
+                                                )}
+
+                                                {!formik.values
+                                                    .sharepointFolderId && (
+                                                    <Select
+                                                        label="Navigate & Select Folder"
+                                                        labelPlacement="outside"
+                                                        placeholder="Choose a folder or double-click to enter"
+                                                        variant="bordered"
+                                                        selectedKeys={
+                                                            formik.values
+                                                                .sharepointFolderId
+                                                                ? [
+                                                                      formik
+                                                                          .values
+                                                                          .sharepointFolderId,
+                                                                  ]
+                                                                : []
+                                                        }
+                                                        onSelectionChange={(
+                                                            keys
+                                                        ) => {
+                                                            const selected =
+                                                                Array.from(
+                                                                    keys
+                                                                )[0] as string
+                                                            const selectedFolder =
+                                                                existingSharepointFolders.find(
+                                                                    (f) =>
+                                                                        f.id ===
+                                                                        selected
+                                                                )
+
+                                                            if (
+                                                                selectedFolder?.isFolder
+                                                            ) {
+                                                                formik.setFieldValue(
+                                                                    'sharepointFolderId',
+                                                                    selected
+                                                                )
+                                                                // Navigate into folder
+                                                                setRootSharepointFolderId(
+                                                                    selected
+                                                                )
+                                                                setFolderPath([
+                                                                    ...folderPath,
+                                                                    {
+                                                                        id: selected,
+                                                                        name: selectedFolder.name,
+                                                                    },
+                                                                ])
+                                                            } else {
+                                                                // Select file/folder as final destination
+                                                                formik.setFieldValue(
+                                                                    'sharepointFolderId',
+                                                                    selected
+                                                                )
+                                                            }
+                                                        }}
+                                                        isInvalid={
+                                                            Boolean(
+                                                                formik.touched
+                                                                    .sharepointFolderId
+                                                            ) &&
+                                                            Boolean(
+                                                                formik.errors
+                                                                    .sharepointFolderId
+                                                            )
+                                                        }
+                                                        errorMessage={
+                                                            Boolean(
+                                                                formik.touched
+                                                                    .sharepointFolderId
+                                                            ) &&
+                                                            (formik.errors
+                                                                .sharepointFolderId as string)
+                                                        }
+                                                        disallowEmptySelection
+                                                    >
+                                                        {(
+                                                            existingSharepointFolders ??
+                                                            []
+                                                        ).map((item) => (
+                                                            <SelectItem
+                                                                key={item.id}
+                                                                textValue={
+                                                                    item.name
+                                                                }
+                                                            >
+                                                                <div className="flex items-center gap-2">
+                                                                    {item.isFolder ? (
+                                                                        <>
+                                                                            <Folder
+                                                                                size={
+                                                                                    16
+                                                                                }
+                                                                            />
+                                                                            <span>
+                                                                                {
+                                                                                    item.name
+                                                                                }
+                                                                            </span>
+                                                                            <span className="text-xs text-default-400 ml-1">
+                                                                                (click
+                                                                                to
+                                                                                enter)
+                                                                            </span>
+                                                                        </>
+                                                                    ) : (
+                                                                        <>
+                                                                            <span>
+                                                                                📄
+                                                                            </span>
+                                                                            <span>
+                                                                                {
+                                                                                    item.name
+                                                                                }
+                                                                            </span>
+                                                                        </>
+                                                                    )}
+                                                                </div>
+                                                            </SelectItem>
+                                                        ))}
+                                                    </Select>
+                                                )}
+
+                                                {formik.values
+                                                    .sharepointFolderId && (
+                                                    <div className="mt-3 p-2 bg-success-50 rounded border border-success-200 text-sm text-success-700">
+                                                        <p className="font-medium">
+                                                            ✓ Selected folder
+                                                        </p>
+                                                        <p className="text-xs text-success-600">
+                                                            ID:{' '}
+                                                            {formik.values.sharepointFolderId.slice(
+                                                                0,
+                                                                8
+                                                            )}
+                                                            ...
+                                                        </p>
+                                                    </div>
+                                                )}
                                             </div>
                                         )}
                                     </div>

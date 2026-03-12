@@ -59,12 +59,12 @@ import { Route as AdministratorAdminMgmtAccessControlRouteImport } from './route
 import { Route as AdministratorAdminDepartmentsCodeRouteImport } from './routes/_administrator/admin/departments/$code'
 import { Route as AdministratorAdminMgmtStaffDirectoryIndexRouteImport } from './routes/_administrator/admin/mgmt/staff-directory/index'
 import { Route as AdministratorAdminMgmtJobsIndexRouteImport } from './routes/_administrator/admin/mgmt/jobs/index'
-import { Route as AdministratorAdminMgmtJobFolderTemplatesIndexRouteImport } from './routes/_administrator/admin/mgmt/job-folder-templates/index'
 import { Route as AdministratorAdminMgmtFileDocsIndexRouteImport } from './routes/_administrator/admin/mgmt/file-docs/index'
 import { Route as AdministratorAdminMgmtAccessControlIndexRouteImport } from './routes/_administrator/admin/mgmt/access-control/index'
 import { Route as AdministratorAdminMgmtJobsNoRouteImport } from './routes/_administrator/admin/mgmt/jobs/$no'
 import { Route as AdministratorAdminMgmtAccessControlPermissionsRouteImport } from './routes/_administrator/admin/mgmt/access-control/permissions'
 import { Route as AdministratorAdminMgmtAccessControlMatrixRouteImport } from './routes/_administrator/admin/mgmt/access-control/matrix'
+import { Route as AdministratorAdminMgmtJobsFolderTemplatesIndexRouteImport } from './routes/_administrator/admin/mgmt/jobs/folder-templates/index'
 import { Route as AdministratorAdminMgmtAccessControlUsersIndexRouteImport } from './routes/_administrator/admin/mgmt/access-control/users/index'
 import { Route as AdministratorAdminMgmtAccessControlRolesIndexRouteImport } from './routes/_administrator/admin/mgmt/access-control/roles/index'
 import { Route as AdministratorAdminMgmtStaffDirectoryUsernameEditRouteImport } from './routes/_administrator/admin/mgmt/staff-directory/$username/edit'
@@ -342,12 +342,6 @@ const AdministratorAdminMgmtJobsIndexRoute =
     path: '/admin/mgmt/jobs/',
     getParentRoute: () => AdministratorRoute,
   } as any)
-const AdministratorAdminMgmtJobFolderTemplatesIndexRoute =
-  AdministratorAdminMgmtJobFolderTemplatesIndexRouteImport.update({
-    id: '/admin/mgmt/job-folder-templates/',
-    path: '/admin/mgmt/job-folder-templates/',
-    getParentRoute: () => AdministratorRoute,
-  } as any)
 const AdministratorAdminMgmtFileDocsIndexRoute =
   AdministratorAdminMgmtFileDocsIndexRouteImport.update({
     id: '/admin/mgmt/file-docs/',
@@ -377,6 +371,12 @@ const AdministratorAdminMgmtAccessControlMatrixRoute =
     id: '/matrix',
     path: '/matrix',
     getParentRoute: () => AdministratorAdminMgmtAccessControlRoute,
+  } as any)
+const AdministratorAdminMgmtJobsFolderTemplatesIndexRoute =
+  AdministratorAdminMgmtJobsFolderTemplatesIndexRouteImport.update({
+    id: '/admin/mgmt/jobs/folder-templates/',
+    path: '/admin/mgmt/jobs/folder-templates/',
+    getParentRoute: () => AdministratorRoute,
   } as any)
 const AdministratorAdminMgmtAccessControlUsersIndexRoute =
   AdministratorAdminMgmtAccessControlUsersIndexRouteImport.update({
@@ -465,13 +465,13 @@ export interface FileRoutesByFullPath {
   '/admin/mgmt/jobs/$no': typeof AdministratorAdminMgmtJobsNoRoute
   '/admin/mgmt/access-control/': typeof AdministratorAdminMgmtAccessControlIndexRoute
   '/admin/mgmt/file-docs': typeof AdministratorAdminMgmtFileDocsIndexRoute
-  '/admin/mgmt/job-folder-templates': typeof AdministratorAdminMgmtJobFolderTemplatesIndexRoute
   '/admin/mgmt/jobs': typeof AdministratorAdminMgmtJobsIndexRoute
   '/admin/mgmt/staff-directory/': typeof AdministratorAdminMgmtStaffDirectoryIndexRoute
   '/admin/mgmt/access-control/users/$username': typeof AdministratorAdminMgmtAccessControlUsersUsernameRoute
   '/admin/mgmt/staff-directory/$username/edit': typeof AdministratorAdminMgmtStaffDirectoryUsernameEditRoute
   '/admin/mgmt/access-control/roles': typeof AdministratorAdminMgmtAccessControlRolesIndexRoute
   '/admin/mgmt/access-control/users': typeof AdministratorAdminMgmtAccessControlUsersIndexRoute
+  '/admin/mgmt/jobs/folder-templates': typeof AdministratorAdminMgmtJobsFolderTemplatesIndexRoute
   '/admin/mgmt/access-control/roles/$code/perm-matrix': typeof AdministratorAdminMgmtAccessControlRolesCodePermMatrixRoute
   '/admin/mgmt/access-control/roles/$code': typeof AdministratorAdminMgmtAccessControlRolesCodeIndexRoute
 }
@@ -520,13 +520,13 @@ export interface FileRoutesByTo {
   '/admin/mgmt/jobs/$no': typeof AdministratorAdminMgmtJobsNoRoute
   '/admin/mgmt/access-control': typeof AdministratorAdminMgmtAccessControlIndexRoute
   '/admin/mgmt/file-docs': typeof AdministratorAdminMgmtFileDocsIndexRoute
-  '/admin/mgmt/job-folder-templates': typeof AdministratorAdminMgmtJobFolderTemplatesIndexRoute
   '/admin/mgmt/jobs': typeof AdministratorAdminMgmtJobsIndexRoute
   '/admin/mgmt/staff-directory': typeof AdministratorAdminMgmtStaffDirectoryIndexRoute
   '/admin/mgmt/access-control/users/$username': typeof AdministratorAdminMgmtAccessControlUsersUsernameRoute
   '/admin/mgmt/staff-directory/$username/edit': typeof AdministratorAdminMgmtStaffDirectoryUsernameEditRoute
   '/admin/mgmt/access-control/roles': typeof AdministratorAdminMgmtAccessControlRolesIndexRoute
   '/admin/mgmt/access-control/users': typeof AdministratorAdminMgmtAccessControlUsersIndexRoute
+  '/admin/mgmt/jobs/folder-templates': typeof AdministratorAdminMgmtJobsFolderTemplatesIndexRoute
   '/admin/mgmt/access-control/roles/$code/perm-matrix': typeof AdministratorAdminMgmtAccessControlRolesCodePermMatrixRoute
   '/admin/mgmt/access-control/roles/$code': typeof AdministratorAdminMgmtAccessControlRolesCodeIndexRoute
 }
@@ -585,13 +585,13 @@ export interface FileRoutesById {
   '/_administrator/admin/mgmt/jobs/$no': typeof AdministratorAdminMgmtJobsNoRoute
   '/_administrator/admin/mgmt/access-control/': typeof AdministratorAdminMgmtAccessControlIndexRoute
   '/_administrator/admin/mgmt/file-docs/': typeof AdministratorAdminMgmtFileDocsIndexRoute
-  '/_administrator/admin/mgmt/job-folder-templates/': typeof AdministratorAdminMgmtJobFolderTemplatesIndexRoute
   '/_administrator/admin/mgmt/jobs/': typeof AdministratorAdminMgmtJobsIndexRoute
   '/_administrator/admin/mgmt/staff-directory/': typeof AdministratorAdminMgmtStaffDirectoryIndexRoute
   '/_administrator/admin/mgmt/access-control/users/$username': typeof AdministratorAdminMgmtAccessControlUsersUsernameRoute
   '/_administrator/admin/mgmt/staff-directory/$username/edit': typeof AdministratorAdminMgmtStaffDirectoryUsernameEditRoute
   '/_administrator/admin/mgmt/access-control/roles/': typeof AdministratorAdminMgmtAccessControlRolesIndexRoute
   '/_administrator/admin/mgmt/access-control/users/': typeof AdministratorAdminMgmtAccessControlUsersIndexRoute
+  '/_administrator/admin/mgmt/jobs/folder-templates/': typeof AdministratorAdminMgmtJobsFolderTemplatesIndexRoute
   '/_administrator/admin/mgmt/access-control/roles/$code/perm-matrix': typeof AdministratorAdminMgmtAccessControlRolesCodePermMatrixRoute
   '/_administrator/admin/mgmt/access-control/roles/$code/': typeof AdministratorAdminMgmtAccessControlRolesCodeIndexRoute
 }
@@ -647,13 +647,13 @@ export interface FileRouteTypes {
     | '/admin/mgmt/jobs/$no'
     | '/admin/mgmt/access-control/'
     | '/admin/mgmt/file-docs'
-    | '/admin/mgmt/job-folder-templates'
     | '/admin/mgmt/jobs'
     | '/admin/mgmt/staff-directory/'
     | '/admin/mgmt/access-control/users/$username'
     | '/admin/mgmt/staff-directory/$username/edit'
     | '/admin/mgmt/access-control/roles'
     | '/admin/mgmt/access-control/users'
+    | '/admin/mgmt/jobs/folder-templates'
     | '/admin/mgmt/access-control/roles/$code/perm-matrix'
     | '/admin/mgmt/access-control/roles/$code'
   fileRoutesByTo: FileRoutesByTo
@@ -702,13 +702,13 @@ export interface FileRouteTypes {
     | '/admin/mgmt/jobs/$no'
     | '/admin/mgmt/access-control'
     | '/admin/mgmt/file-docs'
-    | '/admin/mgmt/job-folder-templates'
     | '/admin/mgmt/jobs'
     | '/admin/mgmt/staff-directory'
     | '/admin/mgmt/access-control/users/$username'
     | '/admin/mgmt/staff-directory/$username/edit'
     | '/admin/mgmt/access-control/roles'
     | '/admin/mgmt/access-control/users'
+    | '/admin/mgmt/jobs/folder-templates'
     | '/admin/mgmt/access-control/roles/$code/perm-matrix'
     | '/admin/mgmt/access-control/roles/$code'
   id:
@@ -766,13 +766,13 @@ export interface FileRouteTypes {
     | '/_administrator/admin/mgmt/jobs/$no'
     | '/_administrator/admin/mgmt/access-control/'
     | '/_administrator/admin/mgmt/file-docs/'
-    | '/_administrator/admin/mgmt/job-folder-templates/'
     | '/_administrator/admin/mgmt/jobs/'
     | '/_administrator/admin/mgmt/staff-directory/'
     | '/_administrator/admin/mgmt/access-control/users/$username'
     | '/_administrator/admin/mgmt/staff-directory/$username/edit'
     | '/_administrator/admin/mgmt/access-control/roles/'
     | '/_administrator/admin/mgmt/access-control/users/'
+    | '/_administrator/admin/mgmt/jobs/folder-templates/'
     | '/_administrator/admin/mgmt/access-control/roles/$code/perm-matrix'
     | '/_administrator/admin/mgmt/access-control/roles/$code/'
   fileRoutesById: FileRoutesById
@@ -1138,13 +1138,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdministratorAdminMgmtJobsIndexRouteImport
       parentRoute: typeof AdministratorRoute
     }
-    '/_administrator/admin/mgmt/job-folder-templates/': {
-      id: '/_administrator/admin/mgmt/job-folder-templates/'
-      path: '/admin/mgmt/job-folder-templates'
-      fullPath: '/admin/mgmt/job-folder-templates'
-      preLoaderRoute: typeof AdministratorAdminMgmtJobFolderTemplatesIndexRouteImport
-      parentRoute: typeof AdministratorRoute
-    }
     '/_administrator/admin/mgmt/file-docs/': {
       id: '/_administrator/admin/mgmt/file-docs/'
       path: '/admin/mgmt/file-docs'
@@ -1179,6 +1172,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/mgmt/access-control/matrix'
       preLoaderRoute: typeof AdministratorAdminMgmtAccessControlMatrixRouteImport
       parentRoute: typeof AdministratorAdminMgmtAccessControlRoute
+    }
+    '/_administrator/admin/mgmt/jobs/folder-templates/': {
+      id: '/_administrator/admin/mgmt/jobs/folder-templates/'
+      path: '/admin/mgmt/jobs/folder-templates'
+      fullPath: '/admin/mgmt/jobs/folder-templates'
+      preLoaderRoute: typeof AdministratorAdminMgmtJobsFolderTemplatesIndexRouteImport
+      parentRoute: typeof AdministratorRoute
     }
     '/_administrator/admin/mgmt/access-control/users/': {
       id: '/_administrator/admin/mgmt/access-control/users/'
@@ -1323,8 +1323,8 @@ interface AdministratorRouteChildren {
   AdministratorAdminDepartmentsIndexRoute: typeof AdministratorAdminDepartmentsIndexRoute
   AdministratorAdminMgmtJobsNoRoute: typeof AdministratorAdminMgmtJobsNoRoute
   AdministratorAdminMgmtFileDocsIndexRoute: typeof AdministratorAdminMgmtFileDocsIndexRoute
-  AdministratorAdminMgmtJobFolderTemplatesIndexRoute: typeof AdministratorAdminMgmtJobFolderTemplatesIndexRoute
   AdministratorAdminMgmtJobsIndexRoute: typeof AdministratorAdminMgmtJobsIndexRoute
+  AdministratorAdminMgmtJobsFolderTemplatesIndexRoute: typeof AdministratorAdminMgmtJobsFolderTemplatesIndexRoute
 }
 
 const AdministratorRouteChildren: AdministratorRouteChildren = {
@@ -1347,9 +1347,9 @@ const AdministratorRouteChildren: AdministratorRouteChildren = {
   AdministratorAdminMgmtJobsNoRoute: AdministratorAdminMgmtJobsNoRoute,
   AdministratorAdminMgmtFileDocsIndexRoute:
     AdministratorAdminMgmtFileDocsIndexRoute,
-  AdministratorAdminMgmtJobFolderTemplatesIndexRoute:
-    AdministratorAdminMgmtJobFolderTemplatesIndexRoute,
   AdministratorAdminMgmtJobsIndexRoute: AdministratorAdminMgmtJobsIndexRoute,
+  AdministratorAdminMgmtJobsFolderTemplatesIndexRoute:
+    AdministratorAdminMgmtJobsFolderTemplatesIndexRoute,
 }
 
 const AdministratorRouteWithChildren = AdministratorRoute._addFileChildren(

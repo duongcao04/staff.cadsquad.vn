@@ -194,7 +194,7 @@ function CommunitySection({
                         className="size-full rounded-md"
                         preview={false}
                     />
-                    <span className="font-semibold text-text-default text-sm uppercase tracking-wider">
+                    <span className="font-medium text-text-default text-sm uppercase tracking-wider">
                         {community.displayName}
                     </span>
                 </div>

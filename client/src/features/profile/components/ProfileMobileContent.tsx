@@ -91,7 +91,7 @@ export const ProfileMobileContent = ({
 const EmptyState = ({ message }: { message: string }) => (
     <div className="py-16 flex flex-col items-center justify-center gap-3 text-center px-6">
         <div className="p-4 rounded-full bg-default-100">
-            <p className="text-sm font-semibold text-text-muted">{message}</p>
+            <p className="text-sm font-medium text-text-muted">{message}</p>
         </div>
         <p className="text-xs text-text-subdued">
             You can track your work or view all projects{' '}

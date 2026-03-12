@@ -6,10 +6,12 @@ import {
     HeroModalHeader,
 } from '@/shared/components/ui/hero-modal'
 import { useDevice } from '@/shared/hooks'
+import { useDisclosure } from '@heroui/react'
+import { useState } from 'react'
+import { useCopySharepointItemMutation } from '../../../../lib/queries/useSharepoint'
+import CancelModal from '../../../../shared/components/ui/cancel-modal'
 import CreateJobForm from '../forms/CreateJobForm'
 import CreateJobFormMobile from '../forms/CreateJobFormMobile'
-import CancelModal from '../../../../shared/components/ui/cancel-modal'
-import { useDisclosure } from '@heroui/react'
 
 type Props = {
     isOpen: boolean
@@ -17,8 +19,15 @@ type Props = {
 }
 export function CreateJobModal({ isOpen, onClose }: Props) {
     const { isSmallView } = useDevice()
+
+    const [rootSharepointFolderId, setRootSharepointFolderId] = useState<
+        string | null
+    >(null)
+
     const createJobMutation = useCreateJobMutation()
     const cancelModalDisclosure = useDisclosure()
+
+    const copySharepointMutation = useCopySharepointItemMutation()
 
     return (
         <>
@@ -36,7 +45,7 @@ export function CreateJobModal({ isOpen, onClose }: Props) {
                 <HeroModalContent>
                     <HeroModalHeader>
                         <div className="space-y-1">
-                            <p className="text-lg font-semibold">
+                            <p className="text-lg font-medium">
                                 Create new job
                             </p>
                         </div>
@@ -45,18 +54,60 @@ export function CreateJobModal({ isOpen, onClose }: Props) {
                         {isSmallView ? (
                             <CreateJobFormMobile
                                 isSubmitting={createJobMutation.isPending}
-                                onSubmit={async (values) => {
-                                    await createJobMutation.mutateAsync(values)
-                                    console.log(values)
-                                }}
+                                onSubmit={async (values) => {}}
                                 afterSubmit={onClose}
                             />
                         ) : (
                             <CreateJobForm
                                 isSubmitting={createJobMutation.isPending}
+                                rootSharepointFolderId={rootSharepointFolderId}
+                                setRootSharepointFolderId={
+                                    setRootSharepointFolderId
+                                }
                                 onSubmit={async (values) => {
-                                    await createJobMutation.mutateAsync(values)
-                                    console.log(values)
+                                    const createData = {
+                                        attachmentUrls: values.attachmentUrls,
+                                        clientName: values.clientName,
+                                        displayName: values.displayName,
+                                        dueAt: values.dueAt,
+                                        incomeCost: values.incomeCost,
+                                        jobAssignments: values.jobAssignments,
+                                        no: values.no,
+                                        startedAt: values.startedAt,
+                                        totalStaffCost: values.totalStaffCost,
+                                        typeId: values.typeId,
+                                        description: values.description,
+                                        paymentChannelId:
+                                            values.paymentChannelId,
+                                        sharepointFolderId: '',
+                                    }
+                                    if (values.useExistingSharepointFolder) {
+                                        createData['sharepointFolderId'] =
+                                            values.sharepointFolderId as string
+                                    } else {
+                                        const sharepointFolderName =
+                                            values.no +
+                                            '- ' +
+                                            values.clientName.toUpperCase() +
+                                            '_' +
+                                            values.displayName
+                                        const newSharepointFolderId =
+                                            await copySharepointMutation
+                                                .mutateAsync({
+                                                    itemId: values.sharepointTemplateId as string,
+                                                    destinationFolderId:
+                                                        rootSharepointFolderId as string,
+                                                    newName:
+                                                        sharepointFolderName,
+                                                })
+                                                .then((res) => res.result.id)
+                                        createData['sharepointFolderId'] =
+                                            newSharepointFolderId as string
+                                    }
+
+                                    await createJobMutation.mutateAsync(
+                                        createData
+                                    )
                                 }}
                                 afterSubmit={onClose}
                             />

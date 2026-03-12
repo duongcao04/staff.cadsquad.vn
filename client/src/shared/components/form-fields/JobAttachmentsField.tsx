@@ -64,7 +64,7 @@ export default function JobAttachmentsField({
             <HeroCardHeader>
                 {/* Header Actions */}
                 <div className="w-full flex items-center justify-between">
-                    <h3 className="text-sm font-semibold text-default-700">
+                    <h3 className="text-sm font-medium text-default-700">
                         Attachments ({attachments.length})
                     </h3>
                     {hasPermission(APP_PERMISSIONS.JOB.UPDATE) && !isAdding && (

@@ -52,7 +52,7 @@ export function UserActiveChip({ status, classNames, props }: Props) {
             classNames={{
                 ...classNames,
                 content: cn(
-                    'text-xs font-semibold font-saira',
+                    'text-xs font-medium font-saira',
                     classNames?.content
                 ),
             }}

@@ -70,7 +70,7 @@ export default function ReScheduleModal({
                     }}
                 >
                     <div>
-                        <p className="font-semibold text-lg text-white">
+                        <p className="font-medium text-lg text-white">
                             Reschedule for #{job.no}
                         </p>
                         <p className="text-sm text-text-5">
@@ -80,7 +80,7 @@ export default function ReScheduleModal({
                 </HeroModalHeader>
                 <HeroModalBody>
                     <div className="pt-2.5 px-0 space-y-4">
-                        <p className="text-sm font-semibold">
+                        <p className="text-sm font-medium">
                             Choose a new deadline
                         </p>
                         <HeroDatePicker

@@ -24,10 +24,16 @@ export type TJobType = {
 	displayName: string
 
 	/**
-	 * An optional hexadecimal color code for UI display.
+	 * Sharepoint link folder id.
 	 * @type {string | undefined}
 	 */
-	hexColor?: string
+	sharepointFolderId?: string
+
+	/**
+	 * An optional hexadecimal color code for UI display.
+	 * @type {string}
+	 */
+	hexColor: string | null
 
 	/**
 	 * A list of jobs that belong to this type.

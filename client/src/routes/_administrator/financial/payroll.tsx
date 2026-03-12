@@ -169,7 +169,7 @@ function TaxReportPage() {
                             'p-4 border-b border-divider w-full justify-start gap-8',
                         cursor: 'w-full bg-primary',
                         tabContent:
-                            'font-semibold group-data-[selected=true]:text-primary',
+                            'font-medium group-data-[selected=true]:text-primary',
                     }}
                 >
                     {/* Output Tab */}

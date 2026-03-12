@@ -1,3 +1,4 @@
+import { isAfter, isValid, parseISO } from 'date-fns'
 import * as yup from 'yup'
 import { z, ZodType } from 'zod'
 import { ProjectCenterTabEnum } from '../../shared/enums'
@@ -9,7 +10,6 @@ import { JobStatusSchema } from './_job-status.schema'
 import { JobTypeSchema } from './_job-type.schema'
 import { PaymentChannelSchema } from './_payment-channel.schema'
 import { UserSchema } from './_user.schema'
-import { isAfter, isValid, parseISO } from 'date-fns'
 
 export const JobSchema: ZodType<TJob> = z.lazy(() => z.object({
     id: z.string().catch('N/A'),
@@ -23,6 +23,7 @@ export const JobSchema: ZodType<TJob> = z.lazy(() => z.object({
     client: z.lazy(() => ClientSchema).nullable().catch(null),
     comments: z.array(z.any()).default([]),
     jobDeliveries: z.array(z.any()).default([]),
+    sharepointFolderId: z.string().nullable(),
     // Tự động ép kiểu số cho các trường tiền tệ
     incomeCost: z.coerce.number().catch(0),
     staffCost: z.coerce.number().catch(0),
@@ -58,7 +59,7 @@ const BaseJobFormSchema = z.object({
     jobAssignments: z.array(
         z.object({
             userId: z.string().min(1, 'User ID is required'),
-            staffCost: z.coerce.number({ message: 'Member cost must be a number' }).min(1,"Member cost must greater than 1"),
+            staffCost: z.coerce.number({ message: 'Member cost must be a number' }).min(1, "Member cost must greater than 1"),
         })
     ).min(1, 'At least one member is required'),
     paymentChannelId: z.string().uuid('Invalid Payment Channel').nullish(),
@@ -66,6 +67,8 @@ const BaseJobFormSchema = z.object({
     dueAt: z.string().min(1, 'Due date is required').refine((val) => isValid(parseISO(val)), 'Date must be a valid ISO string'),
     isCreateSharepointFolder: z.boolean().default(false),
     sharepointTemplateId: z.string().nullish(),
+    sharepointFolderId: z.string().nullish(),
+    useExistingSharepointFolder: z.boolean().default(false),
 })
 
 // 2. Export the CREATE schema (with refinements attached)
@@ -79,9 +82,20 @@ export const CreateJobFormSchema = BaseJobFormSchema
         },
         { message: 'Due date must be after start date', path: ['dueAt'] }
     )
+    // require template when user creates a new SP folder
     .refine(
         (data) => !(data.isCreateSharepointFolder && !data.sharepointTemplateId),
         { message: 'Folder template is required', path: ['sharepointTemplateId'] }
+    )
+    // ensure user does not both create and select existing at same time
+    .refine(
+        (data) => !(data.isCreateSharepointFolder && data.useExistingSharepointFolder),
+        { message: 'Cannot create and pick existing folder simultaneously', path: ['useExistingSharepointFolder'] }
+    )
+    // when existing mode is enabled, require folder id
+    .refine(
+        (data) => !(data.useExistingSharepointFolder && !data.sharepointFolderId),
+        { message: 'Please select an existing folder', path: ['sharepointFolderId'] }
     )
 
 export type TCreateJobFormValues = z.infer<typeof CreateJobFormSchema>
@@ -141,8 +155,6 @@ export const JobQuerySchema = jobFiltersSchema.merge(JobSortSchema).extend({
 
     search: z.string().trim().optional(),
 
-    hideFinishItems: z.enum(['0', '1']).optional().default('0'),
-
     isAll: z.enum(['0', '1']).optional().default('0'),
 
     // Pagination (Using coerce to handle URL query string numbers)
@@ -180,28 +192,30 @@ export const RescheduleJobSchema = yup.object({
 })
 export type TRescheduleJob = yup.InferType<typeof RescheduleJobSchema>
 
-export const DeliverJobInputSchema = yup.object({
-    jobId: yup.string().required('Please select a job to deliver'),
+export const DeliverJobInputSchema = z.object({
+    jobId: z
+        .string({ message: 'Please select a job to deliver' })
+        .min(1, 'Please select a job to deliver'),
 
-    note: yup
+    note: z
         .string()
         .max(1000, 'Note is too long (max 1000 characters)')
         .optional(),
 
-    link: yup
+    link: z
         .string()
         .url('Link must be a valid URL (e.g., https://figma.com/...)')
+        .nullable()
         .optional()
-        .nullable(), // Handle cases where form value might be null
+        // Transform null thành undefined nếu bạn muốn đồng nhất dữ liệu cho API
+        .or(z.literal('')),
 
-    files: yup
-        .array()
-        .of(yup.string().required()) // Ensures every item in the array is a string
-        // Uncomment the line below to strictly validate URLs for files, matching your commented decorator:
-        // .of(yup.string().url('Each attachment must be a valid URL').required())
-        .optional()
+    files: z
+        .array(
+            z.string().url('Each attachment must be a valid URL')
+        )
         .default([]),
-})
+});
 
-// Type inference for usage in React Hook Form / Formik
-export type TDeliverJobInput = yup.InferType<typeof DeliverJobInputSchema>
+// Type inference (Tương đương InferType của Yup)
+export type TDeliverJobInput = z.infer<typeof DeliverJobInputSchema>;

@@ -58,7 +58,10 @@ export const Route = createFileRoute('/settings/my-profile')({
 })
 
 function SettingsProfilePage() {
-    const { data: user, isLoading } = useSuspenseQuery({
+    const {
+        data: { profile },
+        isLoading,
+    } = useSuspenseQuery({
         ...profileOptions(),
     })
 
@@ -96,12 +99,12 @@ function SettingsProfilePage() {
     const formik = useFormik({
         enableReinitialize: true,
         initialValues: {
-            displayName: user?.displayName || '',
-            username: user?.username || '',
-            email: user?.email || '',
-            phoneNumber: phoneNumberFormatter(user?.phoneNumber || '')
+            displayName: profile?.displayName || '',
+            username: profile?.username || '',
+            email: profile?.email || '',
+            phoneNumber: phoneNumberFormatter(profile?.phoneNumber || '')
                 .formatted,
-            personalEmail: user?.personalEmail || '',
+            personalEmail: profile?.personalEmail || '',
         },
         validationSchema: updateProfileSchema,
         onSubmit: (values) => {
@@ -152,10 +155,13 @@ function SettingsProfilePage() {
                                 {/* Avatar Trigger */}
                                 <div className="relative group mb-4">
                                     <Avatar
-                                        src={optimizeCloudinary(user?.avatar, {
-                                            width: 512,
-                                            height: 512,
-                                        })}
+                                        src={optimizeCloudinary(
+                                            profile?.avatar,
+                                            {
+                                                width: 512,
+                                                height: 512,
+                                            }
+                                        )}
                                         className="w-32 h-32 text-large ring-4 ring-offset-2 ring-slate-50 shadow-lg"
                                     />
                                     <button
@@ -173,10 +179,10 @@ function SettingsProfilePage() {
                                 </div>
 
                                 <h2 className="mt-1 text-xl font-bold text-text-default">
-                                    {user?.displayName}
+                                    {profile?.displayName}
                                 </h2>
                                 <p className="text-sm text-text-subdued mt-0.5 mb-4">
-                                    @{user?.username}
+                                    @{profile?.username}
                                 </p>
 
                                 <Chip
@@ -185,7 +191,7 @@ function SettingsProfilePage() {
                                     color="primary"
                                     className="mb-6"
                                 >
-                                    {user?.role?.displayName}
+                                    {profile?.role?.displayName}
                                 </Chip>
 
                                 <Divider className="my-3" />
@@ -194,8 +200,8 @@ function SettingsProfilePage() {
                                         <span className="text-text-subdued flex items-center gap-2">
                                             <Building size={14} /> Dept
                                         </span>
-                                        <span className="font-semibold text-text-default">
-                                            {user?.department?.displayName ||
+                                        <span className="font-medium text-text-default">
+                                            {profile?.department?.displayName ||
                                                 'N/A'}
                                         </span>
                                     </div>
@@ -203,8 +209,8 @@ function SettingsProfilePage() {
                                         <span className="text-text-subdued flex items-center gap-2">
                                             <Briefcase size={14} /> Title
                                         </span>
-                                        <span className="font-semibold text-text-default">
-                                            {user?.jobTitle?.displayName ||
+                                        <span className="font-medium text-text-default">
+                                            {profile?.jobTitle?.displayName ||
                                                 'N/A'}
                                         </span>
                                     </div>
@@ -212,8 +218,8 @@ function SettingsProfilePage() {
                                         <span className="text-text-subdued flex items-center gap-2">
                                             <Calendar size={14} /> Joined
                                         </span>
-                                        <span className="font-semibold text-text-default">
-                                            {dateFormatter(user?.createdAt)}
+                                        <span className="font-medium text-text-default">
+                                            {dateFormatter(profile?.createdAt)}
                                         </span>
                                     </div>
                                 </div>
@@ -409,7 +415,7 @@ function SettingsProfilePage() {
                         isOpen={isOpenUploadAvatarModal}
                         onClose={onCloseUploadAvatarModal}
                         onSave={handleAvatarSave}
-                        currentAvatarUrl={optimizeCloudinary(user.avatar, {
+                        currentAvatarUrl={optimizeCloudinary(profile.avatar, {
                             width: 256,
                             height: 256,
                         })}

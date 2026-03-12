@@ -20,5 +20,6 @@ export class DeliverJobDto {
     @IsOptional()
     @IsArray()
     @IsString({ each: true })
+    @IsUrl({}, { each: true, message: 'Each file URL must be a valid URL' })
     files?: string[]
 }

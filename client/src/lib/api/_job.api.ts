@@ -14,7 +14,6 @@ import {
 import { TJobGeneralDetails } from '@/routes/_administrator/admin/mgmt/jobs/$no'
 import { ProjectCenterTabEnum } from '@/shared/enums'
 import type {
-    IJobDelivery,
     IPaginate,
 } from '@/shared/interfaces'
 import type {
@@ -29,7 +28,12 @@ export const jobApi = {
     // =========================================================================
     // CORE CRUD (Create, Read, Update, Delete)
     // =========================================================================
-    create: async (data: TCreateJobFormValues) => {
+    create: async (data: Omit<
+        TCreateJobFormValues,
+        | 'useExistingSharepointFolder'
+        | 'sharepointTemplateId'
+        | 'isCreateSharepointFolder'
+    >) => {
         return axiosClient
             .post<ApiResponse<any>>('/v1/jobs', {
                 ...data,
@@ -152,7 +156,7 @@ export const jobApi = {
 
     jobDeliveries: async (jobId: string) => {
         return axiosClient
-            .get<ApiResponse<IJobDelivery[]>>(`/v1/jobs/${jobId}/deliveries`)
+            .get<ApiResponse<any[]>>(`/v1/jobs/${jobId}/deliveries`)
             .then((res) => res.data)
     },
 

@@ -54,7 +54,7 @@ export const JobActivityHistory: React.FC<JobActivityHistoryProps> = ({
                         className="text-default-300"
                     />
                 </div>
-                <p className="text-medium font-semibold text-default-600">
+                <p className="text-medium font-medium text-default-600">
                     No activity recorded
                 </p>
                 <p className="text-small text-text-subdued">
@@ -118,7 +118,7 @@ const ActivityItem = ({ log }: { log: TJobActivityLog }) => {
                             {log.modifiedBy?.displayName}
                         </span>
                         <div className="w-1 h-1 rounded-full bg-default-300 mx-1" />
-                        <span className="text-tiny font-semibold uppercase tracking-wider text-default-500">
+                        <span className="text-tiny font-medium uppercase tracking-wider text-default-500">
                             {config.label}
                         </span>
                     </div>
@@ -263,7 +263,7 @@ const renderDiff = (log: TJobActivityLog) => {
             return (
                 <div className="flex items-center gap-2">
                     <span className="text-default-500">Target:</span>
-                    <span className="font-semibold text-default-800">
+                    <span className="font-medium text-default-800">
                         {log.fieldName}
                     </span>
                     <span className="text-default-300">|</span>
@@ -288,7 +288,7 @@ const renderDiff = (log: TJobActivityLog) => {
                             size={10}
                             className="text-default-300"
                         />
-                        <span className="font-semibold text-default-900">
+                        <span className="font-medium text-default-900">
                             {formatValue(log.currentValue)}
                         </span>
                     </div>
@@ -318,7 +318,7 @@ const renderDiff = (log: TJobActivityLog) => {
                             size={10}
                             className="text-default-300"
                         />
-                        <span className="font-semibold text-default-900">
+                        <span className="font-medium text-default-900">
                             {formatValue(log.currentValue)}
                         </span>
                     </div>
@@ -585,7 +585,7 @@ const UserDisplay = ({ userId }: { userId: string }) => {
             }}
             classNames={{
                 base: 'bg-default-100 pr-3 py-0.5 rounded-full border border-default-200',
-                name: 'text-xs font-semibold',
+                name: 'text-xs font-medium',
                 description: 'text-[10px]',
             }}
         />

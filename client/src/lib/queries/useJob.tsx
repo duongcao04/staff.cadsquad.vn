@@ -30,7 +30,14 @@ export const useCreateJobMutation = () => {
     const queryClient = useQueryClient()
     return useMutation({
         mutationKey: ['createJob'],
-        mutationFn: (data: TCreateJobFormValues) => jobApi.create(data),
+        mutationFn: (
+            data: Omit<
+                TCreateJobFormValues,
+                | 'useExistingSharepointFolder'
+                | 'sharepointTemplateId'
+                | 'isCreateSharepointFolder'
+            >
+        ) => jobApi.create(data),
         onSuccess: (res) => {
             addToast({ title: res.message, color: 'success' })
             queryClient.invalidateQueries({

@@ -156,7 +156,7 @@ function DepartmentDetailPage() {
                             <p className="text-xs text-text-default font-bold uppercase">
                                 Team Lead
                             </p>
-                            <p className="text-sm font-semibold text-text-subdued">
+                            <p className="text-sm font-medium text-text-subdued">
                                 {DEPT_INFO.manager.name}
                             </p>
                         </div>
@@ -167,7 +167,7 @@ function DepartmentDetailPage() {
                         />
                         <Button
                             color="primary"
-                            className="ml-4 font-semibold"
+                            className="ml-4 font-medium"
                             endContent={<Plus size={16} />}
                         >
                             Assign Job

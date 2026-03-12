@@ -1,11 +1,11 @@
+import { AddRoleMemberModal } from '@/features/user-access/components/modals/AddRoleMemberModal'
+import CreateRoleModal from '@/features/user-access/components/modals/CreateRoleModal'
 import {
     permissionGroupsListOptions,
     rolesListOptions,
 } from '@/lib/queries/options/role-queries'
 import { useAddMemberToRoleMutation } from '@/lib/queries/useRole'
 import { HeroButton, HeroCard } from '@/shared/components'
-import { AddRoleMemberModal } from '@/features/user-access/components/modals/AddRoleMemberModal'
-import CreateRoleModal from '@/features/user-access/components/modals/CreateRoleModal'
 import { TRole } from '@/shared/types'
 import {
     BreadcrumbItem,
@@ -82,7 +82,7 @@ export default function RolesPage() {
                     allPermissions={permissions}
                 />
             )}
-            <div className="p-8 space-y-8 min-h-screen">
+            <div className="space-y-4 min-h-screen">
                 <Breadcrumbs variant="light">
                     <BreadcrumbItem
                         onPress={() =>
@@ -98,7 +98,11 @@ export default function RolesPage() {
                 {/* Roles Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {roles.map((role) => (
-                        <HeroCard key={role.id} className="border-none p-2">
+                        <HeroCard
+                            key={role.id}
+                            className="border border-border-muted p-2"
+                            shadow="none"
+                        >
                             <CardBody className="space-y-6">
                                 {/* Role Title & Member Count */}
                                 <div className="flex justify-between items-start">
@@ -175,6 +179,8 @@ export default function RolesPage() {
                                 variant="bordered"
                                 className="bg-background font-bold border border-border-default text-text-default"
                                 onPress={createRoleModalDisclosure.onOpen}
+                                disableRipple
+                                disableAnimation
                             >
                                 Create New Role
                             </HeroButton>

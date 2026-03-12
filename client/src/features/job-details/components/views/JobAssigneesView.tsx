@@ -30,7 +30,7 @@ export default function JobAssigneesView({ data }: JobAssigneesViewProps) {
             )}
             <HeroCard className="bg-background-muted px-0! overflow-hidden border-none shadow-none">
                 <HeroCardHeader className="justify-between py-1 text-text-8">
-                    <span className="font-semibold text-xs tracking-wide text-text-default">
+                    <span className="font-medium text-xs tracking-wide text-text-default">
                         Assignees ({data.assignments.length})
                     </span>
                     {isAdmin && (

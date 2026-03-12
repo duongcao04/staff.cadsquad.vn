@@ -155,7 +155,7 @@ export const renderWorkbenchCell = (
                     </HeroTooltip>
                 </div>
             ) : (
-                <p className="w-full text-center font-semibold tracking-wide">
+                <p className="w-full text-center font-medium tracking-wide">
                     x{data.attachmentUrls.length}
                 </p>
             )

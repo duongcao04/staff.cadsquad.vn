@@ -199,7 +199,7 @@ const HeroRowsStep = forwardRef<HTMLButtonElement, HeroRowsStepProps>(
                                         <LazyMotion features={domAnimation}>
                                             <m.div
                                                 className={cn(
-                                                    'relative flex h-[34px] w-[34px] items-center justify-center rounded-full border-medium text-large font-semibold transition-colors duration-300',
+                                                    'relative flex h-[34px] w-[34px] items-center justify-center rounded-full border-medium text-large font-medium transition-colors duration-300',
                                                     // Default colors based on status
                                                     status === 'inactive' &&
                                                         'border-default-300 text-default-300',

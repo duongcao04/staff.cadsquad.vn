@@ -2,6 +2,7 @@ import * as Yup from 'yup';
 import { ZodType, z } from 'zod';
 import { TRole } from '../../shared/types';
 import { COLORS } from '../utils';
+import { PermissionSchema } from './_permission.schema';
 import { UserSchema } from './_user.schema';
 
 export const RoleSchema: ZodType<TRole> = z.lazy(() => z.object({
@@ -12,7 +13,7 @@ export const RoleSchema: ZodType<TRole> = z.lazy(() => z.object({
 
     // Quan hệ 1-n với Permissions
     // Dùng z.array(z.any()) nếu chưa muốn validate sâu permission
-    permissions: z.array(z.any()).default([]),
+    permissions: z.array(z.lazy(() => PermissionSchema)).default([]),
 
     // Quan hệ n-n với Users
     // Sử dụng z.lazy để tránh lỗi Circular Dependency với UserSchema

@@ -25,7 +25,7 @@ import {
 } from '@/lib/queries'
 
 export const Route = createFileRoute(
-    '/_administrator/admin/mgmt/job-folder-templates/'
+    '/_administrator/admin/mgmt/jobs/folder-templates/'
 )({
     component: JobFolderTemplatePage,
 })
@@ -127,7 +127,7 @@ export default function JobFolderTemplatePage() {
                                             <div className="p-2 bg-orange-50 text-[#F37021] rounded">
                                                 <Folder size={18} />
                                             </div>
-                                            <span className="font-semibold text-slate-700">
+                                            <span className="font-medium text-slate-700">
                                                 {template.displayName}
                                             </span>
                                         </div>

@@ -181,7 +181,7 @@ export default function ResetPasswordPage() {
                                 size="lg"
                                 isLoading={isPending}
                                 isDisabled={!canSubmit}
-                                className="font-semibold shadow-md"
+                                className="font-medium shadow-md"
                             >
                                 Reset Password
                             </Button>

@@ -4,7 +4,7 @@ export const HeroAutocomplete = extendVariants(Autocomplete, {
     variants: {
         variant: {
             bordered: {
-                base: ['w-full', 'font-semibold!','hover:border-primary!'],
+                base: ['w-full', 'font-medium!','hover:border-primary!'],
                 listboxWrapper: ['max-h-[320px]'],
                 selectorButton: ['text-default-500'],
                 inputWrapper: [

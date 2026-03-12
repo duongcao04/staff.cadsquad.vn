@@ -44,7 +44,7 @@ export const staffColumns = [
                 <Chip
                     size="sm"
                     variant="flat"
-                    className="capitalize font-semibold gap-1"
+                    className="capitalize font-medium gap-1"
                     style={{
                         backgroundColor: `${role?.hexColor}20`, // 20% opacity background
                         color: role?.hexColor,

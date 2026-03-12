@@ -142,7 +142,7 @@ export const DeleteUserPermanentlyModal = ({
                                         <Trash2 size={18} />
                                     )
                                 }
-                                className="font-semibold"
+                                className="font-medium"
                             >
                                 {deleteUserMutation.isPending
                                     ? 'Deleting...'

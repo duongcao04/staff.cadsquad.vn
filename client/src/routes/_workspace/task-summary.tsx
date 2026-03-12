@@ -82,7 +82,7 @@ function TaskSummaryPage() {
                         <p className="text-xs font-bold text-slate-400 uppercase">
                             Current Status
                         </p>
-                        <p className="text-sm font-semibold text-emerald-600 flex items-center gap-1 justify-end">
+                        <p className="text-sm font-medium text-emerald-600 flex items-center gap-1 justify-end">
                             <span className="relative flex h-2 w-2">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
@@ -173,7 +173,7 @@ function TaskSummaryPage() {
                                         <div className="flex items-center gap-3">
                                             <Checkbox size="lg" radius="full" />
                                             <div>
-                                                <p className="font-semibold text-text-default group-hover:text-blue-600 transition-colors">
+                                                <p className="font-medium text-text-default group-hover:text-blue-600 transition-colors">
                                                     {task.title}
                                                 </p>
                                                 <p className="text-xs text-text-subdued flex items-center gap-1">

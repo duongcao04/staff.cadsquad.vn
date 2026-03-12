@@ -66,6 +66,10 @@ export class JobResponseDto {
 	@Expose()
 	attachmentUrls: string[]
 
+	@ApiProperty({ description: 'Linked SharePoint folder ID', required: false })
+	@Expose()
+	sharepointFolderId?: string
+
 	@ApiProperty({ description: 'Start date of the job' })
 	@Expose()
 	startedAt: Date

@@ -31,7 +31,7 @@ export const JobActionToolbar = () => {
                                 <span className="font-bold text-primary block text-lg">
                                     01:24:15
                                 </span>
-                                <span className="text-xs text-primary/70 font-semibold uppercase">
+                                <span className="text-xs text-primary/70 font-medium uppercase">
                                     Stop Timer
                                 </span>
                             </div>

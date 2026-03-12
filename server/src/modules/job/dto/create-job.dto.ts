@@ -4,40 +4,39 @@ import {
     IsArray,
     IsBoolean,
     IsDateString,
-    IsEnum,
     IsNotEmpty,
     IsOptional,
     IsString,
     IsUUID,
-    ValidateNested,
+    ValidateNested
 } from 'class-validator'
 
 export class JobAssignmentDto {
     @ApiProperty({ description: 'ID of the assigned user', example: 'uuid' })
     @IsNotEmpty()
     @IsUUID()
-    userId: string
+    userId!: string
 
     @ApiProperty({ description: "Assignee's Staff cost for the job", example: '1000' })
     @IsNotEmpty()
     @IsString()
-    staffCost: string
+    staffCost!: string
 }
 
 export class CreateJobDto {
     @ApiProperty({ description: 'Job number', example: 'JOB-2024-001' })
     @IsString()
     @IsNotEmpty()
-    no: string
+    no!: string
 
     @ApiProperty({ description: 'ID of the job type' })
     @IsUUID()
-    typeId: string
+    typeId!: string
 
     @ApiProperty({ description: 'Display name of the job' })
     @IsString()
     @IsNotEmpty()
-    displayName: string
+    displayName!: string
 
     @ApiProperty({ description: 'URLs of attachments', type: [String], required: false })
     @IsOptional()
@@ -48,15 +47,15 @@ export class CreateJobDto {
     @ApiProperty({ description: 'Name of the client' })
     @IsString()
     @IsNotEmpty()
-    clientName: string
+    clientName!: string
 
     @ApiProperty({ description: 'Income cost for the job' })
     @IsString()
-    incomeCost: string
+    incomeCost!: string
 
     @ApiProperty({ description: 'Total Staff cost for the job' })
     @IsString()
-    totalStaffCost: string
+    totalStaffCost!: string
 
     @ApiProperty({ description: 'ID of the payment channel', required: false })
     @IsOptional()
@@ -78,15 +77,10 @@ export class CreateJobDto {
 
     @ApiProperty({ description: 'Due date of the job' })
     @IsDateString()
-    dueAt: Date
+    dueAt!: Date
 
-    @ApiProperty({ description: 'Whether to create SharePoint folder', required: false })
-    @IsOptional()
-    @IsBoolean()
-    isCreateSharepointFolder?: boolean
-
-    @ApiProperty({ description: 'ID of the SharePoint folder template', required: false })
+    @ApiProperty({ description: 'ID of an existing SharePoint folder to connect', required: false })
     @IsOptional()
     @IsString()
-    sharepointTemplateId?: string
+    sharepointFolderId?: string
 }

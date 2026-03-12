@@ -67,6 +67,8 @@ export type TJob = {
      */
     jobDeliveries?: IJobDelivery[]
 
+    sharepointFolderId?: string
+
     /**
      * A list of comments.
      * @type {TJobComment[]}

@@ -73,7 +73,7 @@ export default function JobScheduleModal({
                             </div>
 
                             <div className="bg-background p-4 rounded-xl border border-border-default mb-4">
-                                <p className="text-sm font-semibold text-text-default mb-2">
+                                <p className="text-sm font-medium text-text-default mb-2">
                                     Assignees
                                 </p>
                                 <div className="flex items-center gap-3">

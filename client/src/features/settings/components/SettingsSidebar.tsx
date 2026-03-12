@@ -96,7 +96,7 @@ export default function SettingsSidebar() {
                                         }
                                         className={cn(
                                             isSelected
-                                                ? 'bg-background-hovered text-text-default font-semibold'
+                                                ? 'bg-background-hovered text-text-default font-medium'
                                                 : 'text-text-subdued'
                                         )}
                                         // Logic to handle selection (e.g. navigation)

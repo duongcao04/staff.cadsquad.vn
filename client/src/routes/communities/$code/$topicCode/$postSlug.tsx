@@ -150,7 +150,7 @@ export default function TopicPage() {
                             <BreadcrumbItem>
                                 {MOCK_TOPIC.channel}
                             </BreadcrumbItem>
-                            <BreadcrumbItem className="font-semibold text-text-default">
+                            <BreadcrumbItem className="font-medium text-text-default">
                                 Proposal: Migration...
                             </BreadcrumbItem>
                         </Breadcrumbs>
@@ -210,7 +210,7 @@ export default function TopicPage() {
                                         className="ring-border-default"
                                     />
                                     <div>
-                                        <div className="text-medium font-semibold text-text-default">
+                                        <div className="text-medium font-medium text-text-default">
                                             {MOCK_TOPIC.author.name}
                                         </div>
                                         <div className="text-tiny text-text-subdued flex items-center gap-2">
@@ -304,7 +304,7 @@ export default function TopicPage() {
 
                         {/* 2. COMMENT SECTION */}
                         <div className="pt-8">
-                            <h3 className="text-lg font-semibold text-text-default mb-6 flex items-center gap-2">
+                            <h3 className="text-lg font-medium text-text-default mb-6 flex items-center gap-2">
                                 <MessageCircleIcon size={20} />
                                 {MOCK_COMMENTS.length} Comments
                             </h3>
@@ -396,7 +396,7 @@ export default function TopicPage() {
                     {/* Stats */}
                     <div className="grid grid-cols-2 gap-4">
                         <div className="p-3 rounded-lg bg-background border border-border-default">
-                            <div className="text-text-subdued text-xs font-semibold uppercase mb-1 flex items-center gap-1">
+                            <div className="text-text-subdued text-xs font-medium uppercase mb-1 flex items-center gap-1">
                                 <EyeIcon size={12} /> Views
                             </div>
                             <div className="text-xl font-bold text-text-default">
@@ -404,7 +404,7 @@ export default function TopicPage() {
                             </div>
                         </div>
                         <div className="p-3 rounded-lg bg-background border border-border-default">
-                            <div className="text-text-subdued text-xs font-semibold uppercase mb-1 flex items-center gap-1">
+                            <div className="text-text-subdued text-xs font-medium uppercase mb-1 flex items-center gap-1">
                                 <UsersIcon size={12} /> Ppl
                             </div>
                             <div className="text-xl font-bold text-text-default">
@@ -423,7 +423,7 @@ export default function TopicPage() {
                                 <HashIcon size={20} />
                             </div>
                             <div>
-                                <div className="font-semibold text-text-default text-sm">
+                                <div className="font-medium text-text-default text-sm">
                                     Design System
                                 </div>
                                 <div className="text-tiny text-text-subdued">

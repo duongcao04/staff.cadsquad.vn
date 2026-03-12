@@ -64,7 +64,7 @@ function PostCard({ post }: { post: TPost }) {
                     />
                     <div>
                         <div className="flex items-center gap-2">
-                            <h4 className="text-small font-semibold text-text-default">
+                            <h4 className="text-small font-medium text-text-default">
                                 {post.author.displayName}
                             </h4>
                             {post.isPinned && (
