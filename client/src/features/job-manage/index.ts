@@ -1,4 +1,4 @@
-export * from './components/AdminDeliveryCard'
+export * from '../job-edit/components/cards/JobDeliveryItemCard'
 export * from './components/ApproveDeliveryModal'
 export * from './components/forms/CreateJobForm'
 export * from './components/forms/CreateJobFormMobile'

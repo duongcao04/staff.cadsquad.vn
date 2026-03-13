@@ -4,6 +4,7 @@ import {
     DeliverJobInputSchema,
     TDeliverJobInput,
 } from '@/lib/validationSchemas/_job.schema'
+import { HeroAutocomplete, HeroAutocompleteItem } from '@/shared/components'
 import { JobStatusChip } from '@/shared/components/chips/JobStatusChip'
 import {
     HeroModal,
@@ -13,15 +14,7 @@ import {
     HeroModalHeader,
 } from '@/shared/components/ui/hero-modal'
 import { TJob } from '@/shared/types'
-import {
-    Button,
-    Select,
-    SelectItem,
-    Skeleton,
-    Spinner,
-    Textarea,
-    Progress,
-} from '@heroui/react'
+import { Button, Progress, Skeleton, Textarea } from '@heroui/react'
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { useFormik } from 'formik'
 import lodash from 'lodash'
@@ -79,9 +72,10 @@ type UploadingFile = {
     file: File
     status: 'uploading' | 'success' | 'error'
     url?: string
+    sharepointId?: string
     name: string
     progress: number
-    errorMessage?: string // Thêm trường lưu chi tiết lỗi
+    errorMessage?: string
 }
 
 export const DeliverJobContent = ({
@@ -99,30 +93,21 @@ export const DeliverJobContent = ({
 
     // State to manage files actively being uploaded or already uploaded in UI
     const [uploadStates, setUploadStates] = useState<UploadingFile[]>([])
+    const [selectedJob, setSelectedJob] = useState<TJob | undefined>(defaultJob)
 
     const { data: pendingDeliverJobs } = useSuspenseQuery({
         ...jobsPendingDeliverOptions(),
     })
 
-    const { data } = useQuery({
-        ...sharepointFolderItemsOptions(defaultJob?.sharepointFolderId ?? '-1'),
-        enabled: !!Boolean(defaultJob?.sharepointFolderId),
-    })
-
-    const folderItems = data?.items ?? []
-
     const formik = useFormik<TDeliverJobInput>({
         initialValues: {
             jobId: defaultJob?.id ?? '',
             note: '',
-            link: '',
             files: [],
         },
         validationSchema: toFormikValidationSchema(DeliverJobInputSchema),
         enableReinitialize: true,
         onSubmit: async (values) => {
-            // Ensure any files currently uploading are blocked from submit if needed,
-            // but assuming formik.values.files only has successful URLs
             if (onConfirm) {
                 onConfirm(values)
                 onClose()
@@ -132,12 +117,7 @@ export const DeliverJobContent = ({
                     jobId: values.jobId,
                     data: {
                         files: values.files,
-                        link: lodash.isEmpty(values.link)
-                            ? undefined
-                            : values.link,
-                        note: lodash.isEmpty(values.note)
-                            ? undefined
-                            : values.note,
+                        note: values.note,
                     },
                 })
                 onClose()
@@ -146,22 +126,30 @@ export const DeliverJobContent = ({
         },
     })
 
+    const { data } = useQuery({
+        ...sharepointFolderItemsOptions(
+            selectedJob?.sharepointFolderId ?? '-1'
+        ),
+        enabled: !!Boolean(selectedJob?.sharepointFolderId),
+    })
+
+    const folderItems = data?.items ?? []
+
     const destinationUploadFolderId = useMemo(() => {
         const existingWorkingFolder = folderItems.findIndex(
             (it) => it.name === 'Working' && it.isFolder
         )
         if (existingWorkingFolder === -1) {
-            return defaultJob?.sharepointFolderId
+            return selectedJob?.sharepointFolderId
         }
         return folderItems[existingWorkingFolder]?.id
-    }, [folderItems])
+    }, [folderItems, selectedJob])
 
     const handleSharepointUpload = async (
         e: React.ChangeEvent<HTMLInputElement>
     ) => {
         if (!e.target.files) return
 
-        // 1. Convert to array and limit to max 5 files total (including existing)
         let selectedFiles = Array.from(e.target.files)
         const totalAllowed = 5
         const currentCount = uploadStates.length
@@ -173,7 +161,6 @@ export const DeliverJobContent = ({
 
         if (selectedFiles.length === 0) return
 
-        // 2. Initialize UI state for these files
         const newUploads: UploadingFile[] = selectedFiles.map((file) => ({
             file,
             name: file.name,
@@ -183,10 +170,8 @@ export const DeliverJobContent = ({
 
         setUploadStates((prev) => [...prev, ...newUploads])
 
-        // 3. Upload files sequentially or in parallel
         for (const uploadItem of newUploads) {
             try {
-                // Upload with progress callback
                 const res = await sharepointApi.uploadFile(
                     destinationUploadFolderId,
                     uploadItem.file,
@@ -201,49 +186,47 @@ export const DeliverJobContent = ({
                     }
                 )
 
-                let finalUrl = ''
-                if (res.result) {
-                    const item = res.result as any
-                    finalUrl = item.webUrl || item.url || ''
-                } else {
-                    const item = res as any
-                    finalUrl = item.webUrl || item.url || ''
-                }
+                const item = res.result ? (res.result as any) : (res as any)
+                const finalUrl = item.webUrl || item.url || ''
+                const finalId = item.id || ''
+                const finalName = item.name || uploadItem.name
 
-                if (finalUrl) {
-                    // Update Local State to Success
+                if (finalUrl && finalId) {
                     setUploadStates((prev) =>
-                        prev.map((item) =>
-                            item.name === uploadItem.name
+                        prev.map((stateItem) =>
+                            stateItem.name === uploadItem.name
                                 ? {
-                                      ...item,
+                                      ...stateItem,
                                       status: 'success',
                                       url: finalUrl,
+                                      sharepointId: finalId,
                                       progress: 100,
                                   }
-                                : item
+                                : stateItem
                         )
                     )
 
-                    // Add URL to Formik
+                    // Store as an object matching your Zod schema
                     formik.setFieldValue('files', [
                         ...formik.values.files,
-                        finalUrl,
+                        {
+                            webUrl: finalUrl,
+                            fileName: finalName,
+                            sharepointId: finalId,
+                        },
                     ])
                 } else {
-                    throw new Error('No URL returned from API')
+                    throw new Error('Incomplete data returned from API')
                 }
             } catch (err: any) {
                 console.error(`Upload failed for ${uploadItem.name}:`, err)
-                
-                // Lấy thông báo lỗi chi tiết từ Axios hoặc Error object
-                const errorMessage = 
-                    err?.response?.data?.message || 
-                    err?.response?.data?.error || 
-                    err?.message || 
+
+                const errorMessage =
+                    err?.response?.data?.message ||
+                    err?.response?.data?.error ||
+                    err?.message ||
                     'Upload failed due to unknown error'
 
-                // Update Local State to Error kèm message
                 setUploadStates((prev) =>
                     prev.map((item) =>
                         item.name === uploadItem.name
@@ -254,21 +237,21 @@ export const DeliverJobContent = ({
             }
         }
 
-        // Reset input
         e.target.value = ''
     }
 
     const removeFile = (fileToRemove: UploadingFile) => {
-        // Remove from local UI state
         setUploadStates((prev) =>
             prev.filter((f) => f.name !== fileToRemove.name)
         )
 
-        // If it was successful, remove its URL from formik
+        // Filter out the object matching the removed URL
         if (fileToRemove.url) {
             formik.setFieldValue(
                 'files',
-                formik.values.files.filter((url) => url !== fileToRemove.url)
+                formik.values.files.filter(
+                    (file) => file.webUrl !== fileToRemove.url
+                )
             )
         }
     }
@@ -281,9 +264,8 @@ export const DeliverJobContent = ({
             (it) => it.id === formik.values.jobId
         )
         return '#' + jobDeliver?.no + '_' + jobDeliver?.displayName
-    }, [formik.values.jobId])
+    }, [formik.values.jobId, pendingDeliverJobs])
 
-    // Check if any files are currently uploading to disable submit button
     const isUploadingFiles = uploadStates.some((f) => f.status === 'uploading')
 
     return (
@@ -304,34 +286,40 @@ export const DeliverJobContent = ({
                 {pendingDeliverJobs.length > 0 ? (
                     <>
                         {showSelect && (
-                            <Select
+                            <HeroAutocomplete
                                 isRequired
                                 label="Select Job"
                                 placeholder="Which job is for delivery?"
                                 labelPlacement="outside"
                                 variant="bordered"
                                 name="jobId"
-                                selectedKeys={
-                                    formik.values.jobId
-                                        ? [formik.values.jobId]
-                                        : []
-                                }
-                                disallowEmptySelection
+                                selectedKey={formik.values.jobId || null}
                                 isDisabled={!lodash.isEmpty(defaultJob)}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
+                                onSelectionChange={(key) => {
+                                    formik.setFieldValue('jobId', key)
+                                    setSelectedJob(
+                                        pendingDeliverJobs.find(
+                                            (it) => it.id === key
+                                        )
+                                    )
+                                }}
+                                onBlur={() =>
+                                    formik.setFieldTouched('jobId', true)
+                                }
                                 isInvalid={
                                     formik.touched.jobId &&
                                     !!formik.errors.jobId
                                 }
                                 errorMessage={
-                                    formik.touched.jobId && formik.errors.jobId
+                                    formik.touched.jobId &&
+                                    (formik.errors.jobId as string)
                                 }
+                                defaultItems={pendingDeliverJobs}
                             >
                                 {pendingDeliverJobs.map((job) => (
-                                    <SelectItem
+                                    <HeroAutocompleteItem
                                         key={job.id}
-                                        textValue={job.displayName}
+                                        textValue={`#${job.no} ${job.displayName}`}
                                     >
                                         <div className="flex items-center justify-between gap-2">
                                             <div>
@@ -347,9 +335,9 @@ export const DeliverJobContent = ({
                                                 props={{ size: 'sm' }}
                                             />
                                         </div>
-                                    </SelectItem>
+                                    </HeroAutocompleteItem>
                                 ))}
-                            </Select>
+                            </HeroAutocomplete>
                         )}
 
                         <Textarea
@@ -368,130 +356,141 @@ export const DeliverJobContent = ({
                                 formik.touched.note && !!formik.errors.note
                             }
                             errorMessage={
-                                formik.touched.note && formik.errors.note
+                                formik.touched.note &&
+                                (formik.errors.note as string)
                             }
                         />
 
                         {/* FILE UPLOAD SECTION */}
-                        <div className="flex flex-col gap-2">
-                            <label className="text-sm font-medium">
-                                Upload Delivery Files
-                                <span className="text-xs text-default-400 ml-2 font-normal">
-                                    (Max 5 files)
-                                </span>
-                            </label>
+                        {selectedJob && (
+                            <div className="flex flex-col gap-2">
+                                <label className="text-sm font-medium">
+                                    Upload Delivery Files
+                                    <span className="text-xs text-default-400 ml-2 font-normal">
+                                        (Max 5 files)
+                                    </span>
+                                </label>
 
-                            {/* Upload Dropzone / Button Area */}
-                            <label className="cursor-pointer border-2 border-dashed border-default-200 hover:border-primary/50 hover:bg-primary/5 transition-all rounded-xl p-4 flex flex-col items-center justify-center gap-2 group">
-                                <input
-                                    type="file"
-                                    multiple
-                                    onChange={handleSharepointUpload}
-                                    className="hidden"
-                                    disabled={uploadStates.length >= 5}
-                                />
-                                <div className="p-2 bg-default-100 rounded-full group-hover:bg-primary/10 group-hover:text-primary transition-colors">
-                                    <UploadCloud
-                                        size={20}
-                                        className="text-default-500 group-hover:text-primary"
+                                {/* Upload Dropzone / Button Area */}
+                                <label className="cursor-pointer border-2 border-dashed border-default-200 hover:border-primary/50 hover:bg-primary/5 transition-all rounded-xl p-4 flex flex-col items-center justify-center gap-2 group">
+                                    <input
+                                        type="file"
+                                        multiple
+                                        onChange={handleSharepointUpload}
+                                        className="hidden"
+                                        disabled={uploadStates.length >= 5}
                                     />
-                                </div>
-                                <p className="text-sm text-default-600 font-medium">
-                                    Click to select files
-                                </p>
-                            </label>
+                                    <div className="p-2 bg-default-100 rounded-full group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                                        <UploadCloud
+                                            size={20}
+                                            className="text-default-500 group-hover:text-primary"
+                                        />
+                                    </div>
+                                    <p className="text-sm text-default-600 font-medium">
+                                        Click to select files
+                                    </p>
+                                </label>
 
-                            {/* Uploaded / Uploading List */}
-                            {uploadStates.length > 0 && (
-                                <div className="flex flex-col gap-2 mt-2">
-                                    {uploadStates.map((fileState, idx) => (
-                                        <div
-                                            key={idx}
-                                            className="flex items-center justify-between p-3 bg-default-50 border border-default-200 rounded-lg"
-                                        >
-                                            <div className="flex items-center gap-3 overflow-hidden w-full">
-                                                <div className="p-1.5 bg-default-100 rounded-md shrink-0">
-                                                    <FileIcon
-                                                        size={16}
-                                                        className="text-default-500"
-                                                    />
-                                                </div>
-                                                <div className="flex flex-col truncate w-full pr-2">
-                                                    <span className="text-sm font-medium truncate">
-                                                        {fileState.name}
-                                                    </span>
-
-                                                    {fileState.status ===
-                                                        'success' &&
-                                                    fileState.url ? (
-                                                        <a
-                                                            href={fileState.url}
-                                                            target="_blank"
-                                                            rel="noreferrer"
-                                                            className="text-[10px] text-primary hover:underline truncate"
-                                                        >
-                                                            View in SharePoint
-                                                        </a>
-                                                    ) : fileState.status ===
-                                                      'error' ? (
-                                                        <span 
-                                                            className="text-[10px] text-danger truncate"
-                                                            title={fileState.errorMessage}
-                                                        >
-                                                            {fileState.errorMessage || 'Upload failed'}
+                                {/* Uploaded / Uploading List */}
+                                {uploadStates.length > 0 && (
+                                    <div className="flex flex-col gap-2 mt-2">
+                                        {uploadStates.map((fileState, idx) => (
+                                            <div
+                                                key={idx}
+                                                className="flex items-center justify-between p-3 bg-default-50 border border-default-200 rounded-lg"
+                                            >
+                                                <div className="flex items-center gap-3 overflow-hidden w-full">
+                                                    <div className="p-1.5 bg-default-100 rounded-md shrink-0">
+                                                        <FileIcon
+                                                            size={16}
+                                                            className="text-default-500"
+                                                        />
+                                                    </div>
+                                                    <div className="flex flex-col truncate w-full pr-2">
+                                                        <span className="text-sm font-medium truncate">
+                                                            {fileState.name}
                                                         </span>
-                                                    ) : (
-                                                        <div className="flex flex-col gap-1 mt-1 w-full pr-4">
-                                                            <div className="flex justify-between items-center text-[10px] text-default-400">
-                                                                <span>
-                                                                    Uploading...
-                                                                </span>
-                                                                <span>
-                                                                    {
+
+                                                        {fileState.status ===
+                                                            'success' &&
+                                                        fileState.url ? (
+                                                            <a
+                                                                href={
+                                                                    fileState.url
+                                                                }
+                                                                target="_blank"
+                                                                rel="noreferrer"
+                                                                className="text-[10px] text-primary hover:underline truncate"
+                                                            >
+                                                                View in
+                                                                SharePoint
+                                                            </a>
+                                                        ) : fileState.status ===
+                                                          'error' ? (
+                                                            <span
+                                                                className="text-[10px] text-danger truncate"
+                                                                title={
+                                                                    fileState.errorMessage
+                                                                }
+                                                            >
+                                                                {fileState.errorMessage ||
+                                                                    'Upload failed'}
+                                                            </span>
+                                                        ) : (
+                                                            <div className="flex flex-col gap-1 mt-1 w-full pr-4">
+                                                                <div className="flex justify-between items-center text-[10px] text-default-400">
+                                                                    <span>
+                                                                        Uploading...
+                                                                    </span>
+                                                                    <span>
+                                                                        {
+                                                                            fileState.progress
+                                                                        }
+                                                                        %
+                                                                    </span>
+                                                                </div>
+                                                                <Progress
+                                                                    aria-label="Uploading..."
+                                                                    size="sm"
+                                                                    value={
                                                                         fileState.progress
                                                                     }
-                                                                    %
-                                                                </span>
+                                                                    color="primary"
+                                                                />
                                                             </div>
-                                                            <Progress
-                                                                aria-label="Uploading..."
-                                                                size="sm"
-                                                                value={
-                                                                    fileState.progress
-                                                                }
-                                                                color="primary"
-                                                            />
-                                                        </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex items-center gap-2 shrink-0 pl-2">
+                                                    {fileState.status ===
+                                                        'success' && (
+                                                        <CheckCircle2
+                                                            size={18}
+                                                            className="text-success"
+                                                        />
                                                     )}
+                                                    <Button
+                                                        isIconOnly
+                                                        size="sm"
+                                                        variant="light"
+                                                        color="danger"
+                                                        onPress={() =>
+                                                            removeFile(
+                                                                fileState
+                                                            )
+                                                        }
+                                                        className="opacity-50 hover:opacity-100 min-w-8 w-8 h-8"
+                                                    >
+                                                        <X size={16} />
+                                                    </Button>
                                                 </div>
                                             </div>
-
-                                            <div className="flex items-center gap-2 shrink-0 pl-2">
-                                                {fileState.status ===
-                                                    'success' && (
-                                                    <CheckCircle2
-                                                        size={18}
-                                                        className="text-success"
-                                                    />
-                                                )}
-                                                <Button
-                                                    isIconOnly
-                                                    size="sm"
-                                                    variant="light"
-                                                    color="danger"
-                                                    onPress={() =>
-                                                        removeFile(fileState)
-                                                    }
-                                                    className="opacity-50 hover:opacity-100 min-w-8 w-8 h-8"
-                                                >
-                                                    <X size={16} />
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </>
                 ) : (
                     <div className="py-10 text-center text-default-400 italic">

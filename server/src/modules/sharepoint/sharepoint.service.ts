@@ -226,8 +226,8 @@ export class SharePointService implements OnModuleInit, OnModuleDestroy {
 				start = end;
 
 				// Tuỳ chọn: Ghi log tiến trình
-				// const percent = Math.round((start / fileSize) * 100);
-				// this.logger.debug(`Uploading ${file.originalname}: ${percent}%`);
+				const percent = Math.round((start / fileSize) * 100);
+				this.logger.debug(`Uploading ${file.originalname}: ${percent}%`);
 			}
 
 			this.logger.log(`Upload thành công file: ${file.originalname}`);

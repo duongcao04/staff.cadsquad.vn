@@ -37,7 +37,9 @@ export function CreateFolderTemplateModal({
         sharepointFolderItemsOptions(SHAREPOINT.JOB_FOLDER_TEMPLATE_ID)
     )
     const [displayName, setDisplayName] = useState('')
-    const [selectedFolderId, setSelectedFolderId] = useState<string>('')
+    const [selectedFolderId, setSelectedFolderId] = useState<string | null>(
+        null
+    )
 
     const cancelModalDisclosure = useDisclosure()
 
@@ -48,7 +50,7 @@ export function CreateFolderTemplateModal({
             setSelectedFolderId(editingTemplate.folderId)
         } else {
             setDisplayName('')
-            setSelectedFolderId('')
+            setSelectedFolderId(null)
         }
     })
 

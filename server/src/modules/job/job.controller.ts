@@ -34,6 +34,7 @@ import { UpdateRevenueDto } from './dto/update-revenue.dto'
 import { JobCommentService } from './job-comment.service'
 import { JobService } from './job.service'
 import { UpdateAttachmentsDto } from './dto/update-attachments.dto'
+import { JobDeliverService } from './job-deliver.service'
 
 @ApiTags('Jobs')
 @Controller('jobs')
@@ -43,6 +44,7 @@ export class JobController {
 	private readonly logger = new Logger(JobController.name)
 	constructor(
 		private readonly jobService: JobService,
+		private readonly jobDeliverService: JobDeliverService,
 		private readonly jobTypeService: JobTypeService,
 		private readonly activityLogService: ActivityLogService,
 		private readonly commentService: JobCommentService,
@@ -57,7 +59,7 @@ export class JobController {
 	@ResponseMessage('Get job deliveries successfully')
 	@ApiOperation({ summary: 'Get all delivery attempts for a specific job' })
 	async getJobDeliveries(@Param('id') id: string) {
-		return this.jobService.getJobDeliveries(id)
+		return this.jobDeliverService.getDeliveriesByJob(id)
 	}
 
 	@Get(':jobId/activity-logs')
@@ -197,7 +199,7 @@ export class JobController {
 		@Body() data: DeliverJobDto
 	) {
 		const user: TokenPayload = request['user']
-		return this.jobService.deliverJob(user.sub, id, data)
+		return this.jobDeliverService.deliverJob(user.sub, id, data)
 	}
 
 	@Post('deliver/:deliveryId/:action')

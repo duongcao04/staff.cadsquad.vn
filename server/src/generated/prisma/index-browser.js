@@ -409,13 +409,22 @@ exports.Prisma.JobStatusScalarFieldEnum = {
   allowedRolesToSet: 'allowedRolesToSet'
 };
 
+exports.Prisma.JobDeliverFileScalarFieldEnum = {
+  id: 'id',
+  fileName: 'fileName',
+  webUrl: 'webUrl',
+  sharepointId: 'sharepointId',
+  jobDeliveryId: 'jobDeliveryId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.JobDeliveryScalarFieldEnum = {
   id: 'id',
   jobId: 'jobId',
   userId: 'userId',
   note: 'note',
   link: 'link',
-  files: 'files',
   status: 'status',
   adminFeedback: 'adminFeedback',
   createdAt: 'createdAt',
@@ -692,6 +701,7 @@ exports.Prisma.ModelName = {
   PaymentChannel: 'PaymentChannel',
   JobType: 'JobType',
   JobStatus: 'JobStatus',
+  JobDeliverFile: 'JobDeliverFile',
   JobDelivery: 'JobDelivery',
   JobStatusHistory: 'JobStatusHistory',
   JobActivityLog: 'JobActivityLog',

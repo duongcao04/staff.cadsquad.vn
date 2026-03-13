@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer'
 import {
     IsString,
     IsOptional,
@@ -5,7 +6,22 @@ import {
     MaxLength,
     IsArray,
     IsNotEmpty,
+    ValidateNested,
 } from 'class-validator'
+
+export class DeliverJobFileDto {
+    @IsUrl({}, { message: 'Each attachment must be a valid URL' })
+    @IsNotEmpty()
+    webUrl!: string
+
+    @IsString()
+    @IsNotEmpty()
+    fileName!: string
+
+    @IsString()
+    @IsNotEmpty()
+    sharepointId!: string
+}
 
 export class DeliverJobDto {
     @IsString()
@@ -19,7 +35,7 @@ export class DeliverJobDto {
 
     @IsOptional()
     @IsArray()
-    @IsString({ each: true })
-    @IsUrl({}, { each: true, message: 'Each file URL must be a valid URL' })
-    files?: string[]
+    @ValidateNested({ each: true })
+    @Type(() => DeliverJobFileDto)
+    files?: DeliverJobFileDto[]
 }

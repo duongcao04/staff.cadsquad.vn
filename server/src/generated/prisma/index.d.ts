@@ -139,6 +139,11 @@ export type JobType = $Result.DefaultSelection<Prisma.$JobTypePayload>
  */
 export type JobStatus = $Result.DefaultSelection<Prisma.$JobStatusPayload>
 /**
+ * Model JobDeliverFile
+ * 
+ */
+export type JobDeliverFile = $Result.DefaultSelection<Prisma.$JobDeliverFilePayload>
+/**
  * Model JobDelivery
  * 
  */
@@ -784,6 +789,16 @@ export class PrismaClient<
   get jobStatus(): Prisma.JobStatusDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.jobDeliverFile`: Exposes CRUD operations for the **JobDeliverFile** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more JobDeliverFiles
+    * const jobDeliverFiles = await prisma.jobDeliverFile.findMany()
+    * ```
+    */
+  get jobDeliverFile(): Prisma.JobDeliverFileDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.jobDelivery`: Exposes CRUD operations for the **JobDelivery** model.
     * Example usage:
     * ```ts
@@ -1331,6 +1346,7 @@ export namespace Prisma {
     PaymentChannel: 'PaymentChannel',
     JobType: 'JobType',
     JobStatus: 'JobStatus',
+    JobDeliverFile: 'JobDeliverFile',
     JobDelivery: 'JobDelivery',
     JobStatusHistory: 'JobStatusHistory',
     JobActivityLog: 'JobActivityLog',
@@ -1355,7 +1371,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "browserSubscribes" | "userDevices" | "user" | "userSecurityLog" | "role" | "permission" | "userPermission" | "permissionGroup" | "session" | "account" | "verification" | "gallery" | "jobComment" | "jobTitle" | "department" | "userConfig" | "fileSystem" | "job" | "jobAssignment" | "jobFolderTemplate" | "client" | "pinnedJob" | "paymentChannel" | "jobType" | "jobStatus" | "jobDelivery" | "jobStatusHistory" | "jobActivityLog" | "notification" | "community" | "communityMember" | "topic" | "post" | "postEvent"
+      modelProps: "browserSubscribes" | "userDevices" | "user" | "userSecurityLog" | "role" | "permission" | "userPermission" | "permissionGroup" | "session" | "account" | "verification" | "gallery" | "jobComment" | "jobTitle" | "department" | "userConfig" | "fileSystem" | "job" | "jobAssignment" | "jobFolderTemplate" | "client" | "pinnedJob" | "paymentChannel" | "jobType" | "jobStatus" | "jobDeliverFile" | "jobDelivery" | "jobStatusHistory" | "jobActivityLog" | "notification" | "community" | "communityMember" | "topic" | "post" | "postEvent"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3209,6 +3225,80 @@ export namespace Prisma {
           }
         }
       }
+      JobDeliverFile: {
+        payload: Prisma.$JobDeliverFilePayload<ExtArgs>
+        fields: Prisma.JobDeliverFileFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.JobDeliverFileFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobDeliverFilePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.JobDeliverFileFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobDeliverFilePayload>
+          }
+          findFirst: {
+            args: Prisma.JobDeliverFileFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobDeliverFilePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.JobDeliverFileFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobDeliverFilePayload>
+          }
+          findMany: {
+            args: Prisma.JobDeliverFileFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobDeliverFilePayload>[]
+          }
+          create: {
+            args: Prisma.JobDeliverFileCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobDeliverFilePayload>
+          }
+          createMany: {
+            args: Prisma.JobDeliverFileCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.JobDeliverFileCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobDeliverFilePayload>[]
+          }
+          delete: {
+            args: Prisma.JobDeliverFileDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobDeliverFilePayload>
+          }
+          update: {
+            args: Prisma.JobDeliverFileUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobDeliverFilePayload>
+          }
+          deleteMany: {
+            args: Prisma.JobDeliverFileDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.JobDeliverFileUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.JobDeliverFileUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobDeliverFilePayload>[]
+          }
+          upsert: {
+            args: Prisma.JobDeliverFileUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobDeliverFilePayload>
+          }
+          aggregate: {
+            args: Prisma.JobDeliverFileAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateJobDeliverFile>
+          }
+          groupBy: {
+            args: Prisma.JobDeliverFileGroupByArgs<ExtArgs>
+            result: $Utils.Optional<JobDeliverFileGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.JobDeliverFileCountArgs<ExtArgs>
+            result: $Utils.Optional<JobDeliverFileCountAggregateOutputType> | number
+          }
+        }
+      }
       JobDelivery: {
         payload: Prisma.$JobDeliveryPayload<ExtArgs>
         fields: Prisma.JobDeliveryFieldRefs
@@ -4008,6 +4098,7 @@ export namespace Prisma {
     paymentChannel?: PaymentChannelOmit
     jobType?: JobTypeOmit
     jobStatus?: JobStatusOmit
+    jobDeliverFile?: JobDeliverFileOmit
     jobDelivery?: JobDeliveryOmit
     jobStatusHistory?: JobStatusHistoryOmit
     jobActivityLog?: JobActivityLogOmit
@@ -4753,6 +4844,37 @@ export namespace Prisma {
    */
   export type JobStatusCountOutputTypeCountHistoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: JobStatusHistoryWhereInput
+  }
+
+
+  /**
+   * Count Type JobDeliveryCountOutputType
+   */
+
+  export type JobDeliveryCountOutputType = {
+    files: number
+  }
+
+  export type JobDeliveryCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    files?: boolean | JobDeliveryCountOutputTypeCountFilesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * JobDeliveryCountOutputType without action
+   */
+  export type JobDeliveryCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobDeliveryCountOutputType
+     */
+    select?: JobDeliveryCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * JobDeliveryCountOutputType without action
+   */
+  export type JobDeliveryCountOutputTypeCountFilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JobDeliverFileWhereInput
   }
 
 
@@ -33836,6 +33958,1090 @@ export namespace Prisma {
 
 
   /**
+   * Model JobDeliverFile
+   */
+
+  export type AggregateJobDeliverFile = {
+    _count: JobDeliverFileCountAggregateOutputType | null
+    _min: JobDeliverFileMinAggregateOutputType | null
+    _max: JobDeliverFileMaxAggregateOutputType | null
+  }
+
+  export type JobDeliverFileMinAggregateOutputType = {
+    id: string | null
+    fileName: string | null
+    webUrl: string | null
+    sharepointId: string | null
+    jobDeliveryId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type JobDeliverFileMaxAggregateOutputType = {
+    id: string | null
+    fileName: string | null
+    webUrl: string | null
+    sharepointId: string | null
+    jobDeliveryId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type JobDeliverFileCountAggregateOutputType = {
+    id: number
+    fileName: number
+    webUrl: number
+    sharepointId: number
+    jobDeliveryId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type JobDeliverFileMinAggregateInputType = {
+    id?: true
+    fileName?: true
+    webUrl?: true
+    sharepointId?: true
+    jobDeliveryId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type JobDeliverFileMaxAggregateInputType = {
+    id?: true
+    fileName?: true
+    webUrl?: true
+    sharepointId?: true
+    jobDeliveryId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type JobDeliverFileCountAggregateInputType = {
+    id?: true
+    fileName?: true
+    webUrl?: true
+    sharepointId?: true
+    jobDeliveryId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type JobDeliverFileAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which JobDeliverFile to aggregate.
+     */
+    where?: JobDeliverFileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JobDeliverFiles to fetch.
+     */
+    orderBy?: JobDeliverFileOrderByWithRelationInput | JobDeliverFileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: JobDeliverFileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JobDeliverFiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JobDeliverFiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned JobDeliverFiles
+    **/
+    _count?: true | JobDeliverFileCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: JobDeliverFileMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: JobDeliverFileMaxAggregateInputType
+  }
+
+  export type GetJobDeliverFileAggregateType<T extends JobDeliverFileAggregateArgs> = {
+        [P in keyof T & keyof AggregateJobDeliverFile]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateJobDeliverFile[P]>
+      : GetScalarType<T[P], AggregateJobDeliverFile[P]>
+  }
+
+
+
+
+  export type JobDeliverFileGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JobDeliverFileWhereInput
+    orderBy?: JobDeliverFileOrderByWithAggregationInput | JobDeliverFileOrderByWithAggregationInput[]
+    by: JobDeliverFileScalarFieldEnum[] | JobDeliverFileScalarFieldEnum
+    having?: JobDeliverFileScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: JobDeliverFileCountAggregateInputType | true
+    _min?: JobDeliverFileMinAggregateInputType
+    _max?: JobDeliverFileMaxAggregateInputType
+  }
+
+  export type JobDeliverFileGroupByOutputType = {
+    id: string
+    fileName: string
+    webUrl: string
+    sharepointId: string
+    jobDeliveryId: string
+    createdAt: Date
+    updatedAt: Date
+    _count: JobDeliverFileCountAggregateOutputType | null
+    _min: JobDeliverFileMinAggregateOutputType | null
+    _max: JobDeliverFileMaxAggregateOutputType | null
+  }
+
+  type GetJobDeliverFileGroupByPayload<T extends JobDeliverFileGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<JobDeliverFileGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof JobDeliverFileGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], JobDeliverFileGroupByOutputType[P]>
+            : GetScalarType<T[P], JobDeliverFileGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type JobDeliverFileSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    fileName?: boolean
+    webUrl?: boolean
+    sharepointId?: boolean
+    jobDeliveryId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    jobDelivery?: boolean | JobDeliveryDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["jobDeliverFile"]>
+
+  export type JobDeliverFileSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    fileName?: boolean
+    webUrl?: boolean
+    sharepointId?: boolean
+    jobDeliveryId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    jobDelivery?: boolean | JobDeliveryDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["jobDeliverFile"]>
+
+  export type JobDeliverFileSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    fileName?: boolean
+    webUrl?: boolean
+    sharepointId?: boolean
+    jobDeliveryId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    jobDelivery?: boolean | JobDeliveryDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["jobDeliverFile"]>
+
+  export type JobDeliverFileSelectScalar = {
+    id?: boolean
+    fileName?: boolean
+    webUrl?: boolean
+    sharepointId?: boolean
+    jobDeliveryId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type JobDeliverFileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "fileName" | "webUrl" | "sharepointId" | "jobDeliveryId" | "createdAt" | "updatedAt", ExtArgs["result"]["jobDeliverFile"]>
+  export type JobDeliverFileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    jobDelivery?: boolean | JobDeliveryDefaultArgs<ExtArgs>
+  }
+  export type JobDeliverFileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    jobDelivery?: boolean | JobDeliveryDefaultArgs<ExtArgs>
+  }
+  export type JobDeliverFileIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    jobDelivery?: boolean | JobDeliveryDefaultArgs<ExtArgs>
+  }
+
+  export type $JobDeliverFilePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "JobDeliverFile"
+    objects: {
+      jobDelivery: Prisma.$JobDeliveryPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      fileName: string
+      webUrl: string
+      sharepointId: string
+      jobDeliveryId: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["jobDeliverFile"]>
+    composites: {}
+  }
+
+  type JobDeliverFileGetPayload<S extends boolean | null | undefined | JobDeliverFileDefaultArgs> = $Result.GetResult<Prisma.$JobDeliverFilePayload, S>
+
+  type JobDeliverFileCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<JobDeliverFileFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: JobDeliverFileCountAggregateInputType | true
+    }
+
+  export interface JobDeliverFileDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['JobDeliverFile'], meta: { name: 'JobDeliverFile' } }
+    /**
+     * Find zero or one JobDeliverFile that matches the filter.
+     * @param {JobDeliverFileFindUniqueArgs} args - Arguments to find a JobDeliverFile
+     * @example
+     * // Get one JobDeliverFile
+     * const jobDeliverFile = await prisma.jobDeliverFile.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends JobDeliverFileFindUniqueArgs>(args: SelectSubset<T, JobDeliverFileFindUniqueArgs<ExtArgs>>): Prisma__JobDeliverFileClient<$Result.GetResult<Prisma.$JobDeliverFilePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one JobDeliverFile that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {JobDeliverFileFindUniqueOrThrowArgs} args - Arguments to find a JobDeliverFile
+     * @example
+     * // Get one JobDeliverFile
+     * const jobDeliverFile = await prisma.jobDeliverFile.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends JobDeliverFileFindUniqueOrThrowArgs>(args: SelectSubset<T, JobDeliverFileFindUniqueOrThrowArgs<ExtArgs>>): Prisma__JobDeliverFileClient<$Result.GetResult<Prisma.$JobDeliverFilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first JobDeliverFile that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobDeliverFileFindFirstArgs} args - Arguments to find a JobDeliverFile
+     * @example
+     * // Get one JobDeliverFile
+     * const jobDeliverFile = await prisma.jobDeliverFile.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends JobDeliverFileFindFirstArgs>(args?: SelectSubset<T, JobDeliverFileFindFirstArgs<ExtArgs>>): Prisma__JobDeliverFileClient<$Result.GetResult<Prisma.$JobDeliverFilePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first JobDeliverFile that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobDeliverFileFindFirstOrThrowArgs} args - Arguments to find a JobDeliverFile
+     * @example
+     * // Get one JobDeliverFile
+     * const jobDeliverFile = await prisma.jobDeliverFile.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends JobDeliverFileFindFirstOrThrowArgs>(args?: SelectSubset<T, JobDeliverFileFindFirstOrThrowArgs<ExtArgs>>): Prisma__JobDeliverFileClient<$Result.GetResult<Prisma.$JobDeliverFilePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more JobDeliverFiles that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobDeliverFileFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all JobDeliverFiles
+     * const jobDeliverFiles = await prisma.jobDeliverFile.findMany()
+     * 
+     * // Get first 10 JobDeliverFiles
+     * const jobDeliverFiles = await prisma.jobDeliverFile.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const jobDeliverFileWithIdOnly = await prisma.jobDeliverFile.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends JobDeliverFileFindManyArgs>(args?: SelectSubset<T, JobDeliverFileFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobDeliverFilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a JobDeliverFile.
+     * @param {JobDeliverFileCreateArgs} args - Arguments to create a JobDeliverFile.
+     * @example
+     * // Create one JobDeliverFile
+     * const JobDeliverFile = await prisma.jobDeliverFile.create({
+     *   data: {
+     *     // ... data to create a JobDeliverFile
+     *   }
+     * })
+     * 
+     */
+    create<T extends JobDeliverFileCreateArgs>(args: SelectSubset<T, JobDeliverFileCreateArgs<ExtArgs>>): Prisma__JobDeliverFileClient<$Result.GetResult<Prisma.$JobDeliverFilePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many JobDeliverFiles.
+     * @param {JobDeliverFileCreateManyArgs} args - Arguments to create many JobDeliverFiles.
+     * @example
+     * // Create many JobDeliverFiles
+     * const jobDeliverFile = await prisma.jobDeliverFile.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends JobDeliverFileCreateManyArgs>(args?: SelectSubset<T, JobDeliverFileCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many JobDeliverFiles and returns the data saved in the database.
+     * @param {JobDeliverFileCreateManyAndReturnArgs} args - Arguments to create many JobDeliverFiles.
+     * @example
+     * // Create many JobDeliverFiles
+     * const jobDeliverFile = await prisma.jobDeliverFile.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many JobDeliverFiles and only return the `id`
+     * const jobDeliverFileWithIdOnly = await prisma.jobDeliverFile.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends JobDeliverFileCreateManyAndReturnArgs>(args?: SelectSubset<T, JobDeliverFileCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobDeliverFilePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a JobDeliverFile.
+     * @param {JobDeliverFileDeleteArgs} args - Arguments to delete one JobDeliverFile.
+     * @example
+     * // Delete one JobDeliverFile
+     * const JobDeliverFile = await prisma.jobDeliverFile.delete({
+     *   where: {
+     *     // ... filter to delete one JobDeliverFile
+     *   }
+     * })
+     * 
+     */
+    delete<T extends JobDeliverFileDeleteArgs>(args: SelectSubset<T, JobDeliverFileDeleteArgs<ExtArgs>>): Prisma__JobDeliverFileClient<$Result.GetResult<Prisma.$JobDeliverFilePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one JobDeliverFile.
+     * @param {JobDeliverFileUpdateArgs} args - Arguments to update one JobDeliverFile.
+     * @example
+     * // Update one JobDeliverFile
+     * const jobDeliverFile = await prisma.jobDeliverFile.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends JobDeliverFileUpdateArgs>(args: SelectSubset<T, JobDeliverFileUpdateArgs<ExtArgs>>): Prisma__JobDeliverFileClient<$Result.GetResult<Prisma.$JobDeliverFilePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more JobDeliverFiles.
+     * @param {JobDeliverFileDeleteManyArgs} args - Arguments to filter JobDeliverFiles to delete.
+     * @example
+     * // Delete a few JobDeliverFiles
+     * const { count } = await prisma.jobDeliverFile.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends JobDeliverFileDeleteManyArgs>(args?: SelectSubset<T, JobDeliverFileDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more JobDeliverFiles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobDeliverFileUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many JobDeliverFiles
+     * const jobDeliverFile = await prisma.jobDeliverFile.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends JobDeliverFileUpdateManyArgs>(args: SelectSubset<T, JobDeliverFileUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more JobDeliverFiles and returns the data updated in the database.
+     * @param {JobDeliverFileUpdateManyAndReturnArgs} args - Arguments to update many JobDeliverFiles.
+     * @example
+     * // Update many JobDeliverFiles
+     * const jobDeliverFile = await prisma.jobDeliverFile.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more JobDeliverFiles and only return the `id`
+     * const jobDeliverFileWithIdOnly = await prisma.jobDeliverFile.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends JobDeliverFileUpdateManyAndReturnArgs>(args: SelectSubset<T, JobDeliverFileUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobDeliverFilePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one JobDeliverFile.
+     * @param {JobDeliverFileUpsertArgs} args - Arguments to update or create a JobDeliverFile.
+     * @example
+     * // Update or create a JobDeliverFile
+     * const jobDeliverFile = await prisma.jobDeliverFile.upsert({
+     *   create: {
+     *     // ... data to create a JobDeliverFile
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the JobDeliverFile we want to update
+     *   }
+     * })
+     */
+    upsert<T extends JobDeliverFileUpsertArgs>(args: SelectSubset<T, JobDeliverFileUpsertArgs<ExtArgs>>): Prisma__JobDeliverFileClient<$Result.GetResult<Prisma.$JobDeliverFilePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of JobDeliverFiles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobDeliverFileCountArgs} args - Arguments to filter JobDeliverFiles to count.
+     * @example
+     * // Count the number of JobDeliverFiles
+     * const count = await prisma.jobDeliverFile.count({
+     *   where: {
+     *     // ... the filter for the JobDeliverFiles we want to count
+     *   }
+     * })
+    **/
+    count<T extends JobDeliverFileCountArgs>(
+      args?: Subset<T, JobDeliverFileCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], JobDeliverFileCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a JobDeliverFile.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobDeliverFileAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends JobDeliverFileAggregateArgs>(args: Subset<T, JobDeliverFileAggregateArgs>): Prisma.PrismaPromise<GetJobDeliverFileAggregateType<T>>
+
+    /**
+     * Group by JobDeliverFile.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobDeliverFileGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends JobDeliverFileGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: JobDeliverFileGroupByArgs['orderBy'] }
+        : { orderBy?: JobDeliverFileGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, JobDeliverFileGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetJobDeliverFileGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the JobDeliverFile model
+   */
+  readonly fields: JobDeliverFileFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for JobDeliverFile.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__JobDeliverFileClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    jobDelivery<T extends JobDeliveryDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobDeliveryDefaultArgs<ExtArgs>>): Prisma__JobDeliveryClient<$Result.GetResult<Prisma.$JobDeliveryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the JobDeliverFile model
+   */
+  interface JobDeliverFileFieldRefs {
+    readonly id: FieldRef<"JobDeliverFile", 'String'>
+    readonly fileName: FieldRef<"JobDeliverFile", 'String'>
+    readonly webUrl: FieldRef<"JobDeliverFile", 'String'>
+    readonly sharepointId: FieldRef<"JobDeliverFile", 'String'>
+    readonly jobDeliveryId: FieldRef<"JobDeliverFile", 'String'>
+    readonly createdAt: FieldRef<"JobDeliverFile", 'DateTime'>
+    readonly updatedAt: FieldRef<"JobDeliverFile", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * JobDeliverFile findUnique
+   */
+  export type JobDeliverFileFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobDeliverFile
+     */
+    select?: JobDeliverFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobDeliverFile
+     */
+    omit?: JobDeliverFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobDeliverFileInclude<ExtArgs> | null
+    /**
+     * Filter, which JobDeliverFile to fetch.
+     */
+    where: JobDeliverFileWhereUniqueInput
+  }
+
+  /**
+   * JobDeliverFile findUniqueOrThrow
+   */
+  export type JobDeliverFileFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobDeliverFile
+     */
+    select?: JobDeliverFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobDeliverFile
+     */
+    omit?: JobDeliverFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobDeliverFileInclude<ExtArgs> | null
+    /**
+     * Filter, which JobDeliverFile to fetch.
+     */
+    where: JobDeliverFileWhereUniqueInput
+  }
+
+  /**
+   * JobDeliverFile findFirst
+   */
+  export type JobDeliverFileFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobDeliverFile
+     */
+    select?: JobDeliverFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobDeliverFile
+     */
+    omit?: JobDeliverFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobDeliverFileInclude<ExtArgs> | null
+    /**
+     * Filter, which JobDeliverFile to fetch.
+     */
+    where?: JobDeliverFileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JobDeliverFiles to fetch.
+     */
+    orderBy?: JobDeliverFileOrderByWithRelationInput | JobDeliverFileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for JobDeliverFiles.
+     */
+    cursor?: JobDeliverFileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JobDeliverFiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JobDeliverFiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobDeliverFiles.
+     */
+    distinct?: JobDeliverFileScalarFieldEnum | JobDeliverFileScalarFieldEnum[]
+  }
+
+  /**
+   * JobDeliverFile findFirstOrThrow
+   */
+  export type JobDeliverFileFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobDeliverFile
+     */
+    select?: JobDeliverFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobDeliverFile
+     */
+    omit?: JobDeliverFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobDeliverFileInclude<ExtArgs> | null
+    /**
+     * Filter, which JobDeliverFile to fetch.
+     */
+    where?: JobDeliverFileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JobDeliverFiles to fetch.
+     */
+    orderBy?: JobDeliverFileOrderByWithRelationInput | JobDeliverFileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for JobDeliverFiles.
+     */
+    cursor?: JobDeliverFileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JobDeliverFiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JobDeliverFiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobDeliverFiles.
+     */
+    distinct?: JobDeliverFileScalarFieldEnum | JobDeliverFileScalarFieldEnum[]
+  }
+
+  /**
+   * JobDeliverFile findMany
+   */
+  export type JobDeliverFileFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobDeliverFile
+     */
+    select?: JobDeliverFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobDeliverFile
+     */
+    omit?: JobDeliverFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobDeliverFileInclude<ExtArgs> | null
+    /**
+     * Filter, which JobDeliverFiles to fetch.
+     */
+    where?: JobDeliverFileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JobDeliverFiles to fetch.
+     */
+    orderBy?: JobDeliverFileOrderByWithRelationInput | JobDeliverFileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing JobDeliverFiles.
+     */
+    cursor?: JobDeliverFileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JobDeliverFiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JobDeliverFiles.
+     */
+    skip?: number
+    distinct?: JobDeliverFileScalarFieldEnum | JobDeliverFileScalarFieldEnum[]
+  }
+
+  /**
+   * JobDeliverFile create
+   */
+  export type JobDeliverFileCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobDeliverFile
+     */
+    select?: JobDeliverFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobDeliverFile
+     */
+    omit?: JobDeliverFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobDeliverFileInclude<ExtArgs> | null
+    /**
+     * The data needed to create a JobDeliverFile.
+     */
+    data: XOR<JobDeliverFileCreateInput, JobDeliverFileUncheckedCreateInput>
+  }
+
+  /**
+   * JobDeliverFile createMany
+   */
+  export type JobDeliverFileCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many JobDeliverFiles.
+     */
+    data: JobDeliverFileCreateManyInput | JobDeliverFileCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * JobDeliverFile createManyAndReturn
+   */
+  export type JobDeliverFileCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobDeliverFile
+     */
+    select?: JobDeliverFileSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobDeliverFile
+     */
+    omit?: JobDeliverFileOmit<ExtArgs> | null
+    /**
+     * The data used to create many JobDeliverFiles.
+     */
+    data: JobDeliverFileCreateManyInput | JobDeliverFileCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobDeliverFileIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * JobDeliverFile update
+   */
+  export type JobDeliverFileUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobDeliverFile
+     */
+    select?: JobDeliverFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobDeliverFile
+     */
+    omit?: JobDeliverFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobDeliverFileInclude<ExtArgs> | null
+    /**
+     * The data needed to update a JobDeliverFile.
+     */
+    data: XOR<JobDeliverFileUpdateInput, JobDeliverFileUncheckedUpdateInput>
+    /**
+     * Choose, which JobDeliverFile to update.
+     */
+    where: JobDeliverFileWhereUniqueInput
+  }
+
+  /**
+   * JobDeliverFile updateMany
+   */
+  export type JobDeliverFileUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update JobDeliverFiles.
+     */
+    data: XOR<JobDeliverFileUpdateManyMutationInput, JobDeliverFileUncheckedUpdateManyInput>
+    /**
+     * Filter which JobDeliverFiles to update
+     */
+    where?: JobDeliverFileWhereInput
+    /**
+     * Limit how many JobDeliverFiles to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * JobDeliverFile updateManyAndReturn
+   */
+  export type JobDeliverFileUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobDeliverFile
+     */
+    select?: JobDeliverFileSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobDeliverFile
+     */
+    omit?: JobDeliverFileOmit<ExtArgs> | null
+    /**
+     * The data used to update JobDeliverFiles.
+     */
+    data: XOR<JobDeliverFileUpdateManyMutationInput, JobDeliverFileUncheckedUpdateManyInput>
+    /**
+     * Filter which JobDeliverFiles to update
+     */
+    where?: JobDeliverFileWhereInput
+    /**
+     * Limit how many JobDeliverFiles to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobDeliverFileIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * JobDeliverFile upsert
+   */
+  export type JobDeliverFileUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobDeliverFile
+     */
+    select?: JobDeliverFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobDeliverFile
+     */
+    omit?: JobDeliverFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobDeliverFileInclude<ExtArgs> | null
+    /**
+     * The filter to search for the JobDeliverFile to update in case it exists.
+     */
+    where: JobDeliverFileWhereUniqueInput
+    /**
+     * In case the JobDeliverFile found by the `where` argument doesn't exist, create a new JobDeliverFile with this data.
+     */
+    create: XOR<JobDeliverFileCreateInput, JobDeliverFileUncheckedCreateInput>
+    /**
+     * In case the JobDeliverFile was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<JobDeliverFileUpdateInput, JobDeliverFileUncheckedUpdateInput>
+  }
+
+  /**
+   * JobDeliverFile delete
+   */
+  export type JobDeliverFileDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobDeliverFile
+     */
+    select?: JobDeliverFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobDeliverFile
+     */
+    omit?: JobDeliverFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobDeliverFileInclude<ExtArgs> | null
+    /**
+     * Filter which JobDeliverFile to delete.
+     */
+    where: JobDeliverFileWhereUniqueInput
+  }
+
+  /**
+   * JobDeliverFile deleteMany
+   */
+  export type JobDeliverFileDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which JobDeliverFiles to delete
+     */
+    where?: JobDeliverFileWhereInput
+    /**
+     * Limit how many JobDeliverFiles to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * JobDeliverFile without action
+   */
+  export type JobDeliverFileDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobDeliverFile
+     */
+    select?: JobDeliverFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobDeliverFile
+     */
+    omit?: JobDeliverFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobDeliverFileInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model JobDelivery
    */
 
@@ -33875,7 +35081,6 @@ export namespace Prisma {
     userId: number
     note: number
     link: number
-    files: number
     status: number
     adminFeedback: number
     createdAt: number
@@ -33914,7 +35119,6 @@ export namespace Prisma {
     userId?: true
     note?: true
     link?: true
-    files?: true
     status?: true
     adminFeedback?: true
     createdAt?: true
@@ -34000,7 +35204,6 @@ export namespace Prisma {
     userId: string
     note: string | null
     link: string | null
-    files: string[]
     status: $Enums.DeliveryStatus
     adminFeedback: string | null
     createdAt: Date
@@ -34030,13 +35233,14 @@ export namespace Prisma {
     userId?: boolean
     note?: boolean
     link?: boolean
-    files?: boolean
     status?: boolean
     adminFeedback?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     job?: boolean | JobDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    files?: boolean | JobDelivery$filesArgs<ExtArgs>
+    _count?: boolean | JobDeliveryCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["jobDelivery"]>
 
   export type JobDeliverySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -34045,7 +35249,6 @@ export namespace Prisma {
     userId?: boolean
     note?: boolean
     link?: boolean
-    files?: boolean
     status?: boolean
     adminFeedback?: boolean
     createdAt?: boolean
@@ -34060,7 +35263,6 @@ export namespace Prisma {
     userId?: boolean
     note?: boolean
     link?: boolean
-    files?: boolean
     status?: boolean
     adminFeedback?: boolean
     createdAt?: boolean
@@ -34075,17 +35277,18 @@ export namespace Prisma {
     userId?: boolean
     note?: boolean
     link?: boolean
-    files?: boolean
     status?: boolean
     adminFeedback?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type JobDeliveryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "userId" | "note" | "link" | "files" | "status" | "adminFeedback" | "createdAt" | "updatedAt", ExtArgs["result"]["jobDelivery"]>
+  export type JobDeliveryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "userId" | "note" | "link" | "status" | "adminFeedback" | "createdAt" | "updatedAt", ExtArgs["result"]["jobDelivery"]>
   export type JobDeliveryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    files?: boolean | JobDelivery$filesArgs<ExtArgs>
+    _count?: boolean | JobDeliveryCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type JobDeliveryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobDefaultArgs<ExtArgs>
@@ -34101,6 +35304,7 @@ export namespace Prisma {
     objects: {
       job: Prisma.$JobPayload<ExtArgs>
       user: Prisma.$UserPayload<ExtArgs>
+      files: Prisma.$JobDeliverFilePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -34108,7 +35312,6 @@ export namespace Prisma {
       userId: string
       note: string | null
       link: string | null
-      files: string[]
       status: $Enums.DeliveryStatus
       adminFeedback: string | null
       createdAt: Date
@@ -34509,6 +35712,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     job<T extends JobDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobDefaultArgs<ExtArgs>>): Prisma__JobClient<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    files<T extends JobDelivery$filesArgs<ExtArgs> = {}>(args?: Subset<T, JobDelivery$filesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobDeliverFilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -34543,7 +35747,6 @@ export namespace Prisma {
     readonly userId: FieldRef<"JobDelivery", 'String'>
     readonly note: FieldRef<"JobDelivery", 'String'>
     readonly link: FieldRef<"JobDelivery", 'String'>
-    readonly files: FieldRef<"JobDelivery", 'String[]'>
     readonly status: FieldRef<"JobDelivery", 'DeliveryStatus'>
     readonly adminFeedback: FieldRef<"JobDelivery", 'String'>
     readonly createdAt: FieldRef<"JobDelivery", 'DateTime'>
@@ -34941,6 +36144,30 @@ export namespace Prisma {
      * Limit how many JobDeliveries to delete.
      */
     limit?: number
+  }
+
+  /**
+   * JobDelivery.files
+   */
+  export type JobDelivery$filesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobDeliverFile
+     */
+    select?: JobDeliverFileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobDeliverFile
+     */
+    omit?: JobDeliverFileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobDeliverFileInclude<ExtArgs> | null
+    where?: JobDeliverFileWhereInput
+    orderBy?: JobDeliverFileOrderByWithRelationInput | JobDeliverFileOrderByWithRelationInput[]
+    cursor?: JobDeliverFileWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JobDeliverFileScalarFieldEnum | JobDeliverFileScalarFieldEnum[]
   }
 
   /**
@@ -44418,13 +45645,25 @@ export namespace Prisma {
   export type JobStatusScalarFieldEnum = (typeof JobStatusScalarFieldEnum)[keyof typeof JobStatusScalarFieldEnum]
 
 
+  export const JobDeliverFileScalarFieldEnum: {
+    id: 'id',
+    fileName: 'fileName',
+    webUrl: 'webUrl',
+    sharepointId: 'sharepointId',
+    jobDeliveryId: 'jobDeliveryId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type JobDeliverFileScalarFieldEnum = (typeof JobDeliverFileScalarFieldEnum)[keyof typeof JobDeliverFileScalarFieldEnum]
+
+
   export const JobDeliveryScalarFieldEnum: {
     id: 'id',
     jobId: 'jobId',
     userId: 'userId',
     note: 'note',
     link: 'link',
-    files: 'files',
     status: 'status',
     adminFeedback: 'adminFeedback',
     createdAt: 'createdAt',
@@ -46839,6 +48078,71 @@ export namespace Prisma {
     allowedRolesToSet?: EnumRoleEnumNullableListFilter<"JobStatus">
   }
 
+  export type JobDeliverFileWhereInput = {
+    AND?: JobDeliverFileWhereInput | JobDeliverFileWhereInput[]
+    OR?: JobDeliverFileWhereInput[]
+    NOT?: JobDeliverFileWhereInput | JobDeliverFileWhereInput[]
+    id?: StringFilter<"JobDeliverFile"> | string
+    fileName?: StringFilter<"JobDeliverFile"> | string
+    webUrl?: StringFilter<"JobDeliverFile"> | string
+    sharepointId?: StringFilter<"JobDeliverFile"> | string
+    jobDeliveryId?: StringFilter<"JobDeliverFile"> | string
+    createdAt?: DateTimeFilter<"JobDeliverFile"> | Date | string
+    updatedAt?: DateTimeFilter<"JobDeliverFile"> | Date | string
+    jobDelivery?: XOR<JobDeliveryScalarRelationFilter, JobDeliveryWhereInput>
+  }
+
+  export type JobDeliverFileOrderByWithRelationInput = {
+    id?: SortOrder
+    fileName?: SortOrder
+    webUrl?: SortOrder
+    sharepointId?: SortOrder
+    jobDeliveryId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    jobDelivery?: JobDeliveryOrderByWithRelationInput
+  }
+
+  export type JobDeliverFileWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: JobDeliverFileWhereInput | JobDeliverFileWhereInput[]
+    OR?: JobDeliverFileWhereInput[]
+    NOT?: JobDeliverFileWhereInput | JobDeliverFileWhereInput[]
+    fileName?: StringFilter<"JobDeliverFile"> | string
+    webUrl?: StringFilter<"JobDeliverFile"> | string
+    sharepointId?: StringFilter<"JobDeliverFile"> | string
+    jobDeliveryId?: StringFilter<"JobDeliverFile"> | string
+    createdAt?: DateTimeFilter<"JobDeliverFile"> | Date | string
+    updatedAt?: DateTimeFilter<"JobDeliverFile"> | Date | string
+    jobDelivery?: XOR<JobDeliveryScalarRelationFilter, JobDeliveryWhereInput>
+  }, "id">
+
+  export type JobDeliverFileOrderByWithAggregationInput = {
+    id?: SortOrder
+    fileName?: SortOrder
+    webUrl?: SortOrder
+    sharepointId?: SortOrder
+    jobDeliveryId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: JobDeliverFileCountOrderByAggregateInput
+    _max?: JobDeliverFileMaxOrderByAggregateInput
+    _min?: JobDeliverFileMinOrderByAggregateInput
+  }
+
+  export type JobDeliverFileScalarWhereWithAggregatesInput = {
+    AND?: JobDeliverFileScalarWhereWithAggregatesInput | JobDeliverFileScalarWhereWithAggregatesInput[]
+    OR?: JobDeliverFileScalarWhereWithAggregatesInput[]
+    NOT?: JobDeliverFileScalarWhereWithAggregatesInput | JobDeliverFileScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"JobDeliverFile"> | string
+    fileName?: StringWithAggregatesFilter<"JobDeliverFile"> | string
+    webUrl?: StringWithAggregatesFilter<"JobDeliverFile"> | string
+    sharepointId?: StringWithAggregatesFilter<"JobDeliverFile"> | string
+    jobDeliveryId?: StringWithAggregatesFilter<"JobDeliverFile"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"JobDeliverFile"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"JobDeliverFile"> | Date | string
+  }
+
   export type JobDeliveryWhereInput = {
     AND?: JobDeliveryWhereInput | JobDeliveryWhereInput[]
     OR?: JobDeliveryWhereInput[]
@@ -46848,13 +48152,13 @@ export namespace Prisma {
     userId?: StringFilter<"JobDelivery"> | string
     note?: StringNullableFilter<"JobDelivery"> | string | null
     link?: StringNullableFilter<"JobDelivery"> | string | null
-    files?: StringNullableListFilter<"JobDelivery">
     status?: EnumDeliveryStatusFilter<"JobDelivery"> | $Enums.DeliveryStatus
     adminFeedback?: StringNullableFilter<"JobDelivery"> | string | null
     createdAt?: DateTimeFilter<"JobDelivery"> | Date | string
     updatedAt?: DateTimeFilter<"JobDelivery"> | Date | string
     job?: XOR<JobScalarRelationFilter, JobWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    files?: JobDeliverFileListRelationFilter
   }
 
   export type JobDeliveryOrderByWithRelationInput = {
@@ -46863,13 +48167,13 @@ export namespace Prisma {
     userId?: SortOrder
     note?: SortOrderInput | SortOrder
     link?: SortOrderInput | SortOrder
-    files?: SortOrder
     status?: SortOrder
     adminFeedback?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     job?: JobOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
+    files?: JobDeliverFileOrderByRelationAggregateInput
   }
 
   export type JobDeliveryWhereUniqueInput = Prisma.AtLeast<{
@@ -46881,13 +48185,13 @@ export namespace Prisma {
     userId?: StringFilter<"JobDelivery"> | string
     note?: StringNullableFilter<"JobDelivery"> | string | null
     link?: StringNullableFilter<"JobDelivery"> | string | null
-    files?: StringNullableListFilter<"JobDelivery">
     status?: EnumDeliveryStatusFilter<"JobDelivery"> | $Enums.DeliveryStatus
     adminFeedback?: StringNullableFilter<"JobDelivery"> | string | null
     createdAt?: DateTimeFilter<"JobDelivery"> | Date | string
     updatedAt?: DateTimeFilter<"JobDelivery"> | Date | string
     job?: XOR<JobScalarRelationFilter, JobWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    files?: JobDeliverFileListRelationFilter
   }, "id">
 
   export type JobDeliveryOrderByWithAggregationInput = {
@@ -46896,7 +48200,6 @@ export namespace Prisma {
     userId?: SortOrder
     note?: SortOrderInput | SortOrder
     link?: SortOrderInput | SortOrder
-    files?: SortOrder
     status?: SortOrder
     adminFeedback?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -46915,7 +48218,6 @@ export namespace Prisma {
     userId?: StringWithAggregatesFilter<"JobDelivery"> | string
     note?: StringNullableWithAggregatesFilter<"JobDelivery"> | string | null
     link?: StringNullableWithAggregatesFilter<"JobDelivery"> | string | null
-    files?: StringNullableListFilter<"JobDelivery">
     status?: EnumDeliveryStatusWithAggregatesFilter<"JobDelivery"> | $Enums.DeliveryStatus
     adminFeedback?: StringNullableWithAggregatesFilter<"JobDelivery"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"JobDelivery"> | Date | string
@@ -49708,17 +51010,86 @@ export namespace Prisma {
     allowedRolesToSet?: JobStatusUpdateallowedRolesToSetInput | $Enums.RoleEnum[]
   }
 
+  export type JobDeliverFileCreateInput = {
+    id?: string
+    fileName: string
+    webUrl: string
+    sharepointId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    jobDelivery: JobDeliveryCreateNestedOneWithoutFilesInput
+  }
+
+  export type JobDeliverFileUncheckedCreateInput = {
+    id?: string
+    fileName: string
+    webUrl: string
+    sharepointId: string
+    jobDeliveryId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type JobDeliverFileUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    webUrl?: StringFieldUpdateOperationsInput | string
+    sharepointId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    jobDelivery?: JobDeliveryUpdateOneRequiredWithoutFilesNestedInput
+  }
+
+  export type JobDeliverFileUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    webUrl?: StringFieldUpdateOperationsInput | string
+    sharepointId?: StringFieldUpdateOperationsInput | string
+    jobDeliveryId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobDeliverFileCreateManyInput = {
+    id?: string
+    fileName: string
+    webUrl: string
+    sharepointId: string
+    jobDeliveryId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type JobDeliverFileUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    webUrl?: StringFieldUpdateOperationsInput | string
+    sharepointId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobDeliverFileUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    webUrl?: StringFieldUpdateOperationsInput | string
+    sharepointId?: StringFieldUpdateOperationsInput | string
+    jobDeliveryId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type JobDeliveryCreateInput = {
     id?: string
     note?: string | null
     link?: string | null
-    files?: JobDeliveryCreatefilesInput | string[]
     status?: $Enums.DeliveryStatus
     adminFeedback?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     job: JobCreateNestedOneWithoutJobDeliveriesInput
     user: UserCreateNestedOneWithoutJobDeliveriesInput
+    files?: JobDeliverFileCreateNestedManyWithoutJobDeliveryInput
   }
 
   export type JobDeliveryUncheckedCreateInput = {
@@ -49727,24 +51098,24 @@ export namespace Prisma {
     userId: string
     note?: string | null
     link?: string | null
-    files?: JobDeliveryCreatefilesInput | string[]
     status?: $Enums.DeliveryStatus
     adminFeedback?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    files?: JobDeliverFileUncheckedCreateNestedManyWithoutJobDeliveryInput
   }
 
   export type JobDeliveryUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     note?: NullableStringFieldUpdateOperationsInput | string | null
     link?: NullableStringFieldUpdateOperationsInput | string | null
-    files?: JobDeliveryUpdatefilesInput | string[]
     status?: EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
     adminFeedback?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     job?: JobUpdateOneRequiredWithoutJobDeliveriesNestedInput
     user?: UserUpdateOneRequiredWithoutJobDeliveriesNestedInput
+    files?: JobDeliverFileUpdateManyWithoutJobDeliveryNestedInput
   }
 
   export type JobDeliveryUncheckedUpdateInput = {
@@ -49753,11 +51124,11 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     note?: NullableStringFieldUpdateOperationsInput | string | null
     link?: NullableStringFieldUpdateOperationsInput | string | null
-    files?: JobDeliveryUpdatefilesInput | string[]
     status?: EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
     adminFeedback?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    files?: JobDeliverFileUncheckedUpdateManyWithoutJobDeliveryNestedInput
   }
 
   export type JobDeliveryCreateManyInput = {
@@ -49766,7 +51137,6 @@ export namespace Prisma {
     userId: string
     note?: string | null
     link?: string | null
-    files?: JobDeliveryCreatefilesInput | string[]
     status?: $Enums.DeliveryStatus
     adminFeedback?: string | null
     createdAt?: Date | string
@@ -49777,7 +51147,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     note?: NullableStringFieldUpdateOperationsInput | string | null
     link?: NullableStringFieldUpdateOperationsInput | string | null
-    files?: JobDeliveryUpdatefilesInput | string[]
     status?: EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
     adminFeedback?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -49790,7 +51159,6 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     note?: NullableStringFieldUpdateOperationsInput | string | null
     link?: NullableStringFieldUpdateOperationsInput | string | null
-    files?: JobDeliveryUpdatefilesInput | string[]
     status?: EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
     adminFeedback?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -52071,11 +53439,56 @@ export namespace Prisma {
     _max?: NestedEnumJobStatusSystemTypeFilter<$PrismaModel>
   }
 
+  export type JobDeliveryScalarRelationFilter = {
+    is?: JobDeliveryWhereInput
+    isNot?: JobDeliveryWhereInput
+  }
+
+  export type JobDeliverFileCountOrderByAggregateInput = {
+    id?: SortOrder
+    fileName?: SortOrder
+    webUrl?: SortOrder
+    sharepointId?: SortOrder
+    jobDeliveryId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type JobDeliverFileMaxOrderByAggregateInput = {
+    id?: SortOrder
+    fileName?: SortOrder
+    webUrl?: SortOrder
+    sharepointId?: SortOrder
+    jobDeliveryId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type JobDeliverFileMinOrderByAggregateInput = {
+    id?: SortOrder
+    fileName?: SortOrder
+    webUrl?: SortOrder
+    sharepointId?: SortOrder
+    jobDeliveryId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
   export type EnumDeliveryStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.DeliveryStatus | EnumDeliveryStatusFieldRefInput<$PrismaModel>
     in?: $Enums.DeliveryStatus[] | ListEnumDeliveryStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.DeliveryStatus[] | ListEnumDeliveryStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumDeliveryStatusFilter<$PrismaModel> | $Enums.DeliveryStatus
+  }
+
+  export type JobDeliverFileListRelationFilter = {
+    every?: JobDeliverFileWhereInput
+    some?: JobDeliverFileWhereInput
+    none?: JobDeliverFileWhereInput
+  }
+
+  export type JobDeliverFileOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type JobDeliveryCountOrderByAggregateInput = {
@@ -52084,7 +53497,6 @@ export namespace Prisma {
     userId?: SortOrder
     note?: SortOrder
     link?: SortOrder
-    files?: SortOrder
     status?: SortOrder
     adminFeedback?: SortOrder
     createdAt?: SortOrder
@@ -54829,8 +56241,18 @@ export namespace Prisma {
     deleteMany?: JobStatusHistoryScalarWhereInput | JobStatusHistoryScalarWhereInput[]
   }
 
-  export type JobDeliveryCreatefilesInput = {
-    set: string[]
+  export type JobDeliveryCreateNestedOneWithoutFilesInput = {
+    create?: XOR<JobDeliveryCreateWithoutFilesInput, JobDeliveryUncheckedCreateWithoutFilesInput>
+    connectOrCreate?: JobDeliveryCreateOrConnectWithoutFilesInput
+    connect?: JobDeliveryWhereUniqueInput
+  }
+
+  export type JobDeliveryUpdateOneRequiredWithoutFilesNestedInput = {
+    create?: XOR<JobDeliveryCreateWithoutFilesInput, JobDeliveryUncheckedCreateWithoutFilesInput>
+    connectOrCreate?: JobDeliveryCreateOrConnectWithoutFilesInput
+    upsert?: JobDeliveryUpsertWithoutFilesInput
+    connect?: JobDeliveryWhereUniqueInput
+    update?: XOR<XOR<JobDeliveryUpdateToOneWithWhereWithoutFilesInput, JobDeliveryUpdateWithoutFilesInput>, JobDeliveryUncheckedUpdateWithoutFilesInput>
   }
 
   export type JobCreateNestedOneWithoutJobDeliveriesInput = {
@@ -54845,9 +56267,18 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
-  export type JobDeliveryUpdatefilesInput = {
-    set?: string[]
-    push?: string | string[]
+  export type JobDeliverFileCreateNestedManyWithoutJobDeliveryInput = {
+    create?: XOR<JobDeliverFileCreateWithoutJobDeliveryInput, JobDeliverFileUncheckedCreateWithoutJobDeliveryInput> | JobDeliverFileCreateWithoutJobDeliveryInput[] | JobDeliverFileUncheckedCreateWithoutJobDeliveryInput[]
+    connectOrCreate?: JobDeliverFileCreateOrConnectWithoutJobDeliveryInput | JobDeliverFileCreateOrConnectWithoutJobDeliveryInput[]
+    createMany?: JobDeliverFileCreateManyJobDeliveryInputEnvelope
+    connect?: JobDeliverFileWhereUniqueInput | JobDeliverFileWhereUniqueInput[]
+  }
+
+  export type JobDeliverFileUncheckedCreateNestedManyWithoutJobDeliveryInput = {
+    create?: XOR<JobDeliverFileCreateWithoutJobDeliveryInput, JobDeliverFileUncheckedCreateWithoutJobDeliveryInput> | JobDeliverFileCreateWithoutJobDeliveryInput[] | JobDeliverFileUncheckedCreateWithoutJobDeliveryInput[]
+    connectOrCreate?: JobDeliverFileCreateOrConnectWithoutJobDeliveryInput | JobDeliverFileCreateOrConnectWithoutJobDeliveryInput[]
+    createMany?: JobDeliverFileCreateManyJobDeliveryInputEnvelope
+    connect?: JobDeliverFileWhereUniqueInput | JobDeliverFileWhereUniqueInput[]
   }
 
   export type EnumDeliveryStatusFieldUpdateOperationsInput = {
@@ -54868,6 +56299,34 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutJobDeliveriesInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutJobDeliveriesInput, UserUpdateWithoutJobDeliveriesInput>, UserUncheckedUpdateWithoutJobDeliveriesInput>
+  }
+
+  export type JobDeliverFileUpdateManyWithoutJobDeliveryNestedInput = {
+    create?: XOR<JobDeliverFileCreateWithoutJobDeliveryInput, JobDeliverFileUncheckedCreateWithoutJobDeliveryInput> | JobDeliverFileCreateWithoutJobDeliveryInput[] | JobDeliverFileUncheckedCreateWithoutJobDeliveryInput[]
+    connectOrCreate?: JobDeliverFileCreateOrConnectWithoutJobDeliveryInput | JobDeliverFileCreateOrConnectWithoutJobDeliveryInput[]
+    upsert?: JobDeliverFileUpsertWithWhereUniqueWithoutJobDeliveryInput | JobDeliverFileUpsertWithWhereUniqueWithoutJobDeliveryInput[]
+    createMany?: JobDeliverFileCreateManyJobDeliveryInputEnvelope
+    set?: JobDeliverFileWhereUniqueInput | JobDeliverFileWhereUniqueInput[]
+    disconnect?: JobDeliverFileWhereUniqueInput | JobDeliverFileWhereUniqueInput[]
+    delete?: JobDeliverFileWhereUniqueInput | JobDeliverFileWhereUniqueInput[]
+    connect?: JobDeliverFileWhereUniqueInput | JobDeliverFileWhereUniqueInput[]
+    update?: JobDeliverFileUpdateWithWhereUniqueWithoutJobDeliveryInput | JobDeliverFileUpdateWithWhereUniqueWithoutJobDeliveryInput[]
+    updateMany?: JobDeliverFileUpdateManyWithWhereWithoutJobDeliveryInput | JobDeliverFileUpdateManyWithWhereWithoutJobDeliveryInput[]
+    deleteMany?: JobDeliverFileScalarWhereInput | JobDeliverFileScalarWhereInput[]
+  }
+
+  export type JobDeliverFileUncheckedUpdateManyWithoutJobDeliveryNestedInput = {
+    create?: XOR<JobDeliverFileCreateWithoutJobDeliveryInput, JobDeliverFileUncheckedCreateWithoutJobDeliveryInput> | JobDeliverFileCreateWithoutJobDeliveryInput[] | JobDeliverFileUncheckedCreateWithoutJobDeliveryInput[]
+    connectOrCreate?: JobDeliverFileCreateOrConnectWithoutJobDeliveryInput | JobDeliverFileCreateOrConnectWithoutJobDeliveryInput[]
+    upsert?: JobDeliverFileUpsertWithWhereUniqueWithoutJobDeliveryInput | JobDeliverFileUpsertWithWhereUniqueWithoutJobDeliveryInput[]
+    createMany?: JobDeliverFileCreateManyJobDeliveryInputEnvelope
+    set?: JobDeliverFileWhereUniqueInput | JobDeliverFileWhereUniqueInput[]
+    disconnect?: JobDeliverFileWhereUniqueInput | JobDeliverFileWhereUniqueInput[]
+    delete?: JobDeliverFileWhereUniqueInput | JobDeliverFileWhereUniqueInput[]
+    connect?: JobDeliverFileWhereUniqueInput | JobDeliverFileWhereUniqueInput[]
+    update?: JobDeliverFileUpdateWithWhereUniqueWithoutJobDeliveryInput | JobDeliverFileUpdateWithWhereUniqueWithoutJobDeliveryInput[]
+    updateMany?: JobDeliverFileUpdateManyWithWhereWithoutJobDeliveryInput | JobDeliverFileUpdateManyWithWhereWithoutJobDeliveryInput[]
+    deleteMany?: JobDeliverFileScalarWhereInput | JobDeliverFileScalarWhereInput[]
   }
 
   export type JobCreateNestedOneWithoutStatusHistoryInput = {
@@ -56602,12 +58061,12 @@ export namespace Prisma {
     id?: string
     note?: string | null
     link?: string | null
-    files?: JobDeliveryCreatefilesInput | string[]
     status?: $Enums.DeliveryStatus
     adminFeedback?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     job: JobCreateNestedOneWithoutJobDeliveriesInput
+    files?: JobDeliverFileCreateNestedManyWithoutJobDeliveryInput
   }
 
   export type JobDeliveryUncheckedCreateWithoutUserInput = {
@@ -56615,11 +58074,11 @@ export namespace Prisma {
     jobId: string
     note?: string | null
     link?: string | null
-    files?: JobDeliveryCreatefilesInput | string[]
     status?: $Enums.DeliveryStatus
     adminFeedback?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    files?: JobDeliverFileUncheckedCreateNestedManyWithoutJobDeliveryInput
   }
 
   export type JobDeliveryCreateOrConnectWithoutUserInput = {
@@ -57419,7 +58878,6 @@ export namespace Prisma {
     userId?: StringFilter<"JobDelivery"> | string
     note?: StringNullableFilter<"JobDelivery"> | string | null
     link?: StringNullableFilter<"JobDelivery"> | string | null
-    files?: StringNullableListFilter<"JobDelivery">
     status?: EnumDeliveryStatusFilter<"JobDelivery"> | $Enums.DeliveryStatus
     adminFeedback?: StringNullableFilter<"JobDelivery"> | string | null
     createdAt?: DateTimeFilter<"JobDelivery"> | Date | string
@@ -60578,12 +62036,12 @@ export namespace Prisma {
     id?: string
     note?: string | null
     link?: string | null
-    files?: JobDeliveryCreatefilesInput | string[]
     status?: $Enums.DeliveryStatus
     adminFeedback?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutJobDeliveriesInput
+    files?: JobDeliverFileCreateNestedManyWithoutJobDeliveryInput
   }
 
   export type JobDeliveryUncheckedCreateWithoutJobInput = {
@@ -60591,11 +62049,11 @@ export namespace Prisma {
     userId: string
     note?: string | null
     link?: string | null
-    files?: JobDeliveryCreatefilesInput | string[]
     status?: $Enums.DeliveryStatus
     adminFeedback?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    files?: JobDeliverFileUncheckedCreateNestedManyWithoutJobDeliveryInput
   }
 
   export type JobDeliveryCreateOrConnectWithoutJobInput = {
@@ -62043,6 +63501,70 @@ export namespace Prisma {
     data: XOR<JobStatusHistoryUpdateManyMutationInput, JobStatusHistoryUncheckedUpdateManyWithoutStatusInput>
   }
 
+  export type JobDeliveryCreateWithoutFilesInput = {
+    id?: string
+    note?: string | null
+    link?: string | null
+    status?: $Enums.DeliveryStatus
+    adminFeedback?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutJobDeliveriesInput
+    user: UserCreateNestedOneWithoutJobDeliveriesInput
+  }
+
+  export type JobDeliveryUncheckedCreateWithoutFilesInput = {
+    id?: string
+    jobId: string
+    userId: string
+    note?: string | null
+    link?: string | null
+    status?: $Enums.DeliveryStatus
+    adminFeedback?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type JobDeliveryCreateOrConnectWithoutFilesInput = {
+    where: JobDeliveryWhereUniqueInput
+    create: XOR<JobDeliveryCreateWithoutFilesInput, JobDeliveryUncheckedCreateWithoutFilesInput>
+  }
+
+  export type JobDeliveryUpsertWithoutFilesInput = {
+    update: XOR<JobDeliveryUpdateWithoutFilesInput, JobDeliveryUncheckedUpdateWithoutFilesInput>
+    create: XOR<JobDeliveryCreateWithoutFilesInput, JobDeliveryUncheckedCreateWithoutFilesInput>
+    where?: JobDeliveryWhereInput
+  }
+
+  export type JobDeliveryUpdateToOneWithWhereWithoutFilesInput = {
+    where?: JobDeliveryWhereInput
+    data: XOR<JobDeliveryUpdateWithoutFilesInput, JobDeliveryUncheckedUpdateWithoutFilesInput>
+  }
+
+  export type JobDeliveryUpdateWithoutFilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
+    adminFeedback?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutJobDeliveriesNestedInput
+    user?: UserUpdateOneRequiredWithoutJobDeliveriesNestedInput
+  }
+
+  export type JobDeliveryUncheckedUpdateWithoutFilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
+    adminFeedback?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type JobCreateWithoutJobDeliveriesInput = {
     id?: string
     no: string
@@ -62199,6 +63721,34 @@ export namespace Prisma {
   export type UserCreateOrConnectWithoutJobDeliveriesInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutJobDeliveriesInput, UserUncheckedCreateWithoutJobDeliveriesInput>
+  }
+
+  export type JobDeliverFileCreateWithoutJobDeliveryInput = {
+    id?: string
+    fileName: string
+    webUrl: string
+    sharepointId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type JobDeliverFileUncheckedCreateWithoutJobDeliveryInput = {
+    id?: string
+    fileName: string
+    webUrl: string
+    sharepointId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type JobDeliverFileCreateOrConnectWithoutJobDeliveryInput = {
+    where: JobDeliverFileWhereUniqueInput
+    create: XOR<JobDeliverFileCreateWithoutJobDeliveryInput, JobDeliverFileUncheckedCreateWithoutJobDeliveryInput>
+  }
+
+  export type JobDeliverFileCreateManyJobDeliveryInputEnvelope = {
+    data: JobDeliverFileCreateManyJobDeliveryInput | JobDeliverFileCreateManyJobDeliveryInput[]
+    skipDuplicates?: boolean
   }
 
   export type JobUpsertWithoutJobDeliveriesInput = {
@@ -62369,6 +63919,35 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type JobDeliverFileUpsertWithWhereUniqueWithoutJobDeliveryInput = {
+    where: JobDeliverFileWhereUniqueInput
+    update: XOR<JobDeliverFileUpdateWithoutJobDeliveryInput, JobDeliverFileUncheckedUpdateWithoutJobDeliveryInput>
+    create: XOR<JobDeliverFileCreateWithoutJobDeliveryInput, JobDeliverFileUncheckedCreateWithoutJobDeliveryInput>
+  }
+
+  export type JobDeliverFileUpdateWithWhereUniqueWithoutJobDeliveryInput = {
+    where: JobDeliverFileWhereUniqueInput
+    data: XOR<JobDeliverFileUpdateWithoutJobDeliveryInput, JobDeliverFileUncheckedUpdateWithoutJobDeliveryInput>
+  }
+
+  export type JobDeliverFileUpdateManyWithWhereWithoutJobDeliveryInput = {
+    where: JobDeliverFileScalarWhereInput
+    data: XOR<JobDeliverFileUpdateManyMutationInput, JobDeliverFileUncheckedUpdateManyWithoutJobDeliveryInput>
+  }
+
+  export type JobDeliverFileScalarWhereInput = {
+    AND?: JobDeliverFileScalarWhereInput | JobDeliverFileScalarWhereInput[]
+    OR?: JobDeliverFileScalarWhereInput[]
+    NOT?: JobDeliverFileScalarWhereInput | JobDeliverFileScalarWhereInput[]
+    id?: StringFilter<"JobDeliverFile"> | string
+    fileName?: StringFilter<"JobDeliverFile"> | string
+    webUrl?: StringFilter<"JobDeliverFile"> | string
+    sharepointId?: StringFilter<"JobDeliverFile"> | string
+    jobDeliveryId?: StringFilter<"JobDeliverFile"> | string
+    createdAt?: DateTimeFilter<"JobDeliverFile"> | Date | string
+    updatedAt?: DateTimeFilter<"JobDeliverFile"> | Date | string
   }
 
   export type JobCreateWithoutStatusHistoryInput = {
@@ -64484,7 +66063,6 @@ export namespace Prisma {
     jobId: string
     note?: string | null
     link?: string | null
-    files?: JobDeliveryCreatefilesInput | string[]
     status?: $Enums.DeliveryStatus
     adminFeedback?: string | null
     createdAt?: Date | string
@@ -65153,12 +66731,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     note?: NullableStringFieldUpdateOperationsInput | string | null
     link?: NullableStringFieldUpdateOperationsInput | string | null
-    files?: JobDeliveryUpdatefilesInput | string[]
     status?: EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
     adminFeedback?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     job?: JobUpdateOneRequiredWithoutJobDeliveriesNestedInput
+    files?: JobDeliverFileUpdateManyWithoutJobDeliveryNestedInput
   }
 
   export type JobDeliveryUncheckedUpdateWithoutUserInput = {
@@ -65166,11 +66744,11 @@ export namespace Prisma {
     jobId?: StringFieldUpdateOperationsInput | string
     note?: NullableStringFieldUpdateOperationsInput | string | null
     link?: NullableStringFieldUpdateOperationsInput | string | null
-    files?: JobDeliveryUpdatefilesInput | string[]
     status?: EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
     adminFeedback?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    files?: JobDeliverFileUncheckedUpdateManyWithoutJobDeliveryNestedInput
   }
 
   export type JobDeliveryUncheckedUpdateManyWithoutUserInput = {
@@ -65178,7 +66756,6 @@ export namespace Prisma {
     jobId?: StringFieldUpdateOperationsInput | string
     note?: NullableStringFieldUpdateOperationsInput | string | null
     link?: NullableStringFieldUpdateOperationsInput | string | null
-    files?: JobDeliveryUpdatefilesInput | string[]
     status?: EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
     adminFeedback?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -66019,7 +67596,6 @@ export namespace Prisma {
     userId: string
     note?: string | null
     link?: string | null
-    files?: JobDeliveryCreatefilesInput | string[]
     status?: $Enums.DeliveryStatus
     adminFeedback?: string | null
     createdAt?: Date | string
@@ -66205,12 +67781,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     note?: NullableStringFieldUpdateOperationsInput | string | null
     link?: NullableStringFieldUpdateOperationsInput | string | null
-    files?: JobDeliveryUpdatefilesInput | string[]
     status?: EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
     adminFeedback?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutJobDeliveriesNestedInput
+    files?: JobDeliverFileUpdateManyWithoutJobDeliveryNestedInput
   }
 
   export type JobDeliveryUncheckedUpdateWithoutJobInput = {
@@ -66218,11 +67794,11 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     note?: NullableStringFieldUpdateOperationsInput | string | null
     link?: NullableStringFieldUpdateOperationsInput | string | null
-    files?: JobDeliveryUpdatefilesInput | string[]
     status?: EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
     adminFeedback?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    files?: JobDeliverFileUncheckedUpdateManyWithoutJobDeliveryNestedInput
   }
 
   export type JobDeliveryUncheckedUpdateManyWithoutJobInput = {
@@ -66230,7 +67806,6 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     note?: NullableStringFieldUpdateOperationsInput | string | null
     link?: NullableStringFieldUpdateOperationsInput | string | null
-    files?: JobDeliveryUpdatefilesInput | string[]
     status?: EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
     adminFeedback?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -66749,6 +68324,42 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     endedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     durationSeconds?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobDeliverFileCreateManyJobDeliveryInput = {
+    id?: string
+    fileName: string
+    webUrl: string
+    sharepointId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type JobDeliverFileUpdateWithoutJobDeliveryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    webUrl?: StringFieldUpdateOperationsInput | string
+    sharepointId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobDeliverFileUncheckedUpdateWithoutJobDeliveryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    webUrl?: StringFieldUpdateOperationsInput | string
+    sharepointId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobDeliverFileUncheckedUpdateManyWithoutJobDeliveryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    webUrl?: StringFieldUpdateOperationsInput | string
+    sharepointId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

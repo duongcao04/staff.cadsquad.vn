@@ -544,6 +544,22 @@ enum JobStatusSystemType {
   TERMINATED // Kết thúc vòng đời (Finished, Cancelled, Closed...)
 }
 
+model JobDeliverFile {
+  id           String @id @default(uuid())
+  fileName     String
+  webUrl       String
+  sharepointId String
+
+  // Relation back to JobDelivery
+  jobDeliveryId String
+  jobDelivery   JobDelivery @relation(fields: [jobDeliveryId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([jobDeliveryId])
+}
+
 model JobDelivery {
   id String @id @default(uuid())
 
@@ -559,10 +575,9 @@ model JobDelivery {
 
   link String? // External link
 
-  files String[] // Array of file URLs (from your imageApi)
+  files JobDeliverFile[]
 
   // Status of this specific delivery attempt
-
   status DeliveryStatus @default(PENDING) // PENDING, APPROVED, REJECTED
 
   adminFeedback String? // If rejected, why?

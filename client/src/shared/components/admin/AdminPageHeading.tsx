@@ -34,7 +34,7 @@ export function AdminPageHeading({
                 classNames?.title
             )}
         >
-            {title}
+            {title as React.ReactNode}
         </h1>
     )
     if (showBadge) {

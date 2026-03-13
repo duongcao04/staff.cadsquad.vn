@@ -198,21 +198,17 @@ export const DeliverJobInputSchema = z.object({
         .min(1, 'Please select a job to deliver'),
 
     note: z
-        .string()
-        .max(1000, 'Note is too long (max 1000 characters)')
-        .optional(),
-
-    link: z
-        .string()
-        .url('Link must be a valid URL (e.g., https://figma.com/...)')
-        .nullable()
-        .optional()
-        // Transform null thành undefined nếu bạn muốn đồng nhất dữ liệu cho API
-        .or(z.literal('')),
+        .string({ message: "Note cannot be empty" })
+        .min(1, 'Note cannot be empty')
+        .max(1000, 'Note is too long (max 1000 characters)'),
 
     files: z
         .array(
-            z.string().url('Each attachment must be a valid URL')
+            z.object({
+                webUrl: z.string().url('Each attachment must be a valid URL'),
+                fileName: z.string(),
+                sharepointId: z.string()
+            })
         )
         .default([]),
 });

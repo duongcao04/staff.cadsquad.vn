@@ -5,6 +5,7 @@ import { queryOptions } from '@tanstack/react-query'
 import lodash from 'lodash'
 import queryString from 'query-string'
 import { parseData, parseList } from '../../zod'
+import { JobDeliverySchema } from '../../validationSchemas/_job-delivery.schema'
 
 // --- Query Options ---
 // 1. Danh sách Jobs
@@ -93,7 +94,12 @@ export const jobDeliveriesListOptions = (jobId: string) =>
     queryOptions({
         queryKey: ['jobs', 'deliveries', jobId],
         queryFn: () => jobApi.jobDeliveries(jobId),
-        select: (res) => res?.result ?? [],
+        select: (res) => {
+            const jobDeliveries = parseList(JobDeliverySchema, res?.result)
+            return {
+                jobDeliveries
+            }
+        },
     })
 
 export const jobsPendingDeliverOptions = () =>

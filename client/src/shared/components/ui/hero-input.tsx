@@ -1,6 +1,6 @@
-import { extendVariants, Input } from '@heroui/react'
+import { extendVariants, Input, InputProps } from '@heroui/react'
 
-export const HeroInput = extendVariants(Input, {
+const StyledInput = extendVariants(Input, {
     variants: {
         // We define a new custom variant named "minimal"
         variant: {
@@ -29,6 +29,9 @@ export const HeroInput = extendVariants(Input, {
         labelPlacement: 'inside',
     },
 })
+export const HeroInput = (props: InputProps) => {
+    return <StyledInput {...props} />
+}
 
 export const HeroInlineInput = extendVariants(Input, {
     variants: {
