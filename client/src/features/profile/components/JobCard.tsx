@@ -32,7 +32,7 @@ function JobCard({ data, onPress }: Props) {
             onClick={() => {
                 if (clickable) {
                     router.navigate({
-                        href: INTERNAL_URLS.getJobDetailUrl(data.no),
+                        href: INTERNAL_URLS.jobDetail(data.no),
                     })
                     onPress?.()
                 }
@@ -54,7 +54,7 @@ function JobCard({ data, onPress }: Props) {
                         <HeroCopyButton textValue={data.no} />
                     </div>
                     <Link
-                        to={INTERNAL_URLS.getJobDetailUrl(data.no)}
+                        to={INTERNAL_URLS.jobDetail(data.no)}
                         className="mt-0.5 block font-medium line-clamp-1! hover:underline"
                         title="View detail"
                     >
@@ -95,7 +95,7 @@ function JobCard({ data, onPress }: Props) {
                 <JobStatusChip data={data.status} />
             </div>
             <Link
-                to={INTERNAL_URLS.getJobDetailUrl(data.no)}
+                to={INTERNAL_URLS.jobDetail(data.no)}
                 className="hidden lg:block text-sm font-medium hover:underline! underline-offset-2 text-end text-link!"
             >
                 View

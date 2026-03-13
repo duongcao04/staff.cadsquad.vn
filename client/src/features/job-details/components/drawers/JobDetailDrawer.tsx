@@ -246,7 +246,7 @@ export default function JobDetailDrawer({
                                             }
                                             onPress={() =>
                                                 router.navigate({
-                                                    href: INTERNAL_URLS.getJobDetailUrl(
+                                                    href: INTERNAL_URLS.jobDetail(
                                                         job.no
                                                     ),
                                                 })

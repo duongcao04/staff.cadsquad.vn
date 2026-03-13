@@ -136,7 +136,7 @@ export function ProjectCenterTableQuickActions({
                             startContent={<SquareArrowOutUpRight size={16} />}
                             onPress={() =>
                                 window.open(
-                                    INTERNAL_URLS.getJobDetailUrl(data.no),
+                                    INTERNAL_URLS.jobDetail(data.no),
                                     '_blank'
                                 )
                             }

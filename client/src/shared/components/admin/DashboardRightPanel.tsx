@@ -153,7 +153,7 @@ export const DashboardRightPanel = ({
                                     <Link
                                         key={item.id}
                                         className="block"
-                                        to={INTERNAL_URLS.getJobDetailUrl(
+                                        to={INTERNAL_URLS.jobDetail(
                                             item.no
                                         )}
                                         target="_blank"

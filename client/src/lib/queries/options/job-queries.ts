@@ -1,11 +1,10 @@
 import { jobApi } from '@/lib/api'
 import { JobActivityLogSchema, JobSchema, TJobQueryInput, UserSchema } from '@/lib/validationSchemas'
-import { ProjectCenterTabEnum } from '@/shared/enums'
 import { queryOptions } from '@tanstack/react-query'
 import lodash from 'lodash'
 import queryString from 'query-string'
-import { parseData, parseList } from '../../zod'
 import { JobDeliverySchema } from '../../validationSchemas/_job-delivery.schema'
+import { parseData, parseList } from '../../zod'
 
 // --- Query Options ---
 // 1. Danh sách Jobs
@@ -13,7 +12,6 @@ export const jobsListOptions = (
     params: TJobQueryInput = {
         page: 1,
         limit: 10,
-        tab: ProjectCenterTabEnum.ACTIVE,
         isAll: '0',
         sort: ['displayName:asc'],
     }

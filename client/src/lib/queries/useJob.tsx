@@ -11,7 +11,7 @@ import {
 } from '@/lib/validationSchemas'
 import { addToast } from '@heroui/react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { TJobGeneralDetails } from '../../routes/_administrator/admin/mgmt/jobs/$no'
+import { TJobGeneralDetails } from '../../routes/_administrator/mgmt/jobs/$no'
 import { JobUpdateResponse } from '../../shared/types'
 import type { ApiResponse } from '../axios'
 import { onErrorToast } from './helper'

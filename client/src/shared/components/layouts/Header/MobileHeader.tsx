@@ -189,7 +189,7 @@ export const UserDrawer = ({
         {
             icon: <ChartAreaIcon size={18} />,
             label: 'Overview',
-            href: INTERNAL_URLS.userOverview,
+            href: INTERNAL_URLS.overview,
         },
         {
             icon: <ListTodoIcon size={18} />,
@@ -199,7 +199,7 @@ export const UserDrawer = ({
         {
             icon: <UserCogIcon size={18} />,
             label: 'Settings',
-            href: INTERNAL_URLS.settings,
+            href: INTERNAL_URLS.settings.overview,
         },
     ]
 

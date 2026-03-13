@@ -131,7 +131,7 @@ function SettingsProfilePage() {
                 </HeroBreadcrumbItem>
                 <HeroBreadcrumbItem>
                     <Link
-                        to={INTERNAL_URLS.settings}
+                        to={INTERNAL_URLS.settings.overview}
                         className="text-text-subdued!"
                     >
                         Settings

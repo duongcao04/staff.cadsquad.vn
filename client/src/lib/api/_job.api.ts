@@ -11,7 +11,7 @@ import {
     type TUpdateJobInput,
     TUpdateJobRevenue,
 } from '@/lib/validationSchemas'
-import { TJobGeneralDetails } from '@/routes/_administrator/admin/mgmt/jobs/$no'
+import { TJobGeneralDetails } from '@/routes/_administrator/mgmt/jobs/$no'
 import { ProjectCenterTabEnum } from '@/shared/enums'
 import type {
     IPaginate,

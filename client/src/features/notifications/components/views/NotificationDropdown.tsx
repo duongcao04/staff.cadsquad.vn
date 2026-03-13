@@ -244,7 +244,7 @@ export default function NotificationDropdown() {
                         className="text-text-subdued h-8 font-medium"
                         onPress={() =>
                             router.navigate({
-                                href: INTERNAL_URLS.allNotifications,
+                                href: INTERNAL_URLS.notifications,
                             })
                         }
                     >

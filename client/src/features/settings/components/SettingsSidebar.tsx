@@ -12,13 +12,13 @@ const SETTINGS_MENU = [
                 key: 'profile',
                 label: 'My Profile',
                 icon: User,
-                href: INTERNAL_URLS.accountSettings,
+                href: INTERNAL_URLS.settings.profile,
             },
             {
                 key: 'security',
                 label: 'Login & Security',
                 icon: Lock,
-                href: INTERNAL_URLS.loginAndSecurity,
+                href: INTERNAL_URLS.settings.loginAndSecurity,
             },
             // {
             //     key: 'notifications',
@@ -35,7 +35,7 @@ const SETTINGS_MENU = [
                 key: 'appearance',
                 label: 'Appearance',
                 icon: Palette,
-                href: INTERNAL_URLS.appearance,
+                href: INTERNAL_URLS.settings.appearance,
             },
             // {
             //     key: 'language',

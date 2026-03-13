@@ -16,13 +16,12 @@ import {
     SquareUserRound,
     Users,
 } from 'lucide-react'
-
-import { INTERNAL_URLS } from '@/lib'
-import { useProfile } from '@/lib/queries'
+import { APP_PERMISSIONS, INTERNAL_URLS } from '@/lib'
 import { SettingsGearIcon } from '@/shared/components'
+import { usePermission } from '../../../hooks'
 
 export function SettingsDropdown() {
-    const { isAdmin } = useProfile()
+    const { hasPermission } = usePermission()
 
     // Helper classes for consistent styling
     const iconWrapperClasses = 'size-8 grid place-items-center'
@@ -56,7 +55,7 @@ export function SettingsDropdown() {
                 {/* --- Group 1: Personal Settings (Always Visible) --- */}
                 <DropdownSection title="Settings">
                     <DropdownItem
-                        key="accountSettings"
+                        key="INTERNAL_URLS.settings.profile"
                         startContent={
                             <div className={iconWrapperClasses}>
                                 <SquareUserRound
@@ -67,7 +66,7 @@ export function SettingsDropdown() {
                         }
                     >
                         <Link
-                            to={INTERNAL_URLS.accountSettings}
+                            to={INTERNAL_URLS.settings.profile}
                             className={linkClasses}
                         >
                             <p className={titleClasses}>Account settings</p>
@@ -86,7 +85,7 @@ export function SettingsDropdown() {
                         }
                     >
                         <Link
-                            to={INTERNAL_URLS.appearance}
+                            to={INTERNAL_URLS.settings.appearance}
                             className={linkClasses}
                         >
                             <p className={titleClasses}>Appearance</p>
@@ -111,7 +110,7 @@ export function SettingsDropdown() {
                             }
                         >
                             <Link
-                                to={INTERNAL_URLS.notificationsSettings}
+                                to={INTERNAL_URLS.settings.notifications}
                                 className={linkClasses}
                             >
                                 <p className={titleClasses}>
@@ -127,36 +126,35 @@ export function SettingsDropdown() {
                 </DropdownSection>
 
                 {/* --- Group 2: Admin Settings (Conditional) --- */}
-                {isAdmin ? (
-                    <DropdownSection title="Admin settings">
-                        {/* TODO: Implement System Dashboard */}
-                        {false ? (
-                            <DropdownItem
-                                key="system"
-                                startContent={
-                                    <div className={iconWrapperClasses}>
-                                        <MonitorCog
-                                            size={24}
-                                            className={iconClasses}
-                                        />
-                                    </div>
-                                }
+                <DropdownSection title="Admin settings">
+                    {/* TODO: Implement System Dashboard */}
+                    {false ? (
+                        <DropdownItem
+                            key="system"
+                            startContent={
+                                <div className={iconWrapperClasses}>
+                                    <MonitorCog
+                                        size={24}
+                                        className={iconClasses}
+                                    />
+                                </div>
+                            }
+                        >
+                            <Link
+                                to={INTERNAL_URLS.admin.overview}
+                                className={linkClasses}
                             >
-                                <Link
-                                    to={INTERNAL_URLS.admin}
-                                    className={linkClasses}
-                                >
-                                    <p className={titleClasses}>
-                                        Performance Insights
-                                    </p>
-                                    <p className={descClasses}>
-                                        Real-time financial data and system
-                                        metrics.
-                                    </p>
-                                </Link>
-                            </DropdownItem>
-                        ) : null}
+                                <p className={titleClasses}>
+                                    Performance Insights
+                                </p>
+                                <p className={descClasses}>
+                                    Real-time financial data and system metrics.
+                                </p>
+                            </Link>
+                        </DropdownItem>
+                    ) : null}
 
+                    {hasPermission(APP_PERMISSIONS.JOB.MANAGE) ? (
                         <DropdownItem
                             key="job"
                             startContent={
@@ -169,7 +167,7 @@ export function SettingsDropdown() {
                             }
                         >
                             <Link
-                                to={INTERNAL_URLS.jobManage}
+                                to={INTERNAL_URLS.management.jobs}
                                 className={linkClasses}
                             >
                                 <p className={titleClasses}>Job management</p>
@@ -178,7 +176,9 @@ export function SettingsDropdown() {
                                 </p>
                             </Link>
                         </DropdownItem>
+                    ) : null}
 
+                    {hasPermission(APP_PERMISSIONS.PAYMENT_CHANNEL.UPDATE) ? (
                         <DropdownItem
                             key="payment"
                             startContent={
@@ -191,7 +191,7 @@ export function SettingsDropdown() {
                             }
                         >
                             <Link
-                                to={INTERNAL_URLS.payment}
+                                to={INTERNAL_URLS.management.paymentChannels}
                                 className={linkClasses}
                             >
                                 <p className={titleClasses}>
@@ -203,7 +203,9 @@ export function SettingsDropdown() {
                                 </p>
                             </Link>
                         </DropdownItem>
+                    ) : null}
 
+                    {hasPermission(APP_PERMISSIONS.USER.CREATE) ? (
                         <DropdownItem
                             key="team"
                             startContent={
@@ -213,7 +215,7 @@ export function SettingsDropdown() {
                             }
                         >
                             <Link
-                                to={INTERNAL_URLS.staffDirectory}
+                                to={INTERNAL_URLS.management.team}
                                 className={linkClasses}
                             >
                                 <p className={titleClasses}>Team management</p>
@@ -222,8 +224,8 @@ export function SettingsDropdown() {
                                 </p>
                             </Link>
                         </DropdownItem>
-                    </DropdownSection>
-                ) : null}
+                    ) : null}
+                </DropdownSection>
             </DropdownMenu>
         </Dropdown>
     )

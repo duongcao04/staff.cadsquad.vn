@@ -1,6 +1,6 @@
+import { envConfig } from '@/lib/config'
 import { capitalize } from 'lodash'
 import { ShieldCheck, UserCircle, Wallet } from 'lucide-react'
-import { envConfig } from '@/lib/config'
 import { RoleEnum } from '../../shared/enums'
 
 export const LS_OIDC_REDIRECT_URI_KEY = 'oidc:redirect_uri' as const
@@ -17,71 +17,83 @@ export const EXTERNAL_URLS = {
     },
 }
 export const INTERNAL_URLS = {
-    home: '/',
-    projectCenter: '/' + 'project-center',
-    userSchedule: '/' + 'schedule',
-    workbench: '/',
-    getJobDetailUrl: (jobNo: string, locale?: string) => {
+    home: [''].join('/'),
+    workbench: [''].join('/'),
+    projectCenter: ['', 'project-center'].join('/'),
+    userSchedule: ['', 'schedule'].join('/'),
+    jobDetail: (jobNo: string, locale?: string) => {
         if (!locale) return '/' + 'jobs' + '/' + jobNo
         return '/' + locale + '/' + 'jobs' + '/' + jobNo
     },
-    profile: '/' + 'profile',
-    allNotifications: '/' + 'notifications',
-    userOverview: '/' + 'overview',
+    profile: ['', 'profile'].join('/'),
+    notifications: ['', 'notifications'].join('/'),
+    overview: ['', 'overview'].join('/'),
     userTaskSummary: '/' + 'task-summary',
-    helpCenter: '/' + 'help-center',
+    helpCenter: ['', 'help-center'].join('/'),
     /**
      * AUTH ROUTES
      */
-    auth: '/' + 'auth',
-    login: '/' + 'login',
+    auth: ['', 'auth'].join('/'),
+    login: ['', 'login'].join('/'),
     /**
      * SETTINGS ROUTES
      */
-    settings: '/' + 'settings',
-    accountSettings: '/' + 'settings/my-profile',
-    loginAndSecurity: '/' + 'settings/login-and-security',
-    notificationsSettings: '/' + 'settings/notifications',
-    languageAndRegionSettings: '/' + 'settings/language-and-region',
-    /**
-     * ADMIN ROUTES
-     */
-    admin: '/' + 'admin',
-    adminSettings: '/' + 'admin/settings',
-    schedule: '/' + 'admin/schedule',
-    // MANAGEMENT
-    appearance: '/' + 'settings/appearance',
+    settings: {
+        overview: ['' + 'settings'].join('/'),
+        appearance: ['' + 'settings', 'appearance'].join('/'),
+        profile: ['' + 'settings', 'my-profile'].join('/'),
+        loginAndSecurity: ['' + 'settings', 'login-and-security'].join('/'),
+        notifications: ['' + 'settings', 'notifications'].join('/'),
+        languageAndRegion: ['' + 'settings', 'language-and-region'].join('/'),
+    },
+
     fileDocs: '/' + 'admin/mgmt/file-docs',
-    staffDirectory: '/' + 'admin/mgmt/staff-directory',
-    editStaffDetails: (username: string) =>
-        '/' + 'admin/mgmt/staff-directory/' + username + '/edit',
     inviteMember: '/' + 'admin/mgmt/invite-member',
     revenueReports: '/' + 'admin/mgmt/revenue',
-    teamManage: '/' + 'admin/mgmt/staff-directory',
     roleAndPermissionManage: '/' + 'admin/mgmt/access-control',
-    rolesManage: '/' + 'admin/mgmt/access-control/roles',
-    allPermissions: '/' + 'admin/mgmt/access-control/permissions',
     editRolePermMatrix: (roleCode: string) =>
         '/' + 'admin/mgmt/access-control/roles/' + roleCode + '/perm-matrix',
     userRolePermissionManage: (username: string) =>
         '/' + 'admin/mgmt/access-control/users/' + username,
-    jobManage: '/' + 'admin/mgmt/jobs',
-    jobFolderTemplateManage: '/' + 'admin/mgmt/jobs/folder-templates',
-    departmentsManage: '/' + 'admin/departments',
-    departmentItemManage: (departmentCode: string) =>
-        '/' + 'admin/departments/' + departmentCode,
-    editJob: (jobNo: string) => '/' + 'admin/mgmt/jobs/' + jobNo,
-    paymentManage: '/' + 'admin/mgmt/payments',
+    /**
+     * ADMIN ROUTES
+     */
+    admin: {
+        overview: ["", 'admin'].join('/'),
+        settings: ['', 'admin', 'settings'].join('/'),
+        schedule: ['', 'admin', 'schedule'].join('/')
+    },
+    // MANAGEMENT
+    management: {
+        jobs: ['', 'mgmt', 'jobs'].join('/'),
+        jobDetail: (jobNo: string) => ['', 'mgmt', 'jobs', jobNo].join('/'),
+        jobFolderTemplates: ['', 'mgmt', 'jobs', 'folder-templates'].join('/'),
+        clients: ['', 'mgmt', 'clients'].join('/'),
+        clientDetail: (code: string) => ['', 'mgmt', 'clients', code].join('/'),
+        departments: ['', 'mgmt', 'departments'].join('/'),
+        departmentsDetail: (departmentCode: string) => ['', 'mgmt', 'departments', departmentCode].join('/'),
+        paymentChannels: ['', 'mgmt', 'payments'].join('/'),
+        accessControl: ['', 'mgmt', 'access-control'].join('/'),
+        accessControlUser: ['', 'mgmt', 'access-control', 'user'].join('/'),
+        roles: ['', 'mgmt', 'access-control', 'roles'].join('/'),
+        permissions: ['', 'mgmt', 'access-control', 'permissions'].join('/'),
+        team: ['', 'mgmt', 'staff-directory'].join('/'),
+        staffDetail: (username: string) => ['', 'mgmt', 'access-control', 'staff-directory', username, 'edit'].join('/'),
+        files: ['', 'mgmt', 'access-control', 'files'].join('/'),
+    },
     /**
      * FINANCIAL ROUTES
      */
-    payment: '/' + 'financial/payment',
-    invoiceTemplates: '/' + 'financial/invoice-templates',
-    pendingPayouts: '/' + 'financial/pending-payouts',
-    payroll: '/' + 'financial/payroll',
-    profitLoss: '/' + 'financial/profit-loss',
-    reimbursements: '/' + 'financial/reimbursements',
-    financialSettings: '/' + 'financial/setting',
+    financial: {
+        overview: ['', 'financial'].join('/'),
+        paymentChannels: ['', 'financial', 'payment-channels'].join('/'),
+        payouts: ['', 'financial', 'payouts'].join('/'),
+        payoutsDetails: (jobNo: string) => ['', 'financial', 'payouts', jobNo].join('/'),
+        receivables: ['', 'financial', 'receivables'].join('/'),
+        ledger: ['', 'financial', 'ledger'].join('/'),
+        settings: ['', 'financial', 'settings'].join('/'),
+        invoiceTemplates: ['', 'financial', 'invoice-templates'].join('/')
+    },
     /**
      * COMMUNITIES
      */

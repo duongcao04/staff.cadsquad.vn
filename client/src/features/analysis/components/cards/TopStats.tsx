@@ -31,7 +31,7 @@ export const TopStats = ({
                 </div>
                 <div className="h-full flex flex-col justify-end">
                     <Link
-                        to={INTERNAL_URLS.jobManage}
+                        to={INTERNAL_URLS.management.jobs}
                         className="text-xs text-primary! font-bold cursor-pointer hover:underline flex items-center gap-1"
                     >
                         View details →

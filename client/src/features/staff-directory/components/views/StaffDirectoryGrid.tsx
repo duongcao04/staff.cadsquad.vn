@@ -1,5 +1,5 @@
 import { INTERNAL_URLS, optimizeCloudinary } from '@/lib'
-import { TStaffSearch } from '@/routes/_administrator/admin/mgmt/staff-directory/index'
+import { TStaffSearch } from '@/routes/_administrator/mgmt/staff-directory/index'
 import { DepartmentChip } from '@/shared/components'
 import { RoleChip } from '@/shared/components/chips/RoleChip'
 import {
@@ -63,7 +63,7 @@ export default function StaffDirectoryGrid({
                                       />
                                       <div className="flex flex-col gap-1 items-start justify-center">
                                           <Link
-                                              to={INTERNAL_URLS.editStaffDetails(
+                                              to={INTERNAL_URLS.management.staffDetail(
                                                   user.username
                                               )}
                                           >

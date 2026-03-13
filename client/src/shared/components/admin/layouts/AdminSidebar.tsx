@@ -10,13 +10,18 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 import { Link, useRouterState } from '@tanstack/react-router'
 import {
     BadgeDollarSignIcon,
+    BanknoteArrowUpIcon,
     BriefcaseIcon,
     Building2Icon,
+    CalendarRangeIcon,
+    ChartCandlestickIcon,
     ChevronLeft,
     ChevronRight,
     CogIcon,
     CreditCard,
     FolderGit2Icon,
+    HandshakeIcon,
+    LandmarkIcon,
     LayoutGridIcon,
     LogOut,
     Search,
@@ -24,6 +29,7 @@ import {
     ShieldUser,
     User,
     UsersRoundIcon,
+    WalletIcon,
 } from 'lucide-react'
 import React from 'react'
 
@@ -31,7 +37,6 @@ import { INTERNAL_URLS, profileOptions } from '@/lib'
 import { jobsPendingPayoutsOptions } from '../../../../lib/queries'
 import { toggleAdminLeftSidebar } from '../../../stores'
 import CadsquadLogo from '../../CadsquadLogo'
-import { HeroButton } from '../../ui/hero-button'
 import { HeroTooltip } from '../../ui/hero-tooltip'
 import { ScrollArea } from '../../ui/scroll-area'
 
@@ -239,13 +244,19 @@ export const AdminSidebar = ({
                             <SidebarItem
                                 icon={LayoutGridIcon}
                                 label="Home"
-                                url={INTERNAL_URLS.admin}
+                                url={INTERNAL_URLS.admin.overview}
+                                isCollapsed={isCollapsed}
+                            />
+                            <SidebarItem
+                                icon={CalendarRangeIcon}
+                                label="Schedule"
+                                url={INTERNAL_URLS.admin.schedule}
                                 isCollapsed={isCollapsed}
                             />
                             <SidebarItem
                                 icon={ShieldUser}
                                 label="Permissions"
-                                url={INTERNAL_URLS.roleAndPermissionManage}
+                                url={INTERNAL_URLS.management.accessControl}
                                 isCollapsed={isCollapsed}
                             />
                         </div>
@@ -261,20 +272,56 @@ export const AdminSidebar = ({
                             <SidebarItem
                                 icon={BriefcaseIcon}
                                 label="All Job"
-                                url={INTERNAL_URLS.jobManage}
+                                url={INTERNAL_URLS.management.jobs}
                                 isCollapsed={isCollapsed}
-                            />
-                            <SidebarItem
-                                icon={BadgeDollarSignIcon}
-                                label="Pending Payout"
-                                url={INTERNAL_URLS.pendingPayouts}
-                                isCollapsed={isCollapsed}
-                                badge={pendingPayoutJobs.length}
                             />
                             <SidebarItem
                                 icon={FolderGit2Icon}
                                 label="Folder Templates"
-                                url={INTERNAL_URLS.jobFolderTemplateManage}
+                                url={
+                                    INTERNAL_URLS.management.jobFolderTemplates
+                                }
+                                isCollapsed={isCollapsed}
+                            />
+                        </div>
+                    </div>
+
+                    <div>
+                        {!isCollapsed && (
+                            <p className="px-4 mb-2 text-[8px] font-medium text-text-subdued uppercase tracking-widest">
+                                Financial
+                            </p>
+                        )}
+                        <div className="space-y-1">
+                            <SidebarItem
+                                icon={ChartCandlestickIcon}
+                                label="Overview"
+                                url={INTERNAL_URLS.financial.overview}
+                                isCollapsed={isCollapsed}
+                            />
+                            <SidebarItem
+                                icon={BadgeDollarSignIcon}
+                                label="Payouts"
+                                url={INTERNAL_URLS.financial.payouts}
+                                isCollapsed={isCollapsed}
+                                badge={pendingPayoutJobs.length}
+                            />
+                            <SidebarItem
+                                icon={BanknoteArrowUpIcon}
+                                label="Receivable"
+                                url={INTERNAL_URLS.financial.receivables}
+                                isCollapsed={isCollapsed}
+                            />
+                            <SidebarItem
+                                icon={LandmarkIcon}
+                                label="Payment Channels"
+                                url={INTERNAL_URLS.financial.paymentChannels}
+                                isCollapsed={isCollapsed}
+                            />
+                            <SidebarItem
+                                icon={WalletIcon}
+                                label="Master Ledger"
+                                url={INTERNAL_URLS.financial.ledger}
                                 isCollapsed={isCollapsed}
                             />
                         </div>
@@ -290,13 +337,19 @@ export const AdminSidebar = ({
                             <SidebarItem
                                 icon={UsersRoundIcon}
                                 label="Team"
-                                url={INTERNAL_URLS.teamManage}
+                                url={INTERNAL_URLS.management.team}
+                                isCollapsed={isCollapsed}
+                            />
+                            <SidebarItem
+                                icon={HandshakeIcon}
+                                label="Clients"
+                                url={INTERNAL_URLS.management.clients}
                                 isCollapsed={isCollapsed}
                             />
                             <SidebarItem
                                 icon={Building2Icon}
                                 label="Department"
-                                url={INTERNAL_URLS.departmentsManage}
+                                url={INTERNAL_URLS.management.departments}
                                 isCollapsed={isCollapsed}
                             />
                         </div>
@@ -312,7 +365,7 @@ export const AdminSidebar = ({
                             <SidebarItem
                                 icon={CogIcon}
                                 label="Settings"
-                                url={INTERNAL_URLS.adminSettings}
+                                url={INTERNAL_URLS.admin.settings}
                                 isCollapsed={isCollapsed}
                             />
                         </div>
@@ -322,26 +375,6 @@ export const AdminSidebar = ({
 
             {/* 5. FOOTER SECTION */}
             <div className="p-4 space-y-3">
-                {!isCollapsed && (
-                    <div className="bg-[#1a1a1e] border border-[#2d2d33] rounded-2xl p-4 relative overflow-hidden group shadow-xl">
-                        <div className="relative z-10">
-                            <p className="text-xs font-bold text-white mb-1 flex items-center gap-2">
-                                Upgrade to Pro 🚀
-                            </p>
-                            <p className="text-[10px] text-[#94949e] leading-relaxed mb-3">
-                                Unlock advanced features & analytics.
-                            </p>
-                            <HeroButton
-                                fullWidth
-                                className="bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl h-8 text-[11px] transition-all"
-                            >
-                                Upgrade
-                            </HeroButton>
-                        </div>
-                        <div className="absolute -right-6 -bottom-6 w-20 h-20 bg-blue-500/10 blur-2xl rounded-full" />
-                    </div>
-                )}
-
                 <div className="space-y-1">
                     <button
                         onClick={toggleAdminLeftSidebar}

@@ -28,7 +28,7 @@ export default function SettingTitle({ title, description, onBack }: Props) {
                             onBack()
                         } else {
                             router.navigate({
-                                href: INTERNAL_URLS.settings,
+                                href: INTERNAL_URLS.settings.overview,
                             })
                         }
                     }}

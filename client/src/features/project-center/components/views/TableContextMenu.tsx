@@ -45,7 +45,7 @@ export default function TableContextMenu({ children }: Props) {
     const onOpenNewTab = () => {
         if (contextItem?.no) {
             window.open(
-                INTERNAL_URLS.getJobDetailUrl(contextItem?.no),
+                INTERNAL_URLS.jobDetail(contextItem?.no),
                 '_blank'
             )
         }

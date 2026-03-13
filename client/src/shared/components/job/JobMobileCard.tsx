@@ -65,11 +65,11 @@ export function JobMobileCard({ job }: JobMobileCardProps) {
 
     const onViewDetail = () => {
         router.navigate({
-            href: INTERNAL_URLS.getJobDetailUrl(job.no),
+            href: INTERNAL_URLS.jobDetail(job.no),
         })
     }
     const onCopyLink = () => {
-        handleCopy(INTERNAL_URLS.getJobDetailUrl(job.no))
+        handleCopy(INTERNAL_URLS.jobDetail(job.no))
         addToast({
             title: 'Copy to clipboard successfully',
             color: 'success',
@@ -86,7 +86,7 @@ export function JobMobileCard({ job }: JobMobileCardProps) {
     }
     const onEdit = () => {
         router.navigate({
-            href: INTERNAL_URLS.editJob(job.no),
+            href: INTERNAL_URLS.management.jobDetail(job.no),
         })
     }
 

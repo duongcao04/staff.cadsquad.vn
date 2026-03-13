@@ -253,7 +253,7 @@ export const renderProjectCenterCell = (
                             className="size-8! flex items-center justify-center"
                             iconSize={16}
                             iconClassName="opacity-60"
-                            textValue={INTERNAL_URLS.getJobDetailUrl(data.no)}
+                            textValue={INTERNAL_URLS.jobDetail(data.no)}
                         />
                     </HeroTooltip>
                     <ProjectCenterTableQuickActions data={data} />

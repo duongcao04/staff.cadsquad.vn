@@ -59,7 +59,7 @@ export const searchOptions = (
                                 subtitle: item.client?.name || 'Unknown Client',
                                 type: 'Jobs',
                                 route: item.no
-                                    ? INTERNAL_URLS.getJobDetailUrl(item.no)
+                                    ? INTERNAL_URLS.jobDetail(item.no)
                                     : INTERNAL_URLS.projectCenter,
                                 rawData: item,
                             }))
@@ -123,7 +123,7 @@ export const searchOptions = (
                                     'Unknown Client',
                                 type: 'Staff Member',
                                 route: item.username
-                                    ? INTERNAL_URLS.editStaffDetails(
+                                    ? INTERNAL_URLS.management.staffDetail(
                                           item.username
                                       )
                                     : INTERNAL_URLS.staffDirectory,

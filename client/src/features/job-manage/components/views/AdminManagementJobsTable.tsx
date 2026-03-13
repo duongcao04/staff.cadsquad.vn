@@ -203,7 +203,9 @@ export default function AdminManagementJobsTable({
                                 color="default"
                                 onPress={() =>
                                     router.navigate({
-                                        href: INTERNAL_URLS.editJob(data.no),
+                                        href: INTERNAL_URLS.management.jobDetail(
+                                            data.no
+                                        ),
                                     })
                                 }
                             >
@@ -219,7 +221,7 @@ export default function AdminManagementJobsTable({
                                 onPress={() => {
                                     router.navigate({
                                         href:
-                                            INTERNAL_URLS.editJob(data.no) +
+                                            INTERNAL_URLS.management.jobDetail(data.no) +
                                             '?tab=deliveries',
                                     })
                                 }}
@@ -246,7 +248,7 @@ export default function AdminManagementJobsTable({
                                     }
                                     onPress={() => {
                                         window.open(
-                                            INTERNAL_URLS.getJobDetailUrl(
+                                            INTERNAL_URLS.jobDetail(
                                                 data.no
                                             ),
                                             '_blank'

@@ -90,7 +90,7 @@ export function CreateJobModal({ isOpen, onClose }: Props) {
                                             '- ' +
                                             values.clientName.toUpperCase() +
                                             '_' +
-                                            values.displayName
+                                            values.displayName.toUpperCase()
                                         const newSharepointFolderId =
                                             await copySharepointMutation
                                                 .mutateAsync({

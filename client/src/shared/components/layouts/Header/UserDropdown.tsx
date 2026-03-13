@@ -103,7 +103,7 @@ export function UserDropdown() {
                             startContent={<ChartArea size={16} />}
                             onClick={() => {
                                 router.navigate({
-                                    href: INTERNAL_URLS.userOverview,
+                                    href: INTERNAL_URLS.overview,
                                 })
                             }}
                         >
@@ -130,7 +130,7 @@ export function UserDropdown() {
                         startContent={<UserCog size={16} />}
                         onClick={() => {
                             router.navigate({
-                                href: INTERNAL_URLS.settings,
+                                href: INTERNAL_URLS.settings.overview,
                             })
                         }}
                     >
