@@ -8,6 +8,7 @@ import { UserResponseDto } from '../../user/dto/user-response.dto'
 import { APP_PERMISSIONS } from '../../../utils/_app-permissions'
 import { Client } from 'pg'
 import { JobAssignment } from '../../../generated/prisma'
+import { JobFolderTemplateResponseDto } from '../../job-folder-template/dto/job-folder-template-response.dto'
 
 export class JobResponseDto {
 	@ApiProperty({ description: 'Job ID' })
@@ -106,6 +107,10 @@ export class JobResponseDto {
 	@Expose()
 	@Type(() => UserResponseDto)
 	createdBy: UserResponseDto
+
+	folderTemplateId?: string
+
+	folderTemplate?: JobFolderTemplateResponseDto
 
 	@Expose()
 	assignments: JobAssignment[]

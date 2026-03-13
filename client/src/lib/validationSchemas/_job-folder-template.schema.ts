@@ -1,6 +1,7 @@
 import * as yup from "yup"
 import { z, ZodType } from 'zod'
 import { TJobFolderTemplate } from "../../shared/types"
+import { JobSchema } from "./_job.schema"
 
 export const JobFolderTemplateSchema: ZodType<TJobFolderTemplate> = z.lazy(() => z.object({
 	id: z.string().catch('N/A'),
@@ -8,6 +9,7 @@ export const JobFolderTemplateSchema: ZodType<TJobFolderTemplate> = z.lazy(() =>
 	folderId: z.string().catch(''),
 	folderName: z.string().catch(''),
 	size: z.number().catch(0),
+	jobs: z.array(z.lazy(() => JobSchema)).default([]),
 	webUrl: z.string().catch(''),
 	createdAt: z.coerce.date().catch(new Date()),
 	updatedAt: z.coerce.date().catch(new Date()),

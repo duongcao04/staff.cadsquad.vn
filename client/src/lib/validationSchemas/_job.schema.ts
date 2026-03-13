@@ -65,6 +65,7 @@ const BaseJobFormSchema = z.object({
     paymentChannelId: z.string().uuid('Invalid Payment Channel').nullish(),
     startedAt: z.string().min(1, 'Started at is required').refine((val) => isValid(parseISO(val)), 'Date must be a valid ISO string'),
     dueAt: z.string().min(1, 'Due date is required').refine((val) => isValid(parseISO(val)), 'Date must be a valid ISO string'),
+    folderTemplateId: z.string().nullish(),
     isCreateSharepointFolder: z.boolean().default(false),
     sharepointTemplateId: z.string().nullish(),
     sharepointFolderId: z.string().nullish(),

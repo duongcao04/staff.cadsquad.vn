@@ -4715,6 +4715,37 @@ export namespace Prisma {
 
 
   /**
+   * Count Type JobFolderTemplateCountOutputType
+   */
+
+  export type JobFolderTemplateCountOutputType = {
+    jobs: number
+  }
+
+  export type JobFolderTemplateCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    jobs?: boolean | JobFolderTemplateCountOutputTypeCountJobsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * JobFolderTemplateCountOutputType without action
+   */
+  export type JobFolderTemplateCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobFolderTemplateCountOutputType
+     */
+    select?: JobFolderTemplateCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * JobFolderTemplateCountOutputType without action
+   */
+  export type JobFolderTemplateCountOutputTypeCountJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JobWhereInput
+  }
+
+
+  /**
    * Count Type ClientCountOutputType
    */
 
@@ -24496,6 +24527,7 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     deletedAt: Date | null
+    folderTemplateId: string | null
   }
 
   export type JobMaxAggregateOutputType = {
@@ -24522,6 +24554,7 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     deletedAt: Date | null
+    folderTemplateId: string | null
   }
 
   export type JobCountAggregateOutputType = {
@@ -24549,6 +24582,7 @@ export namespace Prisma {
     createdAt: number
     updatedAt: number
     deletedAt: number
+    folderTemplateId: number
     _all: number
   }
 
@@ -24587,6 +24621,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
+    folderTemplateId?: true
   }
 
   export type JobMaxAggregateInputType = {
@@ -24613,6 +24648,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
+    folderTemplateId?: true
   }
 
   export type JobCountAggregateInputType = {
@@ -24640,6 +24676,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
+    folderTemplateId?: true
     _all?: true
   }
 
@@ -24754,6 +24791,7 @@ export namespace Prisma {
     createdAt: Date
     updatedAt: Date
     deletedAt: Date | null
+    folderTemplateId: string | null
     _count: JobCountAggregateOutputType | null
     _avg: JobAvgAggregateOutputType | null
     _sum: JobSumAggregateOutputType | null
@@ -24800,6 +24838,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
+    folderTemplateId?: boolean
     type?: boolean | JobTypeDefaultArgs<ExtArgs>
     client?: boolean | Job$clientArgs<ExtArgs>
     assignments?: boolean | Job$assignmentsArgs<ExtArgs>
@@ -24812,6 +24851,7 @@ export namespace Prisma {
     statusHistory?: boolean | Job$statusHistoryArgs<ExtArgs>
     pinnedByUsers?: boolean | Job$pinnedByUsersArgs<ExtArgs>
     jobDeliveries?: boolean | Job$jobDeliveriesArgs<ExtArgs>
+    folderTemplate?: boolean | Job$folderTemplateArgs<ExtArgs>
     _count?: boolean | JobCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["job"]>
 
@@ -24840,11 +24880,13 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
+    folderTemplateId?: boolean
     type?: boolean | JobTypeDefaultArgs<ExtArgs>
     client?: boolean | Job$clientArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     paymentChannel?: boolean | Job$paymentChannelArgs<ExtArgs>
     status?: boolean | JobStatusDefaultArgs<ExtArgs>
+    folderTemplate?: boolean | Job$folderTemplateArgs<ExtArgs>
   }, ExtArgs["result"]["job"]>
 
   export type JobSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -24872,11 +24914,13 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
+    folderTemplateId?: boolean
     type?: boolean | JobTypeDefaultArgs<ExtArgs>
     client?: boolean | Job$clientArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     paymentChannel?: boolean | Job$paymentChannelArgs<ExtArgs>
     status?: boolean | JobStatusDefaultArgs<ExtArgs>
+    folderTemplate?: boolean | Job$folderTemplateArgs<ExtArgs>
   }, ExtArgs["result"]["job"]>
 
   export type JobSelectScalar = {
@@ -24904,9 +24948,10 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
+    folderTemplateId?: boolean
   }
 
-  export type JobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "no" | "typeId" | "displayName" | "description" | "attachmentUrls" | "sharepointFolderId" | "clientId" | "incomeCost" | "totalStaffCost" | "createdById" | "paymentChannelId" | "statusId" | "startedAt" | "priority" | "isPublished" | "isPaid" | "dueAt" | "completedAt" | "finishedAt" | "paidAt" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["job"]>
+  export type JobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "no" | "typeId" | "displayName" | "description" | "attachmentUrls" | "sharepointFolderId" | "clientId" | "incomeCost" | "totalStaffCost" | "createdById" | "paymentChannelId" | "statusId" | "startedAt" | "priority" | "isPublished" | "isPaid" | "dueAt" | "completedAt" | "finishedAt" | "paidAt" | "createdAt" | "updatedAt" | "deletedAt" | "folderTemplateId", ExtArgs["result"]["job"]>
   export type JobInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     type?: boolean | JobTypeDefaultArgs<ExtArgs>
     client?: boolean | Job$clientArgs<ExtArgs>
@@ -24920,6 +24965,7 @@ export namespace Prisma {
     statusHistory?: boolean | Job$statusHistoryArgs<ExtArgs>
     pinnedByUsers?: boolean | Job$pinnedByUsersArgs<ExtArgs>
     jobDeliveries?: boolean | Job$jobDeliveriesArgs<ExtArgs>
+    folderTemplate?: boolean | Job$folderTemplateArgs<ExtArgs>
     _count?: boolean | JobCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type JobIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -24928,6 +24974,7 @@ export namespace Prisma {
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     paymentChannel?: boolean | Job$paymentChannelArgs<ExtArgs>
     status?: boolean | JobStatusDefaultArgs<ExtArgs>
+    folderTemplate?: boolean | Job$folderTemplateArgs<ExtArgs>
   }
   export type JobIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     type?: boolean | JobTypeDefaultArgs<ExtArgs>
@@ -24935,6 +24982,7 @@ export namespace Prisma {
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     paymentChannel?: boolean | Job$paymentChannelArgs<ExtArgs>
     status?: boolean | JobStatusDefaultArgs<ExtArgs>
+    folderTemplate?: boolean | Job$folderTemplateArgs<ExtArgs>
   }
 
   export type $JobPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -24952,6 +25000,7 @@ export namespace Prisma {
       statusHistory: Prisma.$JobStatusHistoryPayload<ExtArgs>[]
       pinnedByUsers: Prisma.$PinnedJobPayload<ExtArgs>[]
       jobDeliveries: Prisma.$JobDeliveryPayload<ExtArgs>[]
+      folderTemplate: Prisma.$JobFolderTemplatePayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -24978,6 +25027,7 @@ export namespace Prisma {
       createdAt: Date
       updatedAt: Date
       deletedAt: Date | null
+      folderTemplateId: string | null
     }, ExtArgs["result"]["job"]>
     composites: {}
   }
@@ -25384,6 +25434,7 @@ export namespace Prisma {
     statusHistory<T extends Job$statusHistoryArgs<ExtArgs> = {}>(args?: Subset<T, Job$statusHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobStatusHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     pinnedByUsers<T extends Job$pinnedByUsersArgs<ExtArgs> = {}>(args?: Subset<T, Job$pinnedByUsersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PinnedJobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     jobDeliveries<T extends Job$jobDeliveriesArgs<ExtArgs> = {}>(args?: Subset<T, Job$jobDeliveriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobDeliveryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    folderTemplate<T extends Job$folderTemplateArgs<ExtArgs> = {}>(args?: Subset<T, Job$folderTemplateArgs<ExtArgs>>): Prisma__JobFolderTemplateClient<$Result.GetResult<Prisma.$JobFolderTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -25437,6 +25488,7 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"Job", 'DateTime'>
     readonly updatedAt: FieldRef<"Job", 'DateTime'>
     readonly deletedAt: FieldRef<"Job", 'DateTime'>
+    readonly folderTemplateId: FieldRef<"Job", 'String'>
   }
     
 
@@ -26036,6 +26088,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: JobDeliveryScalarFieldEnum | JobDeliveryScalarFieldEnum[]
+  }
+
+  /**
+   * Job.folderTemplate
+   */
+  export type Job$folderTemplateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobFolderTemplate
+     */
+    select?: JobFolderTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobFolderTemplate
+     */
+    omit?: JobFolderTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobFolderTemplateInclude<ExtArgs> | null
+    where?: JobFolderTemplateWhereInput
   }
 
   /**
@@ -27379,6 +27450,8 @@ export namespace Prisma {
     webUrl?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    jobs?: boolean | JobFolderTemplate$jobsArgs<ExtArgs>
+    _count?: boolean | JobFolderTemplateCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["jobFolderTemplate"]>
 
   export type JobFolderTemplateSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -27415,10 +27488,18 @@ export namespace Prisma {
   }
 
   export type JobFolderTemplateOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "displayName" | "folderId" | "folderName" | "size" | "webUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["jobFolderTemplate"]>
+  export type JobFolderTemplateInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    jobs?: boolean | JobFolderTemplate$jobsArgs<ExtArgs>
+    _count?: boolean | JobFolderTemplateCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type JobFolderTemplateIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type JobFolderTemplateIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
 
   export type $JobFolderTemplatePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "JobFolderTemplate"
-    objects: {}
+    objects: {
+      jobs: Prisma.$JobPayload<ExtArgs>[]
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       displayName: string
@@ -27822,6 +27903,7 @@ export namespace Prisma {
    */
   export interface Prisma__JobFolderTemplateClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    jobs<T extends JobFolderTemplate$jobsArgs<ExtArgs> = {}>(args?: Subset<T, JobFolderTemplate$jobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -27876,6 +27958,10 @@ export namespace Prisma {
      */
     omit?: JobFolderTemplateOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobFolderTemplateInclude<ExtArgs> | null
+    /**
      * Filter, which JobFolderTemplate to fetch.
      */
     where: JobFolderTemplateWhereUniqueInput
@@ -27894,6 +27980,10 @@ export namespace Prisma {
      */
     omit?: JobFolderTemplateOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobFolderTemplateInclude<ExtArgs> | null
+    /**
      * Filter, which JobFolderTemplate to fetch.
      */
     where: JobFolderTemplateWhereUniqueInput
@@ -27911,6 +28001,10 @@ export namespace Prisma {
      * Omit specific fields from the JobFolderTemplate
      */
     omit?: JobFolderTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobFolderTemplateInclude<ExtArgs> | null
     /**
      * Filter, which JobFolderTemplate to fetch.
      */
@@ -27960,6 +28054,10 @@ export namespace Prisma {
      */
     omit?: JobFolderTemplateOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobFolderTemplateInclude<ExtArgs> | null
+    /**
      * Filter, which JobFolderTemplate to fetch.
      */
     where?: JobFolderTemplateWhereInput
@@ -28008,6 +28106,10 @@ export namespace Prisma {
      */
     omit?: JobFolderTemplateOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobFolderTemplateInclude<ExtArgs> | null
+    /**
      * Filter, which JobFolderTemplates to fetch.
      */
     where?: JobFolderTemplateWhereInput
@@ -28050,6 +28152,10 @@ export namespace Prisma {
      * Omit specific fields from the JobFolderTemplate
      */
     omit?: JobFolderTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobFolderTemplateInclude<ExtArgs> | null
     /**
      * The data needed to create a JobFolderTemplate.
      */
@@ -28098,6 +28204,10 @@ export namespace Prisma {
      * Omit specific fields from the JobFolderTemplate
      */
     omit?: JobFolderTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobFolderTemplateInclude<ExtArgs> | null
     /**
      * The data needed to update a JobFolderTemplate.
      */
@@ -28165,6 +28275,10 @@ export namespace Prisma {
      */
     omit?: JobFolderTemplateOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobFolderTemplateInclude<ExtArgs> | null
+    /**
      * The filter to search for the JobFolderTemplate to update in case it exists.
      */
     where: JobFolderTemplateWhereUniqueInput
@@ -28191,6 +28305,10 @@ export namespace Prisma {
      */
     omit?: JobFolderTemplateOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobFolderTemplateInclude<ExtArgs> | null
+    /**
      * Filter which JobFolderTemplate to delete.
      */
     where: JobFolderTemplateWhereUniqueInput
@@ -28211,6 +28329,30 @@ export namespace Prisma {
   }
 
   /**
+   * JobFolderTemplate.jobs
+   */
+  export type JobFolderTemplate$jobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Job
+     */
+    select?: JobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Job
+     */
+    omit?: JobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobInclude<ExtArgs> | null
+    where?: JobWhereInput
+    orderBy?: JobOrderByWithRelationInput | JobOrderByWithRelationInput[]
+    cursor?: JobWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JobScalarFieldEnum | JobScalarFieldEnum[]
+  }
+
+  /**
    * JobFolderTemplate without action
    */
   export type JobFolderTemplateDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -28222,6 +28364,10 @@ export namespace Prisma {
      * Omit specific fields from the JobFolderTemplate
      */
     omit?: JobFolderTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobFolderTemplateInclude<ExtArgs> | null
   }
 
 
@@ -45537,7 +45683,8 @@ export namespace Prisma {
     paidAt: 'paidAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    deletedAt: 'deletedAt'
+    deletedAt: 'deletedAt',
+    folderTemplateId: 'folderTemplateId'
   };
 
   export type JobScalarFieldEnum = (typeof JobScalarFieldEnum)[keyof typeof JobScalarFieldEnum]
@@ -47395,6 +47542,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Job"> | Date | string
     updatedAt?: DateTimeFilter<"Job"> | Date | string
     deletedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
+    folderTemplateId?: StringNullableFilter<"Job"> | string | null
     type?: XOR<JobTypeScalarRelationFilter, JobTypeWhereInput>
     client?: XOR<ClientNullableScalarRelationFilter, ClientWhereInput> | null
     assignments?: JobAssignmentListRelationFilter
@@ -47407,6 +47555,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryListRelationFilter
     pinnedByUsers?: PinnedJobListRelationFilter
     jobDeliveries?: JobDeliveryListRelationFilter
+    folderTemplate?: XOR<JobFolderTemplateNullableScalarRelationFilter, JobFolderTemplateWhereInput> | null
   }
 
   export type JobOrderByWithRelationInput = {
@@ -47434,6 +47583,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
+    folderTemplateId?: SortOrderInput | SortOrder
     type?: JobTypeOrderByWithRelationInput
     client?: ClientOrderByWithRelationInput
     assignments?: JobAssignmentOrderByRelationAggregateInput
@@ -47446,6 +47596,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryOrderByRelationAggregateInput
     pinnedByUsers?: PinnedJobOrderByRelationAggregateInput
     jobDeliveries?: JobDeliveryOrderByRelationAggregateInput
+    folderTemplate?: JobFolderTemplateOrderByWithRelationInput
   }
 
   export type JobWhereUniqueInput = Prisma.AtLeast<{
@@ -47476,6 +47627,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Job"> | Date | string
     updatedAt?: DateTimeFilter<"Job"> | Date | string
     deletedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
+    folderTemplateId?: StringNullableFilter<"Job"> | string | null
     type?: XOR<JobTypeScalarRelationFilter, JobTypeWhereInput>
     client?: XOR<ClientNullableScalarRelationFilter, ClientWhereInput> | null
     assignments?: JobAssignmentListRelationFilter
@@ -47488,6 +47640,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryListRelationFilter
     pinnedByUsers?: PinnedJobListRelationFilter
     jobDeliveries?: JobDeliveryListRelationFilter
+    folderTemplate?: XOR<JobFolderTemplateNullableScalarRelationFilter, JobFolderTemplateWhereInput> | null
   }, "id" | "no">
 
   export type JobOrderByWithAggregationInput = {
@@ -47515,6 +47668,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
+    folderTemplateId?: SortOrderInput | SortOrder
     _count?: JobCountOrderByAggregateInput
     _avg?: JobAvgOrderByAggregateInput
     _max?: JobMaxOrderByAggregateInput
@@ -47550,6 +47704,7 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Job"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Job"> | Date | string
     deletedAt?: DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
+    folderTemplateId?: StringNullableWithAggregatesFilter<"Job"> | string | null
   }
 
   export type JobAssignmentWhereInput = {
@@ -47625,6 +47780,7 @@ export namespace Prisma {
     webUrl?: StringFilter<"JobFolderTemplate"> | string
     createdAt?: DateTimeFilter<"JobFolderTemplate"> | Date | string
     updatedAt?: DateTimeFilter<"JobFolderTemplate"> | Date | string
+    jobs?: JobListRelationFilter
   }
 
   export type JobFolderTemplateOrderByWithRelationInput = {
@@ -47636,6 +47792,7 @@ export namespace Prisma {
     webUrl?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    jobs?: JobOrderByRelationAggregateInput
   }
 
   export type JobFolderTemplateWhereUniqueInput = Prisma.AtLeast<{
@@ -47650,6 +47807,7 @@ export namespace Prisma {
     webUrl?: StringFilter<"JobFolderTemplate"> | string
     createdAt?: DateTimeFilter<"JobFolderTemplate"> | Date | string
     updatedAt?: DateTimeFilter<"JobFolderTemplate"> | Date | string
+    jobs?: JobListRelationFilter
   }, "id">
 
   export type JobFolderTemplateOrderByWithAggregationInput = {
@@ -50247,6 +50405,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
+    folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
   }
 
   export type JobUncheckedCreateInput = {
@@ -50274,6 +50433,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    folderTemplateId?: string | null
     assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
     activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
     files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
@@ -50315,6 +50475,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
+    folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
   }
 
   export type JobUncheckedUpdateInput = {
@@ -50342,6 +50503,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
     activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
     files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
@@ -50376,6 +50538,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    folderTemplateId?: string | null
   }
 
   export type JobUpdateManyMutationInput = {
@@ -50425,6 +50588,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type JobAssignmentCreateInput = {
@@ -50490,6 +50654,7 @@ export namespace Prisma {
     webUrl: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    jobs?: JobCreateNestedManyWithoutFolderTemplateInput
   }
 
   export type JobFolderTemplateUncheckedCreateInput = {
@@ -50501,6 +50666,7 @@ export namespace Prisma {
     webUrl: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    jobs?: JobUncheckedCreateNestedManyWithoutFolderTemplateInput
   }
 
   export type JobFolderTemplateUpdateInput = {
@@ -50512,6 +50678,7 @@ export namespace Prisma {
     webUrl?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    jobs?: JobUpdateManyWithoutFolderTemplateNestedInput
   }
 
   export type JobFolderTemplateUncheckedUpdateInput = {
@@ -50523,6 +50690,7 @@ export namespace Prisma {
     webUrl?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    jobs?: JobUncheckedUpdateManyWithoutFolderTemplateNestedInput
   }
 
   export type JobFolderTemplateCreateManyInput = {
@@ -52995,6 +53163,11 @@ export namespace Prisma {
     isNot?: JobStatusWhereInput
   }
 
+  export type JobFolderTemplateNullableScalarRelationFilter = {
+    is?: JobFolderTemplateWhereInput | null
+    isNot?: JobFolderTemplateWhereInput | null
+  }
+
   export type JobCountOrderByAggregateInput = {
     id?: SortOrder
     no?: SortOrder
@@ -53020,6 +53193,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
+    folderTemplateId?: SortOrder
   }
 
   export type JobAvgOrderByAggregateInput = {
@@ -53051,6 +53225,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
+    folderTemplateId?: SortOrder
   }
 
   export type JobMinOrderByAggregateInput = {
@@ -53077,6 +53252,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
+    folderTemplateId?: SortOrder
   }
 
   export type JobSumOrderByAggregateInput = {
@@ -55652,6 +55828,12 @@ export namespace Prisma {
     connect?: JobDeliveryWhereUniqueInput | JobDeliveryWhereUniqueInput[]
   }
 
+  export type JobFolderTemplateCreateNestedOneWithoutJobsInput = {
+    create?: XOR<JobFolderTemplateCreateWithoutJobsInput, JobFolderTemplateUncheckedCreateWithoutJobsInput>
+    connectOrCreate?: JobFolderTemplateCreateOrConnectWithoutJobsInput
+    connect?: JobFolderTemplateWhereUniqueInput
+  }
+
   export type JobAssignmentUncheckedCreateNestedManyWithoutJobInput = {
     create?: XOR<JobAssignmentCreateWithoutJobInput, JobAssignmentUncheckedCreateWithoutJobInput> | JobAssignmentCreateWithoutJobInput[] | JobAssignmentUncheckedCreateWithoutJobInput[]
     connectOrCreate?: JobAssignmentCreateOrConnectWithoutJobInput | JobAssignmentCreateOrConnectWithoutJobInput[]
@@ -55860,6 +56042,16 @@ export namespace Prisma {
     deleteMany?: JobDeliveryScalarWhereInput | JobDeliveryScalarWhereInput[]
   }
 
+  export type JobFolderTemplateUpdateOneWithoutJobsNestedInput = {
+    create?: XOR<JobFolderTemplateCreateWithoutJobsInput, JobFolderTemplateUncheckedCreateWithoutJobsInput>
+    connectOrCreate?: JobFolderTemplateCreateOrConnectWithoutJobsInput
+    upsert?: JobFolderTemplateUpsertWithoutJobsInput
+    disconnect?: JobFolderTemplateWhereInput | boolean
+    delete?: JobFolderTemplateWhereInput | boolean
+    connect?: JobFolderTemplateWhereUniqueInput
+    update?: XOR<XOR<JobFolderTemplateUpdateToOneWithWhereWithoutJobsInput, JobFolderTemplateUpdateWithoutJobsInput>, JobFolderTemplateUncheckedUpdateWithoutJobsInput>
+  }
+
   export type JobAssignmentUncheckedUpdateManyWithoutJobNestedInput = {
     create?: XOR<JobAssignmentCreateWithoutJobInput, JobAssignmentUncheckedCreateWithoutJobInput> | JobAssignmentCreateWithoutJobInput[] | JobAssignmentUncheckedCreateWithoutJobInput[]
     connectOrCreate?: JobAssignmentCreateOrConnectWithoutJobInput | JobAssignmentCreateOrConnectWithoutJobInput[]
@@ -55984,6 +56176,48 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutJobAssignmentsInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutJobAssignmentsInput, UserUpdateWithoutJobAssignmentsInput>, UserUncheckedUpdateWithoutJobAssignmentsInput>
+  }
+
+  export type JobCreateNestedManyWithoutFolderTemplateInput = {
+    create?: XOR<JobCreateWithoutFolderTemplateInput, JobUncheckedCreateWithoutFolderTemplateInput> | JobCreateWithoutFolderTemplateInput[] | JobUncheckedCreateWithoutFolderTemplateInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutFolderTemplateInput | JobCreateOrConnectWithoutFolderTemplateInput[]
+    createMany?: JobCreateManyFolderTemplateInputEnvelope
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+  }
+
+  export type JobUncheckedCreateNestedManyWithoutFolderTemplateInput = {
+    create?: XOR<JobCreateWithoutFolderTemplateInput, JobUncheckedCreateWithoutFolderTemplateInput> | JobCreateWithoutFolderTemplateInput[] | JobUncheckedCreateWithoutFolderTemplateInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutFolderTemplateInput | JobCreateOrConnectWithoutFolderTemplateInput[]
+    createMany?: JobCreateManyFolderTemplateInputEnvelope
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+  }
+
+  export type JobUpdateManyWithoutFolderTemplateNestedInput = {
+    create?: XOR<JobCreateWithoutFolderTemplateInput, JobUncheckedCreateWithoutFolderTemplateInput> | JobCreateWithoutFolderTemplateInput[] | JobUncheckedCreateWithoutFolderTemplateInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutFolderTemplateInput | JobCreateOrConnectWithoutFolderTemplateInput[]
+    upsert?: JobUpsertWithWhereUniqueWithoutFolderTemplateInput | JobUpsertWithWhereUniqueWithoutFolderTemplateInput[]
+    createMany?: JobCreateManyFolderTemplateInputEnvelope
+    set?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    disconnect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    delete?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    update?: JobUpdateWithWhereUniqueWithoutFolderTemplateInput | JobUpdateWithWhereUniqueWithoutFolderTemplateInput[]
+    updateMany?: JobUpdateManyWithWhereWithoutFolderTemplateInput | JobUpdateManyWithWhereWithoutFolderTemplateInput[]
+    deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
+  }
+
+  export type JobUncheckedUpdateManyWithoutFolderTemplateNestedInput = {
+    create?: XOR<JobCreateWithoutFolderTemplateInput, JobUncheckedCreateWithoutFolderTemplateInput> | JobCreateWithoutFolderTemplateInput[] | JobUncheckedCreateWithoutFolderTemplateInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutFolderTemplateInput | JobCreateOrConnectWithoutFolderTemplateInput[]
+    upsert?: JobUpsertWithWhereUniqueWithoutFolderTemplateInput | JobUpsertWithWhereUniqueWithoutFolderTemplateInput[]
+    createMany?: JobCreateManyFolderTemplateInputEnvelope
+    set?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    disconnect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    delete?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    update?: JobUpdateWithWhereUniqueWithoutFolderTemplateInput | JobUpdateWithWhereUniqueWithoutFolderTemplateInput[]
+    updateMany?: JobUpdateManyWithWhereWithoutFolderTemplateInput | JobUpdateManyWithWhereWithoutFolderTemplateInput[]
+    deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
   }
 
   export type JobCreateNestedManyWithoutClientInput = {
@@ -57462,6 +57696,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
+    folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
   }
 
   export type JobUncheckedCreateWithoutCreatedByInput = {
@@ -57488,6 +57723,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    folderTemplateId?: string | null
     assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
     activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
     files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
@@ -58387,6 +58623,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Job"> | Date | string
     updatedAt?: DateTimeFilter<"Job"> | Date | string
     deletedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
+    folderTemplateId?: StringNullableFilter<"Job"> | string | null
   }
 
   export type FileSystemUpsertWithWhereUniqueWithoutCreatedByInput = {
@@ -60407,6 +60644,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
+    folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
   }
 
   export type JobUncheckedCreateWithoutCommentsInput = {
@@ -60434,6 +60672,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    folderTemplateId?: string | null
     assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
     activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
     files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
@@ -60631,6 +60870,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
+    folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
   }
 
   export type JobUncheckedUpdateWithoutCommentsInput = {
@@ -60658,6 +60898,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
     activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
     files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
@@ -61407,6 +61648,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
+    folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
   }
 
   export type JobUncheckedCreateWithoutFilesInput = {
@@ -61434,6 +61676,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    folderTemplateId?: string | null
     assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
     activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
     comments?: JobCommentUncheckedCreateNestedManyWithoutJobInput
@@ -61598,6 +61841,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
+    folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
   }
 
   export type JobUncheckedUpdateWithoutFilesInput = {
@@ -61625,6 +61869,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
     activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
     comments?: JobCommentUncheckedUpdateManyWithoutJobNestedInput
@@ -62066,6 +62311,33 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type JobFolderTemplateCreateWithoutJobsInput = {
+    id?: string
+    displayName: string
+    folderId: string
+    folderName: string
+    size: number
+    webUrl: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type JobFolderTemplateUncheckedCreateWithoutJobsInput = {
+    id?: string
+    displayName: string
+    folderId: string
+    folderName: string
+    size: number
+    webUrl: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type JobFolderTemplateCreateOrConnectWithoutJobsInput = {
+    where: JobFolderTemplateWhereUniqueInput
+    create: XOR<JobFolderTemplateCreateWithoutJobsInput, JobFolderTemplateUncheckedCreateWithoutJobsInput>
+  }
+
   export type JobTypeUpsertWithoutJobsInput = {
     update: XOR<JobTypeUpdateWithoutJobsInput, JobTypeUncheckedUpdateWithoutJobsInput>
     create: XOR<JobTypeCreateWithoutJobsInput, JobTypeUncheckedCreateWithoutJobsInput>
@@ -62429,6 +62701,39 @@ export namespace Prisma {
     data: XOR<JobDeliveryUpdateManyMutationInput, JobDeliveryUncheckedUpdateManyWithoutJobInput>
   }
 
+  export type JobFolderTemplateUpsertWithoutJobsInput = {
+    update: XOR<JobFolderTemplateUpdateWithoutJobsInput, JobFolderTemplateUncheckedUpdateWithoutJobsInput>
+    create: XOR<JobFolderTemplateCreateWithoutJobsInput, JobFolderTemplateUncheckedCreateWithoutJobsInput>
+    where?: JobFolderTemplateWhereInput
+  }
+
+  export type JobFolderTemplateUpdateToOneWithWhereWithoutJobsInput = {
+    where?: JobFolderTemplateWhereInput
+    data: XOR<JobFolderTemplateUpdateWithoutJobsInput, JobFolderTemplateUncheckedUpdateWithoutJobsInput>
+  }
+
+  export type JobFolderTemplateUpdateWithoutJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    folderId?: StringFieldUpdateOperationsInput | string
+    folderName?: StringFieldUpdateOperationsInput | string
+    size?: IntFieldUpdateOperationsInput | number
+    webUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobFolderTemplateUncheckedUpdateWithoutJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    folderId?: StringFieldUpdateOperationsInput | string
+    folderName?: StringFieldUpdateOperationsInput | string
+    size?: IntFieldUpdateOperationsInput | number
+    webUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type JobCreateWithoutAssignmentsInput = {
     id?: string
     no: string
@@ -62460,6 +62765,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
+    folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
   }
 
   export type JobUncheckedCreateWithoutAssignmentsInput = {
@@ -62487,6 +62793,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    folderTemplateId?: string | null
     activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
     files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
     comments?: JobCommentUncheckedCreateNestedManyWithoutJobInput
@@ -62629,6 +62936,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
+    folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
   }
 
   export type JobUncheckedUpdateWithoutAssignmentsInput = {
@@ -62656,6 +62964,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
     activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
     files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
     comments?: JobCommentUncheckedUpdateManyWithoutJobNestedInput
@@ -62757,6 +63066,100 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
+  export type JobCreateWithoutFolderTemplateInput = {
+    id?: string
+    no: string
+    displayName: string
+    description?: string | null
+    attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
+    incomeCost: number
+    totalStaffCost?: number
+    startedAt?: Date | string
+    priority?: $Enums.JobPriority
+    isPublished?: boolean
+    isPaid?: boolean
+    dueAt: Date | string
+    completedAt?: Date | string | null
+    finishedAt?: Date | string | null
+    paidAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    type: JobTypeCreateNestedOneWithoutJobsInput
+    client?: ClientCreateNestedOneWithoutJobsInput
+    assignments?: JobAssignmentCreateNestedManyWithoutJobInput
+    createdBy: UserCreateNestedOneWithoutJobsCreatedInput
+    paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
+    status: JobStatusCreateNestedOneWithoutJobsInput
+    activityLog?: JobActivityLogCreateNestedManyWithoutJobInput
+    files?: FileSystemCreateNestedManyWithoutJobInput
+    comments?: JobCommentCreateNestedManyWithoutJobInput
+    statusHistory?: JobStatusHistoryCreateNestedManyWithoutJobInput
+    pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
+    jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
+  }
+
+  export type JobUncheckedCreateWithoutFolderTemplateInput = {
+    id?: string
+    no: string
+    typeId: string
+    displayName: string
+    description?: string | null
+    attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
+    clientId?: string | null
+    incomeCost: number
+    totalStaffCost?: number
+    createdById: string
+    paymentChannelId?: string | null
+    statusId: string
+    startedAt?: Date | string
+    priority?: $Enums.JobPriority
+    isPublished?: boolean
+    isPaid?: boolean
+    dueAt: Date | string
+    completedAt?: Date | string | null
+    finishedAt?: Date | string | null
+    paidAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
+    activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
+    files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
+    comments?: JobCommentUncheckedCreateNestedManyWithoutJobInput
+    statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
+    pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
+    jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+  }
+
+  export type JobCreateOrConnectWithoutFolderTemplateInput = {
+    where: JobWhereUniqueInput
+    create: XOR<JobCreateWithoutFolderTemplateInput, JobUncheckedCreateWithoutFolderTemplateInput>
+  }
+
+  export type JobCreateManyFolderTemplateInputEnvelope = {
+    data: JobCreateManyFolderTemplateInput | JobCreateManyFolderTemplateInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type JobUpsertWithWhereUniqueWithoutFolderTemplateInput = {
+    where: JobWhereUniqueInput
+    update: XOR<JobUpdateWithoutFolderTemplateInput, JobUncheckedUpdateWithoutFolderTemplateInput>
+    create: XOR<JobCreateWithoutFolderTemplateInput, JobUncheckedCreateWithoutFolderTemplateInput>
+  }
+
+  export type JobUpdateWithWhereUniqueWithoutFolderTemplateInput = {
+    where: JobWhereUniqueInput
+    data: XOR<JobUpdateWithoutFolderTemplateInput, JobUncheckedUpdateWithoutFolderTemplateInput>
+  }
+
+  export type JobUpdateManyWithWhereWithoutFolderTemplateInput = {
+    where: JobScalarWhereInput
+    data: XOR<JobUpdateManyMutationInput, JobUncheckedUpdateManyWithoutFolderTemplateInput>
+  }
+
   export type JobCreateWithoutClientInput = {
     id?: string
     no: string
@@ -62788,6 +63191,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
+    folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
   }
 
   export type JobUncheckedCreateWithoutClientInput = {
@@ -62814,6 +63218,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    folderTemplateId?: string | null
     assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
     activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
     files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
@@ -62967,6 +63372,7 @@ export namespace Prisma {
     comments?: JobCommentCreateNestedManyWithoutJobInput
     statusHistory?: JobStatusHistoryCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
+    folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
   }
 
   export type JobUncheckedCreateWithoutPinnedByUsersInput = {
@@ -62994,6 +63400,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    folderTemplateId?: string | null
     assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
     activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
     files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
@@ -63142,6 +63549,7 @@ export namespace Prisma {
     comments?: JobCommentUpdateManyWithoutJobNestedInput
     statusHistory?: JobStatusHistoryUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
+    folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
   }
 
   export type JobUncheckedUpdateWithoutPinnedByUsersInput = {
@@ -63169,6 +63577,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
     activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
     files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
@@ -63208,6 +63617,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
+    folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
   }
 
   export type JobUncheckedCreateWithoutPaymentChannelInput = {
@@ -63234,6 +63644,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    folderTemplateId?: string | null
     assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
     activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
     files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
@@ -63300,6 +63711,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
+    folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
   }
 
   export type JobUncheckedCreateWithoutTypeInput = {
@@ -63326,6 +63738,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    folderTemplateId?: string | null
     assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
     activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
     files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
@@ -63392,6 +63805,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
+    folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
   }
 
   export type JobUncheckedCreateWithoutStatusInput = {
@@ -63418,6 +63832,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    folderTemplateId?: string | null
     assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
     activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
     files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
@@ -63596,6 +64011,7 @@ export namespace Prisma {
     comments?: JobCommentCreateNestedManyWithoutJobInput
     statusHistory?: JobStatusHistoryCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
+    folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
   }
 
   export type JobUncheckedCreateWithoutJobDeliveriesInput = {
@@ -63623,6 +64039,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    folderTemplateId?: string | null
     assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
     activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
     files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
@@ -63793,6 +64210,7 @@ export namespace Prisma {
     comments?: JobCommentUpdateManyWithoutJobNestedInput
     statusHistory?: JobStatusHistoryUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
+    folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
   }
 
   export type JobUncheckedUpdateWithoutJobDeliveriesInput = {
@@ -63820,6 +64238,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
     activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
     files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
@@ -63981,6 +64400,7 @@ export namespace Prisma {
     comments?: JobCommentCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
+    folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
   }
 
   export type JobUncheckedCreateWithoutStatusHistoryInput = {
@@ -64008,6 +64428,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    folderTemplateId?: string | null
     assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
     activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
     files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
@@ -64189,6 +64610,7 @@ export namespace Prisma {
     comments?: JobCommentUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
+    folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
   }
 
   export type JobUncheckedUpdateWithoutStatusHistoryInput = {
@@ -64216,6 +64638,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
     activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
     files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
@@ -64393,6 +64816,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
+    folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
   }
 
   export type JobUncheckedCreateWithoutActivityLogInput = {
@@ -64420,6 +64844,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    folderTemplateId?: string | null
     assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
     files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
     comments?: JobCommentUncheckedCreateNestedManyWithoutJobInput
@@ -64562,6 +64987,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
+    folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
   }
 
   export type JobUncheckedUpdateWithoutActivityLogInput = {
@@ -64589,6 +65015,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
     files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
     comments?: JobCommentUncheckedUpdateManyWithoutJobNestedInput
@@ -65924,6 +66351,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    folderTemplateId?: string | null
   }
 
   export type FileSystemCreateManyCreatedByInput = {
@@ -66182,6 +66610,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
+    folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
   }
 
   export type JobUncheckedUpdateWithoutCreatedByInput = {
@@ -66208,6 +66637,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
     activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
     files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
@@ -66241,6 +66671,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type FileSystemUpdateWithoutCreatedByInput = {
@@ -67812,6 +68243,128 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type JobCreateManyFolderTemplateInput = {
+    id?: string
+    no: string
+    typeId: string
+    displayName: string
+    description?: string | null
+    attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    sharepointFolderId?: string | null
+    clientId?: string | null
+    incomeCost: number
+    totalStaffCost?: number
+    createdById: string
+    paymentChannelId?: string | null
+    statusId: string
+    startedAt?: Date | string
+    priority?: $Enums.JobPriority
+    isPublished?: boolean
+    isPaid?: boolean
+    dueAt: Date | string
+    completedAt?: Date | string | null
+    finishedAt?: Date | string | null
+    paidAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+  }
+
+  export type JobUpdateWithoutFolderTemplateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    no?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
+    incomeCost?: FloatFieldUpdateOperationsInput | number
+    totalStaffCost?: FloatFieldUpdateOperationsInput | number
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
+    isPublished?: BoolFieldUpdateOperationsInput | boolean
+    isPaid?: BoolFieldUpdateOperationsInput | boolean
+    dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    type?: JobTypeUpdateOneRequiredWithoutJobsNestedInput
+    client?: ClientUpdateOneWithoutJobsNestedInput
+    assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
+    paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
+    status?: JobStatusUpdateOneRequiredWithoutJobsNestedInput
+    activityLog?: JobActivityLogUpdateManyWithoutJobNestedInput
+    files?: FileSystemUpdateManyWithoutJobNestedInput
+    comments?: JobCommentUpdateManyWithoutJobNestedInput
+    statusHistory?: JobStatusHistoryUpdateManyWithoutJobNestedInput
+    pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
+    jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
+  }
+
+  export type JobUncheckedUpdateWithoutFolderTemplateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    no?: StringFieldUpdateOperationsInput | string
+    typeId?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    incomeCost?: FloatFieldUpdateOperationsInput | number
+    totalStaffCost?: FloatFieldUpdateOperationsInput | number
+    createdById?: StringFieldUpdateOperationsInput | string
+    paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
+    statusId?: StringFieldUpdateOperationsInput | string
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
+    isPublished?: BoolFieldUpdateOperationsInput | boolean
+    isPaid?: BoolFieldUpdateOperationsInput | boolean
+    dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
+    activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
+    files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
+    comments?: JobCommentUncheckedUpdateManyWithoutJobNestedInput
+    statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
+    pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
+    jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+  }
+
+  export type JobUncheckedUpdateManyWithoutFolderTemplateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    no?: StringFieldUpdateOperationsInput | string
+    typeId?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    incomeCost?: FloatFieldUpdateOperationsInput | number
+    totalStaffCost?: FloatFieldUpdateOperationsInput | number
+    createdById?: StringFieldUpdateOperationsInput | string
+    paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
+    statusId?: StringFieldUpdateOperationsInput | string
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
+    isPublished?: BoolFieldUpdateOperationsInput | boolean
+    isPaid?: BoolFieldUpdateOperationsInput | boolean
+    dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
   export type JobCreateManyClientInput = {
     id?: string
     no: string
@@ -67836,6 +68389,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    folderTemplateId?: string | null
   }
 
   export type JobUpdateWithoutClientInput = {
@@ -67869,6 +68423,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
+    folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
   }
 
   export type JobUncheckedUpdateWithoutClientInput = {
@@ -67895,6 +68450,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
     activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
     files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
@@ -67928,6 +68484,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type JobCreateManyPaymentChannelInput = {
@@ -67954,6 +68511,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    folderTemplateId?: string | null
   }
 
   export type JobUpdateWithoutPaymentChannelInput = {
@@ -67987,6 +68545,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
+    folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
   }
 
   export type JobUncheckedUpdateWithoutPaymentChannelInput = {
@@ -68013,6 +68572,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
     activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
     files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
@@ -68046,6 +68606,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type JobCreateManyTypeInput = {
@@ -68072,6 +68633,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    folderTemplateId?: string | null
   }
 
   export type JobUpdateWithoutTypeInput = {
@@ -68105,6 +68667,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
+    folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
   }
 
   export type JobUncheckedUpdateWithoutTypeInput = {
@@ -68131,6 +68694,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
     activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
     files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
@@ -68164,6 +68728,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type JobCreateManyStatusInput = {
@@ -68190,6 +68755,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    folderTemplateId?: string | null
   }
 
   export type JobStatusHistoryCreateManyStatusInput = {
@@ -68234,6 +68800,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
+    folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
   }
 
   export type JobUncheckedUpdateWithoutStatusInput = {
@@ -68260,6 +68827,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
     activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
     files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
@@ -68293,6 +68861,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type JobStatusHistoryUpdateWithoutStatusInput = {

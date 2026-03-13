@@ -14,15 +14,15 @@ export const ClientSchema: ZodType<TClient> = z.lazy(() => z.object({
     type: z.nativeEnum(EClientType).catch(EClientType.INDIVIDUAL),
 
     // Các trường thông tin liên hệ (Optional)
-    region: z.string().optional(),
-    country: z.string().optional(),
-    address: z.string().optional(),
-    timezone: z.string().optional(),
+    region: z.string().nullable().catch('Unknown Region'),
+    country: z.string().nullable().catch('Unknown Country'),
+    address: z.string().nullable().catch('Non Address'),
+    timezone: z.string().nullable().catch('Non Timezone'),
 
-    email: z.string().email().optional().or(z.string().length(0)), // Cho phép string rỗng
-    phoneNumber: z.string().optional(),
-    billingEmail: z.string().email().optional().or(z.string().length(0)),
-    taxId: z.string().optional(),
+    email: z.string().email().nullable().catch('unknown@email.com').or(z.string().length(0)), // Cho phép string rỗng
+    phoneNumber: z.string().nullable().catch('N/A'),
+    billingEmail: z.string().email().nullable().or(z.string().length(0)),
+    taxId: z.string().nullable().catch('N/A'),
     currency: z.string().default('USD'),
 
     paymentTerms: z.number().default(0),
@@ -33,7 +33,7 @@ export const ClientSchema: ZodType<TClient> = z.lazy(() => z.object({
     // Ép kiểu Date từ API string
     createdAt: z.coerce.date().catch(new Date()),
     updatedAt: z.coerce.date().catch(new Date()),
-}) as any);
+}));
 
 export const EditClientFormSchema = z.object({
     name: z.string()

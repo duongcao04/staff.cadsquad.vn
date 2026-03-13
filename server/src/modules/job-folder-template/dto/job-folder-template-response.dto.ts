@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
+import { JobResponseDto } from '../../job/dto/job-response.dto';
 
 export class JobFolderTemplateResponseDto {
 	@ApiProperty({ description: 'Job Folder Template ID' })
@@ -25,6 +26,9 @@ export class JobFolderTemplateResponseDto {
 	@ApiProperty({ description: 'Web URL to access the folder' })
 	@Expose()
 	webUrl!: string
+
+	@Expose()
+	jobs!: JobResponseDto[]
 
 	@ApiProperty({ description: 'Creation timestamp' })
 	@Expose()

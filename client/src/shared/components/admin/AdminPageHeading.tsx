@@ -16,7 +16,7 @@ type Props = {
         description?: string
     }
     isSticky?: boolean
-} & CardProps
+} & Omit<CardProps, 'title'>
 export function AdminPageHeading({
     title,
     description,
@@ -30,7 +30,7 @@ export function AdminPageHeading({
     let titleComp = (
         <h1
             className={cn(
-                'text-xl font-bold text-text-default',
+                'text-2xl font-bold text-text-default',
                 classNames?.title
             )}
         >
@@ -51,7 +51,7 @@ export function AdminPageHeading({
             >
                 <h1
                     className={cn(
-                        'text-xl font-bold text-text-default',
+                        'text-2xl font-bold text-text-default',
                         classNames?.title
                     )}
                 >

@@ -1,4 +1,11 @@
 import {
+    dateFormatter,
+    INTERNAL_URLS,
+    jobFolderTemplatesListOptions,
+} from '@/lib'
+import { AdminPageHeading, HeroButton } from '@/shared/components'
+import AdminContentContainer from '@/shared/components/admin/AdminContentContainer'
+import {
     Button,
     Card,
     CardBody,
@@ -17,6 +24,7 @@ import {
     Tooltip,
     useDisclosure,
 } from '@heroui/react'
+import { useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useFormik } from 'formik'
 import {
@@ -30,8 +38,6 @@ import {
     Trash2,
 } from 'lucide-react'
 import { useState } from 'react'
-import { AdminPageHeading, HeroButton } from '../../../../../shared/components'
-import AdminContentContainer from '../../../../../shared/components/admin/AdminContentContainer'
 
 export const Route = createFileRoute(
     '/_administrator/mgmt/jobs/folder-templates/'
@@ -63,41 +69,10 @@ export const Route = createFileRoute(
     },
 })
 
-// --- Mock Data ---
-const MOCK_TEMPLATES = [
-    {
-        id: 'tpl-001',
-        displayName: 'Standard 3D Project',
-        folderId: 'sp-dir-8899',
-        folderName: '_TEMPLATE_Standard_3D',
-        size: 10485760, // 10MB
-        usageCount: 145, // Mock data for how many jobs used this
-        webUrl: 'https://vncsd.sharepoint.com/sites/Data/Shared%20Documents/_TEMPLATE_Standard_3D',
-        updatedAt: '2026-03-10T10:00:00Z',
-    },
-    {
-        id: 'tpl-002',
-        displayName: 'Complex Animation Suite',
-        folderId: 'sp-dir-8900',
-        folderName: '_TEMPLATE_Animation',
-        size: 52428800, // 50MB
-        usageCount: 32,
-        webUrl: 'https://vncsd.sharepoint.com/sites/Data/Shared%20Documents/_TEMPLATE_Animation',
-        updatedAt: '2026-03-12T14:30:00Z',
-    },
-    {
-        id: 'tpl-003',
-        displayName: 'Simple 2D Draft',
-        folderId: 'sp-dir-8901',
-        folderName: '_TEMPLATE_2D',
-        size: 2048000, // 2MB
-        usageCount: 89,
-        webUrl: 'https://vncsd.sharepoint.com/sites/Data/Shared%20Documents/_TEMPLATE_2D',
-        updatedAt: '2026-03-14T08:15:00Z',
-    },
-]
-
 export default function JobFolderTemplatesPage() {
+    const {
+        data: { jobFolderTemplates },
+    } = useSuspenseQuery(jobFolderTemplatesListOptions())
     const [searchQuery, setSearchQuery] = useState('')
 
     const formatBytes = (bytes: number) => {
@@ -108,19 +83,19 @@ export default function JobFolderTemplatesPage() {
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
     }
 
-    const filteredTemplates = MOCK_TEMPLATES.filter((tpl) =>
+    const filteredTemplates = jobFolderTemplates.filter((tpl) =>
         tpl.displayName.toLowerCase().includes(searchQuery.toLowerCase())
     )
 
     // Calculate Stats
-    const totalTemplates = MOCK_TEMPLATES.length
-    const totalSize = MOCK_TEMPLATES.reduce((sum, tpl) => sum + tpl.size, 0)
-    const mostUsedTemplate = [...MOCK_TEMPLATES].sort(
-        (a, b) => b.usageCount - a.usageCount
+    const totalTemplates = jobFolderTemplates.length
+    const totalSize = jobFolderTemplates.reduce((sum, tpl) => sum + tpl.size, 0)
+    const mostUsedTemplate = [...jobFolderTemplates].sort(
+        (a, b) => b.jobs.length - a.jobs.length
     )[0]
 
     return (
-        <AdminContentContainer className="pt-0 space-y-6">
+        <AdminContentContainer className="pt-0 space-y-4 max-w-7xl mx-auto">
             {/* 2. Stats / KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Total Templates */}
@@ -170,11 +145,11 @@ export default function JobFolderTemplatesPage() {
                             <p className="text-sm font-semibold text-success-700">
                                 Most Used Blueprint
                             </p>
-                            <p className="text-lg font-bold text-success-900 mt-1 truncate max-w-[180px]">
+                            <p className="text-lg font-bold text-success-900 mt-1 truncate max-w-45">
                                 {mostUsedTemplate?.displayName}
                             </p>
                             <p className="text-xs text-success-600 mt-1">
-                                Used in {mostUsedTemplate?.usageCount} jobs
+                                Used in {mostUsedTemplate?.jobs.length} jobs
                             </p>
                         </div>
                         <div className="p-3 bg-success-100 rounded-xl text-success-600">
@@ -226,35 +201,37 @@ export default function JobFolderTemplatesPage() {
                                 className="hover:bg-default-100/50 transition-colors"
                             >
                                 <TableCell>
-                                    <span className="font-bold text-default-900">
+                                    <span className="font-bold text-text-default">
                                         {tpl.displayName}
                                     </span>
                                 </TableCell>
                                 <TableCell>
                                     <div className="flex flex-col">
-                                        <span className="text-sm font-medium text-default-700">
+                                        <span className="text-sm font-medium text-text-default">
                                             {tpl.folderName}
                                         </span>
-                                        <span className="text-[10px] text-default-400 font-mono mt-0.5">
-                                            ID: {tpl.folderId}
+                                        <span className="text-[10px] text-text-subdued font-mono mt-0.5">
+                                            ID:{' '}
+                                            {tpl.folderId.slice(
+                                                -8,
+                                                tpl.folderId.length
+                                            )}
                                         </span>
                                     </div>
                                 </TableCell>
                                 <TableCell>
-                                    <span className="text-sm font-medium text-default-700">
+                                    <span className="text-sm font-medium text-text-default">
                                         {formatBytes(tpl.size)}
                                     </span>
                                 </TableCell>
                                 <TableCell>
-                                    <span className="text-sm text-default-600">
-                                        {tpl.usageCount} jobs
+                                    <span className="text-sm text-text-subdued">
+                                        {tpl.jobs.length} jobs
                                     </span>
                                 </TableCell>
                                 <TableCell>
-                                    <span className="text-sm text-default-500">
-                                        {new Date(
-                                            tpl.updatedAt
-                                        ).toLocaleDateString()}
+                                    <span className="text-sm text-text-subdued">
+                                        {dateFormatter(tpl.updatedAt)}
                                     </span>
                                 </TableCell>
                                 <TableCell>
@@ -273,7 +250,9 @@ export default function JobFolderTemplatesPage() {
                                             </Button>
                                         </Tooltip>
                                         <Link
-                                            to={`/mgmt/jobs/folder-templates/${tpl.id}`}
+                                            to={INTERNAL_URLS.management.jobFolderTemplateDetail(
+                                                tpl.id
+                                            )}
                                         >
                                             <Button
                                                 size="sm"

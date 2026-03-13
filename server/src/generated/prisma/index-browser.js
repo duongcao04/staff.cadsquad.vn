@@ -325,7 +325,8 @@ exports.Prisma.JobScalarFieldEnum = {
   paidAt: 'paidAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  deletedAt: 'deletedAt'
+  deletedAt: 'deletedAt',
+  folderTemplateId: 'folderTemplateId'
 };
 
 exports.Prisma.JobAssignmentScalarFieldEnum = {

@@ -1,7 +1,7 @@
-import type { IJobDelivery } from '../interfaces'
 import { TClient } from './_client.type'
 import { TJobActivityLog } from './_job-activity-log.type'
 import { TJobComment } from './_job-comment.type'
+import { TJobDelivery } from './_job-delivery.type'
 import { TJobStatus } from './_job-status.type'
 import { TJobType } from './_job-type.type'
 import { TPaymentChannel } from './_payment-channel.type'
@@ -60,12 +60,12 @@ export type TJob = {
      * The income generated from the job.
      * @type {number}
      */
-    incomeCost?: number
+    incomeCost: number
 
     /**
      * @type {IJobDelivery}
      */
-    jobDeliveries?: IJobDelivery[]
+    jobDeliveries?: TJobDelivery[]
 
     sharepointFolderId?: string
 

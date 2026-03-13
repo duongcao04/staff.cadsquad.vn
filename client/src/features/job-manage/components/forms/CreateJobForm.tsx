@@ -121,6 +121,7 @@ export default function CreateJobForm({
                 ],
                 totalStaffCost: 0, // Initialize with 0
                 incomeCost: 0,
+                folderTemplateId: null,
                 paymentChannelId: null,
                 isCreateSharepointFolder: true, // or false
                 sharepointTemplateId: '',

@@ -1,3 +1,5 @@
+import { TJob } from "./_job.type";
+
 export interface TJobFolderTemplate {
 	/**
 	 * The unique identifier for the job folder template.
@@ -34,6 +36,8 @@ export interface TJobFolderTemplate {
 	 * @type {string}
 	 */
 	webUrl: string;
+
+	jobs: TJob[]
 
 	/**
 	 * The timestamp when the job folder template was created.

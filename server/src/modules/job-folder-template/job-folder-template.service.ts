@@ -16,12 +16,20 @@ export class JobFolderTemplateService {
   }
 
   async findAll(): Promise<JobFolderTemplate[]> {
-    const jobFolderTemplates = await this.prismaService.jobFolderTemplate.findMany()
+    const jobFolderTemplates = await this.prismaService.jobFolderTemplate.findMany({
+      include: {
+        jobs: {}
+      }
+    })
     return jobFolderTemplates.map(jft => plainToInstance(JobFolderTemplateResponseDto, jft, { excludeExtraneousValues: true })) as unknown as JobFolderTemplate[]
   }
 
   async findById(id: string): Promise<JobFolderTemplate> {
-    const jobFolderTemplate = await this.prismaService.jobFolderTemplate.findUnique({ where: { id } })
+    const jobFolderTemplate = await this.prismaService.jobFolderTemplate.findUnique({
+      where: { id }, include: {
+        jobs: { include: { client: {}, status: {} } }
+      }
+    })
     if (!jobFolderTemplate) throw new NotFoundException('Job folder template not found')
     return plainToInstance(JobFolderTemplateResponseDto, jobFolderTemplate, { excludeExtraneousValues: true }) as unknown as JobFolderTemplate
   }

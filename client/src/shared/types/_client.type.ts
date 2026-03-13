@@ -6,16 +6,16 @@ export type TClient = {
 	name: string
 	code: string
 	type: EClientType
-	region?: string
-	country?: string
-	address?: string
-	timezone?: string
-	email?: string
-	phoneNumber?: string
-	billingEmail?: string
-	taxId?: string
-	currency?: string
-	paymentTerms?: number
+	region: string | null
+	country: string | null
+	address: string | null
+	timezone: string | null
+	email: string | null
+	phoneNumber: string | null
+	billingEmail: string | null
+	taxId: string | null
+	currency: string | null
+	paymentTerms: number | null
 	jobs: TJob[]
 	createdAt: Date | string
 	updatedAt: Date | string

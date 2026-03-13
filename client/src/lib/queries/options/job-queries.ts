@@ -111,7 +111,11 @@ export const jobsPendingPayoutsOptions = () =>
     queryOptions({
         queryKey: ['jobs', 'pending-payouts'],
         queryFn: () => jobApi.pendingPayouts(),
-        select: (res) => parseList(JobSchema, res.result),
+        select: (res) => {
+            return {
+                pendingPayouts: parseList(JobSchema, res.result)
+            }
+        },
     })
 export const jobScheduleOptions = (month: number, year: number) =>
     queryOptions({
