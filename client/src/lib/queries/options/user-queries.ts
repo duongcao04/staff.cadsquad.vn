@@ -17,6 +17,7 @@ export const usersListOptions = (
             `limit=${params.limit}`,
             `sort=${params.sortBy}:${params.sortOrder}`,
             `search=${params.search}`,
+            `department=${params.departmentId}`
         ],
         queryFn: async () => {
             const res = await userApi.findAll(params);
@@ -34,11 +35,11 @@ export const usersListOptions = (
         select: (data) => data,
     })
 }
-export const userOptions = (username: string) => {
+export const userOptions = (code: string) => {
     return queryOptions({
-        queryKey: ['users', 'username', username],
+        queryKey: ['users', 'code', code],
         queryFn: async () => {
-            const res = await userApi.findOne(username);
+            const res = await userApi.findByStaffCode(code);
             return parseData(UserSchema, res?.result);
         },
     })

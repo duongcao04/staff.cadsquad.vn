@@ -1,22 +1,25 @@
-import { optimizeCloudinary } from '@/lib'
+import { INTERNAL_URLS, optimizeCloudinary } from '@/lib'
 import { TStaffSearchValues } from '@/routes/_administrator/mgmt/staff-directory/index'
 import {
+    HeroButton,
     HeroTable,
     HeroTableBody,
     HeroTableCell,
     HeroTableColumn,
     HeroTableHeader,
     HeroTableRow,
+    HeroTooltip,
 } from '@/shared/components'
 import { ScrollArea, ScrollBar } from '@/shared/components/ui/scroll-area'
 import { TUser } from '@/shared/types'
-import { Button, Chip, Pagination, Spinner, User } from '@heroui/react'
-import { Mail, Phone, ShieldCheck } from 'lucide-react'
+import { Chip, Pagination, Spinner, User } from '@heroui/react'
+import { Link } from '@tanstack/react-router'
+import { EyeIcon, ShieldCheck } from 'lucide-react'
 import { useCallback, useMemo } from 'react'
 import { StaffDropdown } from '../dropdowns/StaffDropdown'
 
 const STAFF_COLUMNS = [
-    { uid: 'displayName', displayName: 'Employee', sortable: true },
+    { uid: 'displayName', displayName: 'Staff', sortable: true },
     { uid: 'role', displayName: 'Role', sortable: true },
     { uid: 'department', displayName: 'Department', sortable: true },
     { uid: 'isActive', displayName: 'Status', sortable: true },
@@ -57,14 +60,18 @@ export default function StaffDirectoryTable({
                     return (
                         <User
                             name={user.displayName}
-                            description={user.email}
+                            description={
+                                <p className="text-text-subdued">
+                                    # {user.code}
+                                </p>
+                            }
                             avatarProps={{
                                 src: optimizeCloudinary(user.avatar),
                                 radius: 'full',
                                 color: 'primary',
                             }}
                             classNames={{
-                                name: 'font-bold text-default-700',
+                                name: 'font-semibold text-text-default',
                                 description: 'text-tiny text-text-default',
                             }}
                         />
@@ -98,49 +105,42 @@ export default function StaffDirectoryTable({
                 case 'isActive':
                     return (
                         <Chip
-                            startContent={
-                                <div
-                                    className={`size-2 rounded-full ${user.isActive ? 'bg-success' : 'bg-default-400'}`}
-                                />
-                            }
-                            variant="light"
+                            variant="flat"
                             size="sm"
-                            classNames={{ base: 'pl-0' }}
+                            color={user.isActive ? 'success' : 'danger'}
                         >
                             {user.isActive ? 'Active' : 'Inactive'}
                         </Chip>
                     )
                 case 'contact':
                     return (
-                        <div className="flex gap-2">
-                            <Button
-                                isIconOnly
-                                size="sm"
-                                variant="light"
-                                as="a"
-                                href={`mailto:${user.email}`}
-                            >
-                                <Mail size={16} className="text-default-500" />
-                            </Button>
+                        <div>
+                            <p>{user.email}</p>
                             {user.phoneNumber && (
-                                <Button
-                                    isIconOnly
-                                    size="sm"
-                                    variant="light"
-                                    as="a"
-                                    href={`tel:${user.phoneNumber}`}
-                                >
-                                    <Phone
-                                        size={16}
-                                        className="text-default-500"
-                                    />
-                                </Button>
+                                <p className="text-tiny">
+                                    Tel: {user.phoneNumber}
+                                </p>
                             )}
                         </div>
                     )
                 case 'actions':
                     return (
-                        <div className="flex justify-end">
+                        <div className="flex justify-end gap-1">
+                            <HeroTooltip content="View detail">
+                                <Link
+                                    to={INTERNAL_URLS.management.staffDetail(
+                                        user.code
+                                    )}
+                                >
+                                    <HeroButton
+                                        isIconOnly
+                                        size="sm"
+                                        variant="light"
+                                    >
+                                        <EyeIcon size={16} />
+                                    </HeroButton>
+                                </Link>
+                            </HeroTooltip>
                             <StaffDropdown selectedUser={user} />
                         </div>
                     )

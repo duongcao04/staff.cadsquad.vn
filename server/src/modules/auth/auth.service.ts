@@ -35,48 +35,7 @@ export class AuthService {
 		private readonly userSecurityService: UserSecurityService,
 		private readonly sessionService: SessionService,
 		private readonly mailService: MailService
-	) {}
-
-	async register(registerDto: RegisterUserDto) {
-		// 1. Check user existing
-		const existingUser = await this.prismaService.user.findUnique({
-			where: { email: registerDto.email },
-		})
-		if (existingUser) {
-			throw new ConflictException('User already existing')
-		}
-		// 2. Sync new user with model
-		// - Generate username
-		const username =
-			registerDto.firstName.toLowerCase().replace(/\s+/g, '_') +
-			registerDto.lastName.toLowerCase().replace(/\s+/g, '_') +
-			Date.now()
-		// - Hash password
-		const password = await this.bcryptService.hash(registerDto.password)
-		// - Sync
-		const newUser: Prisma.UserCreateInput = {
-			...registerDto,
-			displayName: registerDto.firstName + ' ' + registerDto.lastName,
-			avatar: '',
-			password,
-			username,
-		}
-		// 3. Create user
-		try {
-			// - Prisma -> create
-			const createdUser = await this.prismaService.user.create({
-				data: newUser,
-			})
-			// - Sign Access token
-			const accessToken =
-				await this.tokenService.getAccessToken(createdUser)
-			return { accessToken }
-		} catch (error) {
-			throw new InternalServerErrorException('Register failed', {
-				description: error,
-			})
-		}
-	}
+	) { }
 
 	async login(ip: string, userAgent: string, loginDto: LoginUserDto) {
 		// 1. Check user existing

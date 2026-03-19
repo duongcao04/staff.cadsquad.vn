@@ -3,28 +3,32 @@ import StaffDirectoryGrid from '@/features/staff-directory/components/views/Staf
 import StaffDirectoryTable from '@/features/staff-directory/components/views/StaffDirectoryTable'
 import { COLORS } from '@/lib'
 import { departmentsListOptions, usersListOptions } from '@/lib/queries'
-import { useUpdateSearchParams } from '@/lib/utils'
+import { getPageTitle, useUpdateSearchParams } from '@/lib/utils'
 import AdminContentContainer from '@/shared/components/admin/AdminContentContainer'
 import {
     Button,
-    Divider,
     Input,
     Select,
     SelectItem,
     Spinner,
+    useDisclosure,
 } from '@heroui/react'
-import { useSuspenseQueries } from '@tanstack/react-query'
+import { useSuspenseQueries, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import lodash from 'lodash'
 import {
+    FileDownIcon,
     Filter,
     LayoutGridIcon,
     RefreshCw,
     Search,
     TableIcon,
+    UserRoundPlusIcon,
 } from 'lucide-react'
 import { useCallback, useMemo } from 'react'
 import { z } from 'zod'
+import CreateUserModal from '../../../../features/staff-directory/components/modals/CreateUserModal'
+import { AdminPageHeading, HeroButton } from '../../../../shared/components'
 
 // --- 1. CONSTANTS & SCHEMA ---
 const VIEW_OPTIONS = [
@@ -62,6 +66,15 @@ export const Route = createFileRoute('/_administrator/mgmt/staff-directory/')({
         search: search.search,
         departmentId: search.departmentId,
     }),
+    head: () => {
+        return {
+            meta: [
+                {
+                    title: getPageTitle('Staff Directory'),
+                },
+            ],
+        }
+    },
     loader: async ({ context, deps }) => {
         const { departmentId, limit, page, search } = deps
         return Promise.all([
@@ -78,7 +91,52 @@ export const Route = createFileRoute('/_administrator/mgmt/staff-directory/')({
             context.queryClient.ensureQueryData(departmentsListOptions()),
         ])
     },
-    component: StaffDirectoryPage,
+    component: () => {
+        const options = usersListOptions()
+        const {
+            data: { total },
+        } = useSuspenseQuery(options)
+
+        const createUserModalDisclosure = useDisclosure({
+            id: 'CreateUserModal',
+        })
+        return (
+            <>
+                {createUserModalDisclosure.isOpen && (
+                    <CreateUserModal
+                        isOpen={createUserModalDisclosure.isOpen}
+                        onClose={createUserModalDisclosure.onClose}
+                    />
+                )}
+                <AdminPageHeading
+                    title="Staff Directory"
+                    showBadge
+                    badgeCount={total}
+                    actions={
+                        <div className="flex gap-3">
+                            <HeroButton
+                                variant="flat"
+                                color="default"
+                                startContent={<FileDownIcon size={16} />}
+                                className="hidden sm:flex"
+                            >
+                                Export
+                            </HeroButton>
+                            <HeroButton
+                                color="primary"
+                                className="px-6"
+                                startContent={<UserRoundPlusIcon size={16} />}
+                                onPress={createUserModalDisclosure.onOpen}
+                            >
+                                New Member
+                            </HeroButton>
+                        </div>
+                    }
+                />
+                <StaffDirectoryPage />
+            </>
+        )
+    },
 })
 
 // --- 3. MAIN PAGE COMPONENT ---
@@ -86,7 +144,6 @@ function StaffDirectoryPage() {
     const searchParams = Route.useSearch()
     const updateSearch = useUpdateSearchParams(Route.fullPath)
 
-    // --- Data Fetching ---
     const [
         {
             data: { users, total: totalUsers, totalPages },
@@ -194,11 +251,12 @@ function StaffDirectoryPage() {
                     <Select
                         labelPlacement="outside"
                         className="w-full md:max-w-xs"
-                        // Fixed: Convert value to a Set for HeroUI
+                        classNames={{
+                            trigger: 'border-1 border-border-default',
+                        }}
                         selectedKeys={
                             new Set([searchParams.departmentId || 'all'])
                         }
-                        // Fixed: Use onSelectionChange instead of onChange
                         onSelectionChange={(keys) => {
                             const selectedValue = Array.from(keys)[0] as string
                             if (selectedValue) {
@@ -208,7 +266,7 @@ function StaffDirectoryPage() {
                         variant="bordered"
                         aria-label="Filter by department"
                         startContent={
-                            <Filter size={16} className="text-default-400" />
+                            <Filter size={16} className="text-text-subdued" />
                         }
                     >
                         {[
@@ -232,8 +290,6 @@ function StaffDirectoryPage() {
                             </SelectItem>
                         ))}
                     </Select>
-
-                    <Divider orientation="vertical" />
 
                     <ViewContentDropdown
                         onSelectionChange={(value) => {
@@ -259,7 +315,6 @@ function StaffDirectoryPage() {
                             }
                             className="border-1"
                             variant="bordered"
-                            size="sm"
                             onPress={() => {
                                 refetch()
                             }}
@@ -276,7 +331,11 @@ function StaffDirectoryPage() {
                         </span>
                         <Select
                             size="sm"
-                            className="w-32"
+                            className="w-20"
+                            classNames={{
+                                popoverContent: 'w-32!',
+                                trigger: 'border-1 border-border-default',
+                            }}
                             selectedKeys={[searchParams.limit.toString()]}
                             onChange={(e) =>
                                 handleLimitChange(Number(e.target.value))

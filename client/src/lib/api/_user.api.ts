@@ -92,9 +92,14 @@ export const userApi = {
             data
         )
     },
-    findOne: async (username: string) => {
+    findOne: async (code: string) => {
         return axiosClient
-            .get<ApiResponse<any>>(`/v1/users/${username}`)
+            .get<ApiResponse<any>>(`/v1/users/${code}`)
+            .then((res) => res.data)
+    },
+    findByStaffCode: async (code: string) => {
+        return axiosClient
+            .get<ApiResponse<any>>(`/v1/users/${code}`)
             .then((res) => res.data)
     },
     schedule: async (year: number, month: number, day?: number) => {

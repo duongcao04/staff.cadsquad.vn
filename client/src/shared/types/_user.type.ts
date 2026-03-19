@@ -10,6 +10,7 @@ export interface TUser {
     email: string;
     username: string;
     phoneNumber: string | null;
+    code: string
 
     department: TDepartment | null;
     jobTitle: TJobTitle | null;

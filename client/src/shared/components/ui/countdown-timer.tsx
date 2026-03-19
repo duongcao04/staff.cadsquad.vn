@@ -110,7 +110,7 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
     autoHideZeroes = true, // Mặc định là ẩn
     mode = 'compact',
     paused = false,
-    fallback = "Time's up",
+    fallback = "Late",
     className = '',
     itemClass = '',
     onFinish,

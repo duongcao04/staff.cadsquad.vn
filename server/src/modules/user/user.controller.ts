@@ -44,7 +44,7 @@ export class UserController {
 	constructor(
 		private readonly userService: UserService,
 		private readonly userSecurityService: UserSecurityService
-	) {}
+	) { }
 
 	@Get('search')
 	@HttpCode(200)
@@ -192,7 +192,7 @@ export class UserController {
 			return this.userService.findById(identifier)
 		}
 		// Otherwise treat it as a username
-		return this.userService.findByUsername(identifier)
+		return this.userService.findByStaffCode(identifier)
 	}
 
 	@Patch(':username')

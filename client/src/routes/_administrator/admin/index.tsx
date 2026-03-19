@@ -1,11 +1,18 @@
-import { getPageTitle, INTERNAL_URLS } from '@/lib'
-import { analyticsOverviewOptions } from '@/lib/queries'
+import {
+    currencyFormatter,
+    getDueInLabel,
+    getPageTitle,
+    IAdminDashboardKpis,
+    IAdminDbStats,
+    INTERNAL_URLS,
+} from '@/lib'
 import {
     Avatar,
     AvatarGroup,
     Button,
     Card,
     CardBody,
+    CardFooter,
     CardHeader,
     Chip,
     Divider,
@@ -19,7 +26,9 @@ import {
     useDisclosure,
     User,
 } from '@heroui/react'
-import { Link, createFileRoute } from '@tanstack/react-router'
+import { useSuspenseQueries } from '@tanstack/react-query'
+import { createFileRoute, Link } from '@tanstack/react-router'
+import dayjs from 'dayjs'
 import {
     Activity,
     AlertOctagon,
@@ -28,6 +37,7 @@ import {
     Briefcase,
     Building2,
     CheckCircle2,
+    ChevronRightIcon,
     Clock,
     Cloud,
     CreditCard,
@@ -45,6 +55,7 @@ import {
     Mail,
     MessageCircle,
     MessageSquare,
+    MoveRightIcon,
     Network,
     Plus,
     Server,
@@ -54,15 +65,24 @@ import {
     Target,
     TrendingUp,
     UserPlus,
-    UserSquare,
     Users,
+    UserSquare,
     XCircle,
     Zap,
 } from 'lucide-react'
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
-import { AdminPageHeading, HeroButton } from '../../../shared/components'
-import AdminContentContainer from '../../../shared/components/admin/AdminContentContainer'
 import { CreateJobModal } from '../../../features/job-manage'
+import {
+    adminDashboardDbStatsOptions,
+    adminDashboardKpisOptions,
+} from '../../../lib/queries/options/administrator-queries'
+import {
+    AdminPageHeading,
+    HeroButton,
+    ScrollArea,
+    ScrollBar,
+} from '../../../shared/components'
+import AdminContentContainer from '../../../shared/components/admin/AdminContentContainer'
 
 export const Route = createFileRoute('/_administrator/admin/')({
     head: () => ({
@@ -73,10 +93,20 @@ export const Route = createFileRoute('/_administrator/admin/')({
         ],
     }),
     loader: ({ context }) => {
-        return context.queryClient.ensureQueryData(analyticsOverviewOptions({}))
+        context.queryClient.ensureQueryData(adminDashboardKpisOptions())
+        context.queryClient.ensureQueryData(adminDashboardDbStatsOptions())
     },
     component: () => {
         const { isOpen, onOpen, onClose } = useDisclosure()
+
+        const [{ data: dbStats }, { data: dbKpis }] = useSuspenseQueries({
+            queries: [
+                adminDashboardDbStatsOptions(),
+                adminDashboardKpisOptions(),
+            ],
+        })
+
+        console.log(dbStats)
 
         return (
             <>
@@ -120,7 +150,7 @@ export const Route = createFileRoute('/_administrator/admin/')({
                         </div>
                     }
                 />
-                <AdminOverviewPage />
+                <AdminOverviewPage dbStats={dbStats} dbKpis={dbKpis} />
             </>
         )
     },
@@ -282,7 +312,13 @@ const DATABASE_STATS = [
     },
 ]
 
-export default function AdminOverviewPage() {
+export default function AdminOverviewPage({
+    dbStats,
+    dbKpis,
+}: {
+    dbStats: IAdminDbStats
+    dbKpis: IAdminDashboardKpis
+}) {
     const formatCurrency = (val: number) =>
         new Intl.NumberFormat('en-US', {
             style: 'currency',
@@ -304,13 +340,23 @@ export default function AdminOverviewPage() {
                                 Active Jobs
                             </p>
                             <p className="text-2xl font-bold text-primary-900 mt-1">
-                                48
+                                {dbStats.jobs.actives}
                             </p>
                         </div>
                         <div className="p-2 bg-primary-100 rounded-lg text-primary-600">
                             <Briefcase size={20} />
                         </div>
                     </CardBody>
+                    <CardFooter>
+                        <div className="w-full flex justify-end">
+                            <Link
+                                to={INTERNAL_URLS.management.jobs}
+                                className="text-right text-tiny font-semibold text-warning-700 hover:underline"
+                            >
+                                View all
+                            </Link>
+                        </div>
+                    </CardFooter>
                 </Card>
 
                 <Card
@@ -323,13 +369,23 @@ export default function AdminOverviewPage() {
                                 Pending Review
                             </p>
                             <p className="text-2xl font-bold text-warning-900 mt-1">
-                                8
+                                {dbStats.jobs.pendingReviews}
                             </p>
                         </div>
                         <div className="p-2 bg-warning-100 rounded-lg text-warning-600">
                             <FileCheck size={20} />
                         </div>
                     </CardBody>
+                    <CardFooter>
+                        <div className="w-full flex justify-end">
+                            <Link
+                                to={INTERNAL_URLS.management.jobs}
+                                className="text-right text-tiny font-semibold text-warning-700 hover:underline"
+                            >
+                                View all
+                            </Link>
+                        </div>
+                    </CardFooter>
                 </Card>
 
                 <Card
@@ -342,13 +398,23 @@ export default function AdminOverviewPage() {
                                 Unpaid Invoices
                             </p>
                             <p className="text-2xl font-bold text-danger-900 mt-1">
-                                3
+                                {dbStats.jobs.pendingPayouts}
                             </p>
                         </div>
                         <div className="p-2 bg-danger-100 rounded-lg text-danger-600">
                             <Landmark size={20} />
                         </div>
                     </CardBody>
+                    <CardFooter>
+                        <div className="w-full flex justify-end">
+                            <Link
+                                to={INTERNAL_URLS.management.jobs}
+                                className="text-right text-tiny font-semibold text-warning-700 hover:underline"
+                            >
+                                View all
+                            </Link>
+                        </div>
+                    </CardFooter>
                 </Card>
 
                 <Card shadow="sm" className="border border-default-200">
@@ -358,13 +424,23 @@ export default function AdminOverviewPage() {
                                 Total Clients
                             </p>
                             <p className="text-2xl font-bold text-default-900 mt-1">
-                                112
+                                {dbStats.clients.total}
                             </p>
                         </div>
                         <div className="p-2 bg-default-100 rounded-lg text-default-600">
                             <Building2 size={20} />
                         </div>
                     </CardBody>
+                    <CardFooter>
+                        <div className="w-full flex justify-end">
+                            <Link
+                                to={INTERNAL_URLS.management.clients}
+                                className="text-right text-tiny font-semibold text-warning-700 hover:underline"
+                            >
+                                View all
+                            </Link>
+                        </div>
+                    </CardFooter>
                 </Card>
 
                 <Card shadow="sm" className="border border-default-200">
@@ -381,6 +457,16 @@ export default function AdminOverviewPage() {
                             <Users size={20} />
                         </div>
                     </CardBody>
+                    <CardFooter>
+                        <div className="w-full flex justify-end">
+                            <Link
+                                to={INTERNAL_URLS.management.team}
+                                className="text-right text-tiny font-semibold text-warning-700 hover:underline"
+                            >
+                                View all
+                            </Link>
+                        </div>
+                    </CardFooter>
                 </Card>
 
                 <Card
@@ -418,7 +504,7 @@ export default function AdminOverviewPage() {
                             </h2>
                         </div>
                         <Link
-                            to="/clients"
+                            to={INTERNAL_URLS.management.clients}
                             className="text-xs font-bold text-primary hover:underline"
                         >
                             View All
@@ -426,35 +512,49 @@ export default function AdminOverviewPage() {
                     </CardHeader>
                     <CardBody className="p-0">
                         <div className="flex flex-col">
-                            {TOP_CLIENTS.map((client, idx) => (
-                                <div
-                                    key={client.id}
-                                    className={`p-4 flex items-center justify-between ${idx !== TOP_CLIENTS.length - 1 ? 'border-b border-divider' : ''} hover:bg-default-50 transition-colors`}
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <Avatar
-                                            name={client.avatar}
-                                            className="bg-primary-100 text-primary-700 font-bold"
-                                        />
-                                        <div>
-                                            <p className="text-sm font-bold text-default-900">
-                                                {client.name}
+                            {dbKpis.kpis.topClients.map((client, idx) => {
+                                const totalRevenue = client.jobs.reduce(
+                                    (accumulator, currentValue) => {
+                                        return (
+                                            accumulator +
+                                            currentValue.incomeCost
+                                        )
+                                    },
+                                    0
+                                )
+                                return (
+                                    <div
+                                        key={client.id}
+                                        className={`p-4 flex items-center justify-between ${idx !== TOP_CLIENTS.length - 1 ? 'border-b border-divider' : ''} hover:bg-default-50 transition-colors`}
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <Avatar
+                                                name={client.name}
+                                                className="bg-primary-100 text-primary-700 font-bold"
+                                            />
+                                            <div>
+                                                <p className="text-sm font-bold text-default-900">
+                                                    {client?.name}
+                                                </p>
+                                                <p className="text-xs text-default-500">
+                                                    {client?.jobs?.length}{' '}
+                                                    active jobs
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="text-sm font-bold text-success-600">
+                                                {currencyFormatter(
+                                                    totalRevenue
+                                                )}
                                             </p>
-                                            <p className="text-xs text-default-500">
-                                                {client.activeJobs} active jobs
-                                            </p>
+                                            <div className="flex items-center justify-end gap-1 text-[10px] text-success-600 mt-0.5">
+                                                <TrendingUp size={10} /> +5%
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="text-right">
-                                        <p className="text-sm font-bold text-success-600">
-                                            {formatCurrency(client.revenue)}
-                                        </p>
-                                        <div className="flex items-center justify-end gap-1 text-[10px] text-success-600 mt-0.5">
-                                            <TrendingUp size={10} /> +5%
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
+                                )
+                            })}
                         </div>
                     </CardBody>
                 </Card>
@@ -531,44 +631,62 @@ export default function AdminOverviewPage() {
                         </Chip>
                     </CardHeader>
                     <CardBody className="p-0">
-                        <div className="flex flex-col">
-                            {URGENT_JOBS.map((job, idx) => (
-                                <div
-                                    key={job.no}
-                                    className={`p-4 flex items-center justify-between ${idx !== URGENT_JOBS.length - 1 ? 'border-b border-divider' : ''} hover:bg-danger-50/50 transition-colors`}
-                                >
-                                    <div>
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <span className="text-xs font-bold text-default-800">
-                                                {job.no}
-                                            </span>
-                                            <Chip
-                                                size="sm"
-                                                color={
-                                                    job.priority === 'URGENT'
-                                                        ? 'danger'
-                                                        : 'warning'
-                                                }
-                                                className="h-4 text-[10px] px-1"
-                                            >
-                                                {job.priority}
-                                            </Chip>
+                        <ScrollArea>
+                            <ScrollBar orientation="vertical" />
+                            {dbKpis.kpis.urgentJobs.map((job, idx) => {
+                                const jobDueIn = getDueInLabel(
+                                    job.dueAt.toString()
+                                )
+                                const deadline = dayjs(job.dueAt)
+                                const now = dayjs()
+                                // Tính chênh lệch theo giờ
+                                const diffInDays = deadline.diff(
+                                    now,
+                                    'day',
+                                    true
+                                )
+                                const isUgent = diffInDays > 0 && diffInDays < 2
+                                return (
+                                    <div
+                                        key={job.no}
+                                        className={`p-4 flex items-center justify-between ${idx !== URGENT_JOBS.length - 1 ? 'border-b border-divider' : ''} hover:bg-danger-50/50 transition-colors`}
+                                    >
+                                        <div>
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <span className="text-xs font-bold text-default-800">
+                                                    {job.no}
+                                                </span>
+                                                <Chip
+                                                    size="sm"
+                                                    color={
+                                                        isUgent
+                                                            ? 'danger'
+                                                            : 'warning'
+                                                    }
+                                                    className="h-4 text-[10px] px-1"
+                                                >
+                                                    {isUgent
+                                                        ? 'Urgent'
+                                                        : 'High'}
+                                                </Chip>
+                                            </div>
+                                            <p className="text-sm font-semibold text-default-900 truncate max-w-45">
+                                                {job.displayName}
+                                            </p>
+                                            <p className="text-xs text-default-500 truncate max-w-45">
+                                                {job.client?.name}
+                                            </p>
                                         </div>
-                                        <p className="text-sm font-semibold text-default-900 truncate max-w-[180px]">
-                                            {job.name}
-                                        </p>
-                                        <p className="text-xs text-default-500 truncate max-w-[180px]">
-                                            {job.client}
-                                        </p>
-                                    </div>
-                                    <div className="text-right flex flex-col items-end">
-                                        <div className="flex items-center gap-1 text-danger-600 bg-danger-100 px-2 py-1 rounded text-xs font-bold">
-                                            <Clock size={12} /> {job.dueIn}
+                                        <div className="text-right flex flex-col items-end">
+                                            <div className="flex items-center gap-1 text-danger-600 bg-danger-100 px-2 py-1 rounded text-xs font-bold">
+                                                <Clock size={12} />
+                                                {jobDueIn}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
+                                )
+                            })}
+                        </ScrollArea>
                     </CardBody>
                 </Card>
             </div>
@@ -984,227 +1102,6 @@ export default function AdminOverviewPage() {
                     </div>
                 </CardBody>
             </Card>
-
-            {/* 7. Bottom Row: Integrations, Action Queue & Security (MOVED DOWN) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {/* LEFT: System Integrations Health */}
-                <Card shadow="sm" className="border border-default-200">
-                    <CardHeader className="px-6 py-4 border-b border-divider flex justify-between items-center bg-default-50">
-                        <div className="flex items-center gap-2">
-                            <Server size={18} className="text-default-600" />
-                            <h2 className="text-lg font-bold text-default-900">
-                                Integrations Health
-                            </h2>
-                        </div>
-                    </CardHeader>
-                    <CardBody className="p-4 space-y-3">
-                        <div className="flex items-center justify-between p-3 border border-default-200 rounded-lg bg-white">
-                            <div className="flex items-center gap-3">
-                                <ShieldCheck
-                                    size={18}
-                                    className="text-primary"
-                                />
-                                <div>
-                                    <p className="text-sm font-bold text-default-900">
-                                        Azure AD (MSAL)
-                                    </p>
-                                    <p className="text-xs text-default-500">
-                                        Auth & SSO
-                                    </p>
-                                </div>
-                            </div>
-                            <CheckCircle2 size={18} className="text-success" />
-                        </div>
-                        <div className="flex items-center justify-between p-3 border border-default-200 rounded-lg bg-white">
-                            <div className="flex items-center gap-3">
-                                <Cloud size={18} className="text-primary" />
-                                <div>
-                                    <p className="text-sm font-bold text-default-900">
-                                        Graph API
-                                    </p>
-                                    <p className="text-xs text-default-500">
-                                        SharePoint Storage
-                                    </p>
-                                </div>
-                            </div>
-                            <CheckCircle2 size={18} className="text-success" />
-                        </div>
-                        <div className="flex items-center justify-between p-3 border border-default-200 rounded-lg bg-white">
-                            <div className="flex items-center gap-3">
-                                <Database size={18} className="text-danger" />
-                                <div>
-                                    <p className="text-sm font-bold text-default-900">
-                                        Redis (BullMQ)
-                                    </p>
-                                    <p className="text-xs text-default-500">
-                                        Background Queues
-                                    </p>
-                                </div>
-                            </div>
-                            <CheckCircle2 size={18} className="text-success" />
-                        </div>
-                        <div className="flex items-center justify-between p-3 border border-default-200 rounded-lg bg-white">
-                            <div className="flex items-center gap-3">
-                                <Mail size={18} className="text-warning" />
-                                <div>
-                                    <p className="text-sm font-bold text-default-900">
-                                        SMTP Server
-                                    </p>
-                                    <p className="text-xs text-default-500">
-                                        Email Notifications
-                                    </p>
-                                </div>
-                            </div>
-                            <CheckCircle2 size={18} className="text-success" />
-                        </div>
-                    </CardBody>
-                </Card>
-
-                {/* MIDDLE: Admin Action Queue */}
-                <Card shadow="sm" className="border border-default-200">
-                    <CardHeader className="px-6 py-4 border-b border-divider flex justify-between items-center bg-default-50">
-                        <div className="flex items-center gap-2">
-                            <AlertOctagon size={18} className="text-danger" />
-                            <h2 className="text-lg font-bold text-default-900">
-                                Action Queue
-                            </h2>
-                        </div>
-                        <Chip size="sm" color="danger" variant="solid">
-                            3 Tasks
-                        </Chip>
-                    </CardHeader>
-                    <CardBody className="p-0">
-                        <div className="flex flex-col h-full justify-between">
-                            <div className="p-4 border-b border-divider flex items-center justify-between hover:bg-default-50 transition-colors">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-primary-100 text-primary-700 rounded-full">
-                                        <UserPlus size={16} />
-                                    </div>
-                                    <div>
-                                        <p className="text-sm font-bold text-default-900">
-                                            New Registration
-                                        </p>
-                                        <p className="text-xs text-default-500 truncate max-w-[150px]">
-                                            david.s@cad-squad.com
-                                        </p>
-                                    </div>
-                                </div>
-                                <Button
-                                    size="sm"
-                                    color="primary"
-                                    variant="flat"
-                                >
-                                    Review
-                                </Button>
-                            </div>
-                            <div className="p-4 border-b border-divider flex items-center justify-between hover:bg-default-50 transition-colors">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-warning-100 text-warning-700 rounded-full">
-                                        <KeySquare size={16} />
-                                    </div>
-                                    <div>
-                                        <p className="text-sm font-bold text-default-900">
-                                            Permission Override
-                                        </p>
-                                        <p className="text-xs text-default-500 truncate max-w-[150px]">
-                                            User 'Sarah' requested access.
-                                        </p>
-                                    </div>
-                                </div>
-                                <Button
-                                    size="sm"
-                                    color="warning"
-                                    variant="flat"
-                                >
-                                    Manage
-                                </Button>
-                            </div>
-                            <div className="p-4 flex items-center justify-between hover:bg-default-50 transition-colors">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-danger-100 text-danger-700 rounded-full">
-                                        <XCircle size={16} />
-                                    </div>
-                                    <div>
-                                        <p className="text-sm font-bold text-default-900">
-                                            Failed Job
-                                        </p>
-                                        <p className="text-xs text-default-500 truncate max-w-[150px]">
-                                            Graph API sync failed.
-                                        </p>
-                                    </div>
-                                </div>
-                                <Button size="sm" color="danger" variant="flat">
-                                    View Error
-                                </Button>
-                            </div>
-                        </div>
-                    </CardBody>
-                </Card>
-
-                {/* RIGHT: Security & Access (MOVED DOWN FOR ADMIN FOCUS) */}
-                <Card
-                    shadow="sm"
-                    className="border border-default-200 lg:col-span-1"
-                >
-                    <CardHeader className="px-6 py-4 border-b border-divider flex justify-between items-center bg-default-50">
-                        <div className="flex items-center gap-2">
-                            <ShieldAlert
-                                size={18}
-                                className="text-default-700"
-                            />
-                            <h2 className="text-lg font-bold text-default-900">
-                                Security & Access
-                            </h2>
-                        </div>
-                    </CardHeader>
-                    <CardBody className="p-6 space-y-4">
-                        <div className="bg-danger-50 border border-danger-100 p-3 rounded-lg flex items-start gap-3">
-                            <div className="mt-0.5 w-2 h-2 bg-danger rounded-full animate-pulse" />
-                            <div>
-                                <p className="text-xs font-bold text-danger-800">
-                                    Failed Login Attempt
-                                </p>
-                                <p className="text-[10px] text-danger-600 mt-0.5">
-                                    User: admin@company.com <br /> IP:
-                                    192.168.1.45 (10 mins ago)
-                                </p>
-                            </div>
-                        </div>
-                        <Divider />
-                        <div className="space-y-2">
-                            <div className="flex justify-between text-sm">
-                                <span className="text-default-600">
-                                    Active Sessions
-                                </span>
-                                <span className="font-bold">32</span>
-                            </div>
-                            <div className="flex justify-between text-sm">
-                                <span className="text-default-600">
-                                    MFA Enrolled
-                                </span>
-                                <span className="font-bold text-success">
-                                    100%
-                                </span>
-                            </div>
-                            <div className="flex justify-between text-sm">
-                                <span className="text-default-600">
-                                    Role Overrides (UserPermission)
-                                </span>
-                                <span className="font-bold text-warning">
-                                    4
-                                </span>
-                            </div>
-                        </div>
-                        <Button
-                            size="sm"
-                            variant="flat"
-                            className="w-full mt-2"
-                        >
-                            View Security Logs
-                        </Button>
-                    </CardBody>
-                </Card>
-            </div>
         </AdminContentContainer>
     )
 }

@@ -79,7 +79,7 @@ export const INTERNAL_URLS = {
         roles: ['', 'mgmt', 'access-control', 'roles'].join('/'),
         permissions: ['', 'mgmt', 'access-control', 'permissions'].join('/'),
         team: ['', 'mgmt', 'staff-directory'].join('/'),
-        staffDetail: (username: string) => ['', 'mgmt', 'access-control', 'staff-directory', username, 'edit'].join('/'),
+        staffDetail: (username: string) => ['', 'mgmt', 'staff-directory', username].join('/'),
         files: ['', 'mgmt', 'access-control', 'files'].join('/'),
     },
     /**

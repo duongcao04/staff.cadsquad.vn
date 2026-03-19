@@ -15,6 +15,8 @@ export const UserSchema: ZodType<TUser> = z.lazy(() => z.object({
         return optimizeCloudinary(val);
     }),
 
+    code: z.string().catch('UNKNOWN'),
+
     personalEmail: z.string().nullable().catch(null),
     email: z.string().email().catch('unknown@cadsquad.vn'),
 
@@ -88,7 +90,7 @@ export const userQuerySchema = z.object({
 
     search: z.string().optional(),
 
-    departmentId: z.string().uuid('Invalid Department ID').optional(),
+    departmentId: z.string().optional(),
 
     role: z.enum(['ADMIN', 'USER', 'ACCOUNTING', 'STAFF']).optional(),
 

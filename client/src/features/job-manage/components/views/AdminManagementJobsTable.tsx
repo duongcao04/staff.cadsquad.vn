@@ -76,6 +76,7 @@ type AdminManagementJobsTableProps = {
     onBulkAction: (type: 'DELETE' | 'STATUS') => void
     onSearchChange: (value: string) => void
 }
+
 export default function AdminManagementJobsTable({
     data,
     pagination,
@@ -99,6 +100,7 @@ export default function AdminManagementJobsTable({
     } = useSuspenseQuery({
         ...jobStatusesListOptions(),
     })
+
     // --- Render Cell ---
     const renderCell = useCallback((data: TJob, columnKey: React.Key) => {
         switch (columnKey) {
@@ -294,44 +296,8 @@ export default function AdminManagementJobsTable({
                         variant="bordered"
                     />
                     <div className="flex gap-3">
-                        {/* TODO: Implement Status */}
-                        {/* Status Dropdown */}
-                        {false && (
-                            <Dropdown>
-                                <DropdownTrigger className="hidden sm:flex">
-                                    <Button
-                                        endContent={
-                                            <ChevronDown className="text-small" />
-                                        }
-                                        variant="flat"
-                                        size="sm"
-                                    >
-                                        Status
-                                    </Button>
-                                </DropdownTrigger>
-
-                                <DropdownMenu
-                                    disallowEmptySelection
-                                    aria-label="Status Filter"
-                                    closeOnSelect={false}
-                                    selectedKeys={statusFilter}
-                                    selectionMode="multiple"
-                                    onSelectionChange={onStatusFilterChange}
-                                >
-                                    {jobStatuses.map((status) => (
-                                        <DropdownItem
-                                            key={status.code}
-                                            className="capitalize"
-                                        >
-                                            {status.displayName}
-                                        </DropdownItem>
-                                    ))}
-                                </DropdownMenu>
-                            </Dropdown>
-                        )}
-
-                        {/* Priority Dropdown */}
-                        {/* <Dropdown>
+                        {/* Status Dropdown - Đã được mở khóa */}
+                        <Dropdown>
                             <DropdownTrigger className="hidden sm:flex">
                                 <Button
                                     endContent={
@@ -340,32 +306,33 @@ export default function AdminManagementJobsTable({
                                     variant="flat"
                                     size="sm"
                                 >
-                                    Priority
+                                    Status
                                 </Button>
                             </DropdownTrigger>
+
                             <DropdownMenu
-                                disallowEmptySelection
-                                aria-label="Priority Filter"
+                                disallowEmptySelection={false} // Bật tính năng bỏ chọn toàn bộ để reset
+                                aria-label="Status Filter"
                                 closeOnSelect={false}
-                                selectedKeys={priorityFilter}
+                                selectedKeys={statusFilter}
                                 selectionMode="multiple"
-                                onSelectionChange={setPriorityFilter}
+                                onSelectionChange={onStatusFilterChange}
                             >
-                                {PRIORITY_OPTIONS.map((p) => (
+                                {jobStatuses.map((status) => (
                                     <DropdownItem
-                                        key={p.uid}
+                                        key={status.code}
                                         className="capitalize"
                                     >
-                                        {p.name}
+                                        {status.displayName}
                                     </DropdownItem>
                                 ))}
                             </DropdownMenu>
-                        </Dropdown> */}
+                        </Dropdown>
                     </div>
                 </div>
             </div>
         )
-    }, [searchValue, statusFilter, selectedKeys, data.length])
+    }, [searchValue, statusFilter, selectedKeys, data.length, jobStatuses])
 
     // --- Bottom Content ---
     const bottomContent = useMemo(() => {
@@ -408,6 +375,7 @@ export default function AdminManagementJobsTable({
             </div>
         )
     }, [selectedKeys, data.length, pagination])
+
     return (
         <HeroTable
             aria-label="Jobs Table"
@@ -438,8 +406,8 @@ export default function AdminManagementJobsTable({
             </TableHeader>
             <TableBody
                 emptyContent={'No jobs found'}
-                items={data} // Use Server Data
-                isLoading={isLoadingData} // Show loading state
+                items={data}
+                isLoading={isLoadingData}
             >
                 {(item: TJob) => (
                     <TableRow key={item.id}>

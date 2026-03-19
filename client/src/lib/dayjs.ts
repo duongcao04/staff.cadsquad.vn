@@ -124,3 +124,32 @@ export const calculateRemainingTime = (endedDate: Date | string): number => {
     const end = dayjs.utc(endedDate).local() // Convert UTC to local time (e.g., Asia/Ho_Chi_Minh)
     return end.diff(now)
 }
+
+
+export function getDueInLabel(deadlineStr: string) {
+    const now = dayjs();
+    const deadline = dayjs(deadlineStr);
+
+    // Tính chênh lệch theo các đơn vị khác nhau (dùng số thực để chính xác)
+    const diffInHours = deadline.diff(now, 'hour', true);
+    const diffInDays = deadline.diff(now, 'day', true);
+
+    // 1. Nếu đã quá hạn
+    if (diffInHours <= 0) {
+        return "Expired";
+    }
+
+    // 2. Nếu < 24 giờ: Hiển thị số giờ (làm tròn lên)
+    if (diffInHours < 24) {
+        return `${Math.ceil(diffInHours)} hours`;
+    }
+
+    // 3. Nếu < 30 ngày: Hiển thị số ngày
+    if (diffInDays < 30) {
+        return `${Math.ceil(diffInDays)} days`;
+    }
+
+    // 4. Còn lại: Hiển thị số tháng
+    const diffInMonths = deadline.diff(now, 'month', true);
+    return `${Math.ceil(diffInMonths)} months`;
+}

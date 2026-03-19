@@ -49,7 +49,6 @@ export default function ViewContentDropdown({
             <DropdownTrigger>
                 <Button
                     variant="bordered"
-                    size="sm"
                     className={`border-1 capitalize min-w-32.5 justify-between ${className}`}
                     startContent={
                         Icon ? (

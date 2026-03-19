@@ -21,10 +21,10 @@ import { DepartmentModule } from '@/modules/department/department.module'
 import { ExcelModule } from '@/modules/excel/excel.module'
 import { GalleryModule } from '@/modules/gallery/gallery.module'
 import { HealthModule } from '@/modules/health/health.module'
+import { JobFolderTemplateModule } from '@/modules/job-folder-template/job-folder-template.module'
 import { JobStatusModule } from '@/modules/job-status/job-status.module'
 import { JobTitleModule } from '@/modules/job-title/job-title.module'
 import { JobTypeModule } from '@/modules/job-type/job-type.module'
-import { JobFolderTemplateModule } from '@/modules/job-folder-template/job-folder-template.module'
 import { JobModule } from '@/modules/job/job.module'
 import { NotificationModule } from '@/modules/notification/notification.module'
 import { PaymentChannelModule } from '@/modules/payment-channel/payment-channel.module'
@@ -44,6 +44,7 @@ import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { ScheduleModule } from '@nestjs/schedule'
 import { PrometheusModule } from '@willsoto/nestjs-prometheus'
+import { AdministratorModule } from './modules/administrator/administrator.module'
 import { BullConfigProvider } from './providers/bull-mq/bull-mq.provider'
 @Module({
 	imports: [
@@ -104,8 +105,9 @@ import { BullConfigProvider } from './providers/bull-mq/bull-mq.provider'
 		AnalyticsModule,
 		CommunityModule,
 		ClientModule,
+		AdministratorModule
 	],
 	controllers: [AppController],
 	providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

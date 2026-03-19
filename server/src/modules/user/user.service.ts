@@ -86,7 +86,10 @@ export class UserService {
 				// NORMAL CREATE LOGIC
 				// Using create instead of createManyAndReturn for single objects is cleaner
 				userResult = await tx.user.create({
-					data: userData,
+					data: {
+						...userData,
+						code: await this.generateUserCode()
+					},
 					include: { role: true },
 				})
 			}
@@ -286,15 +289,15 @@ export class UserService {
 	/**
 	 * Find a user by their unique ID.
 	 *
-	 * @param {number} username - The ID of the user to retrieve.
+	 * @param {number} staffCode - The ID of the user to retrieve.
 	 * @returns {Promise<User | null>} The user object retrieved from the database, or null if not found.
 	 *
 	 * @throws {NotFoundException} If no user is found with the provided ID.
 	 */
-	async findByUsername(username: string): Promise<User | null> {
+	async findByStaffCode(staffCode: string): Promise<User | null> {
 		try {
 			const userData = await this.prismaService.user.findUnique({
-				where: { username: username, deletedAt: null },
+				where: { code: staffCode, deletedAt: null },
 				include: {
 					department: true,
 					jobTitle: true,
@@ -683,5 +686,14 @@ export class UserService {
 
 		// 3. Trả về URL hoàn chỉnh
 		return `https://ui-avatars.com/api/?name=${formattedName}&background=random&size=128`
+	}
+
+
+	private async generateUserCode() {
+		const result = await this.prismaService.user.findMany().then(res => {
+			const userNum = res[-1].code.slice(-3)
+			return String(Number(userNum) + 1).padStart(4, '0')
+		})
+		return result
 	}
 }

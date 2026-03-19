@@ -7049,6 +7049,7 @@ export namespace Prisma {
 
   export type UserMinAggregateOutputType = {
     id: string | null
+    code: string | null
     email: string | null
     personalEmail: string | null
     username: string | null
@@ -7070,6 +7071,7 @@ export namespace Prisma {
 
   export type UserMaxAggregateOutputType = {
     id: string | null
+    code: string | null
     email: string | null
     personalEmail: string | null
     username: string | null
@@ -7091,6 +7093,7 @@ export namespace Prisma {
 
   export type UserCountAggregateOutputType = {
     id: number
+    code: number
     email: number
     personalEmail: number
     username: number
@@ -7114,6 +7117,7 @@ export namespace Prisma {
 
   export type UserMinAggregateInputType = {
     id?: true
+    code?: true
     email?: true
     personalEmail?: true
     username?: true
@@ -7135,6 +7139,7 @@ export namespace Prisma {
 
   export type UserMaxAggregateInputType = {
     id?: true
+    code?: true
     email?: true
     personalEmail?: true
     username?: true
@@ -7156,6 +7161,7 @@ export namespace Prisma {
 
   export type UserCountAggregateInputType = {
     id?: true
+    code?: true
     email?: true
     personalEmail?: true
     username?: true
@@ -7250,6 +7256,7 @@ export namespace Prisma {
 
   export type UserGroupByOutputType = {
     id: string
+    code: string
     email: string
     personalEmail: string | null
     username: string
@@ -7288,6 +7295,7 @@ export namespace Prisma {
 
   export type UserSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    code?: boolean
     email?: boolean
     personalEmail?: boolean
     username?: boolean
@@ -7335,6 +7343,7 @@ export namespace Prisma {
 
   export type UserSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    code?: boolean
     email?: boolean
     personalEmail?: boolean
     username?: boolean
@@ -7360,6 +7369,7 @@ export namespace Prisma {
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    code?: boolean
     email?: boolean
     personalEmail?: boolean
     username?: boolean
@@ -7385,6 +7395,7 @@ export namespace Prisma {
 
   export type UserSelectScalar = {
     id?: boolean
+    code?: boolean
     email?: boolean
     personalEmail?: boolean
     username?: boolean
@@ -7404,7 +7415,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "personalEmail" | "username" | "displayName" | "avatar" | "jobTitleId" | "password" | "emailVerified" | "departmentId" | "phoneNumber" | "isActive" | "managerId" | "roleId" | "deletedAt" | "lastLoginAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "code" | "email" | "personalEmail" | "username" | "displayName" | "avatar" | "jobTitleId" | "password" | "emailVerified" | "departmentId" | "phoneNumber" | "isActive" | "managerId" | "roleId" | "deletedAt" | "lastLoginAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     jobTitle?: boolean | User$jobTitleArgs<ExtArgs>
     department?: boolean | User$departmentArgs<ExtArgs>
@@ -7477,6 +7488,7 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      code: string
       email: string
       personalEmail: string | null
       username: string
@@ -7943,6 +7955,7 @@ export namespace Prisma {
    */
   interface UserFieldRefs {
     readonly id: FieldRef<"User", 'String'>
+    readonly code: FieldRef<"User", 'String'>
     readonly email: FieldRef<"User", 'String'>
     readonly personalEmail: FieldRef<"User", 'String'>
     readonly username: FieldRef<"User", 'String'>
@@ -45451,6 +45464,7 @@ export namespace Prisma {
 
   export const UserScalarFieldEnum: {
     id: 'id',
+    code: 'code',
     email: 'email',
     personalEmail: 'personalEmail',
     username: 'username',
@@ -46366,6 +46380,7 @@ export namespace Prisma {
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     id?: StringFilter<"User"> | string
+    code?: StringFilter<"User"> | string
     email?: StringFilter<"User"> | string
     personalEmail?: StringNullableFilter<"User"> | string | null
     username?: StringFilter<"User"> | string
@@ -46412,6 +46427,7 @@ export namespace Prisma {
 
   export type UserOrderByWithRelationInput = {
     id?: SortOrder
+    code?: SortOrder
     email?: SortOrder
     personalEmail?: SortOrderInput | SortOrder
     username?: SortOrder
@@ -46458,6 +46474,7 @@ export namespace Prisma {
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    code?: string
     email?: string
     username?: string
     AND?: UserWhereInput | UserWhereInput[]
@@ -46503,10 +46520,11 @@ export namespace Prisma {
     role?: XOR<RoleNullableScalarRelationFilter, RoleWhereInput> | null
     userPermissions?: UserPermissionListRelationFilter
     securityLogs?: UserSecurityLogListRelationFilter
-  }, "id" | "email" | "username">
+  }, "id" | "code" | "email" | "username">
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
+    code?: SortOrder
     email?: SortOrder
     personalEmail?: SortOrderInput | SortOrder
     username?: SortOrder
@@ -46534,6 +46552,7 @@ export namespace Prisma {
     OR?: UserScalarWhereWithAggregatesInput[]
     NOT?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"User"> | string
+    code?: StringWithAggregatesFilter<"User"> | string
     email?: StringWithAggregatesFilter<"User"> | string
     personalEmail?: StringNullableWithAggregatesFilter<"User"> | string | null
     username?: StringWithAggregatesFilter<"User"> | string
@@ -49117,6 +49136,7 @@ export namespace Prisma {
 
   export type UserCreateInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -49159,6 +49179,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -49201,6 +49222,7 @@ export namespace Prisma {
 
   export type UserUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -49243,6 +49265,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -49285,6 +49308,7 @@ export namespace Prisma {
 
   export type UserCreateManyInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -49306,6 +49330,7 @@ export namespace Prisma {
 
   export type UserUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -49323,6 +49348,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -52370,6 +52396,7 @@ export namespace Prisma {
 
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
+    code?: SortOrder
     email?: SortOrder
     personalEmail?: SortOrder
     username?: SortOrder
@@ -52391,6 +52418,7 @@ export namespace Prisma {
 
   export type UserMaxOrderByAggregateInput = {
     id?: SortOrder
+    code?: SortOrder
     email?: SortOrder
     personalEmail?: SortOrder
     username?: SortOrder
@@ -52412,6 +52440,7 @@ export namespace Prisma {
 
   export type UserMinOrderByAggregateInput = {
     id?: SortOrder
+    code?: SortOrder
     email?: SortOrder
     personalEmail?: SortOrder
     username?: SortOrder
@@ -57403,6 +57432,7 @@ export namespace Prisma {
 
   export type UserCreateWithoutUserDevicesInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -57444,6 +57474,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutUserDevicesInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -57501,6 +57532,7 @@ export namespace Prisma {
 
   export type UserUpdateWithoutUserDevicesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -57542,6 +57574,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutUserDevicesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -58052,6 +58085,7 @@ export namespace Prisma {
 
   export type UserCreateWithoutReportsInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -58093,6 +58127,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutReportsInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -58139,6 +58174,7 @@ export namespace Prisma {
 
   export type UserCreateWithoutManagerInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -58180,6 +58216,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutManagerInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -58908,6 +58945,7 @@ export namespace Prisma {
 
   export type UserUpdateWithoutReportsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -58949,6 +58987,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutReportsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -59009,6 +59048,7 @@ export namespace Prisma {
     OR?: UserScalarWhereInput[]
     NOT?: UserScalarWhereInput | UserScalarWhereInput[]
     id?: StringFilter<"User"> | string
+    code?: StringFilter<"User"> | string
     email?: StringFilter<"User"> | string
     personalEmail?: StringNullableFilter<"User"> | string | null
     username?: StringFilter<"User"> | string
@@ -59293,6 +59333,7 @@ export namespace Prisma {
 
   export type UserCreateWithoutSecurityLogsInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -59334,6 +59375,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutSecurityLogsInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -59391,6 +59433,7 @@ export namespace Prisma {
 
   export type UserUpdateWithoutSecurityLogsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -59432,6 +59475,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutSecurityLogsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -59502,6 +59546,7 @@ export namespace Prisma {
 
   export type UserCreateWithoutRoleInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -59543,6 +59588,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutRoleInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -59781,6 +59827,7 @@ export namespace Prisma {
 
   export type UserCreateWithoutUserPermissionsInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -59822,6 +59869,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutUserPermissionsInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -59908,6 +59956,7 @@ export namespace Prisma {
 
   export type UserUpdateWithoutUserPermissionsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -59949,6 +59998,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutUserPermissionsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -60075,6 +60125,7 @@ export namespace Prisma {
 
   export type UserCreateWithoutSessionsInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -60116,6 +60167,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutSessionsInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -60173,6 +60225,7 @@ export namespace Prisma {
 
   export type UserUpdateWithoutSessionsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -60214,6 +60267,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -60255,6 +60309,7 @@ export namespace Prisma {
 
   export type UserCreateWithoutAccountsInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -60296,6 +60351,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutAccountsInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -60353,6 +60409,7 @@ export namespace Prisma {
 
   export type UserUpdateWithoutAccountsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -60394,6 +60451,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -60435,6 +60493,7 @@ export namespace Prisma {
 
   export type UserCreateWithoutGalleryInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -60476,6 +60535,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutGalleryInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -60533,6 +60593,7 @@ export namespace Prisma {
 
   export type UserUpdateWithoutGalleryInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -60574,6 +60635,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutGalleryInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -60688,6 +60750,7 @@ export namespace Prisma {
 
   export type UserCreateWithoutJobCommentsInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -60729,6 +60792,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutJobCommentsInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -60920,6 +60984,7 @@ export namespace Prisma {
 
   export type UserUpdateWithoutJobCommentsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -60961,6 +61026,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutJobCommentsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -61049,6 +61115,7 @@ export namespace Prisma {
 
   export type UserCreateWithoutJobTitleInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -61090,6 +61157,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutJobTitleInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -61157,6 +61225,7 @@ export namespace Prisma {
 
   export type UserCreateWithoutDepartmentInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -61198,6 +61267,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutDepartmentInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -61265,6 +61335,7 @@ export namespace Prisma {
 
   export type UserCreateWithoutConfigsInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -61306,6 +61377,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutConfigsInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -61363,6 +61435,7 @@ export namespace Prisma {
 
   export type UserUpdateWithoutConfigsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -61404,6 +61477,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutConfigsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -61445,6 +61519,7 @@ export namespace Prisma {
 
   export type UserCreateWithoutFilesCreatedInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -61486,6 +61561,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutFilesCreatedInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -61532,6 +61608,7 @@ export namespace Prisma {
 
   export type UserCreateWithoutFilesInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -61573,6 +61650,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutFilesInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -61703,6 +61781,7 @@ export namespace Prisma {
 
   export type UserUpdateWithoutFilesCreatedInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -61744,6 +61823,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutFilesCreatedInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -61972,6 +62052,7 @@ export namespace Prisma {
 
   export type UserCreateWithoutJobsCreatedInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -62013,6 +62094,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutJobsCreatedInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -62447,6 +62529,7 @@ export namespace Prisma {
 
   export type UserUpdateWithoutJobsCreatedInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -62488,6 +62571,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutJobsCreatedInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -62809,6 +62893,7 @@ export namespace Prisma {
 
   export type UserCreateWithoutJobAssignmentsInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -62850,6 +62935,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutJobAssignmentsInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -62986,6 +63072,7 @@ export namespace Prisma {
 
   export type UserUpdateWithoutJobAssignmentsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -63027,6 +63114,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutJobAssignmentsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -63256,6 +63344,7 @@ export namespace Prisma {
 
   export type UserCreateWithoutPinnedJobsInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -63297,6 +63386,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutPinnedJobsInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -63427,6 +63517,7 @@ export namespace Prisma {
 
   export type UserUpdateWithoutPinnedJobsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -63468,6 +63559,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutPinnedJobsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -64055,6 +64147,7 @@ export namespace Prisma {
 
   export type UserCreateWithoutJobDeliveriesInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -64096,6 +64189,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutJobDeliveriesInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -64260,6 +64354,7 @@ export namespace Prisma {
 
   export type UserUpdateWithoutJobDeliveriesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -64301,6 +64396,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutJobDeliveriesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -64483,6 +64579,7 @@ export namespace Prisma {
 
   export type UserCreateWithoutStatusChangesInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -64524,6 +64621,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutStatusChangesInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -64705,6 +64803,7 @@ export namespace Prisma {
 
   export type UserUpdateWithoutStatusChangesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -64746,6 +64845,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutStatusChangesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -64860,6 +64960,7 @@ export namespace Prisma {
 
   export type UserCreateWithoutJobActivityLogInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -64901,6 +65002,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutJobActivityLogInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -65037,6 +65139,7 @@ export namespace Prisma {
 
   export type UserUpdateWithoutJobActivityLogInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -65078,6 +65181,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutJobActivityLogInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -65119,6 +65223,7 @@ export namespace Prisma {
 
   export type UserCreateWithoutNotificationsInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -65160,6 +65265,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutNotificationsInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -65206,6 +65312,7 @@ export namespace Prisma {
 
   export type UserCreateWithoutSendedNotificationsInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -65247,6 +65354,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutSendedNotificationsInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -65304,6 +65412,7 @@ export namespace Prisma {
 
   export type UserUpdateWithoutNotificationsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -65345,6 +65454,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutNotificationsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -65397,6 +65507,7 @@ export namespace Prisma {
 
   export type UserUpdateWithoutSendedNotificationsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -65438,6 +65549,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutSendedNotificationsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -65584,6 +65696,7 @@ export namespace Prisma {
 
   export type UserCreateWithoutCommunitiesInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -65625,6 +65738,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutCommunitiesInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -65713,6 +65827,7 @@ export namespace Prisma {
 
   export type UserUpdateWithoutCommunitiesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -65754,6 +65869,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutCommunitiesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -65952,6 +66068,7 @@ export namespace Prisma {
 
   export type UserCreateWithoutPostsInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -65993,6 +66110,7 @@ export namespace Prisma {
 
   export type UserUncheckedCreateWithoutPostsInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -66102,6 +66220,7 @@ export namespace Prisma {
 
   export type UserUpdateWithoutPostsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -66143,6 +66262,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutPostsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -66446,6 +66566,7 @@ export namespace Prisma {
 
   export type UserCreateManyManagerInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -66992,6 +67113,7 @@ export namespace Prisma {
 
   export type UserUpdateWithoutManagerInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -67033,6 +67155,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutManagerInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -67074,6 +67197,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateManyWithoutManagerInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -67326,6 +67450,7 @@ export namespace Prisma {
 
   export type UserCreateManyRoleInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -67381,6 +67506,7 @@ export namespace Prisma {
 
   export type UserUpdateWithoutRoleInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -67422,6 +67548,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutRoleInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -67463,6 +67590,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateManyWithoutRoleInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -67620,6 +67748,7 @@ export namespace Prisma {
 
   export type UserCreateManyJobTitleInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -67640,6 +67769,7 @@ export namespace Prisma {
 
   export type UserUpdateWithoutJobTitleInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -67681,6 +67811,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutJobTitleInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -67722,6 +67853,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateManyWithoutJobTitleInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -67742,6 +67874,7 @@ export namespace Prisma {
 
   export type UserCreateManyDepartmentInput = {
     id?: string
+    code: string
     email: string
     personalEmail?: string | null
     username: string
@@ -67762,6 +67895,7 @@ export namespace Prisma {
 
   export type UserUpdateWithoutDepartmentInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -67803,6 +67937,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutDepartmentInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -67844,6 +67979,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateManyWithoutDepartmentInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -67864,6 +68000,7 @@ export namespace Prisma {
 
   export type UserUpdateWithoutFilesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -67905,6 +68042,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateWithoutFilesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
@@ -67946,6 +68084,7 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateManyWithoutFilesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string

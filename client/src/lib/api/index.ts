@@ -1,3 +1,4 @@
+export * from './administrator.api';
 export * from './_ably.api';
 export * from './_analytics.api';
 export * from './_auth.api';
@@ -7,8 +8,8 @@ export * from './_department.api';
 export * from './_email.api';
 export * from './_excel.api';
 export * from './_image.api';
-export * from './_job-status.api';
 export * from './_job-folder-template.api';
+export * from './_job-status.api';
 export * from './_job-title.api';
 export * from './_job-type.api';
 export * from './_job.api';

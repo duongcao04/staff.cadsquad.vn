@@ -8,11 +8,11 @@ export class CreateUserDto {
 	})
 	@IsNotEmpty()
 	@IsString()
-	displayName: string
+	displayName!: string
 
 	@ApiProperty({ description: 'User email', example: 'john.doe@cadsquad.vn' })
 	@IsEmail()
-	email: string
+	email!: string
 
 	@ApiProperty({
 		description: 'Personal email',

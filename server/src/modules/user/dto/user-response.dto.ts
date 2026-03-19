@@ -32,6 +32,10 @@ export class UserResponseDto {
 	@Expose()
 	displayName: string
 
+	@ApiProperty({ description: 'Staff code', example: 'ST001' })
+	@Expose()
+	code: string
+
 	@ApiProperty({ description: 'Role of the user' })
 	@Expose()
 	role: RoleResponseDto

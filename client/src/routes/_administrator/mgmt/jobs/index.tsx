@@ -16,6 +16,7 @@ import {
     ModalFooter,
     ModalHeader,
     Selection,
+    SharedSelection,
     useDisclosure,
 } from '@heroui/react'
 import { useSuspenseQuery } from '@tanstack/react-query'
@@ -27,7 +28,7 @@ import {
     Download,
     PlusIcon,
     Trash2,
-    X
+    X,
 } from 'lucide-react'
 import { startTransition, useEffect, useMemo, useState } from 'react'
 import { z } from 'zod'
@@ -37,6 +38,7 @@ const DEFAULT_SORT = 'displayName:asc'
 export const manageJobsParamsSchema = z.object({
     sort: z.string().optional().catch(DEFAULT_SORT),
     search: z.string().trim().optional(),
+    status: z.string().optional(), // Đã thêm status vào schema
     limit: z.coerce.number().int().min(1).max(100).optional().catch(10),
     page: z.coerce.number().int().min(1).optional().catch(1),
 })
@@ -54,6 +56,7 @@ export const Route = createFileRoute('/_administrator/mgmt/jobs/')({
             limit = 10,
             page = 1,
             search,
+            status,
             sort = DEFAULT_SORT,
         } = deps.search
         return context.queryClient.ensureQueryData(
@@ -61,6 +64,7 @@ export const Route = createFileRoute('/_administrator/mgmt/jobs/')({
                 limit,
                 page,
                 search,
+                status, // Truyền status vào API
                 sort: [sort],
             })
         )
@@ -82,14 +86,34 @@ function ManageJobsPage() {
 
     // --- Local UI State ---
     const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]))
-    const [statusFilter, setStatusFilter] = useState<Selection>('all')
-
-    // Search State: searchValue quản lý input tức thì, debouncedSearch cập nhật URL
     const [searchValue, setSearchValue] = useState(searchParams.search || '')
 
-    // --- Search Logic (Fix Debounce) ---
+    // --- Status Filter Logic ---
+    // Đồng bộ từ URL xuống Table
+    const statusFilter = useMemo(() => {
+        if (!searchParams.status) return new Set([])
+        return new Set(searchParams.status.split(','))
+    }, [searchParams.status])
 
-    // 1. Hàm cập nhật URL
+    // Xử lý khi user click chọn status trên Table
+    const handleStatusFilterChange = (keys: SharedSelection) => {
+        let statusValue: string | undefined = undefined
+
+        if (keys !== 'all' && keys.size > 0) {
+            statusValue = Array.from(keys).join(',')
+        }
+
+        navigate({
+            search: (old) => ({
+                ...old,
+                status: statusValue,
+                page: 1, // Reset page
+            }),
+            replace: true,
+        })
+    }
+
+    // --- Search Logic ---
     const updateSearch = (
         updater: (old: TManageJobsParams) => TManageJobsParams
     ) => {
@@ -102,7 +126,6 @@ function ManageJobsPage() {
         })
     }
 
-    // 2. Tạo hàm debounce để cập nhật URL sau 500ms
     const debouncedUpdateUrl = useMemo(
         () =>
             lodash.debounce((value: string) => {
@@ -115,21 +138,18 @@ function ManageJobsPage() {
         []
     )
 
-    // 3. Sync input khi URL thay đổi (nhấn Back/Forward hoặc reset)
     useEffect(() => {
         setSearchValue(searchParams.search || '')
     }, [searchParams.search])
 
-    // 4. Cleanup debounce
     useEffect(() => {
         return () => debouncedUpdateUrl.cancel()
     }, [debouncedUpdateUrl])
 
     // --- Handlers ---
-
     const onSearchInputChange = (value: string) => {
-        setSearchValue(value) // Cập nhật UI ngay lập tức
-        debouncedUpdateUrl(value) // Trigger debounce cập nhật URL
+        setSearchValue(value)
+        debouncedUpdateUrl(value)
     }
 
     const handleClearSearch = () => {
@@ -169,7 +189,7 @@ function ManageJobsPage() {
                 : Array.from(selectedKeys)
 
         console.log(`Performing ${bulkActionType} on:`, selectedIds)
-        // Perform API call here based on bulkActionType...
+        // Perform API call here...
 
         setSelectedKeys(new Set([]))
         onClose()
@@ -187,15 +207,10 @@ function ManageJobsPage() {
         selectedKeys === 'all' ? pagination.total : selectedKeys.size
     const hasSelection = selectionCount > 0
 
-    // Mock Stats: Replace the hardcoded numbers with real aggregate data from your backend
     const STATS_DATA = [
-        {
-            title: 'Total Jobs This Month',
-            count: pagination.total || 240,
-            color: 'bg-primary-500',
-        },
+        { title: 'Total Jobs This Month', count: pagination.total || 240, color: 'bg-primary-500' },
         { title: 'Ongoing Jobs', count: 45, color: 'bg-warning-500' },
-        { title: 'Delivered Jobs', count: 18, color: 'bg-secondary-500' }, // Purple
+        { title: 'Delivered Jobs', count: 18, color: 'bg-secondary-500' },
         { title: 'Late Jobs', count: 4, color: 'bg-danger-500' },
         { title: 'Finished Jobs', count: 173, color: 'bg-success-500' },
     ]
@@ -226,19 +241,12 @@ function ManageJobsPage() {
             />
 
             <AdminContentContainer className="relative space-y-6">
-                {/* --- 1. Top Stats Row --- */}
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                     {STATS_DATA.map((stat, idx) => (
-                        <Card
-                            key={idx}
-                            shadow="none"
-                            className="border border-border-default"
-                        >
+                        <Card key={idx} shadow="none" className="border border-border-default">
                             <CardBody className="p-4 flex flex-col gap-2">
                                 <div className="flex items-center gap-2">
-                                    <span
-                                        className={`w-2.5 h-2.5 rounded-full ${stat.color}`}
-                                    />
+                                    <span className={`w-2.5 h-2.5 rounded-full ${stat.color}`} />
                                     <span className="text-xs font-semibold text-default-500 truncate">
                                         {stat.title}
                                     </span>
@@ -251,29 +259,23 @@ function ManageJobsPage() {
                     ))}
                 </div>
 
-                {/* --- 2. Main Data Table --- */}
-                {/* Note: AdminManagementJobsTable handles its own search bar and tabs as per your design */}
                 <AdminManagementJobsTable
                     data={data.jobs}
                     isLoadingData={isFetching}
-                    // Search props
                     searchValue={searchValue}
                     onSearchChange={onSearchInputChange}
                     onClearSearch={handleClearSearch}
-                    // Pagination & Sort
                     pagination={pagination}
                     onPageChange={handlePageChange}
                     sort={searchParams.sort ?? DEFAULT_SORT}
                     onSortChange={handleSortChange}
-                    // Selection & Filter
                     selectedKeys={selectedKeys}
                     onSelectionChange={setSelectedKeys}
                     statusFilter={statusFilter}
-                    onStatusFilterChange={setStatusFilter}
-                    onBulkAction={onBulkAction} // Keep for table's internal row actions
+                    onStatusFilterChange={handleStatusFilterChange}
+                    onBulkAction={onBulkAction}
                 />
 
-                {/* --- 3. Floating Bulk Action Bar --- */}
                 {hasSelection && (
                     <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 animate-in slide-in-from-bottom-6 fade-in duration-200 shadow-2xl rounded-2xl">
                         <Card className="border border-default-200 bg-background/90 backdrop-blur-md overflow-visible">
@@ -286,66 +288,21 @@ function ManageJobsPage() {
                                         Selected
                                     </span>
                                 </div>
-
-                                <Divider
-                                    orientation="vertical"
-                                    className="h-8 mx-2"
-                                />
-
-                                <Button
-                                    size="sm"
-                                    variant="light"
-                                    className="font-medium text-default-700 data-[hover=true]:bg-default-100"
-                                    startContent={<CheckCircle2 size={16} />}
-                                    onPress={() => onBulkAction('STATUS')}
-                                >
+                                <Divider orientation="vertical" className="h-8 mx-2" />
+                                <Button size="sm" variant="light" className="font-medium text-default-700" startContent={<CheckCircle2 size={16} />} onPress={() => onBulkAction('STATUS')}>
                                     Update Status
                                 </Button>
-
-                                <Button
-                                    size="sm"
-                                    variant="light"
-                                    className="font-medium text-default-700 data-[hover=true]:bg-default-100"
-                                    startContent={<AlertCircle size={16} />}
-                                    onPress={() => onBulkAction('PRIORITY')}
-                                >
+                                <Button size="sm" variant="light" className="font-medium text-default-700" startContent={<AlertCircle size={16} />} onPress={() => onBulkAction('PRIORITY')}>
                                     Update Priority
                                 </Button>
-
-                                <Button
-                                    size="sm"
-                                    variant="light"
-                                    className="font-medium text-default-700 data-[hover=true]:bg-default-100"
-                                    startContent={<Download size={16} />}
-                                    onPress={() => onBulkAction('EXPORT')}
-                                >
+                                <Button size="sm" variant="light" className="font-medium text-default-700" startContent={<Download size={16} />} onPress={() => onBulkAction('EXPORT')}>
                                     Export Jobs
                                 </Button>
-
-                                <Button
-                                    size="sm"
-                                    color="danger"
-                                    variant="light"
-                                    className="font-medium data-[hover=true]:bg-danger-50"
-                                    startContent={<Trash2 size={16} />}
-                                    onPress={() => onBulkAction('DELETE')}
-                                >
+                                <Button size="sm" color="danger" variant="light" className="font-medium" startContent={<Trash2 size={16} />} onPress={() => onBulkAction('DELETE')}>
                                     Delete
                                 </Button>
-
-                                <Divider
-                                    orientation="vertical"
-                                    className="h-8 mx-2"
-                                />
-
-                                <Button
-                                    isIconOnly
-                                    size="sm"
-                                    variant="light"
-                                    color="default"
-                                    className="rounded-full"
-                                    onPress={() => setSelectedKeys(new Set([]))}
-                                >
+                                <Divider orientation="vertical" className="h-8 mx-2" />
+                                <Button isIconOnly size="sm" variant="light" className="rounded-full" onPress={() => setSelectedKeys(new Set([]))}>
                                     <X size={16} />
                                 </Button>
                             </CardBody>
@@ -353,49 +310,24 @@ function ManageJobsPage() {
                     </div>
                 )}
 
-                {/* --- 4. Bulk Action Confirmation Modal --- */}
                 <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
                     <ModalContent>
                         {(onClose) => (
                             <>
-                                <ModalHeader>
-                                    Confirm{' '}
-                                    {bulkActionType === 'DELETE'
-                                        ? 'Deletion'
-                                        : bulkActionType === 'STATUS'
-                                          ? 'Status Update'
-                                          : bulkActionType === 'PRIORITY'
-                                            ? 'Priority Update'
-                                            : 'Export'}
-                                </ModalHeader>
+                                <ModalHeader>Confirm Action</ModalHeader>
                                 <ModalBody>
                                     <p className="text-default-600">
-                                        Are you sure you want to process this
-                                        action on{' '}
-                                        <strong className="text-default-900">
-                                            {selectionCount}
-                                        </strong>{' '}
-                                        selected jobs?
+                                        Are you sure you want to process this action on <strong className="text-default-900">{selectionCount}</strong> selected jobs?
                                     </p>
                                     {bulkActionType === 'DELETE' && (
                                         <p className="text-xs text-danger-600 mt-2 bg-danger-50 p-2 rounded-md">
-                                            Warning: This action is permanent
-                                            and cannot be undone.
+                                            Warning: This action is permanent and cannot be undone.
                                         </p>
                                     )}
                                 </ModalBody>
                                 <ModalFooter>
-                                    <Button variant="light" onPress={onClose}>
-                                        Cancel
-                                    </Button>
-                                    <Button
-                                        color={
-                                            bulkActionType === 'DELETE'
-                                                ? 'danger'
-                                                : 'primary'
-                                        }
-                                        onPress={handleBulkConfirm}
-                                    >
+                                    <Button variant="light" onPress={onClose}>Cancel</Button>
+                                    <Button color={bulkActionType === 'DELETE' ? 'danger' : 'primary'} onPress={handleBulkConfirm}>
                                         Confirm
                                     </Button>
                                 </ModalFooter>
