@@ -14,7 +14,7 @@ import {
     Spinner,
 } from '@heroui/react'
 import { useSuspenseQueries } from '@tanstack/react-query'
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import lodash from 'lodash'
 import {
     Filter,
@@ -23,9 +23,10 @@ import {
     Search,
     TableIcon,
 } from 'lucide-react'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { z } from 'zod'
 
+// --- 1. CONSTANTS & SCHEMA ---
 const VIEW_OPTIONS = [
     {
         key: 'table',
@@ -40,19 +41,20 @@ const VIEW_OPTIONS = [
         description: 'Card gallery layout',
     },
 ]
-// --- 1. ROUTE DEFINITION WITH SEARCH SCHEMA ---
+
 const staffSearchSchema = z.object({
     page: z.number().catch(1),
     limit: z.number().catch(8),
     search: z.string().optional(),
     departmentId: z.string().optional(),
-    view: z.enum(VIEW_OPTIONS.map((it) => it.key)).default(VIEW_OPTIONS[1].key),
+    // Fixed: Default to 'table' instead of 'grid'
+    view: z.enum(['table', 'grid']).default('table'),
 })
-export type TStaffSearch = z.infer<typeof staffSearchSchema>
 
-export const Route = createFileRoute(
-    '/_administrator/mgmt/staff-directory/'
-)({
+export type TStaffSearchValues = z.infer<typeof staffSearchSchema>
+
+// --- 2. ROUTE DEFINITION ---
+export const Route = createFileRoute('/_administrator/mgmt/staff-directory/')({
     validateSearch: (search) => staffSearchSchema.parse(search),
     loaderDeps: ({ search }) => ({
         page: search.page,
@@ -79,13 +81,12 @@ export const Route = createFileRoute(
     component: StaffDirectoryPage,
 })
 
-// --- 2. MAIN PAGE COMPONENT ---
+// --- 3. MAIN PAGE COMPONENT ---
 function StaffDirectoryPage() {
     const searchParams = Route.useSearch()
-    const navigate = useNavigate({ from: Route.fullPath })
-
     const updateSearch = useUpdateSearchParams(Route.fullPath)
 
+    // --- Data Fetching ---
     const [
         {
             data: { users, total: totalUsers, totalPages },
@@ -111,47 +112,63 @@ function StaffDirectoryPage() {
         ],
     })
 
-    const handlePageChange = (newPage: number) =>
-        updateSearch((old: TStaffSearch) => ({
-            ...old,
-            page: newPage,
-        }))
+    // --- Handlers ---
+    const handlePageChange = useCallback(
+        (newPage: number) =>
+            updateSearch((old: TStaffSearchValues) => ({
+                ...old,
+                page: newPage,
+            })),
+        [updateSearch]
+    )
 
-    const handleLimitChange = (newLimit: number) =>
-        updateSearch((old: TStaffSearch) => ({
-            ...old,
-            limit: newLimit,
-            page: 1,
-        }))
+    const handleLimitChange = useCallback(
+        (newLimit: number) =>
+            updateSearch((old: TStaffSearchValues) => ({
+                ...old,
+                limit: newLimit,
+                page: 1,
+            })),
+        [updateSearch]
+    )
 
-    const handleSearchChange = (newSearch?: string) =>
-        updateSearch((old: TStaffSearch) => ({
-            ...old,
-            search: newSearch,
-            page: 1,
-        }))
+    const handleSearchChange = useCallback(
+        (newSearch?: string) =>
+            updateSearch((old: TStaffSearchValues) => ({
+                ...old,
+                search: newSearch,
+                page: 1,
+            })),
+        [updateSearch]
+    )
 
-    const handleViewChange = (newView: any) =>
-        updateSearch((old: TStaffSearch) => ({
-            ...old,
-            view: newView,
-            page: 1,
-        }))
+    const handleViewChange = useCallback(
+        (newView: any) =>
+            updateSearch((old: TStaffSearchValues) => ({
+                ...old,
+                view: newView,
+                page: 1,
+            })),
+        [updateSearch]
+    )
 
+    const handleFilters = useCallback(
+        (deptId: string) => {
+            updateSearch((old: TStaffSearchValues) => ({
+                ...old,
+                departmentId: deptId === 'all' ? undefined : deptId,
+                page: 1,
+            }))
+        },
+        [updateSearch]
+    )
+
+    // Now debouncedSearchChange won't reset on every render
     const debouncedSearchChange = useMemo(
         () =>
             lodash.debounce((value: string) => handleSearchChange(value), 500),
-        [handleSearchChange]
+        [handleSearchChange] // stable now because handleSearchChange is useCallback
     )
-    const handleFilters = (deptId: string) => {
-        navigate({
-            search: (prev) => ({
-                ...prev,
-                departmentId: deptId === 'all' ? undefined : deptId,
-                page: 1,
-            }),
-        })
-    }
 
     return (
         <>
@@ -177,8 +194,17 @@ function StaffDirectoryPage() {
                     <Select
                         labelPlacement="outside"
                         className="w-full md:max-w-xs"
-                        selectedKeys={[searchParams.departmentId || 'all']}
-                        onChange={(e) => handleFilters(e.target.value)}
+                        // Fixed: Convert value to a Set for HeroUI
+                        selectedKeys={
+                            new Set([searchParams.departmentId || 'all'])
+                        }
+                        // Fixed: Use onSelectionChange instead of onChange
+                        onSelectionChange={(keys) => {
+                            const selectedValue = Array.from(keys)[0] as string
+                            if (selectedValue) {
+                                handleFilters(selectedValue)
+                            }
+                        }}
                         variant="bordered"
                         aria-label="Filter by department"
                         startContent={
@@ -211,12 +237,12 @@ function StaffDirectoryPage() {
 
                     <ViewContentDropdown
                         onSelectionChange={(value) => {
-                            console.log(value)
                             handleViewChange(value)
                         }}
                         options={VIEW_OPTIONS}
                         selectedKey={searchParams.view}
                     />
+
                     <div className="w-px mx-3 h-5 bg-text-muted"></div>
 
                     <div className="flex gap-3">
@@ -272,7 +298,7 @@ function StaffDirectoryPage() {
                     </div>
                 </div>
 
-                <p className="text-xs text-default-500 font-medium order-2 md:order-1">
+                <p className="text-xs text-default-500 font-medium order-2 md:order-1 mb-4">
                     Showing{' '}
                     {users.length > 0
                         ? (searchParams.page - 1) * searchParams.limit + 1
@@ -285,6 +311,7 @@ function StaffDirectoryPage() {
                     {' of '} {totalUsers || 0} users
                 </p>
 
+                {/* --- Content Area --- */}
                 <div className="mt-4">
                     {searchParams.view === 'grid' ? (
                         <StaffDirectoryGrid
@@ -314,6 +341,7 @@ function StaffDirectoryPage() {
                             }}
                             onSortChange={() => {}}
                             sortString=""
+                            searchParams={searchParams}
                         />
                     )}
                 </div>

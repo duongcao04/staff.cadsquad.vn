@@ -38,7 +38,7 @@ import { jobsPendingPayoutsOptions } from '../../../../lib/queries'
 import { toggleAdminLeftSidebar } from '../../../stores'
 import CadsquadLogo from '../../CadsquadLogo'
 import { HeroTooltip } from '../../ui/hero-tooltip'
-import { ScrollArea } from '../../ui/scroll-area'
+import { ScrollArea, ScrollBar } from '../../ui/scroll-area'
 
 // --- Sidebar Item Component ---
 interface SidebarItemProps {
@@ -232,7 +232,9 @@ export const AdminSidebar = ({
             </div>
 
             {/* 4. NAVIGATION SECTION */}
-            <ScrollArea className="flex-1">
+            <ScrollArea className="flex-1 h-50">
+                <ScrollBar orientation="horizontal" />
+                <ScrollBar orientation="vertical" />
                 <div className="px-2 space-y-5">
                     <div>
                         {!isCollapsed && (

@@ -33,10 +33,13 @@ export const jobsListOptions = (
             const newParams = lodash.omitBy(params, lodash.isUndefined)
             return jobApi.findAll(newParams)
         },
-        select: (res) => ({
-            jobs: parseList(JobSchema, res.result?.data),
-            paginate: res.result?.paginate,
-        }),
+        select: (res) => {
+            const jobs = parseList(JobSchema, res.result?.data)
+            return {
+                jobs,
+                paginate: res.result?.paginate,
+            }
+        },
     })
 }
 

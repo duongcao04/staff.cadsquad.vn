@@ -37,12 +37,12 @@ import {
     optimizeCloudinary,
 } from '../../../../lib'
 import { jobStatusesListOptions } from '../../../../lib/queries'
-import { TJob } from '../../../../shared/types'
 import { JobStatusChip } from '../../../../shared/components/chips/JobStatusChip'
 import { PaidChip } from '../../../../shared/components/chips/PaidChip'
 import { HeroButton } from '../../../../shared/components/ui/hero-button'
 import { HeroTable } from '../../../../shared/components/ui/hero-table'
 import { HeroTooltip } from '../../../../shared/components/ui/hero-tooltip'
+import { TJob } from '../../../../shared/types'
 
 const columns = [
     { name: 'JOB INFO', uid: 'info', sortable: false },
@@ -119,11 +119,7 @@ export default function AdminManagementJobsTable({
                     </div>
                 )
             case 'clientName':
-                return (
-                    <p className="line-clamp-1">
-                        {data.client?.name || 'Unknown client'}
-                    </p>
-                )
+                return <p className="line-clamp-1">{data.client?.name}</p>
             case 'assignee':
                 return !data.assignments.length ? (
                     <div className="size-full flex items-center justify-center">
@@ -221,8 +217,9 @@ export default function AdminManagementJobsTable({
                                 onPress={() => {
                                     router.navigate({
                                         href:
-                                            INTERNAL_URLS.management.jobDetail(data.no) +
-                                            '?tab=deliveries',
+                                            INTERNAL_URLS.management.jobDetail(
+                                                data.no
+                                            ) + '?tab=deliveries',
                                     })
                                 }}
                             >
@@ -248,9 +245,7 @@ export default function AdminManagementJobsTable({
                                     }
                                     onPress={() => {
                                         window.open(
-                                            INTERNAL_URLS.jobDetail(
-                                                data.no
-                                            ),
+                                            INTERNAL_URLS.jobDetail(data.no),
                                             '_blank'
                                         )
                                     }}
@@ -283,9 +278,6 @@ export default function AdminManagementJobsTable({
 
     // --- Top Content ---
     const topContent = useMemo(() => {
-        const selectedCount =
-            selectedKeys === 'all' ? data.length : selectedKeys.size
-
         return (
             <div className="flex flex-col gap-4">
                 {/* Filters & Search */}
@@ -371,34 +363,6 @@ export default function AdminManagementJobsTable({
                         </Dropdown> */}
                     </div>
                 </div>
-
-                {/* Bulk Action Bar */}
-                {selectedCount > 0 && (
-                    <div className="bg-primary-50 px-4 py-2 rounded-lg flex items-center justify-between animate-in fade-in slide-in-from-top-2">
-                        <span className="text-sm text-primary-700 font-medium">
-                            {selectedCount} jobs selected
-                        </span>
-                        <div className="flex gap-2">
-                            <Button
-                                size="sm"
-                                color="primary"
-                                variant="flat"
-                                onPress={() => onBulkAction('STATUS')}
-                            >
-                                Update Status
-                            </Button>
-                            <Button
-                                size="sm"
-                                color="danger"
-                                variant="flat"
-                                startContent={<Trash2 size={16} />}
-                                onPress={() => onBulkAction('DELETE')}
-                            >
-                                Delete
-                            </Button>
-                        </div>
-                    </div>
-                )}
             </div>
         )
     }, [searchValue, statusFilter, selectedKeys, data.length])

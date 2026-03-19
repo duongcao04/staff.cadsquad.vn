@@ -7,6 +7,9 @@ import AdminContentContainer from '@/shared/components/admin/AdminContentContain
 import { TJob } from '@/shared/types'
 import {
     Button,
+    Card,
+    CardBody,
+    Divider,
     Modal,
     ModalBody,
     ModalContent,
@@ -18,7 +21,14 @@ import {
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import lodash from 'lodash'
-import { PlusIcon } from 'lucide-react'
+import {
+    AlertCircle,
+    CheckCircle2,
+    Download,
+    PlusIcon,
+    Trash2,
+    X
+} from 'lucide-react'
 import { startTransition, useEffect, useMemo, useState } from 'react'
 import { z } from 'zod'
 
@@ -140,12 +150,14 @@ function ManageJobsPage() {
     }
 
     // --- Bulk Actions ---
-    const { isOpen, onOpen, onOpenChange } = useDisclosure()
+    const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure()
     const [bulkActionType, setBulkActionType] = useState<
-        'DELETE' | 'STATUS' | null
+        'DELETE' | 'STATUS' | 'PRIORITY' | 'EXPORT' | null
     >(null)
 
-    const onBulkAction = (type: 'DELETE' | 'STATUS') => {
+    const onBulkAction = (
+        type: 'DELETE' | 'STATUS' | 'PRIORITY' | 'EXPORT'
+    ) => {
         setBulkActionType(type)
         onOpen()
     }
@@ -157,8 +169,10 @@ function ManageJobsPage() {
                 : Array.from(selectedKeys)
 
         console.log(`Performing ${bulkActionType} on:`, selectedIds)
+        // Perform API call here based on bulkActionType...
+
         setSelectedKeys(new Set([]))
-        onOpenChange()
+        onClose()
     }
 
     const pagination = {
@@ -167,6 +181,24 @@ function ManageJobsPage() {
         totalPages: data.paginate?.totalPages ?? 1,
         total: data.paginate?.total ?? 0,
     }
+
+    // --- UI Helpers ---
+    const selectionCount =
+        selectedKeys === 'all' ? pagination.total : selectedKeys.size
+    const hasSelection = selectionCount > 0
+
+    // Mock Stats: Replace the hardcoded numbers with real aggregate data from your backend
+    const STATS_DATA = [
+        {
+            title: 'Total Jobs This Month',
+            count: pagination.total || 240,
+            color: 'bg-primary-500',
+        },
+        { title: 'Ongoing Jobs', count: 45, color: 'bg-warning-500' },
+        { title: 'Delivered Jobs', count: 18, color: 'bg-secondary-500' }, // Purple
+        { title: 'Late Jobs', count: 4, color: 'bg-danger-500' },
+        { title: 'Finished Jobs', count: 173, color: 'bg-success-500' },
+    ]
 
     return (
         <>
@@ -193,7 +225,34 @@ function ManageJobsPage() {
                 }
             />
 
-            <AdminContentContainer>
+            <AdminContentContainer className="relative space-y-6">
+                {/* --- 1. Top Stats Row --- */}
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                    {STATS_DATA.map((stat, idx) => (
+                        <Card
+                            key={idx}
+                            shadow="none"
+                            className="border border-border-default"
+                        >
+                            <CardBody className="p-4 flex flex-col gap-2">
+                                <div className="flex items-center gap-2">
+                                    <span
+                                        className={`w-2.5 h-2.5 rounded-full ${stat.color}`}
+                                    />
+                                    <span className="text-xs font-semibold text-default-500 truncate">
+                                        {stat.title}
+                                    </span>
+                                </div>
+                                <span className="text-2xl font-bold text-default-900">
+                                    {stat.count}
+                                </span>
+                            </CardBody>
+                        </Card>
+                    ))}
+                </div>
+
+                {/* --- 2. Main Data Table --- */}
+                {/* Note: AdminManagementJobsTable handles its own search bar and tabs as per your design */}
                 <AdminManagementJobsTable
                     data={data.jobs}
                     isLoadingData={isFetching}
@@ -211,9 +270,90 @@ function ManageJobsPage() {
                     onSelectionChange={setSelectedKeys}
                     statusFilter={statusFilter}
                     onStatusFilterChange={setStatusFilter}
-                    onBulkAction={onBulkAction}
+                    onBulkAction={onBulkAction} // Keep for table's internal row actions
                 />
 
+                {/* --- 3. Floating Bulk Action Bar --- */}
+                {hasSelection && (
+                    <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 animate-in slide-in-from-bottom-6 fade-in duration-200 shadow-2xl rounded-2xl">
+                        <Card className="border border-default-200 bg-background/90 backdrop-blur-md overflow-visible">
+                            <CardBody className="flex flex-row items-center gap-1 py-2 px-3">
+                                <div className="flex flex-col px-3">
+                                    <span className="text-sm font-bold text-default-900 leading-none">
+                                        {selectionCount}
+                                    </span>
+                                    <span className="text-[10px] text-default-500 uppercase tracking-wider font-semibold">
+                                        Selected
+                                    </span>
+                                </div>
+
+                                <Divider
+                                    orientation="vertical"
+                                    className="h-8 mx-2"
+                                />
+
+                                <Button
+                                    size="sm"
+                                    variant="light"
+                                    className="font-medium text-default-700 data-[hover=true]:bg-default-100"
+                                    startContent={<CheckCircle2 size={16} />}
+                                    onPress={() => onBulkAction('STATUS')}
+                                >
+                                    Update Status
+                                </Button>
+
+                                <Button
+                                    size="sm"
+                                    variant="light"
+                                    className="font-medium text-default-700 data-[hover=true]:bg-default-100"
+                                    startContent={<AlertCircle size={16} />}
+                                    onPress={() => onBulkAction('PRIORITY')}
+                                >
+                                    Update Priority
+                                </Button>
+
+                                <Button
+                                    size="sm"
+                                    variant="light"
+                                    className="font-medium text-default-700 data-[hover=true]:bg-default-100"
+                                    startContent={<Download size={16} />}
+                                    onPress={() => onBulkAction('EXPORT')}
+                                >
+                                    Export Jobs
+                                </Button>
+
+                                <Button
+                                    size="sm"
+                                    color="danger"
+                                    variant="light"
+                                    className="font-medium data-[hover=true]:bg-danger-50"
+                                    startContent={<Trash2 size={16} />}
+                                    onPress={() => onBulkAction('DELETE')}
+                                >
+                                    Delete
+                                </Button>
+
+                                <Divider
+                                    orientation="vertical"
+                                    className="h-8 mx-2"
+                                />
+
+                                <Button
+                                    isIconOnly
+                                    size="sm"
+                                    variant="light"
+                                    color="default"
+                                    className="rounded-full"
+                                    onPress={() => setSelectedKeys(new Set([]))}
+                                >
+                                    <X size={16} />
+                                </Button>
+                            </CardBody>
+                        </Card>
+                    </div>
+                )}
+
+                {/* --- 4. Bulk Action Confirmation Modal --- */}
                 <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
                     <ModalContent>
                         {(onClose) => (
@@ -222,21 +362,27 @@ function ManageJobsPage() {
                                     Confirm{' '}
                                     {bulkActionType === 'DELETE'
                                         ? 'Deletion'
-                                        : 'Update'}
+                                        : bulkActionType === 'STATUS'
+                                          ? 'Status Update'
+                                          : bulkActionType === 'PRIORITY'
+                                            ? 'Priority Update'
+                                            : 'Export'}
                                 </ModalHeader>
                                 <ModalBody>
                                     <p className="text-default-600">
-                                        Are you sure you want to{' '}
-                                        {bulkActionType === 'DELETE'
-                                            ? 'permanently delete'
-                                            : 'update'}{' '}
-                                        <strong>
-                                            {selectedKeys === 'all'
-                                                ? data.jobs.length
-                                                : selectedKeys.size}
+                                        Are you sure you want to process this
+                                        action on{' '}
+                                        <strong className="text-default-900">
+                                            {selectionCount}
                                         </strong>{' '}
                                         selected jobs?
                                     </p>
+                                    {bulkActionType === 'DELETE' && (
+                                        <p className="text-xs text-danger-600 mt-2 bg-danger-50 p-2 rounded-md">
+                                            Warning: This action is permanent
+                                            and cannot be undone.
+                                        </p>
+                                    )}
                                 </ModalBody>
                                 <ModalFooter>
                                     <Button variant="light" onPress={onClose}>

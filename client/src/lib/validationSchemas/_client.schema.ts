@@ -1,9 +1,8 @@
-import { z, ZodType } from 'zod';
+import { z } from 'zod';
 import { EClientType } from '../../shared/enums';
-import { TClient } from '../../shared/types';
 import { JobSchema } from './_job.schema';
 
-export const ClientSchema: ZodType<TClient> = z.lazy(() => z.object({
+export const ClientSchema = z.object({
     id: z.string().catch('N/A'),
 
     name: z.string().catch('Unknown Client'),
@@ -33,7 +32,7 @@ export const ClientSchema: ZodType<TClient> = z.lazy(() => z.object({
     // Ép kiểu Date từ API string
     createdAt: z.coerce.date().catch(new Date()),
     updatedAt: z.coerce.date().catch(new Date()),
-}));
+});
 
 export const EditClientFormSchema = z.object({
     name: z.string()

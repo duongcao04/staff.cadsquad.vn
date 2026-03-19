@@ -7,9 +7,7 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 import { FileDownIcon, UserRoundPlusIcon } from 'lucide-react'
 
-export const Route = createFileRoute(
-    '/_administrator/mgmt/staff-directory'
-)({
+export const Route = createFileRoute('/_administrator/mgmt/staff-directory')({
     component: StaffDirectoryLayout,
 })
 

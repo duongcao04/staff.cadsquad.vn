@@ -35,7 +35,7 @@ export class UserService {
 		private readonly bcryptService: BcryptService,
 		private readonly mailService: MailService,
 		private readonly notificationService: NotificationService
-	) {}
+	) { }
 
 	async create(dto: CreateUserDto, sendInviteEmail: boolean) {
 		// 1. Check if user exists (including soft-deleted ones)
@@ -202,9 +202,10 @@ export class UserService {
 			})
 			return { role: updated.role, username: updated.username }
 		} catch (error) {
-			this.logger.error('Updated user role failed', error.stack)
+			this.logger.error('Updated user role failed', (error as { stack: string }).stack)
 		}
 	}
+
 	async findAll(query: UserQueryDto): Promise<{
 		users: UserResponseDto[]
 		total: number
@@ -584,12 +585,12 @@ export class UserService {
 		)
 			? {}
 			: {
-					assignments: {
-						some: {
-							userId: userId,
-						},
+				assignments: {
+					some: {
+						userId: userId,
 					},
-				}
+				},
+			}
 
 		const jobsSchedule = await this.prismaService.job.findMany({
 			where: {

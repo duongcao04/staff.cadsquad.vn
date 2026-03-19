@@ -84,7 +84,7 @@ export class JobQueryDto extends FiltersAndSorts {
 
 export class JobQueryBuilder {
 	static buildQueryTab(
-		tab: JobTabEnum = JobTabEnum.ACTIVE
+		tab?: JobTabEnum
 	): Prisma.JobWhereInput {
 		const today = dayjs().startOf('day').toDate()
 		const dayAfterTomorrow = dayjs().add(1, 'week').startOf('day').toDate()

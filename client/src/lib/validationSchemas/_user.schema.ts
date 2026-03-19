@@ -10,6 +10,7 @@ import { RoleSchema } from './_role.schema';
 export const UserSchema: ZodType<TUser> = z.lazy(() => z.object({
     id: z.string().catch('N/A'),
     displayName: z.string().catch('Unknown User'),
+
     avatar: z.string().default(IMAGES.emptyAvatar).transform((val) => {
         return optimizeCloudinary(val);
     }),

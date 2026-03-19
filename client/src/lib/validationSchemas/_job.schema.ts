@@ -20,7 +20,7 @@ export const JobSchema: ZodType<TJob> = z.lazy(() => z.object({
     attachmentUrls: z.array(z.string()).default([]),
     createdBy: z.lazy(() => UserSchema).optional(),
     files: z.array(z.any()).default([]),
-    client: z.lazy(() => ClientSchema).nullable().catch(null),
+    client: z.lazy(() => ClientSchema.partial()).nullable().catch(null),
     comments: z.array(z.any()).default([]),
     jobDeliveries: z.array(z.any()).default([]),
     sharepointFolderId: z.string().nullable(),

@@ -410,7 +410,10 @@ export default function FinancialOverview() {
                             Accounting Modules
                         </h2>
 
-                        <Link to={INTERNAL_URLS.financial.receivables} className="block">
+                        <Link
+                            to={INTERNAL_URLS.financial.receivables}
+                            className="block"
+                        >
                             <Card
                                 shadow="sm"
                                 isPressable

@@ -41,13 +41,15 @@ export function PageWithHeaderContainer({
 
             <div
                 style={{
-                    height: `calc(100vh - ${headerHeight})`,
+                    height: showHeader
+                        ? `calc(100vh - ${headerHeight})`
+                        : '100vh',
                     // If not scrollable, we hide overflow to let children handle it,
                     // or 'visible' if the child needs to stick out.
                     // Usually 'hidden' or 'clip' is safer for app layouts.
                     overflow: scrollable ? undefined : 'hidden',
                 }}
-                className="w-full"
+                className={`w-full`}
             >
                 {scrollable ? (
                     <ScrollArea className="size-full">

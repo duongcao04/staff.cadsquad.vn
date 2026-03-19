@@ -44,6 +44,7 @@ export const Route = createFileRoute(
 )({
     component: () => {
         const { isOpen, onOpen, onClose } = useDisclosure()
+
         return (
             <>
                 <CreateTemplateModal isOpen={isOpen} onClose={onClose} />
