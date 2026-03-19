@@ -8,7 +8,7 @@ import { UpdateClientDto } from './dto/update-client.dto'
 
 @Injectable()
 export class ClientService {
-    constructor(private prisma: PrismaService) {}
+    constructor(private prisma: PrismaService) { }
 
     async findAll() {
         return this.prisma.client.findMany({
@@ -39,14 +39,36 @@ export class ClientService {
         })
     }
 
+    async findByCode(code: string) {
+        return this.prisma.client.findFirst({
+            where: {
+                code: {
+                    equals: code.trim(),
+                    mode: 'insensitive', // Chống trùng lặp Apple/apple/APPLE
+                },
+            },
+            include: {
+                _count: {
+                    select: { jobs: true },
+                },
+                jobs: {
+                    include: {
+                        status: {}
+                    }
+                }
+            },
+        })
+    }
+
     async findOne(id: string) {
         return this.prisma.client.findUnique({
             where: { id },
             include: {
                 jobs: {
-                    take: 10,
-                    orderBy: { createdAt: 'desc' },
-                },
+                    include: {
+                        status: {}
+                    }
+                }
             },
         })
     }

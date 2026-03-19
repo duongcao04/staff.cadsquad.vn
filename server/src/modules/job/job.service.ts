@@ -2,6 +2,7 @@ import { PaginationMeta } from '@/common/interfaces/pagination-meta.interface'
 import { ActivityType, Job, NotificationType, Prisma } from '@/generated/prisma'
 import { AuthService } from '@/modules/auth/auth.service'
 import { NotificationService } from '@/modules/notification/notification.service'
+import { SharePointService } from '@/modules/sharepoint/sharepoint.service'
 import { UserService } from '@/modules/user/user.service'
 import { MailService } from '@/providers/mail/mail.service'
 import { PrismaService } from '@/providers/prisma/prisma.service'
@@ -45,8 +46,9 @@ export class JobService {
 		private readonly authService: AuthService,
 		private readonly activityLogService: ActivityLogService,
 		private readonly permissionService: PermissionService,
-		private readonly mailService: MailService
-	) {}
+		private readonly mailService: MailService,
+		private readonly sharePointService: SharePointService
+	) { }
 
 	/**
 	 * PRIVATE HELPER: Handles data privacy.
@@ -83,12 +85,12 @@ export class JobService {
 					staffCost: canReadSensitiveData ? asm.staffCost : undefined,
 					user: asm.user
 						? {
-								id: asm.user.id,
-								displayName: asm.user.displayName,
-								username: asm.user.username,
-								avatar: asm.user.avatar,
-								department: asm.user.department,
-							}
+							id: asm.user.id,
+							displayName: asm.user.displayName,
+							username: asm.user.username,
+							avatar: asm.user.avatar,
+							department: asm.user.department,
+						}
 						: undefined,
 				})),
 			}
@@ -658,6 +660,7 @@ export class JobService {
 			incomeCost,
 			totalStaffCost,
 			attachmentUrls,
+			sharepointFolderId,
 			...jobData
 		} = data
 
@@ -691,6 +694,7 @@ export class JobService {
 					incomeCost: parseFloat(incomeCost as any) || 0,
 					totalStaffCost: parseFloat(totalStaffCost as any) || 0,
 					client: { connect: { id: client.id } },
+					sharepointFolderId: sharepointFolderId || undefined,
 					attachmentUrls: Array.isArray(attachmentUrls)
 						? attachmentUrls
 						: [],
@@ -1165,7 +1169,7 @@ export class JobService {
 				redirectUrl: `/jobs/${jobAssigned.no}`,
 			})
 		} catch (error) {
-			this.logger.error('Send notification error', error.stack)
+			this.logger.error('Send notification error', (error as { stack: string }).stack)
 		}
 		return jobAssigned
 	}
@@ -1346,177 +1350,6 @@ export class JobService {
 		}
 
 		return { success: true, removedUserId: userId }
-	}
-
-	async deliverJob(userId: string, jobId: string, dto: DeliverJobDto) {
-		// 1. Fetch info & Validation...
-		const reviewStatus = await this.prisma.jobStatus.findFirst({
-			where: { systemType: 'DELIVERED' },
-		})
-		if (!reviewStatus)
-			throw new BadRequestException('WAIT_REVIEW status missing')
-
-		const jobBefore = await this.prisma.job.findUnique({
-			where: { id: jobId },
-			include: { status: true },
-		})
-		if (!jobBefore) throw new NotFoundException('Job not found')
-
-		// 2. Transaction...
-		const result = await this.prisma.$transaction(async (tx) => {
-			const delivery = await tx.jobDelivery.create({
-				data: {
-					jobId,
-					userId,
-					link: dto.link,
-					note: dto.note,
-					files: dto.files,
-					status: 'PENDING',
-				},
-				include: {
-					// Get Staff info for email
-					user: {
-						select: {
-							id: true,
-							email: true,
-							personalEmail: true,
-							displayName: true,
-						},
-					},
-				},
-			})
-
-			const updatedJob = await tx.job.update({
-				where: { id: jobId },
-				data: { statusId: reviewStatus.id },
-				select: {
-					no: true,
-					displayName: true,
-					status: { select: { thumbnailUrl: true } },
-				},
-			})
-
-			await this.activityLogService.create(
-				{
-					jobId,
-					modifiedById: userId,
-					activityType: ActivityType.DELIVER,
-					fieldName: 'Status',
-					currentValue: reviewStatus.displayName,
-					notes: `[${updatedJob.no}] Staff submitted a new delivery for review.`,
-					metadata: { deliveryId: delivery.id },
-					requiredPermissionCode: APP_PERMISSIONS.JOB.READ_SENSITIVE,
-				},
-				tx
-			)
-
-			return {
-				delivery,
-				jobNo: updatedJob.no,
-				jobName: updatedJob.displayName,
-				jobUpdated: updatedJob,
-			}
-		})
-
-		// 3. Send Notifications
-		try {
-			// 3.1 Fetch Approvers (Admins/Managers) with Email fields
-			const approvers = await this.prisma.user.findMany({
-				where: {
-					role: {
-						permissions: {
-							some: { entityAction: APP_PERMISSIONS.JOB.REVIEW },
-						},
-					},
-					deletedAt: null,
-				},
-				// [IMPORTANT] Select email fields for sending mail
-				select: {
-					id: true,
-					email: true,
-					personalEmail: true,
-					displayName: true,
-				},
-			})
-
-			if (approvers.length > 0) {
-				// A. Send In-App Notifications to Approvers
-				await this.notificationService.sendMany(
-					approvers.map((admin) => ({
-						userId: admin.id,
-						senderId: userId,
-						title: `[${result.jobUpdated.no}] New Delivery Pending Review`,
-						content: `A new delivery has been submitted for Job #${result.jobNo}.`,
-						type: NotificationType.JOB_DELIVERED,
-						imageUrl:
-							result.jobUpdated.status.thumbnailUrl ||
-							IMAGES.NOTIFICATION_DEFAULT_IMAGE,
-						redirectUrl: `/admin/mgmt/jobs/${result.jobNo}?tab=deliveries`,
-					}))
-				)
-
-				// B. Send Email to Approvers (New)
-				await this.mailService.sendJobDeliveredNotification(
-					approvers.map((it) => ({
-						email: it.email,
-						personalEmail: it.personalEmail || it.email,
-						displayName: it.displayName,
-					})),
-					{
-						no: result.jobNo,
-						displayName: result.jobName,
-					}
-				)
-			}
-
-			// 3.2 Send Email Confirmation to the Staff Member
-			const staffUser = result.delivery.user
-			await this.mailService.sendJobDeliveredNotification(
-				[
-					{
-						email: staffUser.email,
-						personalEmail:
-							staffUser.personalEmail || staffUser.email,
-						displayName: staffUser.displayName,
-					},
-				],
-				{
-					no: result.jobNo,
-					displayName: result.jobName,
-				}
-			)
-		} catch (error) {
-			this.logger.error(
-				`Notification failed for delivery on Job ${result.jobNo}:`,
-				error
-			)
-		}
-
-		return result.delivery
-	}
-
-	async getJobDeliveries(jobId: string) {
-		// Check if job exists first
-		const job = await this.prisma.job.findUnique({
-			where: { id: jobId },
-		})
-
-		if (!job) throw new NotFoundException('Job not found')
-
-		return this.prisma.jobDelivery.findMany({
-			where: { jobId },
-			include: {
-				user: {
-					select: {
-						id: true,
-						displayName: true,
-						avatar: true,
-						username: true,
-					},
-				},
-			},
-			orderBy: { createdAt: 'desc' }, // Latest delivery first
-		})
 	}
 
 	async updateRevenue(
@@ -1905,7 +1738,7 @@ export class JobService {
 		} catch (error) {
 			// We log the error but don't throw it, so the main updateGeneralInfo doesn't fail
 			this.logger.error(
-				`Failed to send deadline notifications for Job ${jobNo}: ${error.message}`
+				`Failed to send deadline notifications for Job ${jobNo}: ${(error as { message: string }).message}`
 			)
 		}
 	}

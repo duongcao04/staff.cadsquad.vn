@@ -146,7 +146,7 @@ function NotificationSettingsPage() {
                 </HeroBreadcrumbItem>
                 <HeroBreadcrumbItem>
                     <Link
-                        to={INTERNAL_URLS.settings}
+                        to={INTERNAL_URLS.settings.overview}
                         className="text-text-subdued!"
                     >
                         Settings
@@ -347,7 +347,7 @@ function NotificationSettingsPage() {
                                                 <trigger.icon size={20} />
                                             </div>
                                             <div>
-                                                <p className="font-semibold text-text-default text-sm">
+                                                <p className="font-medium text-text-default text-sm">
                                                     {trigger.label}
                                                 </p>
                                                 <p className="text-xs text-text-subdued">

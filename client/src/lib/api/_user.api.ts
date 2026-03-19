@@ -6,7 +6,6 @@ import type {
     TUpdateUserInput,
     TUserQueryInput,
 } from '@/lib/validationSchemas'
-import type { IJobResponse, IUserResponse } from '@/shared/interfaces'
 import { TRole, TUserSecurityLog } from '@/shared/types'
 import queryString from 'query-string'
 
@@ -29,13 +28,13 @@ export const userApi = {
     ) => {
         return axiosClient
             .post<
-                ApiResponse<IUserResponse>
+                ApiResponse<any>
             >(`/v1/users?sendInviteEmail=${sendInviteEmail ? '1' : '0'}`, data)
             .then((res) => res.data)
     },
     search: async (keywords: string) => {
         return axiosClient
-            .get<ApiResponse<IUserResponse[]>>(`/v1/users/search?q=${keywords}`)
+            .get<ApiResponse<any[]>>(`/v1/users/search?q=${keywords}`)
             .then((res) => res.data)
     },
     findAll: async (params: TUserQueryInput) => {
@@ -45,7 +44,7 @@ export const userApi = {
         return axiosClient
             .get<
                 ApiResponse<{
-                    users: IUserResponse[]
+                    users: any[]
                     total: number
                     currentPage: number
                     totalPages: number
@@ -60,10 +59,10 @@ export const userApi = {
             >('/v1/analytics/profile-overview')
             .then((res) => res.data)
     },
-    getSecurityLogs: () => {
+    getSecurityLogs: async () => {
         return axiosClient.get<ApiResponse<TUserSecurityLog[]>>(
             '/v1/users/security-logs'
-        )
+        ).then(res => res.data)
     },
     toggleStatus: async (userId: string, forceStatus?: boolean) => {
         const url = forceStatus
@@ -93,9 +92,14 @@ export const userApi = {
             data
         )
     },
-    findOne: async (username: string) => {
+    findOne: async (code: string) => {
         return axiosClient
-            .get<ApiResponse<IUserResponse>>(`/v1/users/${username}`)
+            .get<ApiResponse<any>>(`/v1/users/${code}`)
+            .then((res) => res.data)
+    },
+    findByStaffCode: async (code: string) => {
+        return axiosClient
+            .get<ApiResponse<any>>(`/v1/users/${code}`)
             .then((res) => res.data)
     },
     schedule: async (year: number, month: number, day?: number) => {
@@ -108,7 +112,7 @@ export const userApi = {
 
         return axiosClient
             .get<
-                ApiResponse<{ jobsSchedule: IJobResponse[] }>
+                ApiResponse<{ jobsSchedule: any[] }>
             >(`/v1/users/schedule?${q}`)
             .then((res) => res.data)
     },

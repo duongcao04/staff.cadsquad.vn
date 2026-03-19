@@ -131,7 +131,7 @@ function SecuritySettingsPage() {
                 </HeroBreadcrumbItem>
                 <HeroBreadcrumbItem>
                     <Link
-                        to={INTERNAL_URLS.settings}
+                        to={INTERNAL_URLS.settings.overview}
                         className="text-text-subdued!"
                     >
                         Settings
@@ -390,7 +390,7 @@ function SecuritySettingsPage() {
                                             />
                                         </div>
                                         <div className="text-center">
-                                            <p className="text-sm font-semibold text-text-default">
+                                            <p className="text-sm font-medium text-text-default">
                                                 No activity found
                                             </p>
                                             <p className="text-xs text-text-subdued">
@@ -408,7 +408,7 @@ function SecuritySettingsPage() {
                                     >
                                         <TableCell>
                                             <span
-                                                className={`font-semibold text-sm ${log.status === 'FAILED' ? 'text-red-500' : 'text-text-default'}`}
+                                                className={`font-medium text-sm ${log.status === 'FAILED' ? 'text-red-500' : 'text-text-default'}`}
                                             >
                                                 {log.event}
                                             </span>

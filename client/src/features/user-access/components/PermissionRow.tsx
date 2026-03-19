@@ -25,7 +25,7 @@ export const PermissionRow = ({
             <div className="flex flex-col gap-1.5 max-w-[60%]">
                 <div className="flex items-center gap-2">
                     <span
-                        className={`text-sm font-semibold transition-opacity ${effectiveValue ? 'opacity-100' : 'opacity-50'}`}
+                        className={`text-sm font-medium transition-opacity ${effectiveValue ? 'opacity-100' : 'opacity-50'}`}
                     >
                         {label}
                     </span>

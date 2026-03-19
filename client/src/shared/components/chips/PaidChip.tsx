@@ -51,7 +51,7 @@ export function PaidChip({ status, classNames, props, childrenRender }: Props) {
             classNames={{
                 ...classNames,
                 content: cn(
-                    'text-xs font-semibold font-saira',
+                    'text-xs font-medium font-saira',
                     classNames?.content
                 ),
             }}

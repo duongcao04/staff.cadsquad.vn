@@ -407,7 +407,7 @@ function AssigningMemberCard({
                     isBordered
                     color="primary"
                 />
-                <span className="text-sm font-semibold">
+                <span className="text-sm font-medium">
                     {member.displayName}
                 </span>
             </div>
@@ -505,7 +505,7 @@ function AssignedMemberCard({
                     isBordered
                     color="primary"
                 />
-                <span className="text-sm font-semibold">
+                <span className="text-sm font-medium">
                     {member.displayName}
                 </span>
             </div>

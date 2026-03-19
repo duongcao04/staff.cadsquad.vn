@@ -303,7 +303,7 @@ function AlertContent({
         <div
             data-slot="alert-content"
             className={cn(
-                'space-y-2 **:data-[slot=alert-title]:font-semibold',
+                'space-y-2 **:data-[slot=alert-title]:font-medium',
                 className
             )}
             {...props}

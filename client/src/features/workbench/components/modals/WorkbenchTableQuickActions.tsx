@@ -128,7 +128,7 @@ export function WorkbenchTableQuickActions({
                         isOpen={deliverJobModal.isOpen}
                         onClose={deliverJobModal.onClose}
                         onConfirm={() => {}}
-                        defaultJob={data.id}
+                        defaultJob={data}
                     />
                 )}
             {hasPermission(APP_PERMISSIONS.JOB.UPDATE) && isOpenUCostModal && (
@@ -184,7 +184,7 @@ export function WorkbenchTableQuickActions({
                             }
                             onPress={() =>
                                 window.open(
-                                    INTERNAL_URLS.getJobDetailUrl(data.no),
+                                    INTERNAL_URLS.jobDetail(data.no),
                                     '_blank'
                                 )
                             }

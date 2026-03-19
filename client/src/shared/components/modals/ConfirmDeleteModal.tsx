@@ -53,7 +53,7 @@ export const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
                 }}
             >
                 <ModalHeader
-                    className="text-danger font-semibold text-lg"
+                    className="text-danger font-medium text-lg"
                     style={{
                         color: `var(--color-${color})`,
                     }}

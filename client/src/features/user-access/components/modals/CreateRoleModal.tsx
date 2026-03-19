@@ -233,7 +233,7 @@ export default function CreateRoleModal({
                                                                             perm.id
                                                                         }
                                                                         classNames={{
-                                                                            label: 'text-xs font-semibold text-default-700',
+                                                                            label: 'text-xs font-medium text-default-700',
                                                                         }}
                                                                     >
                                                                         {

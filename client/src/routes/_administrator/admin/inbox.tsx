@@ -195,7 +195,7 @@ function InboxPage() {
             <HeroBreadcrumbs className="pt-3 px-7 text-xs">
                 <HeroBreadcrumbItem>
                     <Link
-                        to={INTERNAL_URLS.admin}
+                        to={INTERNAL_URLS.admin.overview}
                         className="text-text-subdued!"
                     >
                         Admin

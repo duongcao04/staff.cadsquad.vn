@@ -82,7 +82,7 @@ export const SearchResults = ({
                 >
                     <div className="flex justify-between items-center w-full pl-2">
                         <div className="flex flex-col gap-0.5">
-                            <span className="font-semibold text-small text-default-900 line-clamp-1">
+                            <span className="font-medium text-small text-default-900 line-clamp-1">
                                 {item.title}
                             </span>
                             {item.subtitle && (

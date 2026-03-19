@@ -140,7 +140,7 @@ export const SendNotificationModal = ({
                                         <p className="text-[10px] text-slate-400 font-bold uppercase">
                                             Recipient
                                         </p>
-                                        <p className="text-sm font-semibold text-slate-800">
+                                        <p className="text-sm font-medium text-slate-800">
                                             {user?.displayName}
                                         </p>
                                     </div>
@@ -259,7 +259,7 @@ export const SendNotificationModal = ({
                                 endContent={!isSending && <Send size={16} />}
                                 isLoading={isSending}
                                 onPress={handleSend}
-                                className="font-semibold"
+                                className="font-medium"
                                 isDisabled={!content}
                             >
                                 {isSending ? 'Pushing...' : 'Push Notification'}

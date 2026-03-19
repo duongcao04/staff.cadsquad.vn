@@ -8,17 +8,16 @@ import {
     Tab,
     Tabs,
 } from '@heroui/react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { ChevronDown } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { useState } from 'react'
 
+import { useChangeStatusMutation, useProfile } from '@/lib/queries'
 import {
-    useChangeStatusMutation,
-    useJobStatuses,
-    useProfile,
-} from '@/lib/queries'
-import { statusByOrderOptions } from '@/lib/queries/options/job-status-queries'
+    jobStatusesListOptions,
+    statusByOrderOptions,
+} from '@/lib/queries/options/job-status-queries'
 import { darkenHexColor, JOB_STATUS_CODES, lightenHexColor } from '@/lib/utils'
 import type { TJob, TJobStatus } from '@/shared/types'
 
@@ -73,7 +72,9 @@ export default function JobStatusDropdown({
             statusData.prevStatusOrder !== null,
     })
 
-    const { data: jobStatuses } = useJobStatuses()
+    const {
+        data: { jobStatuses },
+    } = useSuspenseQuery(jobStatusesListOptions())
 
     const canClickable =
         isAdmin && statusData.systemType !== JobStatusSystemTypeEnum.TERMINATED
@@ -159,7 +160,7 @@ export default function JobStatusDropdown({
                             classNames={{
                                 base: '!w-[120px]',
                                 content:
-                                    'uppercase text-xs font-semibold font-saira !w-[120px] text-nowrap line-clamp-1',
+                                    'uppercase text-xs font-medium font-saira !w-[120px] text-nowrap line-clamp-1',
                             }}
                             childrenRender={(statusData) => {
                                 return (
@@ -177,7 +178,7 @@ export default function JobStatusDropdown({
                         classNames={{
                             base: '!w-[120px]',
                             content:
-                                'uppercase text-xs font-semibold font-saira !w-[120px] text-nowrap line-clamp-1',
+                                'uppercase text-xs font-medium font-saira !w-[120px] text-nowrap line-clamp-1',
                         }}
                     />
                 )}
@@ -225,7 +226,7 @@ export default function JobStatusDropdown({
                                                         }}
                                                     />
                                                     <p
-                                                        className="font-semibold"
+                                                        className="font-medium"
                                                         style={{
                                                             color: item.data
                                                                 ?.hexColor
@@ -283,7 +284,7 @@ export default function JobStatusDropdown({
                                                             }}
                                                         />
                                                         <p
-                                                            className="font-semibold"
+                                                            className="font-medium"
                                                             style={{
                                                                 color: item?.hexColor
                                                                     ? item?.hexColor
@@ -306,7 +307,7 @@ export default function JobStatusDropdown({
                 <Divider className="bg-text-muted" />
 
                 <p className="text-xs pt-1.5 w-full text-center text-text-subdued">
-                    <span className="font-semibold">#{jobData?.no}</span>
+                    <span className="font-medium">#{jobData?.no}</span>
                     <span className="px-0.5">/</span>
                     <span>Update status</span>
                 </p>

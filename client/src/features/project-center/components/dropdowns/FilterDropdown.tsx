@@ -463,7 +463,7 @@ export const FilterBuilder: React.FC<FilterBuilderProps> = ({
             <PopoverContent>
                 {/* Header */}
                 <div className="w-full px-4 py-3 flex justify-between items-center bg-default-50/50 border-b border-default-100">
-                    <span className="text-small font-semibold text-text-default">
+                    <span className="text-small font-medium text-text-default">
                         Conditions
                         {activeFilters.length > 0 && (
                             <Chip size="sm" color="warning" className="ml-2">
@@ -495,7 +495,7 @@ export const FilterBuilder: React.FC<FilterBuilderProps> = ({
                             size={16}
                         />
                         <div className="text-xs text-danger-600">
-                            <p className="font-semibold">Validation Error</p>
+                            <p className="font-medium">Validation Error</p>
                             <ul className="list-disc list-inside mt-1">
                                 {errors.map((e, i) => (
                                     <li key={i}>{e}</li>

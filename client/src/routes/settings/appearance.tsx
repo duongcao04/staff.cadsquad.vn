@@ -127,7 +127,7 @@ function AppearanceSettingsPage() {
                 </HeroBreadcrumbItem>
                 <HeroBreadcrumbItem>
                     <Link
-                        to={INTERNAL_URLS.settings}
+                        to={INTERNAL_URLS.settings.overview}
                         className="text-text-subdued!"
                     >
                         Settings
@@ -230,7 +230,7 @@ function AppearanceSettingsPage() {
                           `}
                                     >
                                         <item.icon size={24} />
-                                        <span className="font-semibold text-sm">
+                                        <span className="font-medium text-sm">
                                             {item.label}
                                         </span>
                                     </div>
@@ -315,7 +315,7 @@ function AppearanceSettingsPage() {
                                     }
                                 />
                                 <div className="mt-4 text-center">
-                                    <span className="text-sm font-semibold text-primary capitalize">
+                                    <span className="text-sm font-medium text-primary capitalize">
                                         {fontSize === 'small'
                                             ? 'Compact'
                                             : fontSize === 'large'
@@ -328,7 +328,7 @@ function AppearanceSettingsPage() {
 
                             <div className="mt-6 flex justify-between items-center bg-background-muted p-4 rounded-xl border border-border-default">
                                 <div>
-                                    <p className="font-semibold text-text-default text-sm">
+                                    <p className="font-medium text-text-default text-sm">
                                         Reduced Motion
                                     </p>
                                     <p className="text-xs text-text-subdued">
@@ -454,17 +454,17 @@ const PreviewTable = ({ fontSize, themeColor }: any) => {
                 <thead>
                     <tr className="border-b border-border-default bg-background-muted">
                         <th
-                            className={`text-left px-4 py-2 font-semibold text-text-subdued ${textSize}`}
+                            className={`text-left px-4 py-2 font-medium text-text-subdued ${textSize}`}
                         >
                             Name
                         </th>
                         <th
-                            className={`text-left px-4 py-2 font-semibold text-text-subdued ${textSize}`}
+                            className={`text-left px-4 py-2 font-medium text-text-subdued ${textSize}`}
                         >
                             Role
                         </th>
                         <th
-                            className={`text-left px-4 py-2 font-semibold text-text-subdued ${textSize}`}
+                            className={`text-left px-4 py-2 font-medium text-text-subdued ${textSize}`}
                         >
                             Status
                         </th>

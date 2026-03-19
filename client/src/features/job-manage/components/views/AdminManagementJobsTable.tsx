@@ -37,12 +37,12 @@ import {
     optimizeCloudinary,
 } from '../../../../lib'
 import { jobStatusesListOptions } from '../../../../lib/queries'
-import { TJob } from '../../../../shared/types'
 import { JobStatusChip } from '../../../../shared/components/chips/JobStatusChip'
 import { PaidChip } from '../../../../shared/components/chips/PaidChip'
 import { HeroButton } from '../../../../shared/components/ui/hero-button'
 import { HeroTable } from '../../../../shared/components/ui/hero-table'
 import { HeroTooltip } from '../../../../shared/components/ui/hero-tooltip'
+import { TJob } from '../../../../shared/types'
 
 const columns = [
     { name: 'JOB INFO', uid: 'info', sortable: false },
@@ -76,6 +76,7 @@ type AdminManagementJobsTableProps = {
     onBulkAction: (type: 'DELETE' | 'STATUS') => void
     onSearchChange: (value: string) => void
 }
+
 export default function AdminManagementJobsTable({
     data,
     pagination,
@@ -99,6 +100,7 @@ export default function AdminManagementJobsTable({
     } = useSuspenseQuery({
         ...jobStatusesListOptions(),
     })
+
     // --- Render Cell ---
     const renderCell = useCallback((data: TJob, columnKey: React.Key) => {
         switch (columnKey) {
@@ -119,11 +121,7 @@ export default function AdminManagementJobsTable({
                     </div>
                 )
             case 'clientName':
-                return (
-                    <p className="line-clamp-1">
-                        {data.client?.name || 'Unknown client'}
-                    </p>
-                )
+                return <p className="line-clamp-1">{data.client?.name}</p>
             case 'assignee':
                 return !data.assignments.length ? (
                     <div className="size-full flex items-center justify-center">
@@ -171,7 +169,7 @@ export default function AdminManagementJobsTable({
                         classNames={{
                             base: '!w-[120px]',
                             content:
-                                'uppercase text-xs font-semibold font-saira !w-[120px] text-nowrap line-clamp-1',
+                                'uppercase text-xs font-medium font-saira !w-[120px] text-nowrap line-clamp-1',
                         }}
                     />
                 )
@@ -203,7 +201,9 @@ export default function AdminManagementJobsTable({
                                 color="default"
                                 onPress={() =>
                                     router.navigate({
-                                        href: INTERNAL_URLS.editJob(data.no),
+                                        href: INTERNAL_URLS.management.jobDetail(
+                                            data.no
+                                        ),
                                     })
                                 }
                             >
@@ -219,8 +219,9 @@ export default function AdminManagementJobsTable({
                                 onPress={() => {
                                     router.navigate({
                                         href:
-                                            INTERNAL_URLS.editJob(data.no) +
-                                            '?tab=deliveries',
+                                            INTERNAL_URLS.management.jobDetail(
+                                                data.no
+                                            ) + '?tab=deliveries',
                                     })
                                 }}
                             >
@@ -246,9 +247,7 @@ export default function AdminManagementJobsTable({
                                     }
                                     onPress={() => {
                                         window.open(
-                                            INTERNAL_URLS.getJobDetailUrl(
-                                                data.no
-                                            ),
+                                            INTERNAL_URLS.jobDetail(data.no),
                                             '_blank'
                                         )
                                     }}
@@ -281,9 +280,6 @@ export default function AdminManagementJobsTable({
 
     // --- Top Content ---
     const topContent = useMemo(() => {
-        const selectedCount =
-            selectedKeys === 'all' ? data.length : selectedKeys.size
-
         return (
             <div className="flex flex-col gap-4">
                 {/* Filters & Search */}
@@ -300,44 +296,8 @@ export default function AdminManagementJobsTable({
                         variant="bordered"
                     />
                     <div className="flex gap-3">
-                        {/* TODO: Implement Status */}
-                        {/* Status Dropdown */}
-                        {false && (
-                            <Dropdown>
-                                <DropdownTrigger className="hidden sm:flex">
-                                    <Button
-                                        endContent={
-                                            <ChevronDown className="text-small" />
-                                        }
-                                        variant="flat"
-                                        size="sm"
-                                    >
-                                        Status
-                                    </Button>
-                                </DropdownTrigger>
-
-                                <DropdownMenu
-                                    disallowEmptySelection
-                                    aria-label="Status Filter"
-                                    closeOnSelect={false}
-                                    selectedKeys={statusFilter}
-                                    selectionMode="multiple"
-                                    onSelectionChange={onStatusFilterChange}
-                                >
-                                    {jobStatuses.map((status) => (
-                                        <DropdownItem
-                                            key={status.code}
-                                            className="capitalize"
-                                        >
-                                            {status.displayName}
-                                        </DropdownItem>
-                                    ))}
-                                </DropdownMenu>
-                            </Dropdown>
-                        )}
-
-                        {/* Priority Dropdown */}
-                        {/* <Dropdown>
+                        {/* Status Dropdown - Đã được mở khóa */}
+                        <Dropdown>
                             <DropdownTrigger className="hidden sm:flex">
                                 <Button
                                     endContent={
@@ -346,60 +306,33 @@ export default function AdminManagementJobsTable({
                                     variant="flat"
                                     size="sm"
                                 >
-                                    Priority
+                                    Status
                                 </Button>
                             </DropdownTrigger>
+
                             <DropdownMenu
-                                disallowEmptySelection
-                                aria-label="Priority Filter"
+                                disallowEmptySelection={false} // Bật tính năng bỏ chọn toàn bộ để reset
+                                aria-label="Status Filter"
                                 closeOnSelect={false}
-                                selectedKeys={priorityFilter}
+                                selectedKeys={statusFilter}
                                 selectionMode="multiple"
-                                onSelectionChange={setPriorityFilter}
+                                onSelectionChange={onStatusFilterChange}
                             >
-                                {PRIORITY_OPTIONS.map((p) => (
+                                {jobStatuses.map((status) => (
                                     <DropdownItem
-                                        key={p.uid}
+                                        key={status.code}
                                         className="capitalize"
                                     >
-                                        {p.name}
+                                        {status.displayName}
                                     </DropdownItem>
                                 ))}
                             </DropdownMenu>
-                        </Dropdown> */}
+                        </Dropdown>
                     </div>
                 </div>
-
-                {/* Bulk Action Bar */}
-                {selectedCount > 0 && (
-                    <div className="bg-primary-50 px-4 py-2 rounded-lg flex items-center justify-between animate-in fade-in slide-in-from-top-2">
-                        <span className="text-sm text-primary-700 font-semibold">
-                            {selectedCount} jobs selected
-                        </span>
-                        <div className="flex gap-2">
-                            <Button
-                                size="sm"
-                                color="primary"
-                                variant="flat"
-                                onPress={() => onBulkAction('STATUS')}
-                            >
-                                Update Status
-                            </Button>
-                            <Button
-                                size="sm"
-                                color="danger"
-                                variant="flat"
-                                startContent={<Trash2 size={16} />}
-                                onPress={() => onBulkAction('DELETE')}
-                            >
-                                Delete
-                            </Button>
-                        </div>
-                    </div>
-                )}
             </div>
         )
-    }, [searchValue, statusFilter, selectedKeys, data.length])
+    }, [searchValue, statusFilter, selectedKeys, data.length, jobStatuses])
 
     // --- Bottom Content ---
     const bottomContent = useMemo(() => {
@@ -442,6 +375,7 @@ export default function AdminManagementJobsTable({
             </div>
         )
     }, [selectedKeys, data.length, pagination])
+
     return (
         <HeroTable
             aria-label="Jobs Table"
@@ -472,8 +406,8 @@ export default function AdminManagementJobsTable({
             </TableHeader>
             <TableBody
                 emptyContent={'No jobs found'}
-                items={data} // Use Server Data
-                isLoading={isLoadingData} // Show loading state
+                items={data}
+                isLoading={isLoadingData}
             >
                 {(item: TJob) => (
                     <TableRow key={item.id}>

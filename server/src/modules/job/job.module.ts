@@ -12,6 +12,7 @@ import { JobReminderService } from './job-reminder.service'
 import { SharePointModule } from '../sharepoint/sharepoint.module'
 import { RoleModule } from '../role-permissions/role.module'
 import { MailModule } from '../../providers/mail/mail.module'
+import { JobDeliverService } from './job-deliver.service'
 
 @Module({
 	imports: [
@@ -27,10 +28,11 @@ import { MailModule } from '../../providers/mail/mail.module'
 	controllers: [JobController],
 	providers: [
 		JobService,
+		JobDeliverService,
 		ActivityLogService,
 		JobCommentService,
 		JobReminderService,
 	],
 	exports: [JobService, ActivityLogService, JobCommentService],
 })
-export class JobModule {}
+export class JobModule { }

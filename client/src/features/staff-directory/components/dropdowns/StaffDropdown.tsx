@@ -76,7 +76,7 @@ export function StaffDropdown({ selectedUser }: StaffDropdownProps) {
                             startContent={<UserPen size={16} />}
                             onPress={() => {
                                 router.navigate({
-                                    href: INTERNAL_URLS.editStaffDetails(
+                                    href: INTERNAL_URLS.management.staffDetail(
                                         selectedUser.username
                                     ),
                                 })

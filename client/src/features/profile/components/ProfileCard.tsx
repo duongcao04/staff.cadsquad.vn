@@ -21,7 +21,7 @@ export function ProfileCard() {
         <HeroCard className="h-fit">
             <HeroCardHeader className="relative group py-6 flex flex-col items-center">
                 <div className="absolute hidden group-hover:block top-5 right-5">
-                    <Link className="block" to={INTERNAL_URLS.accountSettings}>
+                    <Link className="block" to={INTERNAL_URLS.settings.profile}>
                         <HeroButton
                             isIconOnly
                             className="size-6"

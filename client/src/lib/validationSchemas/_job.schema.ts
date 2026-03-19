@@ -1,83 +1,112 @@
 import { isAfter, isValid, parseISO } from 'date-fns'
 import * as yup from 'yup'
-import { z } from 'zod'
-
+import { z, ZodType } from 'zod'
 import { ProjectCenterTabEnum } from '../../shared/enums'
+import { TJob } from '../../shared/types'
+import { ClientSchema } from './_client.schema'
+import { JobActivityLogSchema } from './_job-activity-log.schema'
 import { jobFiltersSchema } from './_job-filter.schema'
+import { JobStatusSchema } from './_job-status.schema'
+import { JobTypeSchema } from './_job-type.schema'
+import { PaymentChannelSchema } from './_payment-channel.schema'
+import { UserSchema } from './_user.schema'
 
-export const CreateJobSchema = yup.object({
-    no: yup.string().required('Job number is required'),
-    typeId: yup
-        .string()
-        .uuid('Invalid typeId format')
-        .required('Job type is required'),
-    displayName: yup.string().required('Display name is required'),
-    description: yup.string().optional(),
+export const JobSchema: ZodType<TJob> = z.lazy(() => z.object({
+    id: z.string().catch('N/A'),
+    no: z.string().catch('UNKNOWN'),
+    displayName: z.string().catch('Untitled Job'),
+    assignments: z.array(z.any()).default([]),
+    activityLog: z.array(z.lazy(() => JobActivityLogSchema)).default([]),
+    attachmentUrls: z.array(z.string()).default([]),
+    createdBy: z.lazy(() => UserSchema).optional(),
+    files: z.array(z.any()).default([]),
+    client: z.lazy(() => ClientSchema.partial()).nullable().catch(null),
+    comments: z.array(z.any()).default([]),
+    jobDeliveries: z.array(z.any()).default([]),
+    sharepointFolderId: z.string().nullable(),
+    // Tự động ép kiểu số cho các trường tiền tệ
+    incomeCost: z.coerce.number().catch(0),
+    staffCost: z.coerce.number().catch(0),
+    totalStaffCost: z.coerce.number().catch(0),
+    isPaid: z.preprocess((v) => Boolean(v), z.boolean().default(false)),
+    isPinned: z.preprocess((v) => Boolean(v), z.boolean().default(false)),
+    isPublished: z.preprocess((v) => Boolean(v), z.boolean().default(false)),
+    paymentChannel: z.lazy(() => PaymentChannelSchema).nullable().catch(null),
+    status: z.lazy(() => JobStatusSchema).optional(),
+    description: z.string().nullable().catch(null),
+    type: z.lazy(() => JobTypeSchema).optional(),
+    // Dates
+    paidAt: z.coerce.date().nullable().catch(null),
+    finishedAt: z.coerce.date().nullable().catch(null),
+    createdAt: z.coerce.date().catch(new Date()),
+    dueAt: z.coerce.date().catch(new Date()),
+    completedAt: z.coerce.date().nullable().catch(null),
+    deletedAt: z.coerce.date().nullable().catch(null),
+    startedAt: z.coerce.date().catch(new Date()),
+    updatedAt: z.coerce.date().catch(new Date()),
+}) as any);
 
-    // Arrays should default to empty arrays to match DTO logic
-    attachmentUrls: yup.array().of(yup.string().required()).default([]),
-
-    clientName: yup.string().required('Client name is required'),
-
-    // Cost fields: In DTO they are strings (from input) but validated as numbers here
-    incomeCost: yup
-        .number()
-        .min(1, 'Income must be greater than $1')
-        .typeError('Income cost must be a number')
-        .required('Income cost is required'),
-
-    totalStaffCost: yup
-        .number()
-        .typeError('Total staff cost must be a number')
-        .optional()
-        .default(0),
-
-    jobAssignments: yup
-        .array()
-        .of(
-            yup.object({
-                userId: yup.string().required('User ID is required'),
-                staffCost: yup
-                    .number()
-                    .typeError('Staff cost must be a number')
-                    .required(),
-            })
-        )
-        .min(1, 'At least one member is required')
-        .required(),
-
-    paymentChannelId: yup.string().uuid().nullable().optional(),
-
-    startedAt: yup
-        .string()
-        .required('Started at is required')
-        .test('is-iso-string', 'Date must be a valid ISO string', (value) => {
-            return !value || isValid(parseISO(value))
-        }),
-
-    dueAt: yup
-        .string()
-        .required('Due date is required')
-        .test('is-iso-string', 'Date must be a valid ISO string', (value) => {
-            return !value || isValid(parseISO(value))
+// 1. Define the base object WITHOUT refinements
+const BaseJobFormSchema = z.object({
+    no: z.string("Job number is required").min(1, 'Job number is required'),
+    typeId: z.string().uuid('Invalid typeId format').min(1, 'Job type is required'),
+    displayName: z.string("Display name is required").min(1, 'Display name is required'),
+    description: z.string().optional(),
+    attachmentUrls: z.array(z.string()).default([]),
+    clientName: z.string("Client name is required").min(1, 'Client name is required'),
+    incomeCost: z.coerce.number({ message: 'Income cost must be a number' }).min(1, 'Income cost must be greater than 1'),
+    totalStaffCost: z.coerce.number({ message: 'Total staff cost must be a number' }).optional().default(0),
+    jobAssignments: z.array(
+        z.object({
+            userId: z.string().min(1, 'User ID is required'),
+            staffCost: z.coerce.number({ message: 'Member cost must be a number' }).min(1, "Member cost must greater than 1"),
         })
-        .test(
-            'is-after-start',
-            'Due date must be after start date',
-            function (value) {
-                const { startedAt } = this.parent
-                if (!value || !startedAt) return true
-                const start = parseISO(startedAt)
-                const end = parseISO(value)
-                return isValid(start) && isValid(end) && isAfter(end, start)
-            }
-        ),
+    ).min(1, 'At least one member is required'),
+    paymentChannelId: z.string().uuid('Invalid Payment Channel').nullish(),
+    startedAt: z.string().min(1, 'Started at is required').refine((val) => isValid(parseISO(val)), 'Date must be a valid ISO string'),
+    dueAt: z.string().min(1, 'Due date is required').refine((val) => isValid(parseISO(val)), 'Date must be a valid ISO string'),
+    folderTemplateId: z.string().nullish(),
+    isCreateSharepointFolder: z.boolean().default(false),
+    sharepointTemplateId: z.string().nullish(),
+    sharepointFolderId: z.string().nullish(),
+    useExistingSharepointFolder: z.boolean().default(false),
 })
 
-export type TCreateJobInput = yup.InferType<typeof CreateJobSchema>
+// 2. Export the CREATE schema (with refinements attached)
+export const CreateJobFormSchema = BaseJobFormSchema
+    .refine(
+        (data) => {
+            if (!data.startedAt || !data.dueAt) return true
+            const start = parseISO(data.startedAt)
+            const end = parseISO(data.dueAt)
+            return isValid(start) && isValid(end) && isAfter(end, start)
+        },
+        { message: 'Due date must be after start date', path: ['dueAt'] }
+    )
+    // require template when user creates a new SP folder
+    .refine(
+        (data) => !(data.isCreateSharepointFolder && !data.sharepointTemplateId),
+        { message: 'Folder template is required', path: ['sharepointTemplateId'] }
+    )
+    // ensure user does not both create and select existing at same time
+    .refine(
+        (data) => !(data.isCreateSharepointFolder && data.useExistingSharepointFolder),
+        { message: 'Cannot create and pick existing folder simultaneously', path: ['useExistingSharepointFolder'] }
+    )
+    // when existing mode is enabled, require folder id
+    .refine(
+        (data) => !(data.useExistingSharepointFolder && !data.sharepointFolderId),
+        { message: 'Please select an existing folder', path: ['sharepointFolderId'] }
+    )
 
-export const UpdateJobSchema = CreateJobSchema.partial()
-export type TUpdateJobInput = yup.InferType<typeof UpdateJobSchema>
+export type TCreateJobFormValues = z.infer<typeof CreateJobFormSchema>
+
+
+// 3. Export the UPDATE schema (using .partial() on the BASE schema)
+export const UpdateJobSchema = BaseJobFormSchema.partial()
+
+// Use z.infer instead of yup.InferType
+export type TUpdateJobInput = z.infer<typeof UpdateJobSchema>
 
 export const UpdateJobRevenueSchema = yup.object({
     incomeCost: yup.number().optional(),
@@ -127,8 +156,6 @@ export const JobQuerySchema = jobFiltersSchema.merge(JobSortSchema).extend({
 
     search: z.string().trim().optional(),
 
-    hideFinishItems: z.enum(['0', '1']).optional().default('0'),
-
     isAll: z.enum(['0', '1']).optional().default('0'),
 
     // Pagination (Using coerce to handle URL query string numbers)
@@ -166,28 +193,26 @@ export const RescheduleJobSchema = yup.object({
 })
 export type TRescheduleJob = yup.InferType<typeof RescheduleJobSchema>
 
-export const DeliverJobInputSchema = yup.object({
-    jobId: yup.string().required('Please select a job to deliver'),
+export const DeliverJobInputSchema = z.object({
+    jobId: z
+        .string({ message: 'Please select a job to deliver' })
+        .min(1, 'Please select a job to deliver'),
 
-    note: yup
-        .string()
-        .max(1000, 'Note is too long (max 1000 characters)')
-        .optional(),
+    note: z
+        .string({ message: "Note cannot be empty" })
+        .min(1, 'Note cannot be empty')
+        .max(1000, 'Note is too long (max 1000 characters)'),
 
-    link: yup
-        .string()
-        .url('Link must be a valid URL (e.g., https://figma.com/...)')
-        .optional()
-        .nullable(), // Handle cases where form value might be null
-
-    files: yup
-        .array()
-        .of(yup.string().required()) // Ensures every item in the array is a string
-        // Uncomment the line below to strictly validate URLs for files, matching your commented decorator:
-        // .of(yup.string().url('Each attachment must be a valid URL').required())
-        .optional()
+    files: z
+        .array(
+            z.object({
+                webUrl: z.string().url('Each attachment must be a valid URL'),
+                fileName: z.string(),
+                sharepointId: z.string()
+            })
+        )
         .default([]),
-})
+});
 
-// Type inference for usage in React Hook Form / Formik
-export type TDeliverJobInput = yup.InferType<typeof DeliverJobInputSchema>
+// Type inference (Tương đương InferType của Yup)
+export type TDeliverJobInput = z.infer<typeof DeliverJobInputSchema>;

@@ -1,10 +1,9 @@
 import { type ApiResponse, axiosClient } from '@/lib/axios'
 import type { TCreateNotificationInput } from '@/lib/validationSchemas'
-import type { IUserNotificationResponse } from '@/shared/interfaces'
 
 export const notificationApi = {
     create: (data: TCreateNotificationInput) => {
-        return axiosClient.post<ApiResponse<IUserNotificationResponse>>(
+        return axiosClient.post<ApiResponse<any>>(
             '/v1/notifications',
             data
         )
@@ -15,7 +14,7 @@ export const notificationApi = {
         return axiosClient
             .get<
                 ApiResponse<{
-                    notifications: IUserNotificationResponse[]
+                    notifications: any[]
                     totalCount: number
                     unseenCount: number
                 }>
@@ -23,7 +22,7 @@ export const notificationApi = {
             .then((res) => res.data)
     },
     findOne: (id: string) => {
-        return axiosClient.get<ApiResponse<IUserNotificationResponse>>(
+        return axiosClient.get<ApiResponse<any>>(
             `/v1/notifications/${id}`
         )
     },

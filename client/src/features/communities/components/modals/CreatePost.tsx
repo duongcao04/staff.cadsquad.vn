@@ -87,7 +87,7 @@ export default function CreatePost({ title }: CreatePostProps) {
                             />
                             {isWritingPost && (
                                 <div>
-                                    <p className="text-sm font-semibold">
+                                    <p className="text-sm font-medium">
                                         {profile.displayName}
                                     </p>
                                     <p className="text-xs mt-1 text-text-subdued font-medium">

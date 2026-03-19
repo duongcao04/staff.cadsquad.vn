@@ -1,4 +1,5 @@
 import {
+	BadRequestException,
 	Body,
 	Controller,
 	Delete,
@@ -7,15 +8,16 @@ import {
 	Post,
 	Query,
 	UploadedFile,
-	UseInterceptors,
+	UseInterceptors
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
+import { CopyItemDto } from './dtos/copy-item.dto'
 import { SharePointService } from './sharepoint.service'
 
 @Controller('sharepoint')
 // @UseGuards(JwtGuard) // Bảo vệ toàn bộ API bằng Token Local
 export class SharePointController {
-	constructor(private readonly service: SharePointService) {}
+	constructor(private readonly service: SharePointService) { }
 
 	// 1. Lấy danh sách file
 	// GET /api/v1/sharepoint/items?folderId=xxx
@@ -28,13 +30,31 @@ export class SharePointController {
 	// 2. Upload File
 	// POST /api/v1/sharepoint/upload
 	// Body: parentId (id thư mục cha, hoặc 'root'), file (binary)
-	@Post('upload')
+	@Post('queu-upload')
 	@UseInterceptors(FileInterceptor('file'))
-	async uploadFile(
+	async queuUploadFile(
 		@UploadedFile() file: Express.Multer.File,
 		@Body('parentId') parentId: string = 'root'
 	) {
-		return this.service.uploadFile(parentId, file)
+		// Pass to service to handle queuing
+		return this.service.queueUploadFile(parentId, file);
+	}
+
+	@Post('upload')
+	@UseInterceptors(FileInterceptor('file')) // 'file' là tên trường (field name) Frontend sẽ gửi lên
+	async executeUploadFile(
+		@UploadedFile() file: Express.Multer.File,
+		@Body('parentId') parentId: string
+	) {
+		if (!file) {
+			throw new BadRequestException('No file uploaded');
+		}
+
+		// Nếu Frontend không gửi parentId, mặc định lưu vào thư mục 'root'
+		const targetFolderId = parentId || 'root';
+
+		// Gọi hàm service bạn vừa sửa ở trên
+		return this.service.executeUploadFile(targetFolderId, file);
 	}
 
 	// 3. Tạo Folder mới
@@ -72,5 +92,30 @@ export class SharePointController {
 	@Get('drives')
 	async getDrives() {
 		return this.service.listDrives()
+	}
+
+	// 8. Sao chép File/Folder
+	// POST /api/v1/sharepoint/copy
+	// Body: { itemId: "xxx", destinationFolderId: "yyy", newName: "Optional Name" }
+	@Post('queu-copy')
+	async queuCopyItem(
+		@Body() dto: CopyItemDto
+	) {
+		return this.service.queueCopyItem(
+			dto.itemId,
+			dto.destinationFolderId,
+			dto.newName
+		);
+	}
+
+	@Post('copy')
+	async copyItem(
+		@Body() dto: CopyItemDto
+	) {
+		return this.service.queueCopyItem(
+			dto.itemId,
+			dto.destinationFolderId,
+			dto.newName
+		);
 	}
 }

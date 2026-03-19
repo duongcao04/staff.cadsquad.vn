@@ -170,7 +170,7 @@ export default function TopicPage() {
     const FilesView = () => (
         <div className="p-6">
             <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-white">Documents</h3>
+                <h3 className="text-lg font-medium text-white">Documents</h3>
                 <div className="flex gap-2">
                     <Button
                         size="sm"
@@ -275,7 +275,7 @@ export default function TopicPage() {
     const PhotosView = () => (
         <div className="p-6">
             <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-white">Gallery</h3>
+                <h3 className="text-lg font-medium text-white">Gallery</h3>
                 <Button
                     size="sm"
                     color="primary"
@@ -331,7 +331,7 @@ export default function TopicPage() {
                             classNames={{
                                 base: 'ml-1',
                                 tabContent:
-                                    'group-data-[selected=true]:text-text-default group-data-[selected=true]:font-semibold font-medium',
+                                    'group-data-[selected=true]:text-text-default group-data-[selected=true]:font-medium font-medium',
                             }}
                         >
                             <Tab key="posts" title="Posts" />

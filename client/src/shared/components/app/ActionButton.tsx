@@ -142,7 +142,7 @@ export function ActionButton({
                         }
                         size="sm"
                         isIconOnly={sidebarStatus === ESidebarStatus.COLLAPSE}
-                        className="text-sm text-white rounded-full bg-linear-to-br from-primary-500 via-primary-700 to-primary-800 font-semibold"
+                        className="text-sm text-white rounded-full bg-linear-to-br from-primary-500 via-primary-700 to-primary-800 font-medium"
                         style={{
                             paddingLeft:
                                 sidebarStatus === ESidebarStatus.EXPAND

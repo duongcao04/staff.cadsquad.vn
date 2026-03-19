@@ -26,7 +26,7 @@ const Timmer: React.FC = () => {
                 Viet Nam
             </span>
             <span
-                className="-mt-0.5 text-sm lg:text-lg font-semibold"
+                className="-mt-0.5 text-sm lg:text-lg font-medium"
                 suppressHydrationWarning
             >
                 {timeString}

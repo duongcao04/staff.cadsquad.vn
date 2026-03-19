@@ -188,7 +188,8 @@ export default function JobDetailDrawer({
                 <DeliverJobModal
                     isOpen={deliverJobDisclosure.isOpen}
                     onClose={deliverJobDisclosure.onClose}
-                    defaultJob={job.id}
+                    defaultJob={job}
+                    showSelect={false}
                 />
             )}
             {financialModal.isOpen && job && (
@@ -245,7 +246,7 @@ export default function JobDetailDrawer({
                                             }
                                             onPress={() =>
                                                 router.navigate({
-                                                    href: INTERNAL_URLS.getJobDetailUrl(
+                                                    href: INTERNAL_URLS.jobDetail(
                                                         job.no
                                                     ),
                                                 })
@@ -403,7 +404,7 @@ export default function JobDetailDrawer({
                                                     )}
                                                     mode="text"
                                                     hiddenUnits={['second']}
-                                                    className="font-semibold! text-text-7! dark:text-text-subdued!"
+                                                    className="font-medium! text-text-7! dark:text-text-subdued!"
                                                 />
                                             </span>
                                         )}
@@ -464,7 +465,7 @@ export default function JobDetailDrawer({
                                                                                 2.3
                                                                             }
                                                                         />
-                                                                        <span className="text-[11px] font-semibold leading-4">
+                                                                        <span className="text-[11px] font-medium leading-4">
                                                                             Finished{' '}
                                                                             {dateFormatter(
                                                                                 job.finishedAt,
@@ -507,7 +508,7 @@ export default function JobDetailDrawer({
                                                                                 2.3
                                                                             }
                                                                         />
-                                                                        <span className="text-[10px] font-semibold leading-4">
+                                                                        <span className="text-[10px] font-medium leading-4">
                                                                             Completed{' '}
                                                                             {dateFormatter(
                                                                                 job.completedAt,
@@ -541,7 +542,7 @@ export default function JobDetailDrawer({
                                                                                 2.3
                                                                             }
                                                                         />
-                                                                        <span className="text-xs font-semibold leading-4">
+                                                                        <span className="text-xs font-medium leading-4">
                                                                             Delivering{' '}
                                                                         </span>
                                                                     </div>
@@ -643,7 +644,7 @@ export default function JobDetailDrawer({
                                                         />
                                                         <HeroCard className="p-0! overflow-hidden border-none shadow-none">
                                                             <HeroCardHeader className="justify-between py-1 text-text-8">
-                                                                <span className="font-semibold text-xs tracking-wide text-text-default">
+                                                                <span className="font-medium text-xs tracking-wide text-text-default">
                                                                     Description
                                                                 </span>
                                                                 {hasPermission(
@@ -688,7 +689,7 @@ export default function JobDetailDrawer({
 
                                                         <HeroCard className="p-0! overflow-hidden border-none shadow-none">
                                                             <HeroCardHeader className="justify-between py-1 text-text-8">
-                                                                <span className="font-semibold text-xs tracking-wide text-text-default">
+                                                                <span className="font-medium text-xs tracking-wide text-text-default">
                                                                     Activity
                                                                     History
                                                                 </span>
@@ -916,7 +917,7 @@ export default function JobDetailDrawer({
                                                                                                             .hexColor,
                                                                                                 }}
                                                                                             />
-                                                                                            <span className="font-semibold">
+                                                                                            <span className="font-medium">
                                                                                                 {
                                                                                                     asgn
                                                                                                         .user
@@ -1083,7 +1084,7 @@ export default function JobDetailDrawer({
                                                                 <span className="text-text-subdued text-xs">
                                                                     Income cost
                                                                 </span>
-                                                                <span className="font-semibold text-text-default">
+                                                                <span className="font-medium text-text-default">
                                                                     {currencyFormatter(
                                                                         job.incomeCost
                                                                     )}
@@ -1094,7 +1095,7 @@ export default function JobDetailDrawer({
                                                                     Total staff
                                                                     cost
                                                                 </span>
-                                                                <span className="font-semibold text-text-default">
+                                                                <span className="font-medium text-text-default">
                                                                     {currencyFormatter(
                                                                         job.totalStaffCost,
                                                                         'Vietnamese'
@@ -1109,7 +1110,7 @@ export default function JobDetailDrawer({
                                                             Staff cost
                                                         </span>
                                                         {isAssigned ? (
-                                                            <span className="font-semibold text-text-default">
+                                                            <span className="font-medium text-text-default">
                                                                 {currencyFormatter(
                                                                     job.staffCost,
                                                                     'Vietnamese'
@@ -1181,7 +1182,7 @@ export default function JobDetailDrawer({
                                                             color="primary"
                                                         />
                                                         <div className="flex flex-col">
-                                                            <p className="text-sm font-semibold">
+                                                            <p className="text-sm font-medium">
                                                                 {
                                                                     job
                                                                         .createdBy

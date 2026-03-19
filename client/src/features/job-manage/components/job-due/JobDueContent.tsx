@@ -33,7 +33,7 @@ export function JobDueContent({
         <>
             <HeroModalHeader>
                 <div className="space-y-1">
-                    <p className="text-lg font-semibold">
+                    <p className="text-lg font-medium">
                         Upcoming tasks
                         <span className="ml-2 text-base text-text-subdued">
                             ({jobsSchedule?.length ?? 0})
@@ -52,7 +52,7 @@ export function JobDueContent({
                     <div className="min-w-full w-fit py-5 space-y-5 border-t border-border max-h-125">
                         {jobsSchedule?.length === 0 ? (
                             <div className="py-12 flex flex-col items-center justify-center gap-2 text-text-subdued text-center">
-                                <p className="text-base font-semibold">
+                                <p className="text-base font-medium">
                                     Empty tasks for today.
                                 </p>
                                 <p className="text-sm">

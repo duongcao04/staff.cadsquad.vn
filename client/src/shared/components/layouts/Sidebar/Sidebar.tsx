@@ -82,7 +82,7 @@ export function Sidebar() {
                         onClick={() => toggleSidebar()}
                     >
                         {sidebarStatus === ESidebarStatus.EXPAND && (
-                            <p className="p-2 text-sm font-semibold leading-5 text-nowrap overflow-hidden">
+                            <p className="p-2 text-sm font-medium leading-5 text-nowrap overflow-hidden">
                                 Navigate
                             </p>
                         )}
@@ -125,7 +125,7 @@ export function Sidebar() {
                 {sidebarStatus === ESidebarStatus.EXPAND && (
                     <div className="w-full pl-4 pr-1.5 flex items-center justify-start">
                         <IconCalendarOutline />
-                        <p className="p-2 text-sm font-semibold leading-5 text-nowrap overflow-hidden">
+                        <p className="p-2 text-sm font-medium leading-5 text-nowrap overflow-hidden">
                             Calendar
                         </p>
                     </div>
@@ -245,7 +245,7 @@ const SidebarItem = ({ data }: { data: TSidebarItem }) => {
                         <MotionP
                             variants={textVariants}
                             className={`text-sm ${
-                                isActivated ? 'font-semibold text-primary!' : ''
+                                isActivated ? 'font-medium text-primary!' : ''
                             } text-nowrap overflow-hidden py-2 pr-2 pl-0.5`}
                         >
                             {data.title}

@@ -121,7 +121,7 @@ export const EmailUserModal = ({
                                             <p className="text-xs text-text-subdued font-bold uppercase">
                                                 To:
                                             </p>
-                                            <p className="text-sm font-semibold text-text-default">
+                                            <p className="text-sm font-medium text-text-default">
                                                 {user?.displayName} &lt;
                                                 {user?.email}&gt;
                                             </p>
@@ -332,7 +332,7 @@ export const EmailUserModal = ({
                                         }
                                         isDisabled={!canSubmit}
                                         onPress={form.handleSubmit}
-                                        className="font-semibold"
+                                        className="font-medium"
                                     >
                                         {isSubmitting || mutation.isPending
                                             ? 'Sending...'

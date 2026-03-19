@@ -189,7 +189,7 @@ export const UserDrawer = ({
         {
             icon: <ChartAreaIcon size={18} />,
             label: 'Overview',
-            href: INTERNAL_URLS.userOverview,
+            href: INTERNAL_URLS.overview,
         },
         {
             icon: <ListTodoIcon size={18} />,
@@ -199,7 +199,7 @@ export const UserDrawer = ({
         {
             icon: <UserCogIcon size={18} />,
             label: 'Settings',
-            href: INTERNAL_URLS.settings,
+            href: INTERNAL_URLS.settings.overview,
         },
     ]
 
@@ -296,7 +296,7 @@ export const UserDrawer = ({
                                             <ArrowLeftIcon size={18} />
                                         )
                                     }
-                                    className="font-semibold"
+                                    className="font-medium"
                                     onPress={() =>
                                         setViewMode(
                                             viewMode === 'menu'
@@ -314,7 +314,7 @@ export const UserDrawer = ({
                                 <div className="animate-in fade-in slide-in-from-left-full duration-150">
                                     {/* Theme Switcher Section */}
                                     <div className="px-2 py-4">
-                                        <p className="px-2 text-[10px] font-semibold tracking-wider text-text-subdued mb-3">
+                                        <p className="px-2 text-[10px] font-medium tracking-wider text-text-subdued mb-3">
                                             Theme
                                         </p>
                                         <Tabs
@@ -356,7 +356,7 @@ export const UserDrawer = ({
 
                                     {/* Navigation Items */}
                                     <div className="flex-1 px-2 space-y-1">
-                                        <p className="px-2 text-[10px] font-semibold tracking-wider text-text-subdued mb-3">
+                                        <p className="px-2 text-[10px] font-medium tracking-wider text-text-subdued mb-3">
                                             Workspace
                                         </p>
                                         {workspaceItems.map((item, index) => (
@@ -382,7 +382,7 @@ export const UserDrawer = ({
                                     </div>
 
                                     <div className="flex-1 px-2 space-y-1">
-                                        <p className="px-2 text-[10px] font-semibold tracking-wider text-text-subdued mb-3">
+                                        <p className="px-2 text-[10px] font-medium tracking-wider text-text-subdued mb-3">
                                             Profile
                                         </p>
                                         {menuItems.map((item, index) => (

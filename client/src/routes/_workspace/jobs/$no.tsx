@@ -207,7 +207,8 @@ function JobDetailPage() {
                 <DeliverJobModal
                     isOpen={deliverJobDisclosure.isOpen}
                     onClose={deliverJobDisclosure.onClose}
-                    defaultJob={job.id}
+                    defaultJob={job}
+                    showSelect={false}
                 />
             )}
             {financialModal.isOpen && job && (
@@ -271,7 +272,7 @@ function JobDetailPage() {
                                         targetDate={dayjs(job.dueAt)}
                                         mode="text"
                                         hiddenUnits={['second']}
-                                        className="font-semibold! text-text-7! dark:text-text-subdued!"
+                                        className="font-medium! text-text-7! dark:text-text-subdued!"
                                     />
                                 </span>
                             )}
@@ -284,7 +285,10 @@ function JobDetailPage() {
             {/* --- Main Content --- */}
             <div className="mt-6 max-w-7xl mx-auto h-[calc(100vh-120px)] space-y-6 px-4">
                 {/* ACTION BAR */}
-                <HeroCard className="bg-background dark:bg-background-hovered/50 border-border-default">
+                <HeroCard
+                    shadow="none"
+                    className="bg-background dark:bg-background-hovered/50 border border-border-muted"
+                >
                     <HeroCardBody className="w-full flex justify-between px-8">
                         <div className="flex justify-between py-3">
                             {/* SECTION 1: CORE PROGRESS STATUS */}
@@ -326,7 +330,7 @@ function JobDetailPage() {
                                                         size={12}
                                                         strokeWidth={2.3}
                                                     />
-                                                    <span className="text-[11px] font-semibold leading-4">
+                                                    <span className="text-[11px] font-medium leading-4">
                                                         Finished{' '}
                                                         {dateFormatter(
                                                             job.finishedAt,
@@ -363,7 +367,7 @@ function JobDetailPage() {
                                                         size={12}
                                                         strokeWidth={2.3}
                                                     />
-                                                    <span className="text-[10px] font-semibold leading-4">
+                                                    <span className="text-[10px] font-medium leading-4">
                                                         Completed{' '}
                                                         {dateFormatter(
                                                             job.completedAt,
@@ -390,7 +394,7 @@ function JobDetailPage() {
                                                         size={16}
                                                         strokeWidth={2.3}
                                                     />
-                                                    <span className="text-xs font-semibold leading-4">
+                                                    <span className="text-xs font-medium leading-4">
                                                         Delivering{' '}
                                                     </span>
                                                 </div>
@@ -470,7 +474,7 @@ function JobDetailPage() {
                                     <JobAssigneesView data={job} />
                                     <HeroCard className="bg-background-muted px-0! overflow-hidden border-none shadow-none">
                                         <HeroCardHeader className="justify-between py-1 text-text-8">
-                                            <span className="font-semibold text-xs tracking-wide text-text-default">
+                                            <span className="font-medium text-xs tracking-wide text-text-default">
                                                 Description
                                             </span>
                                             {hasPermission(
@@ -505,7 +509,7 @@ function JobDetailPage() {
 
                                     <HeroCard className="bg-background-muted px-0! overflow-hidden border-none shadow-none">
                                         <HeroCardHeader className="justify-between py-1 text-text-8">
-                                            <span className="font-semibold text-xs tracking-wide text-text-default">
+                                            <span className="font-medium text-xs tracking-wide text-text-default">
                                                 Activity History
                                             </span>
                                             <Button
@@ -673,7 +677,7 @@ function JobDetailPage() {
                                                                                     .hexColor,
                                                                         }}
                                                                     />
-                                                                    <span className="font-semibold">
+                                                                    <span className="font-medium">
                                                                         {
                                                                             asgn
                                                                                 .user
@@ -805,7 +809,7 @@ function JobDetailPage() {
                                             <span className="text-text-subdued text-xs">
                                                 Income cost
                                             </span>
-                                            <span className="font-semibold text-text-default">
+                                            <span className="font-medium text-text-default">
                                                 {currencyFormatter(
                                                     job.incomeCost
                                                 )}
@@ -816,7 +820,7 @@ function JobDetailPage() {
                                         <span className="text-text-subdued text-xs">
                                             Staff cost
                                         </span>
-                                        <span className="font-semibold text-text-default">
+                                        <span className="font-medium text-text-default">
                                             {currencyFormatter(
                                                 job.totalStaffCost ||
                                                     job.staffCost,
@@ -872,7 +876,7 @@ function JobDetailPage() {
                                         color="primary"
                                     />
                                     <div className="flex flex-col">
-                                        <p className="text-sm font-semibold">
+                                        <p className="text-sm font-medium">
                                             {job.createdBy.displayName}
                                         </p>
                                         <p className="text-xs flex items-center gap-1.5 mt-0.5 text-text-subdued">

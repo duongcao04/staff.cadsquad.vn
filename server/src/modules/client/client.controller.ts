@@ -16,11 +16,12 @@ import { RequirePermissions } from '../../common/decorators/require-permissions.
 import { APP_PERMISSIONS } from '../../utils/_app-permissions'
 import { PermissionsGuard } from '../../common/guards/permissions.guard'
 import { JwtGuard } from '../auth/jwt.guard'
+import { isUUID } from 'class-validator'
 
 @Controller('clients')
 @UseGuards(JwtGuard)
 export class ClientController {
-    constructor(private readonly clientService: ClientService) {}
+    constructor(private readonly clientService: ClientService) { }
 
     @Get()
     @ResponseMessage('Get all clients successfully')
@@ -41,12 +42,17 @@ export class ClientController {
         return client
     }
 
-    @Get(':id')
+    @Get(':identifier')
     @ResponseMessage('Get client details successfully')
     @UseGuards(PermissionsGuard)
     @RequirePermissions(APP_PERMISSIONS.CLIENT.READ)
-    async getOne(@Param('id') id: string) {
-        return this.clientService.findOne(id)
+    async getOne(@Param('identifier') identifier: string) {
+        // Logic: If identifier matches a specific pattern, use findByCode
+        // Otherwise, default to findOne (ID)
+        if (isUUID(identifier)) {
+            return this.clientService.findOne(identifier);
+        }
+        return this.clientService.findByCode(identifier);
     }
 
     @Patch(':id')

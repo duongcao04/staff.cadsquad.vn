@@ -1,11 +1,10 @@
 import { type ApiResponse, axiosClient } from '@/lib/axios'
 import type {
     ILoginResponse,
-    IRegisterUserInput,
     IValidateTokenResponse,
 } from '@/shared/interfaces'
 import type { TUser, TUserSession } from '@/shared/types'
-import type { TLoginInput, TUpdateProfileInput } from '../validationSchemas'
+import type { TLoginInput, TRegisterUserValues, TUpdateProfileInput } from '../validationSchemas'
 
 export const authApi = {
     forgotPassword: async (email: string) => {
@@ -21,8 +20,8 @@ export const authApi = {
             .post<ApiResponse>('/v1/auth/forgot-password/reset', data)
             .then((res) => res.data)
     },
-    activeSessions: () => {
-        return axiosClient.get<ApiResponse<TUserSession[]>>('/v1/auth/sessions')
+    activeSessions: async () => {
+        return axiosClient.get<ApiResponse<TUserSession[]>>('/v1/auth/sessions').then(res => res.data)
     },
     revokeSession: async (sessionId: string) => {
         return axiosClient
@@ -46,7 +45,7 @@ export const authApi = {
             )
             .then((res) => res?.data?.result?.isValid)
     },
-    register: async (data: IRegisterUserInput) => {
+    register: async (data: TRegisterUserValues) => {
         return axiosClient.post('/v1/auth/register', data)
     },
     login: async (data: TLoginInput) => {
@@ -55,8 +54,8 @@ export const authApi = {
             data
         )
     },
-    getProfile: () => {
-        return axiosClient.get<ApiResponse<TUser>>('/v1/auth/profile')
+    getProfile: async () => {
+        return axiosClient.get<ApiResponse<TUser>>('/v1/auth/profile').then(res => res.data)
     },
     updateProfile: async (data: TUpdateProfileInput) => {
         return axiosClient

@@ -270,7 +270,7 @@ const CreateUserFormContent = ({
                     <div className="px-4 pt-6 pb-14">
                         {step === 1 ? (
                             <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-                                <p className="text-xs font-semibold text-text-subdued tracking-wider py-4">
+                                <p className="text-xs font-medium text-text-subdued tracking-wider py-4">
                                     Step 1: Identity
                                 </p>
                                 <div className="space-y-6">
@@ -313,7 +313,7 @@ const CreateUserFormContent = ({
                                                     />
                                                 }
                                                 endContent={
-                                                    <p className="text-xs font-semibold text-text-subdued">
+                                                    <p className="text-xs font-medium text-text-subdued">
                                                         @cadsquad.vn
                                                     </p>
                                                 }
@@ -379,7 +379,7 @@ const CreateUserFormContent = ({
                             </div>
                         ) : (
                             <div className="animate-in fade-in slide-in-from-right-4 duration-300 pb-6">
-                                <p className="text-xs font-semibold text-text-subdued tracking-wider py-4">
+                                <p className="text-xs font-medium text-text-subdued tracking-wider py-4">
                                     Step 2: Organization & Security
                                 </p>
                                 <div className="grid grid-cols-2 gap-4">
@@ -661,7 +661,7 @@ export const CreateUserSuccess = ({
             </h3>
             <p className="text-sm text-text-subdued mt-1 mb-8 text-center px-6">
                 The account for{' '}
-                <span className="font-semibold text-primary">
+                <span className="font-medium text-primary">
                     {data.displayName}
                 </span>{' '}
                 is now active and ready for use.

@@ -110,7 +110,7 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
     autoHideZeroes = true, // Mặc định là ẩn
     mode = 'compact',
     paused = false,
-    fallback = "Time's up",
+    fallback = "Late",
     className = '',
     itemClass = '',
     onFinish,
@@ -144,7 +144,7 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
     // Fallback khi hết giờ
     if (!timeLeft) {
         return (
-            <div className={cn('text-danger text-xs font-semibold', className)}>
+            <div className={cn('text-danger text-xs font-medium', className)}>
                 {fallback}
             </div>
         )

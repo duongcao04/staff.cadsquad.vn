@@ -4,19 +4,27 @@ import dayjs, { Dayjs } from 'dayjs'
 import { Handshake, Landmark, Layers2, Loader, UsersRound } from 'lucide-react'
 import { useState } from 'react'
 
-import {
-    useJobStatuses,
-    useJobTypes,
-    usePaymentChannels,
-    useUsers,
-} from '@/lib/queries'
 import { PAID_STATUS_ARRAY } from '@/lib/utils'
 import { TJobFilters } from '@/lib/validationSchemas'
 
-import { HeroCard, HeroCardBody, HeroCardHeader } from '../../../../shared/components/ui/hero-card'
+import {
+    HeroCard,
+    HeroCardBody,
+    HeroCardHeader,
+} from '../../../../shared/components/ui/hero-card'
 import { HeroDateRangePicker } from '../../../../shared/components/ui/hero-date-picker'
 import { HeroNumberInput } from '../../../../shared/components/ui/hero-number-input'
-import { HeroSelect, HeroSelectItem } from '../../../../shared/components/ui/hero-select'
+import {
+    HeroSelect,
+    HeroSelectItem,
+} from '../../../../shared/components/ui/hero-select'
+import {
+    jobStatusesListOptions,
+    jobTypesListOptions,
+    paymentChannelsListOptions,
+    usersListOptions,
+} from '../../../../lib'
+import { useSuspenseQuery } from '@tanstack/react-query'
 
 type FilterViewProps = {
     filters: TJobFilters
@@ -25,12 +33,22 @@ type FilterViewProps = {
 export default function FilterView({
     filters: defaultFilters,
 }: FilterViewProps) {
-    const { data: jobStatuses, isLoading: loadingJobStatuses } =
-        useJobStatuses()
-    const { data: paymentChannels, isLoading: loadingPaymentChannels } =
-        usePaymentChannels()
-    const { data: jobTypes, isLoading: loadingJobTypes } = useJobTypes()
-    const { data: users, isLoading: loadingUsers } = useUsers()
+    const {
+        data: { jobStatuses },
+        isLoading: loadingJobStatuses,
+    } = useSuspenseQuery(jobStatusesListOptions())
+    const {
+        data: { paymentChannels },
+        isLoading: loadingPaymentChannels,
+    } = useSuspenseQuery(paymentChannelsListOptions())
+    const {
+        data: { jobTypes },
+        isLoading: loadingJobTypes,
+    } = useSuspenseQuery(jobTypesListOptions())
+    const {
+        data: { users },
+        isLoading: loadingUsers,
+    } = useSuspenseQuery(usersListOptions())
 
     const [filters, setFilters] = useState<TJobFilters>(defaultFilters)
 

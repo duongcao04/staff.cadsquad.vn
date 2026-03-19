@@ -71,7 +71,7 @@ export const ProjectCenterCard = ({
                         <p className="text-[10px] uppercase font-black text-default-400">
                             Deadline
                         </p>
-                        <div className="flex items-center gap-1.5 text-xs font-semibold">
+                        <div className="flex items-center gap-1.5 text-xs font-medium">
                             <CalendarDays
                                 size={14}
                                 className="text-text-subdued"

@@ -48,7 +48,7 @@ export class AuthController {
 		private readonly userService: UserService,
 		private readonly sessionService: SessionService, // Inject
 		private readonly securityService: UserSecurityService // Inject
-	) {}
+	) { }
 	// New function to validate a token
 	@Get('validate-token')
 	@HttpCode(200)
@@ -62,19 +62,6 @@ export class AuthController {
 		return { isValid: 1 }
 	}
 
-	@Post('register')
-	@HttpCode(201)
-	@ResponseMessage('Register successfully')
-	@ApiOperation({ summary: 'Register a new user' })
-	@ApiResponse({
-		status: 201,
-		description: 'User registered successfully',
-		type: UserResponseDto,
-	})
-	register(@Body() dto: RegisterUserDto) {
-		const register = this.authService.register(dto)
-		return register
-	}
 	@Post('login')
 	@HttpCode(200)
 	@ResponseMessage('Login successfully')

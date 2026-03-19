@@ -5,6 +5,7 @@ import {
 	Delete,
 	Get,
 	InternalServerErrorException,
+	Logger,
 	Param,
 	Patch,
 	Post,
@@ -33,19 +34,22 @@ import { UpdateRevenueDto } from './dto/update-revenue.dto'
 import { JobCommentService } from './job-comment.service'
 import { JobService } from './job.service'
 import { UpdateAttachmentsDto } from './dto/update-attachments.dto'
+import { JobDeliverService } from './job-deliver.service'
 
 @ApiTags('Jobs')
 @Controller('jobs')
 @UseGuards(JwtGuard)
 @ApiBearerAuth()
 export class JobController {
+	private readonly logger = new Logger(JobController.name)
 	constructor(
 		private readonly jobService: JobService,
+		private readonly jobDeliverService: JobDeliverService,
 		private readonly jobTypeService: JobTypeService,
 		private readonly activityLogService: ActivityLogService,
 		private readonly commentService: JobCommentService,
 		private readonly sharepointService: SharePointService
-	) {}
+	) { }
 
 	// -------------------------------------------------------------------------
 	// READ OPERATIONS
@@ -55,7 +59,7 @@ export class JobController {
 	@ResponseMessage('Get job deliveries successfully')
 	@ApiOperation({ summary: 'Get all delivery attempts for a specific job' })
 	async getJobDeliveries(@Param('id') id: string) {
-		return this.jobService.getJobDeliveries(id)
+		return this.jobDeliverService.getDeliveriesByJob(id)
 	}
 
 	@Get(':jobId/activity-logs')
@@ -177,27 +181,6 @@ export class JobController {
 	async create(@Req() request: Request, @Body() createJobDto: CreateJobDto) {
 		const user: TokenPayload = request['user']
 		const created = await this.jobService.create(user.sub, createJobDto)
-		const folderID = '012FXBO3INCUN6K3IYSZDJWUU6IMK6UG7D'
-		try {
-			const folderName = createJobDto.no + '- ' + createJobDto.displayName
-			const childrenFolders = [
-				'01. Resources',
-				'02. RFI',
-				'03. Results',
-				'Pictures',
-				'Temp',
-				'Working',
-			]
-			await this.sharepointService.queuCreateFolderWithChildren(
-				folderID,
-				folderName,
-				childrenFolders
-			)
-		} catch (error) {
-			throw new InternalServerErrorException(
-				'Create sharepoint folder failded'
-			)
-		}
 		return created
 	}
 
@@ -216,7 +199,7 @@ export class JobController {
 		@Body() data: DeliverJobDto
 	) {
 		const user: TokenPayload = request['user']
-		return this.jobService.deliverJob(user.sub, id, data)
+		return this.jobDeliverService.deliverJob(user.sub, id, data)
 	}
 
 	@Post('deliver/:deliveryId/:action')

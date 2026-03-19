@@ -36,6 +36,7 @@ model UserDevices {
 
 model User {
     id                  String             @id @default(uuid())
+    code                String             @unique
     email               String             @unique
     personalEmail       String?
     username            String             @unique
@@ -186,6 +187,7 @@ enum EntityEnum {
     JOB_TITLE
     JOB_TYPE // <--- Added this (Fixes your SQL error)
     JOB_STATUS // <--- Added this (For status management)
+    JOB_FOLDER_TEMPLATE
 
     // Social / Community
     COMMUNITY
@@ -364,12 +366,13 @@ model Job {
     type   JobType @relation(fields: [typeId], references: [id])
     typeId String
 
-    displayName    String
-    description    String?
-    attachmentUrls String[] @default([])
-    client         Client?  @relation(fields: [clientId], references: [id])
-    clientId       String?
-    incomeCost     Float
+    displayName        String
+    description        String?
+    attachmentUrls     String[] @default([])
+    sharepointFolderId String? // optionally store linked existing SharePoint folder ID
+    client             Client?  @relation(fields: [clientId], references: [id])
+    clientId           String?
+    incomeCost         Float
 
     totalStaffCost Float @default(0)
 
@@ -400,6 +403,9 @@ model Job {
     pinnedByUsers    PinnedJob[]
     jobDeliveries    JobDelivery[]
 
+    folderTemplateId String?
+    folderTemplate   JobFolderTemplate? @relation(fields: [folderTemplateId], references: [id])
+
     @@index([no])
     @@index([statusId])
     @@index([createdById])
@@ -416,6 +422,23 @@ model JobAssignment {
     assignedAt DateTime @default(now())
 
     @@unique([jobId, userId]) // Prevents assigning the same person twice
+}
+
+model JobFolderTemplate {
+    id          String   @id @default(uuid())
+    displayName String
+    folderId    String
+    folderName  String
+    size        Int
+    webUrl      String
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    jobs Job[]
+
+    @@index([folderId])
+    @@index([id])
+    @@index([createdAt])
 }
 
 model Client {
@@ -485,13 +508,14 @@ model PaymentChannel {
 }
 
 model JobType {
-    id          String   @id @default(uuid())
-    code        String
-    displayName String
-    hexColor    String?
-    jobs        Job[]
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
+    id                 String   @id @default(uuid())
+    code               String
+    sharepointFolderId String?
+    displayName        String
+    hexColor           String?
+    jobs               Job[]
+    createdAt          DateTime @default(now())
+    updatedAt          DateTime @updatedAt
 }
 
 model JobStatus {
@@ -526,6 +550,22 @@ enum JobStatusSystemType {
     TERMINATED // Kết thúc vòng đời (Finished, Cancelled, Closed...)
 }
 
+model JobDeliverFile {
+    id           String @id @default(uuid())
+    fileName     String
+    webUrl       String
+    sharepointId String
+
+    // Relation back to JobDelivery
+    jobDeliveryId String
+    jobDelivery   JobDelivery @relation(fields: [jobDeliveryId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([jobDeliveryId])
+}
+
 model JobDelivery {
     id String @id @default(uuid())
 
@@ -541,10 +581,9 @@ model JobDelivery {
 
     link String? // External link
 
-    files String[] // Array of file URLs (from your imageApi)
+    files JobDeliverFile[]
 
     // Status of this specific delivery attempt
-
     status DeliveryStatus @default(PENDING) // PENDING, APPROVED, REJECTED
 
     adminFeedback String? // If rejected, why?

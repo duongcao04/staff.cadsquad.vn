@@ -49,7 +49,7 @@ export const renderProjectCenterCell = (
             )
         case 'clientName':
             return (
-                <p className="line-clamp-1">
+                <p className="line-clamp-1 select-text cursor-text">
                     {data.client?.name || 'Unknown client'}
                 </p>
             )
@@ -60,7 +60,9 @@ export const renderProjectCenterCell = (
         case 'no':
             return (
                 <div className="flex items-center justify-between gap-2 group size-full">
-                    <span className="uppercase">{data.no}</span>
+                    <span className="uppercase select-text cursor-text">
+                        {data.no}
+                    </span>
                     <HeroTooltip content="Copy">
                         <HeroCopyButton
                             textValue={data.no}
@@ -72,7 +74,7 @@ export const renderProjectCenterCell = (
 
         case 'displayName':
             return (
-                <p className="w-62.5 line-clamp-1 font-medium">
+                <p className="w-62.5 line-clamp-1 font-medium select-text cursor-text">
                     {data.displayName}
                 </p>
             )
@@ -155,7 +157,7 @@ export const renderProjectCenterCell = (
                     </HeroTooltip>
                 </div>
             ) : (
-                <p className="w-full text-center font-semibold tracking-wide">
+                <p className="w-full text-center font-medium tracking-wide">
                     x{data.attachmentUrls.length}
                 </p>
             )
@@ -251,7 +253,7 @@ export const renderProjectCenterCell = (
                             className="size-8! flex items-center justify-center"
                             iconSize={16}
                             iconClassName="opacity-60"
-                            textValue={INTERNAL_URLS.getJobDetailUrl(data.no)}
+                            textValue={INTERNAL_URLS.jobDetail(data.no)}
                         />
                     </HeroTooltip>
                     <ProjectCenterTableQuickActions data={data} />

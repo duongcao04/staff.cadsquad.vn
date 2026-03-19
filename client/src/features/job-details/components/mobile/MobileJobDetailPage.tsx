@@ -131,7 +131,7 @@ function MobileJobDetailPage() {
                 <DeliverJobModal
                     isOpen={deliverJobDisclosure.isOpen}
                     onClose={deliverJobDisclosure.onClose}
-                    defaultJob={job.id}
+                    defaultJob={job}
                 />
             )}
             {financialModal.isOpen && (
@@ -190,7 +190,7 @@ function MobileJobDetailPage() {
                         >
                             #{job.no}
                         </Chip>
-                        <span className="text-xs font-semibold text-warning-500 bg-warning-50 px-2 py-0.5 rounded-md">
+                        <span className="text-xs font-medium text-warning-500 bg-warning-50 px-2 py-0.5 rounded-md">
                             {job.status?.displayName}
                         </span>
                     </div>

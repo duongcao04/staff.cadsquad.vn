@@ -133,7 +133,7 @@ export default function NotificationDropdown() {
                 {/* Header - Sticky & Clean */}
                 <div className="flex items-center justify-between px-4 py-3 border-b border-default-100 bg-content1/50 backdrop-blur-md sticky top-0 z-10 rounded-t-medium">
                     <div className="flex items-center gap-2">
-                        <span className="font-semibold text-medium">
+                        <span className="font-medium text-medium">
                             Notifications
                         </span>
                         {hasUnseen && (
@@ -244,7 +244,7 @@ export default function NotificationDropdown() {
                         className="text-text-subdued h-8 font-medium"
                         onPress={() =>
                             router.navigate({
-                                href: INTERNAL_URLS.allNotifications,
+                                href: INTERNAL_URLS.notifications,
                             })
                         }
                     >

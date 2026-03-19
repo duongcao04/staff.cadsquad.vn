@@ -68,7 +68,7 @@ const JOB_COLUMN_META: ColumnMeta = {
     staffCost: {
         title: 'Your Cost',
         icon: (
-            <p className="font-semibold text-lg text-text-subdued leading-none">
+            <p className="font-medium text-lg text-text-subdued leading-none">
                 đ
             </p>
         ),

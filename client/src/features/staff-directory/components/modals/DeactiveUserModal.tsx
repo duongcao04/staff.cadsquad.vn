@@ -134,7 +134,7 @@ export const DeactivateUserModal = ({
                                 isLoading={isLoading}
                                 onPress={handleDeactivate}
                                 startContent={!isLoading && <Ban size={18} />}
-                                className="font-semibold"
+                                className="font-medium"
                             >
                                 {isLoading
                                     ? 'Deactivating...'

@@ -35,7 +35,7 @@ export function JobStatusChip({
             classNames={{
                 ...classNames,
                 content: cn(
-                    'uppercase text-xs font-semibold font-saira',
+                    'uppercase text-xs font-medium font-saira',
                     classNames?.content
                 ),
             }}

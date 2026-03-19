@@ -10,7 +10,7 @@ const StyledNumberInput = extendVariants(NumberInput, {
             minimal: {
                 inputWrapper: [
                     'shadow-none',
-                    'border',
+                    'border-2',
                     'border-border-default',
                     '!bg-background',
                     'transition',

@@ -96,7 +96,7 @@ export default function ResetPasswordModal({ isOpen, onClose, data }: Props) {
         >
             <HeroModalContent className="p-2">
                 <HeroModalHeader
-                    className="font-semibold text-lg text-white transition-colors duration-300"
+                    className="font-medium text-lg text-white transition-colors duration-300"
                     style={{
                         backgroundColor: isSuccess
                             ? '#138748'

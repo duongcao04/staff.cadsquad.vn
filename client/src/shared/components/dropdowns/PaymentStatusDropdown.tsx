@@ -142,7 +142,7 @@ export default function PaymentStatusDropdown({
                                 }}
                             />
                             <p
-                                className="font-semibold"
+                                className="font-medium"
                                 style={{
                                     color: PAID_STATUS_COLOR[changeStatusTitle]
                                         .hexColor

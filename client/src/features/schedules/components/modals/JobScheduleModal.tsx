@@ -33,7 +33,7 @@ export default function JobScheduleModal({
 
     const handleEditDetails = () => {
         router.navigate({
-            href: INTERNAL_URLS.editJob(jobNo),
+            href: INTERNAL_URLS.management.jobDetail(jobNo),
         })
         onClose()
     }
@@ -73,7 +73,7 @@ export default function JobScheduleModal({
                             </div>
 
                             <div className="bg-background p-4 rounded-xl border border-border-default mb-4">
-                                <p className="text-sm font-semibold text-text-default mb-2">
+                                <p className="text-sm font-medium text-text-default mb-2">
                                     Assignees
                                 </p>
                                 <div className="flex items-center gap-3">
@@ -92,7 +92,7 @@ export default function JobScheduleModal({
                                         startContent={<Plus size={14} />}
                                         onPress={() => {
                                             router.navigate({
-                                                href: `${INTERNAL_URLS.editJob(jobNo)}/?tab=team`,
+                                                href: `${INTERNAL_URLS.management.jobDetail(jobNo)}/?tab=team`,
                                             })
                                         }}
                                     >

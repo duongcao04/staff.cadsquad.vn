@@ -71,7 +71,7 @@ export default function ScheduleCalendarView({
                                     <div
                                         key={job.id}
                                         onClick={() => onJobClick(job.no)}
-                                        className="group flex items-center gap-2 p-1.5 rounded-md text-[11px] font-semibold cursor-pointer border border-transparent hover:border-border-default hover:shadow-sm transition-all"
+                                        className="group flex items-center gap-2 p-1.5 rounded-md text-[11px] font-medium cursor-pointer border border-transparent hover:border-border-default hover:shadow-sm transition-all"
                                         style={{
                                             backgroundColor: `${job.status?.hexColor}15`,
                                             color:

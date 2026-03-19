@@ -1,13 +1,12 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useMemo } from 'react'
-
 import { departmentApi } from '@/lib/api'
 import {
+    DepartmentSchema,
     type TCreateDepartmentInput,
     type TUpdateDepartmentInput,
 } from '@/lib/validationSchemas'
-
-import { mapDepartment } from './options/department-queries'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMemo } from 'react'
+import { parseList } from '../zod'
 import { onErrorToast } from './helper'
 
 export const useDepartments = () => {
@@ -24,7 +23,7 @@ export const useDepartments = () => {
             return []
         }
 
-        return departmentsData.map((item) => mapDepartment(item))
+        return parseList(departments, DepartmentSchema)
     }, [data])
 
     return {

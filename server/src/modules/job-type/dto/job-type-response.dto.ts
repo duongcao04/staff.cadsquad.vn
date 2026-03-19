@@ -24,6 +24,10 @@ export class JobTypeResponseDto {
 	@Type(() => JobResponseDto)
 	jobs?: JobResponseDto[]
 
+	@ApiProperty({ required: false })
+	@Expose()
+	sharepointFolderId?: string
+
 	@ApiProperty({ description: 'Count of related entities' })
 	@Expose()
 	_count: Record<string, unknown>

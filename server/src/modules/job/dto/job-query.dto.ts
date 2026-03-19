@@ -16,7 +16,7 @@ import { JobSortDto } from './job-sort.dto'
 import { Prisma, JobStatusSystemType } from '../../../generated/prisma'
 
 // 1. Combine Filters and Sorts first
-class FiltersAndSorts extends IntersectionType(JobFiltersDto, JobSortDto) {}
+class FiltersAndSorts extends IntersectionType(JobFiltersDto, JobSortDto) { }
 
 // 2. Combine with Base Pagination & Search
 export class JobQueryDto extends FiltersAndSorts {
@@ -27,7 +27,7 @@ export class JobQueryDto extends FiltersAndSorts {
 	})
 	@IsOptional()
 	@IsEnum(JobTabEnum)
-	tab?: JobTabEnum = JobTabEnum.ACTIVE
+	tab?: JobTabEnum
 
 	@ApiPropertyOptional({ description: 'Search keywords' })
 	@IsOptional()
@@ -84,7 +84,7 @@ export class JobQueryDto extends FiltersAndSorts {
 
 export class JobQueryBuilder {
 	static buildQueryTab(
-		tab: JobTabEnum = JobTabEnum.ACTIVE
+		tab?: JobTabEnum
 	): Prisma.JobWhereInput {
 		const today = dayjs().startOf('day').toDate()
 		const dayAfterTomorrow = dayjs().add(1, 'week').startOf('day').toDate()
@@ -166,9 +166,7 @@ export class JobQueryBuilder {
 
 			default:
 				return {
-					...isNotDeleted,
-					dueAt: { gt: today },
-					...isNotFinished,
+					...isNotDeleted
 				}
 		}
 	}

@@ -155,7 +155,7 @@ export function JobNoField({
             {/* Display the calculated result */}
             <div className="h-12 flex items-center justify-start gap-3">
                 <Slash className="rotate-[-20deg] text-default-300" />
-                <p className="text-xl font-semibold text-foreground">
+                <p className="text-xl font-medium text-foreground">
                     {jobNoResult || '...'}
                 </p>
             </div>

@@ -1,5 +1,4 @@
 import { clientDetailsByNameOptions } from '@/lib/queries'
-import { clientSchema, TClientInput } from '@/lib/validationSchemas'
 import {
     Button,
     Divider,
@@ -30,12 +29,16 @@ import {
     HeroModalFooter,
     HeroModalHeader,
 } from '../../../../shared/components/ui/hero-modal'
-import { ScrollArea, ScrollBar } from '../../../../shared/components/ui/scroll-area'
+import {
+    ScrollArea,
+    ScrollBar,
+} from '../../../../shared/components/ui/scroll-area'
+import { EditClientFormSchema, TEditClientFormValues } from '../../../../lib'
 
 interface EditClientModalProps {
     isOpen: boolean
     onClose: () => void
-    afterSubmit?: (data: TClientInput) => void
+    afterSubmit?: (data: TEditClientFormValues) => void
     clientName: string
 }
 
@@ -86,7 +89,7 @@ function EditClientFormContent({
     onClose,
 }: {
     clientName: string
-    afterSubmit: (data: TClientInput) => void
+    afterSubmit: (data: TEditClientFormValues) => void
     onClose: () => void
 }) {
     const { data: client } = useSuspenseQuery({
@@ -101,7 +104,7 @@ function EditClientFormContent({
         onClose()
     }
     // --- 2. Formik Setup ---
-    const formik = useFormik<TClientInput>({
+    const formik = useFormik<TEditClientFormValues>({
         // Automatically update form when 'client' prop changes
         enableReinitialize: true,
         initialValues: {
@@ -117,7 +120,7 @@ function EditClientFormContent({
             currency: client?.currency || 'USD',
             paymentTerms: client?.paymentTerms || 30,
         },
-        validationSchema: clientSchema,
+        validationSchema: EditClientFormSchema,
         onSubmit: async (values) => {
             await updateClientMutation.mutateAsync(
                 {

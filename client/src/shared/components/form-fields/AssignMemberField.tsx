@@ -1,6 +1,6 @@
 import { Autocomplete, AutocompleteItem, Avatar } from '@heroui/react'
 import { SearchIcon } from 'lucide-react'
-import { type Key, memo, useMemo, useState, useEffect } from 'react'
+import { type Key, memo, useMemo, useState, useEffect, useRef } from 'react'
 
 import { optimizeCloudinary } from '@/lib/cloudinary'
 import type { TUser } from '@/shared/types'
@@ -18,6 +18,7 @@ const AssignMemberField = memo(function AssignMemberField({
     onSelectMember,
     loading = false,
 }: Props) {
+    const inputRef = useRef<HTMLInputElement>(null)
     const [inputValue, setInputValue] = useState('')
 
     // 1. Map current assignees to a Set of IDs for O(1) lookup
@@ -74,7 +75,10 @@ const AssignMemberField = memo(function AssignMemberField({
         // Reset search input
         setTimeout(() => {
             setInputValue('')
-        }, 0)
+            if (document.activeElement instanceof HTMLElement) {
+                document.activeElement.blur()
+            }
+        }, 50)
     }
 
     return (
@@ -89,6 +93,7 @@ const AssignMemberField = memo(function AssignMemberField({
                 listboxProps={{
                     hideSelectedIcon: true,
                 }}
+                ref={inputRef}
                 items={availableUsers}
                 inputValue={inputValue}
                 onInputChange={setInputValue}

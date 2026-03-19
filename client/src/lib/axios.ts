@@ -84,7 +84,7 @@ axiosClient.interceptors.response.use(
 // Create a separate instance specifically for Multipart forms
 export const axiosClientMultipart = axios.create({
     baseURL: apiBaseUrl,
-    timeout: 30000, // Uploads might take longer, so increased timeout is good
+    // timeout: 30000, // Uploads might take longer, so increased timeout is good
     withCredentials: true,
 })
 

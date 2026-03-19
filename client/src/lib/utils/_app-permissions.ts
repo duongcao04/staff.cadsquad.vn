@@ -71,6 +71,11 @@ export const APP_PERMISSIONS = {
         UPDATE: 'jobStatus.update',
         DELETE: 'jobStatus.delete',
     },
+    JOB_FOLDER_TEMPLATE: {
+        CREATE: 'jobFolderTemplate.create',
+        UPDATE: 'jobFolderTemplate.update',
+        DELETE: 'jobFolderTemplate.delete',
+    },
     SYSTEM: {
         MANAGE: 'system.manage', // Global configs
     },

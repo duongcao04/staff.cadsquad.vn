@@ -13,7 +13,7 @@ const StyledCard = extendVariants(Card, {
         heroStyle: {
             cinematic: {
                 base: 'w-full bg-background border border-default-200 shadow-xs px-1 py-0.5',
-                header: 'gap-1.5 tracking-wide text-text-subdued font-semibold ',
+                header: 'gap-1.5 tracking-wide text-text-subdued font-medium ',
                 footer: 'flex items-center justify-end gap-2', // Glass effect preparation
             },
             modern: {

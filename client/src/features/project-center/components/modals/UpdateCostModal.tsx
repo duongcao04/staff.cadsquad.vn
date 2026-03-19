@@ -259,12 +259,12 @@ function UpdateCostContent({
                                         setIncomeCost(val ?? undefined)
                                     }}
                                     startContent={
-                                        <span className="text-text-subdued font-semibold">
+                                        <span className="text-text-subdued font-medium">
                                             $
                                         </span>
                                     }
                                     classNames={{
-                                        input: 'font-semibold',
+                                        input: 'font-medium',
                                     }}
                                 />
                                 <Select

@@ -87,7 +87,7 @@ export const ConfirmPaymentModal: React.FC<ConfirmPaymentModalProps> = ({
 
                                 {/* Staff List */}
                                 <div>
-                                    <p className="text-xs font-semibold mb-2 text-default-500">
+                                    <p className="text-xs font-medium mb-2 text-default-500">
                                         Payable To:
                                     </p>
                                     <div className="flex flex-col items-start gap-2">
@@ -127,7 +127,7 @@ export const ConfirmPaymentModal: React.FC<ConfirmPaymentModalProps> = ({
                                             </span>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <span className="text-sm font-semibold">
+                                            <span className="text-sm font-medium">
                                                 {job.paymentChannel
                                                     ?.displayName ||
                                                     'Default Method'}

@@ -2,26 +2,39 @@ import { azureConfig } from '@/config'
 import { ConfidentialClientApplication } from '@azure/msal-node'
 import { Client } from '@microsoft/microsoft-graph-client'
 import { InjectFlowProducer, InjectQueue } from '@nestjs/bullmq'
-import { BadRequestException, Inject, Injectable, Logger } from '@nestjs/common'
+import {
+	BadRequestException,
+	Inject,
+	Injectable,
+	Logger,
+	OnModuleDestroy,
+	OnModuleInit,
+} from '@nestjs/common'
 import type { ConfigType } from '@nestjs/config'
+import { FlowProducer, Queue, QueueEvents } from 'bullmq'
+import * as fs from 'fs'
 import 'isomorphic-fetch'
 import {
+	JOB_COPY_ITEM,
 	JOB_CREATE_FOLDER,
+	JOB_UPLOAD_FILE,
 	SHAREPOINT_FLOW,
 	SHAREPOINT_QUEUE,
 } from './sharepoint.constants'
-import { FlowProducer, Queue } from 'bullmq'
+import { UploadFileDto } from './dtos/upload-file.dto'
+import { CreateFolerDto } from './dtos/create-folder.dto'
+import { CopyItemDto } from './dtos/copy-item.dto'
+import axios from 'axios'
 
 @Injectable()
-export class SharePointService {
+export class SharePointService implements OnModuleInit, OnModuleDestroy {
 	private readonly logger = new Logger(SharePointService.name)
 
 	private msalClient: ConfidentialClientApplication
-	private siteId: string
-	private driveId: string
+	private siteId: string | undefined
+	private driveId: string | undefined
 
 	// Cấu hình ID của Drive (Mặc định lấy Drive chính của Root Site)
-	// Nếu bạn muốn trỏ vào Site khác, bạn cần thay đổi logic lấy Drive ID này.
 	private driveEndpoint = '/sites/root/drive'
 
 	constructor(
@@ -43,17 +56,17 @@ export class SharePointService {
 	}
 
 	/**
-	 * INIT: Hàm này cần chạy 1 lần để tìm ID của Site "Data"
-	 * Thay vì hardcode /sites/root
+	 * INIT: Tìm Site ID và thiết lập QueueEvents
 	 */
 	async onModuleInit() {
-		// Tự động tìm Site ID của trang "Data"
-		// URL host: vncsd.sharepoint.com
-		// Server relative path: /sites/Data
-		const client = await this.getGraphClient()
+		// 1. Khởi tạo QueueEvents để lắng nghe kết quả từ Processor
+		// Bắt buộc phải chia sẻ connection với Queue gốc
+		const connection = await this.spQueue.client
+		this.logger.log('📡 SharePoint QueueEvents initialized.')
 
+		// 2. Tìm Site "Data"
+		const client = await this.getGraphClient()
 		try {
-			// Tìm site theo đường dẫn server (Thay 'Data' bằng tên site trong URL của bạn)
 			const site = await client
 				.api('/sites/vncsd.sharepoint.com:/sites/Data')
 				.get()
@@ -63,25 +76,29 @@ export class SharePointService {
 			)
 		} catch (error) {
 			this.logger.error(`Cannot find site 'Data'. Fallback to Root.`)
-			this.siteId = 'root' // Fallback nếu không tìm thấy
+			this.siteId = 'root'
 		}
+
+		// 3. Tìm Drive ID mặc định ("Documents")
 		if (!this.driveId) {
-			const client = await this.getGraphClient()
-			const drives = await client
-				.api(`/sites/${this.siteId}/drives`)
-				.get()
-			// Tìm drive mặc định
+			const drives = await client.api(`/sites/${this.siteId}/drives`).get()
 			const targetDrive = drives.value.find(
 				(d: any) => d.name === 'Documents'
 			)
 			if (targetDrive) {
 				this.driveId = targetDrive.id
+				this.driveEndpoint = `/drives/${this.driveId}` // Update endpoint dynamically
 				this.logger.log(
 					`Using Drive: ${targetDrive.name} (${this.driveId})`
 				)
 			}
 		}
 	}
+
+	/**
+	 * Dọn dẹp listener khi module bị hủy (Quan trọng để tránh memory leak)
+	 */
+	async onModuleDestroy() { }
 
 	private async getAccessToken(): Promise<string> {
 		const result = await this.msalClient.acquireTokenByClientCredential({
@@ -100,26 +117,19 @@ export class SharePointService {
 	// ==========================================
 	// 1. LIST FILES (DUYỆT FILE)
 	// ==========================================
-
-	/**
-	 * Lấy danh sách file/folder.
-	 * @param folderId (Optional) Nếu không truyền thì lấy Root.
-	 */
 	async getItems(folderId?: string) {
 		const client = await this.getGraphClient()
 
-		// Nếu có folderId -> lấy con của folder đó. Nếu không -> lấy root.
 		const endpoint = folderId
 			? `/drives/${this.driveId}/items/${folderId}/children`
 			: `/drives/${this.driveId}/root/children`
 
 		try {
 			const response = await client.api(endpoint).get()
-			// Map lại dữ liệu cho gọn gàng dễ dùng ở Frontend
 			return response.value.map((item: any) => ({
 				id: item.id,
 				name: item.name,
-				isFolder: !!item.folder, // Kiểm tra xem có phải folder không
+				isFolder: !!item.folder,
 				size: item.size,
 				webUrl: item.webUrl,
 				createdDateTime: item.createdDateTime,
@@ -127,7 +137,7 @@ export class SharePointService {
 				createdBy: item.createdBy?.user?.displayName || 'System',
 			}))
 		} catch (error) {
-			this.logger.error(`List items failed: ${error.message}`)
+			this.logger.error(`List items failed: ${(error as { message: string }).message}`)
 			throw new BadRequestException('Cannot list items from SharePoint')
 		}
 	}
@@ -135,76 +145,152 @@ export class SharePointService {
 	// ==========================================
 	// 2. UPLOAD FILE
 	// ==========================================
-
 	/**
-	 * Upload file vào một folder cụ thể
+	 * Upload file (Fire & Forget)
 	 */
-	async uploadFile(parentId: string, file: Express.Multer.File) {
-		const client = await this.getGraphClient()
+	async queueUploadFile(parentId: string, file: Express.Multer.File) {
+		const workingDir = './working'
+		if (!fs.existsSync(workingDir)) fs.mkdirSync(workingDir)
 
-		// Endpoint: /drive/items/{parent-id}:/{filename}:/content
-		// Nếu parentId là 'root' thì dùng /root
-		const parentPath =
-			parentId === 'root'
-				? `/drives/${this.driveId}/root`
-				: `/drives/${this.driveId}/items/${parentId}`
+		const tempFilePath = `${workingDir}/${Date.now()}-${file.originalname}`
+		fs.writeFileSync(tempFilePath, file.buffer)
 
-		const endpoint = `${this.driveEndpoint}${parentPath}:/${file.originalname}:/content`
+		const payload: UploadFileDto = {
+			driveId: this.driveId,
+			parentId,
+			filePath: tempFilePath,
+			originalName: file.originalname,
+		}
+		const job = await this.spQueue.add(JOB_UPLOAD_FILE, payload)
 
+		return {
+			message: 'File queued for upload',
+			jobId: job.id
+		}
+	}
+
+	async executeUploadFile(parentId: string, file: Express.Multer.File) {
 		try {
-			// Upload trực tiếp buffer
-			// Lưu ý: Upload session (cho file > 4MB) cần logic phức tạp hơn.
-			// Đây là logic simple upload (cho file < 4MB).
-			const response = await client.api(endpoint).put(file.buffer)
-			return response
-		} catch (error) {
-			this.logger.error(`Upload failed: ${error.message}`)
-			throw new BadRequestException('Upload to SharePoint failed')
+			// 1. Lấy Access Token dùng chung hàm có sẵn
+			const accessToken = await this.getAccessToken();
+
+			// 2. Encode tên file để tránh lỗi URL
+			const fileName = encodeURIComponent(file.originalname);
+
+			// 3. Sử dụng endpoint động (như bạn dùng ở các hàm khác)
+			// graph.microsoft.com/v1.0 đã được ngầm định khi dùng axios hoặc client.
+			const createSessionUrl = `https://graph.microsoft.com/v1.0/drives/${this.driveId}/items/${parentId}:/${fileName}:/createUploadSession`;
+
+			// 4. Tạo Upload Session trên SharePoint
+			const sessionResponse = await axios.post(
+				createSessionUrl,
+				{
+					item: {
+						"@microsoft.graph.conflictBehavior": "rename", // Hoặc "replace" nếu muốn ghi đè
+					}
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${accessToken}`,
+						'Content-Type': 'application/json',
+					},
+				}
+			);
+
+			const uploadUrl = sessionResponse.data.uploadUrl;
+
+			// 5. Khởi tạo thông số băm nhỏ file (Chunking)
+			const fileSize = file.size;
+			// Microsoft bắt buộc chunk size là bội số của 320 KiB (327,680 bytes)
+			// 327680 * 10 = ~3.2MB cho mỗi chunk. Đây là mức lý tưởng.
+			const chunkSize = 327680 * 10;
+			let start = 0;
+			let uploadResult = null;
+
+			this.logger.log(`Bắt đầu upload file ${file.originalname} (Size: ${fileSize} bytes)`);
+
+			// 6. Đẩy từng chunk lên SharePoint
+			while (start < fileSize) {
+				const end = Math.min(start + chunkSize, fileSize);
+				const chunk = file.buffer.slice(start, end);
+
+				const chunkResponse = await axios.put(uploadUrl, chunk, {
+					headers: {
+						'Content-Length': chunk.length,
+						// Header Content-Range bắt buộc: bytes {start}-{end}/{total}
+						'Content-Range': `bytes ${start}-${end - 1}/${fileSize}`,
+					},
+				});
+
+				uploadResult = chunkResponse.data;
+				start = end;
+
+				// Tuỳ chọn: Ghi log tiến trình
+				const percent = Math.round((start / fileSize) * 100);
+				this.logger.debug(`Uploading ${file.originalname}: ${percent}%`);
+			}
+
+			this.logger.log(`Upload thành công file: ${file.originalname}`);
+
+			// 7. Trả về kết quả sau khi hoàn thành
+			return uploadResult
+
+		} catch (error: any) {
+			const errorMessage = error?.response?.data?.error?.message || error.message;
+			this.logger.error(`Error uploading file ${file.originalname} to SharePoint: ${errorMessage}`);
+
+			throw new BadRequestException(
+				`Failed to upload file to SharePoint. Error: ${errorMessage}`
+			);
 		}
 	}
 
 	// ==========================================
 	// 3. CREATE FOLDER
 	// ==========================================
-
 	async queueCreateFolder(parentId: string, folderName: string) {
-		await this.spQueue.add(JOB_CREATE_FOLDER, {
+		const payload: CreateFolerDto = {
 			parentId,
 			folderName,
 			driveId: this.driveId,
-		})
+		}
+		await this.spQueue.add(JOB_CREATE_FOLDER, payload)
 		this.logger.log(`Queued create folder: ${folderName}`)
 	}
 
-	/**
-	 * Tạo Folder cha và tự động tạo các folder con bên trong
-	 * @param parentName Tên folder cha (VD: "Project-A")
-	 * @param childrenNames Danh sách folder con (VD: ["Design", "Source", "Docs"])
-	 */
 	async queuCreateFolderWithChildren(
 		rootParentId: string,
 		parentName: string,
 		childrenNames: string[]
 	) {
-		await this.spQueue.add(JOB_CREATE_FOLDER, {
+		const payload: CreateFolerDto = {
 			parentId: rootParentId,
 			folderName: parentName,
 			driveId: this.driveId,
 			childrenToSpawn: childrenNames,
-		})
+		}
+		await this.spQueue.add(JOB_CREATE_FOLDER, payload)
 
 		this.logger.log(
 			`Queued parent: ${parentName} with ${childrenNames.length} children`
 		)
 	}
 
+	async queueCopyItem(itemId: string, destinationFolderId: string, newName?: string) {
+		const payload: CopyItemDto = {
+			itemId,
+			destinationFolderId,
+			newName,
+			driveId: this.driveId,
+		}
+		await this.spQueue.add(JOB_COPY_ITEM, payload)
+		this.logger.log(`Queued copy item: ${itemId} to ${destinationFolderId}`)
+	}
+
 	// ==========================================
-	// 4. DOWNLOAD / PREVIEW
+	// 4. GET & DELETE
 	// ==========================================
 
-	/**
-	 * Lấy link download trực tiếp (Temporary Download URL)
-	 */
 	async getDownloadUrl(itemId: string) {
 		const client = await this.getGraphClient()
 		const item = await client
@@ -219,32 +305,20 @@ export class SharePointService {
 		return { url: item['@microsoft.graph.downloadUrl'] }
 	}
 
-	// ==========================================
-	// 5. DELETE
-	// ==========================================
-
 	async deleteItem(itemId: string) {
 		const client = await this.getGraphClient()
 		await client.api(`${this.driveEndpoint}/items/${itemId}`).delete()
 		return { success: true }
 	}
 
-	/**
-	 * CỰC KỲ QUAN TRỌNG: Hàm lấy ID từ đường dẫn
-	 * Input: "CSD- TEAM/ST006. CH.DUONG"
-	 * Output: "01ABCDEF..." (Đây là parentId bạn cần)
-	 */
 	async getFolderIdByPath(path: string): Promise<string> {
 		const client = await this.getGraphClient()
-
-		// Đường dẫn Graph API để lấy item theo path:
-		// /sites/{site-id}/drive/root:/{path-to-folder}
 		const safePath = path.startsWith('/') ? path.substring(1) : path
 		const endpoint = `/drives/${this.driveId}/root:/${safePath}`
 
 		try {
 			const item = await client.api(endpoint).get()
-			return item.id // <--- ĐÂY CHÍNH LÀ parentId
+			return item.id
 		} catch (error) {
 			this.logger.error(`Folder not found: ${path}`)
 			throw new BadRequestException('Folder path not found in SharePoint')
@@ -253,12 +327,11 @@ export class SharePointService {
 
 	async listDrives() {
 		const client = await this.getGraphClient()
-		// Lấy danh sách các ổ đĩa trong Site này
 		const response = await client.api(`/sites/${this.siteId}/drives`).get()
 
 		return response.value.map((drive: any) => ({
-			id: drive.id, // <--- ĐÂY LÀ CÁI CẦN TÌM
-			name: drive.name, // Tên (vd: Documents)
+			id: drive.id,
+			name: drive.name,
 			webUrl: drive.webUrl,
 			description: drive.description,
 		}))

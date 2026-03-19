@@ -39,7 +39,7 @@ export function NotificationCard({ data }: { data: TUserNotification }) {
             </div>
             <div>
                 <p
-                    className="text-sm font-semibold line-clamp-1"
+                    className="text-sm font-medium line-clamp-1"
                     title={data.title ?? ''}
                 >
                     {data.title}

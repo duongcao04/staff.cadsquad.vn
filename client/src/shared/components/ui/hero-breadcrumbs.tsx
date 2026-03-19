@@ -8,19 +8,19 @@ export const HeroBreadcrumbs = extendVariants(Breadcrumbs, {
         // We target the 'item' (specifically the active one) and the 'separator'
         color: {
             blue: {
-                item: 'data-[current=true]:text-blue-500 data-[current=true]:font-semibold hover:text-blue-400',
+                item: 'data-[current=true]:text-blue-500 data-[current=true]:font-medium hover:text-blue-400',
                 separator: 'text-blue-300/50',
             },
             warning: {
-                item: 'data-[current=true]:text-orange-500 data-[current=true]:font-semibold hover:text-orange-400',
+                item: 'data-[current=true]:text-orange-500 data-[current=true]:font-medium hover:text-orange-400',
                 separator: 'text-orange-300/50',
             },
             danger: {
-                item: 'data-[current=true]:text-red-500 data-[current=true]:font-semibold hover:text-red-400',
+                item: 'data-[current=true]:text-red-500 data-[current=true]:font-medium hover:text-red-400',
                 separator: 'text-red-300/50',
             },
             success: {
-                item: 'data-[current=true]:text-green-500 data-[current=true]:font-semibold hover:text-green-400',
+                item: 'data-[current=true]:text-green-500 data-[current=true]:font-medium hover:text-green-400',
                 separator: 'text-green-300/50',
             },
         },

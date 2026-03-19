@@ -85,7 +85,7 @@ function AddCommentArea({ jobId, parentId, onSuccess, autoFocus }: any) {
                         className="size-5"
                     />
 
-                    <span className="text-[11px] font-semibold text-default-500 italic">
+                    <span className="text-[11px] font-medium text-default-500 italic">
                         {parentId ? 'Replying...' : 'Add a comment'}
                     </span>
                 </div>
@@ -164,7 +164,7 @@ export function CommentsList({ job }: { job: TJob }) {
 
     return (
         <>
-            <h3 className="text-sm font-semibold mb-6">
+            <h3 className="text-sm font-medium mb-6">
                 Discussion ({comments?.length || 0})
             </h3>
 
@@ -250,7 +250,7 @@ function CommentItem({
                         <div className="flex items-center gap-4 mt-1 px-1">
                             <button
                                 onClick={() => setIsReplying(!isReplying)}
-                                className="text-[11px] font-semibold text-text-subdued hover:text-primary transition-colors flex items-center gap-1 cursor-pointer"
+                                className="text-[11px] font-medium text-text-subdued hover:text-primary transition-colors flex items-center gap-1 cursor-pointer"
                             >
                                 <ReplyIcon size={12} />
                                 {isReplying ? 'Cancel' : 'Reply'}
@@ -323,7 +323,7 @@ export function EmptyCommentsState() {
             </div>
 
             {/* Text Content */}
-            <h4 className="text-base font-semibold text-default-700">
+            <h4 className="text-base font-medium text-default-700">
                 No discussion yet
             </h4>
             <p className="text-sm text-default-500 max-w-60 mt-1 leading-relaxed">
