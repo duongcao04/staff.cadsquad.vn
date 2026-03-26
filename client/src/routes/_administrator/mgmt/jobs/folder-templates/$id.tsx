@@ -1,6 +1,7 @@
 import {
     convertStorage,
     dateFormatter,
+    deleteJobFolderTemplateOptions,
     INTERNAL_URLS,
     jobFolderTemplateOptions,
     jobFolderTemplateQueryKeys,
@@ -57,18 +58,36 @@ export const Route = createFileRoute(
             jobFolderTemplateOptions(id)
         )
 
-        const deleteTemplate = useDisclosure()
+        const deleteTemplate = useMutation(deleteJobFolderTemplateOptions())
+
+        const deleteTemplateDisclosure = useDisclosure()
+
+        const handleDeleteTemplate = async () => {
+            deleteTemplate.mutateAsync(
+                {
+                    id,
+                },
+                {
+                    onSuccess() {
+                        addToast({
+                            title: 'Delete successfully',
+                            color: 'success',
+                        })
+                        router.navigate({
+                            href: INTERNAL_URLS.management.jobFolderTemplates,
+                        })
+                    },
+                }
+            )
+            deleteTemplateDisclosure.onClose()
+        }
 
         return (
             <>
                 <CancelModal
-                    isOpen={deleteTemplate.isOpen}
-                    onClose={deleteTemplate.onClose}
-                    onConfirm={() => {
-                        // Add your delete mutation call here
-                        console.log('Deleting template:', template.id)
-                        deleteTemplate.onClose()
-                    }}
+                    isOpen={deleteTemplateDisclosure.isOpen}
+                    onClose={deleteTemplateDisclosure.onClose}
+                    onConfirm={handleDeleteTemplate}
                     title="Delete Folder Template"
                     message={
                         <span>
@@ -106,7 +125,7 @@ export const Route = createFileRoute(
                         <Button
                             startContent={<Trash2Icon size={16} />}
                             color="danger"
-                            onPress={deleteTemplate.onOpen}
+                            onPress={deleteTemplateDisclosure.onOpen}
                         >
                             Delete
                         </Button>

@@ -55,3 +55,14 @@ export const updateJobFolderTemplateOptions = () => {
         onError: (err) => onErrorToast(err, "Update failed")
     })
 }
+
+export const deleteJobFolderTemplateOptions = () => {
+    return mutationOptions({
+        mutationFn: ({
+            id,
+        }: {
+            id: string
+        }) => jobFolderTemplateApi.remove(id),
+        onError: (err) => onErrorToast(err, "Delete failed")
+    })
+}

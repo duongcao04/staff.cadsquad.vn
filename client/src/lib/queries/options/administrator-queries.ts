@@ -11,9 +11,14 @@ import { administratorApi, IAdminDbStats } from '../../api'
 // ==========================================
 
 export const adminDashboardKeys = {
-	all: ['admin-dashboard'] as const,
-	kpis: () => [...adminDashboardKeys.all, 'kpis'] as const,
-	dbStats: () => [...adminDashboardKeys.all, 'db-stats'] as const,
+	resource: ['admin-dashboard'] as const,
+	kpis: () => [...adminDashboardKeys.resource, 'kpis'] as const,
+	dbStats: () => [...adminDashboardKeys.resource, 'db-stats'] as const,
+}
+
+export const adminJobKeys = {
+	resource: ['admin-jobs'] as const,
+	stats: () => [...adminJobKeys.resource, 'stats'] as const,
 }
 
 export const adminDashboardKpisOptions = () =>
@@ -47,6 +52,24 @@ export const adminDashboardDbStatsOptions = () =>
 				}
 			}
 			return dbStats
+		},
+	})
+
+
+export interface IAdminJobStats {
+	total: number,
+	ongoing: number,
+	delivered: number,
+	late: number,
+	finished: number
+}
+export const adminJobStatsOptions = ({ from, to }: { from?: string, to?: string }) =>
+	queryOptions({
+		queryKey: adminJobKeys.stats(),
+		queryFn: () => administratorApi.jobs.getStats({ from, to }),
+		select(data) {
+			const result = data.result as IAdminJobStats
+			return result
 		},
 	})
 

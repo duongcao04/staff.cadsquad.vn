@@ -32,7 +32,7 @@ import {
     PencilLineIcon,
     Plus,
     Search,
-    Star
+    Star,
 } from 'lucide-react'
 import { useState } from 'react'
 import { CreateFolderTemplateModal } from '../../../../../features/job-folder-templates'
@@ -127,7 +127,7 @@ export default function JobFolderTemplatesPage() {
             {/* 2. Stats / KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Total Templates */}
-                <Card shadow="sm">
+                <Card shadow="none" className="border border-border-default">
                     <CardBody className="p-5 flex flex-row items-center justify-between">
                         <div>
                             <p className="text-sm font-semibold text-text-subdued">
@@ -144,7 +144,7 @@ export default function JobFolderTemplatesPage() {
                 </Card>
 
                 {/* Total Storage Footprint */}
-                <Card shadow="sm">
+                <Card shadow="none" className="border border-border-default">
                     <CardBody className="p-5 flex flex-row items-center justify-between">
                         <div>
                             <p className="text-sm font-semibold text-text-subdued">
@@ -164,7 +164,10 @@ export default function JobFolderTemplatesPage() {
                 </Card>
 
                 {/* Most Used Template */}
-                <Card shadow="sm" className="bg-success-50/50">
+                <Card
+                    shadow="none"
+                    className="border border-success-700/50 bg-success-50/50"
+                >
                     <CardBody className="p-5 flex flex-row items-center justify-between">
                         <div>
                             <p className="text-sm font-semibold text-success-700">
@@ -185,7 +188,7 @@ export default function JobFolderTemplatesPage() {
             </div>
 
             {/* 3. Table Area */}
-            <Card shadow="sm">
+            <Card shadow="none" className="border border-border-default">
                 <CardHeader>
                     <Input
                         placeholder="Search templates..."

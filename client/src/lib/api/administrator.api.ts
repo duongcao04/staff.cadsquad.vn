@@ -1,3 +1,4 @@
+import queryString from 'query-string'
 import { TClient, TJob } from '../../shared/types'
 import { ApiResponse, axiosClient } from '../axios'
 
@@ -76,6 +77,13 @@ export const administratorApi = {
 	},
 
 	jobs: {
+		getStats: async ({ from, to }: { from?: string, to?: string }) => {
+			const queryStringFormatter = queryString.stringify({ from, to })
+			const { data } = await axiosClient.get(
+				`/v1/admin/jobs/stats?${queryStringFormatter}`,
+			)
+			return data
+		},
 		bulkUpdateStatus: async (payload: IBulkUpdateJobStatusPayload) => {
 			const { data } = await axiosClient.post(
 				'/v1/admin/jobs/bulk-status',

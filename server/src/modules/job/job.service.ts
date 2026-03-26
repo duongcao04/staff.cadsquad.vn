@@ -1,5 +1,5 @@
 import { PaginationMeta } from '@/common/interfaces/pagination-meta.interface'
-import { ActivityType, Job, NotificationType, Prisma } from '@/generated/prisma'
+import { ActivityType, Job, JobStatusSystemType, NotificationType, Prisma } from '@/generated/prisma'
 import { AuthService } from '@/modules/auth/auth.service'
 import { NotificationService } from '@/modules/notification/notification.service'
 import { SharePointService } from '@/modules/sharepoint/sharepoint.service'
@@ -33,6 +33,8 @@ import { JobSortBuilder } from './dto/job-sort.dto'
 import { UpdateAttachmentsDto } from './dto/update-attachments.dto'
 import { UpdateGeneralJobDto } from './dto/update-general.dto'
 import { UpdateRevenueDto } from './dto/update-revenue.dto'
+import { JobTabEnum } from './enums/job-tab.enum'
+import lodash from 'lodash'
 
 @Injectable()
 export class JobService {
@@ -101,7 +103,6 @@ export class JobService {
 	// -------------------------------------------------------------------------
 	// READ METHODS
 	// -------------------------------------------------------------------------
-
 	async findAll(
 		userId: string,
 		userPermissions: string[],

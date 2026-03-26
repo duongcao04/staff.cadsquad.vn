@@ -104,7 +104,7 @@ export class JobFolderTemplateController {
         description: 'The job folder template has been successfully deleted.',
     })
     @UseGuards(PermissionsGuard)
-    @RequirePermissions(APP_PERMISSIONS.JOB_FOLDER_TEMPLATE.DELETE)
+    // @RequirePermissions(APP_PERMISSIONS.JOB_FOLDER_TEMPLATE.DELETE)
     async remove(@Param('id') id: string) {
         return this.jobFolderTemplateService.delete(id)
     }
