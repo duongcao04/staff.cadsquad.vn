@@ -6,7 +6,6 @@ export * from './useEmail';
 export * from './useImage';
 export * from './useJob';
 export * from './useJobComment';
-export * from './useJobFolderTemplate';
 export * from './useJobTitle';
 export * from './useNotification';
 export * from './useRole';

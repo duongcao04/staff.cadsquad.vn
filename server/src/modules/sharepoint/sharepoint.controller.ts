@@ -118,4 +118,15 @@ export class SharePointController {
 			dto.newName
 		);
 	}
+
+	// 9. Lấy thông tin chi tiết của Folder (hoặc File)
+	// GET /api/v1/sharepoint/folder/xxx-folder-id-xxx
+	@Get('folder/:id')
+	async getFolderDetails(@Param('id') id: string) {
+		if (!id) {
+			throw new BadRequestException('Folder ID is required');
+		}
+
+		return this.service.getFolderDetails(id);
+	}
 }

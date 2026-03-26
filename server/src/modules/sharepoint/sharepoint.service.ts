@@ -336,4 +336,18 @@ export class SharePointService implements OnModuleInit, OnModuleDestroy {
 			description: drive.description,
 		}))
 	}
+
+	async getFolderDetails(folderId: string) {
+		try {
+			const client = await this.getGraphClient()
+			// Ví dụ sử dụng Microsoft Graph Client
+			const details = await client.api(`/sites/${this.siteId}/drive/items/${folderId}`)
+				.get();
+
+			return details;
+		} catch (error) {
+			// Xử lý lỗi (ví dụ: NotFoundException nếu folder không tồn tại)
+			throw error;
+		}
+	}
 }

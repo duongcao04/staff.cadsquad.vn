@@ -1,20 +1,19 @@
 import {
+    createJobFolderTemplateOptions,
     dateFormatter,
     INTERNAL_URLS,
+    jobFolderTemplateQueryKeys,
     jobFolderTemplatesListOptions,
 } from '@/lib'
 import { AdminPageHeading, HeroButton } from '@/shared/components'
 import AdminContentContainer from '@/shared/components/admin/AdminContentContainer'
 import {
+    addToast,
     Button,
     Card,
     CardBody,
+    CardHeader,
     Input,
-    Modal,
-    ModalBody,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
     Table,
     TableBody,
     TableCell,
@@ -24,20 +23,20 @@ import {
     Tooltip,
     useDisclosure,
 } from '@heroui/react'
-import { useSuspenseQuery } from '@tanstack/react-query'
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { useFormik } from 'formik'
 import {
     ExternalLink,
     FolderTree,
     HardDrive,
+    PencilLineIcon,
     Plus,
-    RefreshCw,
     Search,
-    Star,
-    Trash2,
+    Star
 } from 'lucide-react'
 import { useState } from 'react'
+import { CreateFolderTemplateModal } from '../../../../../features/job-folder-templates'
+import { queryClient } from '../../../../../main'
 
 export const Route = createFileRoute(
     '/_administrator/mgmt/jobs/folder-templates/'
@@ -45,9 +44,35 @@ export const Route = createFileRoute(
     component: () => {
         const { isOpen, onOpen, onClose } = useDisclosure()
 
+        const createFolderTemplate = useMutation({
+            ...createJobFolderTemplateOptions(),
+            onSuccess: () => {
+                queryClient.refetchQueries({
+                    queryKey: jobFolderTemplateQueryKeys.lists(),
+                })
+                addToast({
+                    title: 'Successfully',
+                    description: 'Create new folder template successfully',
+                    color: 'success',
+                })
+            },
+        })
+
         return (
             <>
-                <CreateTemplateModal isOpen={isOpen} onClose={onClose} />
+                <CreateFolderTemplateModal
+                    isOpen={isOpen}
+                    onClose={onClose}
+                    onSave={async (data) => {
+                        createFolderTemplate.mutateAsync({
+                            displayName: data.displayName,
+                            folderId: data.folderId,
+                            folderName: data.folderName,
+                            size: data.size,
+                            webUrl: data.webUrl,
+                        })
+                    }}
+                />
                 <AdminPageHeading
                     title="Folder Templates"
                     description=" Manage SharePoint folder structures used for
@@ -64,7 +89,9 @@ export const Route = createFileRoute(
                         </div>
                     }
                 />
-                <JobFolderTemplatesPage />
+                <AdminContentContainer className="mt-5 space-y-6 max-w-7xl mx-auto">
+                    <JobFolderTemplatesPage />
+                </AdminContentContainer>
             </>
         )
     },
@@ -96,17 +123,17 @@ export default function JobFolderTemplatesPage() {
     )[0]
 
     return (
-        <AdminContentContainer className="pt-0 space-y-4 max-w-7xl mx-auto">
+        <>
             {/* 2. Stats / KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Total Templates */}
-                <Card shadow="sm" className="border border-default-200">
+                <Card shadow="sm">
                     <CardBody className="p-5 flex flex-row items-center justify-between">
                         <div>
-                            <p className="text-sm font-semibold text-default-600">
+                            <p className="text-sm font-semibold text-text-subdued">
                                 Active Templates
                             </p>
-                            <p className="text-2xl font-bold text-default-900 mt-1">
+                            <p className="text-2xl font-bold text-text-default mt-1">
                                 {totalTemplates}
                             </p>
                         </div>
@@ -117,13 +144,13 @@ export default function JobFolderTemplatesPage() {
                 </Card>
 
                 {/* Total Storage Footprint */}
-                <Card shadow="sm" className="border border-default-200">
+                <Card shadow="sm">
                     <CardBody className="p-5 flex flex-row items-center justify-between">
                         <div>
-                            <p className="text-sm font-semibold text-default-600">
+                            <p className="text-sm font-semibold text-text-subdued">
                                 Total Blueprint Size
                             </p>
-                            <p className="text-2xl font-bold text-default-900 mt-1">
+                            <p className="text-2xl font-bold text-text-default mt-1">
                                 {formatBytes(totalSize)}
                             </p>
                             <p className="text-xs text-default-400 mt-1">
@@ -137,10 +164,7 @@ export default function JobFolderTemplatesPage() {
                 </Card>
 
                 {/* Most Used Template */}
-                <Card
-                    shadow="sm"
-                    className="border border-default-200 bg-success-50/50"
-                >
+                <Card shadow="sm" className="bg-success-50/50">
                     <CardBody className="p-5 flex flex-row items-center justify-between">
                         <div>
                             <p className="text-sm font-semibold text-success-700">
@@ -161,8 +185,8 @@ export default function JobFolderTemplatesPage() {
             </div>
 
             {/* 3. Table Area */}
-            <Card shadow="sm" className="border border-default-200">
-                <div className="p-4 border-b border-divider flex flex-col md:flex-row md:items-center justify-between gap-4 bg-default-50">
+            <Card shadow="sm">
+                <CardHeader>
                     <Input
                         placeholder="Search templates..."
                         startContent={
@@ -173,190 +197,106 @@ export default function JobFolderTemplatesPage() {
                         value={searchQuery}
                         onValueChange={setSearchQuery}
                     />
-                    <Button
-                        variant="flat"
-                        color="default"
-                        startContent={<RefreshCw size={14} />}
+                </CardHeader>
+
+                <CardBody>
+                    <Table
+                        aria-label="Folder Templates Table"
+                        removeWrapper
+                        className="bg-transparent"
                     >
-                        Sync All Sizes
-                    </Button>
-                </div>
-
-                <Table
-                    aria-label="Folder Templates Table"
-                    removeWrapper
-                    className="bg-transparent"
-                >
-                    <TableHeader>
-                        <TableColumn>DISPLAY NAME</TableColumn>
-                        <TableColumn>SHAREPOINT FOLDER</TableColumn>
-                        <TableColumn>SIZE</TableColumn>
-                        <TableColumn>USAGE</TableColumn>
-                        <TableColumn>LAST SYNCED</TableColumn>
-                        <TableColumn align="end">ACTIONS</TableColumn>
-                    </TableHeader>
-                    <TableBody emptyContent="No folder templates found.">
-                        {filteredTemplates.map((tpl) => (
-                            <TableRow
-                                key={tpl.id}
-                                className="hover:bg-default-100/50 transition-colors"
-                            >
-                                <TableCell>
-                                    <span className="font-bold text-text-default">
-                                        {tpl.displayName}
-                                    </span>
-                                </TableCell>
-                                <TableCell>
-                                    <div className="flex flex-col">
+                        <TableHeader>
+                            <TableColumn>DISPLAY NAME</TableColumn>
+                            <TableColumn>SHAREPOINT FOLDER</TableColumn>
+                            <TableColumn>SIZE</TableColumn>
+                            <TableColumn>USAGE</TableColumn>
+                            <TableColumn>LAST SYNCED</TableColumn>
+                            <TableColumn align="end">ACTIONS</TableColumn>
+                        </TableHeader>
+                        <TableBody emptyContent="No folder templates found.">
+                            {filteredTemplates.map((tpl) => (
+                                <TableRow
+                                    key={tpl.id}
+                                    className="hover:bg-background-hovered transition-colors rounded-lg"
+                                >
+                                    <TableCell>
+                                        <span className="font-bold text-text-default">
+                                            {tpl.displayName}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="flex flex-col">
+                                            <span className="text-sm font-medium text-text-default">
+                                                {tpl.folderName}
+                                            </span>
+                                            <span className="text-[10px] text-text-subdued font-mono mt-0.5">
+                                                ID:{' '}
+                                                {tpl.folderId.slice(
+                                                    -8,
+                                                    tpl.folderId.length
+                                                )}
+                                            </span>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>
                                         <span className="text-sm font-medium text-text-default">
-                                            {tpl.folderName}
+                                            {formatBytes(tpl.size)}
                                         </span>
-                                        <span className="text-[10px] text-text-subdued font-mono mt-0.5">
-                                            ID:{' '}
-                                            {tpl.folderId.slice(
-                                                -8,
-                                                tpl.folderId.length
-                                            )}
+                                    </TableCell>
+                                    <TableCell>
+                                        <span className="text-sm text-text-subdued">
+                                            {tpl.jobs.length} jobs
                                         </span>
-                                    </div>
-                                </TableCell>
-                                <TableCell>
-                                    <span className="text-sm font-medium text-text-default">
-                                        {formatBytes(tpl.size)}
-                                    </span>
-                                </TableCell>
-                                <TableCell>
-                                    <span className="text-sm text-text-subdued">
-                                        {tpl.jobs.length} jobs
-                                    </span>
-                                </TableCell>
-                                <TableCell>
-                                    <span className="text-sm text-text-subdued">
-                                        {dateFormatter(tpl.updatedAt)}
-                                    </span>
-                                </TableCell>
-                                <TableCell>
-                                    <div className="flex items-center justify-end gap-2">
-                                        <Tooltip content="Open in SharePoint">
-                                            <Button
-                                                isIconOnly
-                                                size="sm"
-                                                variant="light"
-                                                color="primary"
-                                                as="a"
-                                                href={tpl.webUrl}
-                                                target="_blank"
+                                    </TableCell>
+                                    <TableCell>
+                                        <span className="text-sm text-text-subdued">
+                                            {dateFormatter(tpl.updatedAt)}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="flex items-center justify-end gap-2">
+                                            <Tooltip content="Open in SharePoint">
+                                                <Button
+                                                    isIconOnly
+                                                    size="sm"
+                                                    variant="light"
+                                                    color="primary"
+                                                    as="a"
+                                                    href={tpl.webUrl}
+                                                    target="_blank"
+                                                >
+                                                    <ExternalLink size={16} />
+                                                </Button>
+                                            </Tooltip>
+                                            <Tooltip
+                                                content="Edit template"
+                                                color="warning"
+                                                className="text-white"
                                             >
-                                                <ExternalLink size={16} />
-                                            </Button>
-                                        </Tooltip>
-                                        <Link
-                                            to={INTERNAL_URLS.management.jobFolderTemplateDetail(
-                                                tpl.id
-                                            )}
-                                        >
-                                            <Button
-                                                size="sm"
-                                                variant="flat"
-                                                color="primary"
-                                            >
-                                                Edit
-                                            </Button>
-                                        </Link>
-                                        <Tooltip
-                                            content="Delete Template"
-                                            color="danger"
-                                        >
-                                            <Button
-                                                isIconOnly
-                                                size="sm"
-                                                variant="light"
-                                                color="danger"
-                                            >
-                                                <Trash2 size={16} />
-                                            </Button>
-                                        </Tooltip>
-                                    </div>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
+                                                <Button
+                                                    isIconOnly
+                                                    size="sm"
+                                                    variant="light"
+                                                    color="warning"
+                                                    as={Link}
+                                                    href={INTERNAL_URLS.management.jobFolderTemplateDetail(
+                                                        tpl.id
+                                                    )}
+                                                >
+                                                    <PencilLineIcon
+                                                        size={16}
+                                                        className="text-yellow-600"
+                                                    />
+                                                </Button>
+                                            </Tooltip>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </CardBody>
             </Card>
-
-            {/* Quick Add Modal */}
-        </AdminContentContainer>
-    )
-}
-
-// --- Inner Component: Create Modal ---
-const CreateTemplateModal = ({
-    isOpen,
-    onClose,
-}: {
-    isOpen: boolean
-    onClose: () => void
-}) => {
-    const formik = useFormik({
-        initialValues: { displayName: '', sharepointUrlOrId: '' },
-        onSubmit: async (values) => {
-            console.log('Creating template linked to:', values)
-            // API Call: Create new JobFolderTemplate
-            onClose()
-            formik.resetForm()
-        },
-    })
-
-    return (
-        <Modal isOpen={isOpen} onClose={onClose}>
-            <ModalContent>
-                <form onSubmit={formik.handleSubmit}>
-                    <ModalHeader className="flex flex-col gap-1">
-                        <span className="text-xl font-bold">
-                            Add Folder Template
-                        </span>
-                        <p className="text-sm text-default-500">
-                            Link an existing SharePoint folder to use as a
-                            blueprint.
-                        </p>
-                    </ModalHeader>
-                    <ModalBody className="py-4 space-y-4">
-                        <Input
-                            isRequired
-                            name="displayName"
-                            label="Template Display Name"
-                            placeholder="e.g. Standard Architectural Setup"
-                            variant="bordered"
-                            labelPlacement="outside"
-                            value={formik.values.displayName}
-                            onChange={formik.handleChange}
-                        />
-                        <Input
-                            isRequired
-                            name="sharepointUrlOrId"
-                            label="SharePoint Folder URL or ID"
-                            placeholder="Paste the link to the SharePoint folder..."
-                            variant="bordered"
-                            labelPlacement="outside"
-                            value={formik.values.sharepointUrlOrId}
-                            onChange={formik.handleChange}
-                            description="The system will automatically sync folder metadata upon creation."
-                        />
-                    </ModalBody>
-                    <ModalFooter className="border-t border-divider mt-4 pt-4">
-                        <Button variant="flat" onPress={onClose}>
-                            Cancel
-                        </Button>
-                        <Button
-                            color="primary"
-                            type="submit"
-                            className="font-bold shadow-md"
-                        >
-                            Sync & Create
-                        </Button>
-                    </ModalFooter>
-                </form>
-            </ModalContent>
-        </Modal>
+        </>
     )
 }

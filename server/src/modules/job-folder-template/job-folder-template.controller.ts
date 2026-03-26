@@ -86,7 +86,7 @@ export class JobFolderTemplateController {
         type: JobFolderTemplateResponseDto,
     })
     @UseGuards(PermissionsGuard)
-    @RequirePermissions(APP_PERMISSIONS.JOB_FOLDER_TEMPLATE.UPDATE)
+    // @RequirePermissions(APP_PERMISSIONS.JOB_FOLDER_TEMPLATE.UPDATE)
     async update(
         @Param('id') id: string,
         @Body() updateJobFolderTemplateDto: UpdateJobFolderTemplateDto

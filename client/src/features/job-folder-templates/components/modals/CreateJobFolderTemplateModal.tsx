@@ -1,4 +1,13 @@
-import { Select, SelectItem, useDisclosure } from '@heroui/react'
+import {
+    Modal,
+    ModalBody,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    Select,
+    SelectItem,
+    useDisclosure,
+} from '@heroui/react'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { Folder, Plus } from 'lucide-react'
 import { useState } from 'react'
@@ -7,16 +16,9 @@ import {
     sharepointFolderItemsOptions,
     TCreateJobFolderTemplateInput,
 } from '../../../../lib'
-import {
-    HeroButton,
-    HeroInput,
-    HeroModal,
-    HeroModalBody,
-    HeroModalContent,
-    HeroModalFooter,
-    HeroModalHeader,
-} from '../../../../shared/components'
+import { HeroButton, HeroInput } from '../../../../shared/components'
 import CancelModal from '../../../../shared/components/ui/cancel-modal'
+import lodash from 'lodash'
 
 interface ModalProps {
     isOpen: boolean
@@ -54,6 +56,12 @@ export function CreateFolderTemplateModal({
         }
     })
 
+    const handleCloseModal = () => {
+        setDisplayName('')
+        setSelectedFolderId(null)
+        onClose()
+    }
+
     const handleSave = () => {
         if (!displayName || !selectedFolderId) return
 
@@ -65,6 +73,7 @@ export function CreateFolderTemplateModal({
             size: folder?.size,
             webUrl: folder.url || folder.webUrl,
         })
+        handleCloseModal()
     }
 
     return (
@@ -72,22 +81,32 @@ export function CreateFolderTemplateModal({
             <CancelModal
                 isOpen={cancelModalDisclosure.isOpen}
                 onClose={cancelModalDisclosure.onClose}
-                onConfirm={onClose}
+                onConfirm={handleCloseModal}
                 title="Cancel Folder Template Creation"
                 message="Are you sure you do not want to create ?"
             />
-            <HeroModal
+            <Modal
                 isOpen={isOpen}
-                onClose={cancelModalDisclosure.onOpen}
+                onClose={() => {
+                    const isDirtyForm =
+                        !lodash.isEmpty(displayName) ||
+                        !lodash.isNull(selectedFolderId)
+
+                    if (isDirtyForm) {
+                        cancelModalDisclosure.onOpen()
+                    } else {
+                        handleCloseModal()
+                    }
+                }}
                 size="md"
             >
-                <HeroModalContent>
-                    <HeroModalHeader className="flex flex-col gap-1 text-[#1B365D]">
+                <ModalContent>
+                    <ModalHeader className="flex flex-col gap-1 text-[#1B365D]">
                         {editingTemplate
                             ? 'Edit Folder Template'
                             : 'Create New Job Folder Template'}
-                    </HeroModalHeader>
-                    <HeroModalBody className="space-y-4">
+                    </ModalHeader>
+                    <ModalBody className="space-y-4">
                         <HeroInput
                             label="Template Display Name"
                             placeholder="e.g. Project CAD Models"
@@ -139,8 +158,8 @@ export function CreateFolderTemplateModal({
                                 automatically provisioned in SharePoint.
                             </p>
                         </div>
-                    </HeroModalBody>
-                    <HeroModalFooter>
+                    </ModalBody>
+                    <ModalFooter>
                         <HeroButton variant="flat" onPress={onClose}>
                             Cancel
                         </HeroButton>
@@ -153,9 +172,9 @@ export function CreateFolderTemplateModal({
                                 ? 'Update Template'
                                 : 'Create Template'}
                         </HeroButton>
-                    </HeroModalFooter>
-                </HeroModalContent>
-            </HeroModal>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
         </>
     )
 }
