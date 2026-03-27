@@ -1,4 +1,3 @@
-import { useCreateJobMutation } from '@/lib'
 import {
     HeroModal,
     HeroModalBody,
@@ -7,8 +6,9 @@ import {
 } from '@/shared/components/ui/hero-modal'
 import { useDevice } from '@/shared/hooks'
 import { useDisclosure } from '@heroui/react'
+import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
-import { useCopySharepointItemMutation } from '../../../../lib/queries/useSharepoint'
+import { copySharepointItemOptions, createJobOptions } from '../../../../lib'
 import CancelModal from '../../../../shared/components/ui/cancel-modal'
 import CreateJobForm from '../forms/CreateJobForm'
 import CreateJobFormMobile from '../forms/CreateJobFormMobile'
@@ -24,10 +24,10 @@ export function CreateJobModal({ isOpen, onClose }: Props) {
         string | null
     >(null)
 
-    const createJobMutation = useCreateJobMutation()
+    const createJobMutation = useMutation(createJobOptions)
     const cancelModalDisclosure = useDisclosure()
 
-    const copySharepointMutation = useCopySharepointItemMutation()
+    const copySharepointMutation = useMutation(copySharepointItemOptions)
 
     return (
         <>

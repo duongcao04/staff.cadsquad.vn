@@ -1,10 +1,11 @@
-import { addToast, Button } from '@heroui/react'
+import { Button } from '@heroui/react'
 import dayjs, { Dayjs } from 'dayjs'
 import { useState } from 'react'
 
-import { useRescheduleMutation } from '@/lib/queries'
 import type { TJob } from '@/shared/types'
 
+import { useMutation } from '@tanstack/react-query'
+import { rescheduleJobOptions } from '../../../../lib'
 import { HeroDatePicker } from '../../../../shared/components/ui/hero-date-picker'
 import {
     HeroModal,
@@ -27,14 +28,7 @@ export default function ReScheduleModal({
 }: ReScheduleModalProps) {
     const [date, setDate] = useState<Dayjs | null>(dayjs(job.dueAt))
 
-    const rescheduleMutation = useRescheduleMutation((res) => {
-        addToast({
-            title: 'Job Rescheduled',
-            description: `Reschedule for job ${res.result?.no} successfully`,
-            color: 'success',
-        })
-        onClose()
-    })
+    const rescheduleMutation = useMutation(rescheduleJobOptions)
 
     const onReschedule = async () => {
         await rescheduleMutation.mutateAsync({

@@ -1,5 +1,5 @@
-import { addToast } from '@heroui/react'
 import { useMutation } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import { emailApi } from '../api'
 import { ApiResponse } from '../axios'
 import { SendEmailFormValues } from '../validationSchemas/_email.schema'
@@ -14,10 +14,7 @@ export const useSendManualEmailMutation = (
             if (onSuccess) {
                 onSuccess(res)
             } else {
-                addToast({
-                    title: res.message,
-                    color: 'success',
-                })
+                toast.success(res.message)
             }
         },
         onError: (error) => onErrorToast(error, 'Send email failed'),

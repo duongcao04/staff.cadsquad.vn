@@ -1,10 +1,10 @@
 import { generatePassword } from '@/lib'
 import {
+    createUserOptions,
     departmentsListOptions,
     jobTitlesListOptions,
     rolesListOptions,
 } from '@/lib/queries'
-import { useCreateUserMutation } from '@/lib/queries/useUser'
 import { transformEmail } from '@/lib/utils'
 import { ScrollArea, ScrollBar } from '@/shared/components'
 import { HeroCopyButton } from '@/shared/components/ui/hero-copy-button'
@@ -27,7 +27,7 @@ import {
     Tabs,
     Tooltip,
 } from '@heroui/react'
-import { useSuspenseQueries } from '@tanstack/react-query'
+import { useMutation, useSuspenseQueries } from '@tanstack/react-query'
 import { FastField, FormikProvider, useFormik } from 'formik'
 import {
     ArrowRightIcon,
@@ -105,7 +105,7 @@ export default function CreateUserModal({
     onClose: () => void
 }) {
     const { isDesktop } = useDevice()
-    const createUserMutation = useCreateUserMutation()
+    const createUserMutation = useMutation(createUserOptions)
     const [isSuccess, setIsSuccess] = useState(false)
     const [userCreated, setUserCreated] = useState<UserCreatedValues | null>(
         null

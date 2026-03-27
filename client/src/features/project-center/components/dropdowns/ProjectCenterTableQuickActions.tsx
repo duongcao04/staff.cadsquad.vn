@@ -1,7 +1,7 @@
 import { INTERNAL_URLS } from '@/lib'
 import {
+    deleteJobOptions,
     jobsListOptions,
-    useDeleteJobMutation,
     useProfile,
 } from '@/lib/queries'
 import { queryClient } from '@/main'
@@ -29,6 +29,7 @@ import {
 import AddAttachmentsModal from '../modals/AddAttachmentsModal'
 import AssignMemberModal from '../modals/AssignMemberModal'
 import UpdateCostModal from '../modals/UpdateCostModal'
+import { useMutation } from '@tanstack/react-query'
 
 type ProjectCenterTableQuickActionsProps = {
     data: TJob
@@ -40,7 +41,7 @@ export function ProjectCenterTableQuickActions({
     const { isAdmin, isAccounting } = useProfile()
 
     const { mutateAsync: deleteJobMutation, isPending: isDeleting } =
-        useDeleteJobMutation()
+        useMutation(deleteJobOptions)
 
     // --- Modal Controllers ---
     const assignModal = useDisclosure()

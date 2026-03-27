@@ -1,4 +1,4 @@
-import { clientDetailsByNameOptions } from '@/lib/queries'
+import { clientDetailsByNameOptions, updateClientOptions } from '@/lib/queries'
 import {
     Button,
     Divider,
@@ -7,7 +7,7 @@ import {
     SelectItem,
     Skeleton,
 } from '@heroui/react'
-import { useSuspenseQuery } from '@tanstack/react-query'
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query'
 import { useFormik } from 'formik'
 import {
     BuildingIcon,
@@ -21,7 +21,6 @@ import {
 } from 'lucide-react'
 import { Suspense } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
-import { useUpdateClientMutation } from '../../../../lib/queries/useClient'
 import {
     HeroModal,
     HeroModalBody,
@@ -96,7 +95,7 @@ function EditClientFormContent({
         ...clientDetailsByNameOptions(clientName),
     })
 
-    const updateClientMutation = useUpdateClientMutation()
+    const updateClientMutation = useMutation(updateClientOptions)
 
     // Helper to close modal and reset form
     const handleClose = () => {

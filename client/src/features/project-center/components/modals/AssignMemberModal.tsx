@@ -1,10 +1,11 @@
 import { optimizeCloudinary } from '@/lib'
-import { jobByNoOptions, usersListOptions } from '@/lib/queries'
 import {
-    useAssignMemberMutation,
-    useRemoveMemberMutation,
-    useUpdateAssignmentCostMutation,
-} from '@/lib/queries/useJob'
+    assignMemberToJobOptions,
+    jobByNoOptions,
+    unassignMemberToJobOptions,
+    updateAssignmentCostOptions,
+    usersListOptions,
+} from '@/lib/queries'
 import { HeroButton } from '@/shared/components/ui/hero-button'
 import {
     HeroModal,
@@ -28,7 +29,7 @@ import {
     PopoverTrigger,
     Skeleton,
 } from '@heroui/react'
-import { useSuspenseQueries } from '@tanstack/react-query'
+import { useMutation, useSuspenseQueries } from '@tanstack/react-query'
 import {
     AlertTriangle,
     SaveIcon,
@@ -115,7 +116,7 @@ function AssignMemberContent({
     onClose: () => void
     onRefetchJob: () => void
 }) {
-    const assignMemberMutation = useAssignMemberMutation()
+    const assignMember = useMutation(assignMemberToJobOptions)
 
     const [assigningMember, setAssigningMember] =
         useState<AssignedMember | null>(null)
@@ -167,7 +168,7 @@ function AssignMemberContent({
             })
             return
         } else {
-            await assignMemberMutation.mutateAsync(
+            await assignMember.mutateAsync(
                 {
                     jobId: job.id,
                     data: {
@@ -453,8 +454,10 @@ function AssignedMemberCard({
     member: AssignedMember
     onAssignedMembersChange: Dispatch<SetStateAction<AssignedMember[]>>
 }) {
-    const unassignMemberMutation = useRemoveMemberMutation()
-    const updateAssignmentCostMutation = useUpdateAssignmentCostMutation()
+    const unassignMember = useMutation(unassignMemberToJobOptions)
+    const updateAssignmentCostMutation = useMutation(
+        updateAssignmentCostOptions
+    )
 
     const [editable, setEditable] = useState(false)
     const handleUpdateCost = (userId: string, value: string) => {
@@ -482,7 +485,7 @@ function AssignedMemberCard({
     }
 
     const handleConfirmRemove = async () => {
-        await unassignMemberMutation.mutateAsync(
+        await unassignMember.mutateAsync(
             { jobId, memberId: member.userId },
             {
                 onSuccess: () => {
@@ -575,7 +578,7 @@ function AssignedMemberCard({
                         <UnassignConfirmPopover
                             name={member.displayName}
                             onConfirm={handleConfirmRemove}
-                            isLoading={unassignMemberMutation.isPending}
+                            isLoading={unassignMember.isPending}
                         >
                             <Button
                                 isIconOnly

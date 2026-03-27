@@ -1,5 +1,9 @@
 import { INTERNAL_URLS, optimizeCloudinary } from '@/lib'
-import { roleOptions } from '@/lib/queries'
+import {
+    assignMemberRoleOptions,
+    removeMemberRoleOptions,
+    roleOptions,
+} from '@/lib/queries'
 import {
     Avatar,
     BreadcrumbItem,
@@ -23,7 +27,7 @@ import {
     useDisclosure,
     User,
 } from '@heroui/react'
-import { useSuspenseQueries } from '@tanstack/react-query'
+import { useMutation, useSuspenseQueries } from '@tanstack/react-query'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import {
     AlertTriangle,
@@ -41,10 +45,6 @@ import {
 import { useState } from 'react'
 import { AddRoleMemberModal } from '../../../../../../features/user-access/components/modals/AddRoleMemberModal'
 import {
-    useAddMemberToRoleMutation,
-    useRemoveMemberRoleMutation,
-} from '../../../../../../lib/queries/useRole'
-import {
     HeroCard,
     HeroCardBody,
     HeroTable,
@@ -58,7 +58,7 @@ export const Route = createFileRoute(
 })
 
 export default function RoleDetailPage() {
-    const removeMemberRoleMutation = useRemoveMemberRoleMutation()
+    const removeMemberRole = useMutation(removeMemberRoleOptions)
     const router = useRouter()
     const { code } = Route.useParams()
     const [
@@ -86,7 +86,7 @@ export default function RoleDetailPage() {
         if (!selectedUser) {
             return
         }
-        removeMemberRoleMutation.mutateAsync(selectedUser.id, {
+        removeMemberRole.mutateAsync(selectedUser.id, {
             onSuccess: () => {
                 confirmRemoveMemberModalDisclosure.onClose()
             },
@@ -293,7 +293,7 @@ export const QuickActionsDropdown = ({
     })
     const [roleSelected, setRoleSelected] = useState<TRole | null>(null)
 
-    const addMemberToRoleMutation = useAddMemberToRoleMutation()
+    const addMemberToRole = useMutation(assignMemberRoleOptions)
 
     const handleAddRoleMember = (role: TRole) => {
         setRoleSelected(role)
@@ -305,7 +305,7 @@ export const QuickActionsDropdown = ({
         roleId: string
     ) => {
         // Gọi mutation
-        await addMemberToRoleMutation.mutateAsync({
+        await addMemberToRole.mutateAsync({
             roleId,
             userId,
         })

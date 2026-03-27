@@ -7,11 +7,11 @@ import {
     INTERNAL_URLS,
     TUpdatePasswordInput,
     UpdatePasswordInputSchema,
-    useUpdatePasswordMutation,
 } from '@/lib'
 import {
     activeSessionsListOptions,
     securityLogsListOptions,
+    updateUsePasswordOptions,
     useRevokeAllSessionMutation,
     useRevokeSessionMutation,
 } from '@/lib/queries'
@@ -49,7 +49,7 @@ import {
     TableRow,
     useDisclosure,
 } from '@heroui/react'
-import { useSuspenseQueries } from '@tanstack/react-query'
+import { useMutation, useSuspenseQueries } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useFormik } from 'formik'
 import {
@@ -518,7 +518,7 @@ function SecuritySettingsPage() {
 }
 
 function UpdatePasswordForm() {
-    const updatePasswordMutation = useUpdatePasswordMutation()
+    const updatePasswordMutation = useMutation(updateUsePasswordOptions)
 
     const formik = useFormik<TUpdatePasswordInput>({
         initialValues: {

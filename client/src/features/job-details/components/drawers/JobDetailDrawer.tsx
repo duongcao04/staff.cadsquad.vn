@@ -1,10 +1,11 @@
-import { optimizeCloudinary, useUpdateAttachmentsMutation } from '@/lib'
+import { optimizeCloudinary } from '@/lib'
 import { dateFormatter } from '@/lib/dayjs'
 import {
     jobActivityLogsOptions,
     jobByNoOptions,
+    updateAttachmentsMutationOptions,
+    updateJobGeneralInfoOptions,
     useProfile,
-    useUpdateJobGeneralInfoMutation,
 } from '@/lib/queries'
 import {
     APP_PERMISSIONS,
@@ -52,7 +53,7 @@ import {
     Tabs,
     useDisclosure,
 } from '@heroui/react'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { useRouter } from '@tanstack/react-router'
 import dayjs from 'dayjs'
 import lodash from 'lodash'
@@ -100,7 +101,9 @@ export default function JobDetailDrawer({
 
     const { profile } = useProfile()
     const { hasPermission, hasAnyPermission } = usePermission()
-    const updateJobGeneralInfoMutation = useUpdateJobGeneralInfoMutation()
+    const updateJobGeneralInfoMutation = useMutation(
+        updateJobGeneralInfoOptions
+    )
 
     const deliverJobDisclosure = useDisclosure()
     const financialModal = useDisclosure()
@@ -120,8 +123,8 @@ export default function JobDetailDrawer({
         enabled: !!job?.id,
     })
 
-    const updateAttachmentsMutation = useUpdateAttachmentsMutation(
-        job?.id ?? ''
+    const updateAttachmentsMutation = useMutation(
+        updateAttachmentsMutationOptions
     )
 
     const [descContent, setDescContent] = useState('')
@@ -170,15 +173,25 @@ export default function JobDetailDrawer({
     }
 
     const handleRemoveAttachment = (url: string) => {
-        // Directly pass the removed URL to the mutation
+        if (!job?.id) {
+            return
+        }
         updateAttachmentsMutation.mutateAsync({
+            jobId: job.id,
             action: 'remove',
             files: [url],
         })
     }
 
     const handleAddAttachment = (url: string) => {
-        updateAttachmentsMutation.mutateAsync({ action: 'add', files: [url] })
+        if (!job?.id) {
+            return
+        }
+        updateAttachmentsMutation.mutateAsync({
+            jobId: job.id,
+            action: 'add',
+            files: [url],
+        })
     }
 
     return (

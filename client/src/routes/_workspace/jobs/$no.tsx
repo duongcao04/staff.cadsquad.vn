@@ -14,10 +14,13 @@ import {
     optimizeCloudinary,
     PAID_STATUS_COLOR,
     useProfile,
-    useUpdateAttachmentsMutation,
-    useUpdateJobGeneralInfoMutation,
 } from '@/lib'
-import { jobActivityLogsOptions, jobByNoOptions } from '@/lib/queries'
+import {
+    jobActivityLogsOptions,
+    jobByNoOptions,
+    updateAttachmentsMutationOptions,
+    updateJobGeneralInfoOptions,
+} from '@/lib/queries'
 import {
     HeroButton,
     HeroCard,
@@ -44,7 +47,7 @@ import {
     Tabs,
     useDisclosure,
 } from '@heroui/react'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import dayjs from 'dayjs'
 import {
@@ -144,11 +147,13 @@ function JobDetailPage() {
         })
     }
 
-    const updateAttachmentsMutation = useUpdateAttachmentsMutation(
-        job?.id ?? ''
+    const updateAttachmentsMutation = useMutation(
+        updateAttachmentsMutationOptions
     )
 
-    const updateJobGeneralInfoMutation = useUpdateJobGeneralInfoMutation()
+    const updateJobGeneralInfoMutation = useMutation(
+        updateJobGeneralInfoOptions
+    )
 
     const [descContent, setDescContent] = useState('')
 
@@ -185,15 +190,26 @@ function JobDetailPage() {
     }
 
     const handleRemoveAttachment = (url: string) => {
+        if (!job?.id) {
+            return
+        }
         // Directly pass the removed URL to the mutation
         updateAttachmentsMutation.mutateAsync({
+            jobId: job?.id,
             action: 'remove',
             files: [url],
         })
     }
 
     const handleAddAttachment = (url: string) => {
-        updateAttachmentsMutation.mutateAsync({ action: 'add', files: [url] })
+        if (!job?.id) {
+            return
+        }
+        updateAttachmentsMutation.mutateAsync({
+            jobId: job?.id,
+            action: 'add',
+            files: [url],
+        })
     }
 
     if (!job) {

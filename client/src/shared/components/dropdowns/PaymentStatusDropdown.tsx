@@ -1,3 +1,6 @@
+import { markJobPaidOptions, useProfile } from '@/lib'
+import { darkenHexColor, lightenHexColor, PAID_STATUS_COLOR } from '@/lib/utils'
+import type { TJob } from '@/shared/types'
 import {
     addToast,
     Button,
@@ -5,12 +8,10 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from '@heroui/react'
+import { useMutation } from '@tanstack/react-query'
 import { ChevronDown } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { useState } from 'react'
-import { useMarkPaidMutation, useProfile } from '@/lib'
-import { darkenHexColor, lightenHexColor, PAID_STATUS_COLOR } from '@/lib/utils'
-import type { TJob } from '@/shared/types'
 import { PaidChip } from '../chips/PaidChip'
 
 type Props = {
@@ -25,7 +26,7 @@ export default function PaymentStatusDropdown({
     const { isAdmin, isAccounting } = useProfile()
     const { resolvedTheme } = useTheme()
 
-    const markAsPaidMutation = useMarkPaidMutation()
+    const markAsPaidMutation = useMutation(markJobPaidOptions)
 
     const getBackgroundColor = (statusTitle: 'paid' | 'unpaid') => {
         return resolvedTheme === 'light'

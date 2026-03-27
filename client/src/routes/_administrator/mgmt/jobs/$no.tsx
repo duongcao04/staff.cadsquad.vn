@@ -16,14 +16,14 @@ import {
     getPageTitle,
     INTERNAL_URLS,
     optimizeCloudinary,
-    useAdminDeliverJobMutation,
     useProfile,
-    useRemoveMemberMutation,
 } from '@/lib'
 import {
+    adminReviewJobDeliverOptions,
     jobActivityLogsOptions,
     jobByNoOptions,
     jobDeliveriesListOptions,
+    unassignMemberToJobOptions,
 } from '@/lib/queries'
 import {
     AdminPageHeading,
@@ -53,7 +53,11 @@ import {
     Textarea,
     useDisclosure,
 } from '@heroui/react'
-import { useQuery, useSuspenseQueries } from '@tanstack/react-query'
+import {
+    useMutation,
+    useQuery,
+    useSuspenseQueries,
+} from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useFormik } from 'formik'
 import {
@@ -215,7 +219,7 @@ function JobEditPage() {
 
     const { data: profile } = useProfile()
 
-    const adminDeliverJobAction = useAdminDeliverJobMutation()
+    const adminDeliverJobAction = useMutation(adminReviewJobDeliverOptions)
     const [selectedMember, setSelectedMember] = useState<TUser | null>(null)
 
     const [{ data: job }] = useSuspenseQueries({
@@ -233,7 +237,7 @@ function JobEditPage() {
         enabled: !!job?.id && tab === 'activity',
     })
 
-    const removeMemberMutation = useRemoveMemberMutation()
+    const removeMemberMutation = useMutation(unassignMemberToJobOptions)
 
     const {
         isOpen: isAssignOpen,

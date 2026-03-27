@@ -1,4 +1,4 @@
-import { INTERNAL_URLS, useDeleteUserMutation } from '@/lib'
+import { deleteUserOptions, INTERNAL_URLS } from '@/lib'
 import {
     HeroButton,
     HeroInput,
@@ -10,6 +10,7 @@ import {
 } from '@/shared/components'
 import { TUser } from '@/shared/types'
 import { Chip } from '@heroui/react'
+import { useMutation } from '@tanstack/react-query'
 import { useRouter } from '@tanstack/react-router'
 import { AlertTriangle, Trash2 } from 'lucide-react'
 import { useState } from 'react'
@@ -26,7 +27,7 @@ export const DeleteUserPermanentlyModal = ({
     user,
 }: DeleteUserModalProps) => {
     const router = useRouter()
-    const deleteUserMutation = useDeleteUserMutation()
+    const deleteUserMutation = useMutation(deleteUserOptions)
 
     const [confirmText, setConfirmText] = useState('')
 
@@ -36,7 +37,7 @@ export const DeleteUserPermanentlyModal = ({
             onSuccess: () => {
                 setConfirmText('')
                 onClose()
-                router.navigate({ href: INTERNAL_URLS.staffDirectory })
+                router.navigate({ href: INTERNAL_URLS.management.team })
             },
         })
     }

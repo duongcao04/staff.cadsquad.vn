@@ -4,8 +4,8 @@ import AssignMemberModal from '@/features/project-center/components/modals/Assig
 import UpdateCostModal from '@/features/project-center/components/modals/UpdateCostModal'
 import { INTERNAL_URLS } from '@/lib'
 import {
-    useDeleteJobMutation,
-    useMarkPaidMutation,
+    deleteJobOptions,
+    markJobPaidOptions,
     workbenchDataOptions,
 } from '@/lib/queries'
 import { APP_PERMISSIONS } from '@/lib/utils'
@@ -41,14 +41,14 @@ export function WorkbenchTableQuickActions({
 }: WorkbenchTableQuickActionsProps) {
     const { hasPermission } = usePermission()
 
-    const markPaidMutation = useMarkPaidMutation()
+    const markPaidMutation = useMutation(markJobPaidOptions)
 
     const canPayout = useMemo(
         () => data.status.systemType === 'COMPLETED' && !data.isPaid,
         [data]
     )
     const { mutateAsync: deleteJobMutation, isPending: isDeleting } =
-        useDeleteJobMutation()
+        useMutation(deleteJobOptions)
 
     const {
         isOpen: isOpenAssignModal,
@@ -301,6 +301,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { AlertCircle, CheckCircle2, ExternalLink } from 'lucide-react'
 import { useMemo } from 'react'
 import { ConfirmPaymentModal } from '../../../financial/components/modals/ConfirmPaymentModal'
+import { useMutation } from '@tanstack/react-query'
 
 interface Props {
     isOpen: boolean

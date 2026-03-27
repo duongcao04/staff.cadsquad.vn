@@ -1,21 +1,18 @@
-import { addToast, Button, Textarea, useDisclosure } from '@heroui/react'
-import { useSuspenseQuery } from '@tanstack/react-query'
-import { useFormik } from 'formik'
-import lodash from 'lodash'
-import { BookUserIcon, Briefcase, Save } from 'lucide-react'
-import { z } from 'zod'
-import { toFormikValidate } from 'zod-formik-adapter'
-import {
-    clientsListOptions,
-    useUpdateJobGeneralInfoMutation,
-} from '../../../../lib'
+import { clientsListOptions, updateJobGeneralInfoOptions } from '@/lib'
 import {
     HeroAutocomplete,
     HeroAutocompleteItem,
     HeroInput,
     HeroTooltip,
-} from '../../../../shared/components'
-import { TJob } from '../../../../shared/types'
+} from '@/shared/components'
+import { TJob } from '@/shared/types'
+import { addToast, Button, Textarea, useDisclosure } from '@heroui/react'
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query'
+import { useFormik } from 'formik'
+import lodash from 'lodash'
+import { BookUserIcon, Briefcase, Save } from 'lucide-react'
+import { z } from 'zod'
+import { toFormikValidate } from 'zod-formik-adapter'
 import { EditClientModal } from '../../../client-manage'
 
 const EditGeneralDetailFromSchema = z.object({
@@ -32,7 +29,9 @@ export type TEditGeneralDetailFromValues = z.infer<
 >
 
 export function GeneralDetailForm({ job }: { job: TJob }) {
-    const updateJobGeneralInfoMutation = useUpdateJobGeneralInfoMutation()
+    const updateJobGeneralInfoMutation = useMutation(
+        updateJobGeneralInfoOptions
+    )
 
     const {
         data: { clients },

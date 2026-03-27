@@ -4,8 +4,6 @@ import {
     INTERNAL_URLS,
     PAID_STATUS_COLOR,
     useProfile,
-    useUpdateJobGeneralInfoMutation,
-    useUpdateJobMutation,
 } from '@/lib'
 import {
     JobDetailTabEnum,
@@ -23,7 +21,7 @@ import {
     Tabs,
     useDisclosure,
 } from '@heroui/react'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { Link, useNavigate } from '@tanstack/react-router'
 import dayjs from 'dayjs'
 import {
@@ -38,7 +36,12 @@ import {
     UserRound,
 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
-import { jobActivityLogsOptions, jobByNoOptions } from '../../../../lib/queries'
+import {
+    jobActivityLogsOptions,
+    jobByNoOptions,
+    updateJobGeneralInfoOptions,
+    updateJobOptions,
+} from '../../../../lib/queries'
 import { JobStatusChip } from '../../../../shared/components/chips/JobStatusChip'
 import JobAttachmentsField from '../../../../shared/components/form-fields/JobAttachmentsField'
 import CountdownTimer from '../../../../shared/components/ui/countdown-timer'
@@ -65,7 +68,9 @@ function MobileJobDetailPage() {
     const financialModal = useDisclosure()
     const fullEditorDisclosure = useDisclosure()
 
-    const updateJobGeneralInfoMutation = useUpdateJobGeneralInfoMutation()
+    const updateJobGeneralInfoMutation = useMutation(
+        updateJobGeneralInfoOptions
+    )
 
     const { data: job } = useQuery({ ...jobByNoOptions(no), enabled: !!no })
     const { data: activityLogs } = useQuery({
@@ -83,9 +88,7 @@ function MobileJobDetailPage() {
         })
     }
 
-    const updateJobMutation = useUpdateJobMutation(() =>
-        addToast({ title: 'Success', color: 'success' })
-    )
+    const updateJobMutation = useMutation(updateJobOptions)
 
     const [descContent, setDescContent] = useState('')
     useEffect(() => {

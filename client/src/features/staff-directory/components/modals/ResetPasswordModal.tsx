@@ -1,5 +1,8 @@
-import { generatePassword, ResetPasswordSchema } from '@/lib'
-import { useResetPasswordMutation } from '@/lib/queries'
+import {
+    generatePassword,
+    resetPasswordOptions,
+    ResetPasswordSchema,
+} from '@/lib'
 import { HeroCopyButton } from '@/shared/components/ui/hero-copy-button'
 import {
     HeroModal,
@@ -11,6 +14,7 @@ import {
 import { HeroPasswordInput } from '@/shared/components/ui/hero-password-input'
 import type { TUser } from '@/shared/types'
 import { Button, Radio, RadioGroup } from '@heroui/react'
+import { useMutation } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
 import * as yup from 'yup'
 
@@ -58,7 +62,7 @@ export default function ResetPasswordModal({ isOpen, onClose, data }: Props) {
     }
 
     const { mutateAsync: resetPasswordMutation, isPending: isResetting } =
-        useResetPasswordMutation()
+        useMutation(resetPasswordOptions)
 
     const handleResetPassword = async () => {
         if (!data?.id) return

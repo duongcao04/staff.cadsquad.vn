@@ -1,4 +1,9 @@
-import { jobByNoOptions, paymentChannelsListOptions } from '@/lib/queries'
+import {
+    jobByNoOptions,
+    paymentChannelsListOptions,
+    updateAssignmentCostOptions,
+    updateJobRevenueMutationOptions,
+} from '@/lib/queries'
 import {
     addToast,
     Avatar,
@@ -12,7 +17,7 @@ import {
     Tab,
     Tabs,
 } from '@heroui/react'
-import { useSuspenseQueries } from '@tanstack/react-query'
+import { useMutation, useSuspenseQueries } from '@tanstack/react-query'
 import { Image } from 'antd'
 import {
     CheckCircle2,
@@ -36,15 +41,13 @@ import {
     useState,
 } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
-import {
-    optimizeCloudinary,
-    TUpdateJobRevenue,
-    useUpdateAssignmentCostMutation,
-    useUpdateJobRevenueMutation,
-} from '../../../../lib'
+import { optimizeCloudinary, TUpdateJobRevenue } from '../../../../lib'
 import { TJob, TPaymentChannel } from '../../../../shared/types'
 import { HeroButton } from '../../../../shared/components/ui/hero-button'
-import { HeroCard, HeroCardBody } from '../../../../shared/components/ui/hero-card'
+import {
+    HeroCard,
+    HeroCardBody,
+} from '../../../../shared/components/ui/hero-card'
 import {
     HeroModal,
     HeroModalBody,
@@ -54,7 +57,10 @@ import {
 } from '../../../../shared/components/ui/hero-modal'
 import HeroNumberInput from '../../../../shared/components/ui/hero-number-input'
 import { HeroTooltip } from '../../../../shared/components/ui/hero-tooltip'
-import { ScrollArea, ScrollBar } from '../../../../shared/components/ui/scroll-area'
+import {
+    ScrollArea,
+    ScrollBar,
+} from '../../../../shared/components/ui/scroll-area'
 
 type AssignedMember = {
     userId: string
@@ -130,7 +136,7 @@ function UpdateCostContent({
     onClose: () => void
     paymentChannels: TPaymentChannel[]
 }) {
-    const updateJobRevenue = useUpdateJobRevenueMutation()
+    const updateJobRevenue = useMutation(updateJobRevenueMutationOptions)
     const [selectedTab, setSelectedTab] = useState<string>('revenue')
 
     // Revenue States
@@ -473,7 +479,9 @@ function AssignedMemberCard({
     member: AssignedMember
     onAssignedMembersChange: Dispatch<SetStateAction<AssignedMember[]>>
 }) {
-    const updateAssignmentCostMutation = useUpdateAssignmentCostMutation()
+    const updateAssignmentCostMutation = useMutation(
+        updateAssignmentCostOptions
+    )
 
     const [editable, setEditable] = useState(false)
     const handleUpdateCost = (userId: string, value: string) => {

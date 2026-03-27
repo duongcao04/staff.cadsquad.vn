@@ -22,7 +22,6 @@ import { z } from 'zod'
 import { useWorkbenchFilters } from './-hooks/useWorkbenchFilters'
 
 const DEFAULT_SORT = 'displayName:asc'
-
 export const workbenchParamsSchema = z
     .object({
         sort: z.string().optional().catch(DEFAULT_SORT),
@@ -31,7 +30,6 @@ export const workbenchParamsSchema = z
         page: z.coerce.number().int().min(1).optional().catch(1),
     })
     .merge(jobFiltersSchema)
-
 export type TWorkbenchSearch = z.infer<typeof workbenchParamsSchema>
 
 export const Route = createFileRoute('/_workspace/_workbench/')({

@@ -1,5 +1,5 @@
 import { sharepointApi, sharepointFolderItemsOptions } from '@/lib'
-import { jobsPendingDeliverOptions, useDeliverJobMutation } from '@/lib/queries'
+import { deliverJobOptions, jobsPendingDeliverOptions } from '@/lib/queries'
 import {
     DeliverJobInputSchema,
     TDeliverJobInput,
@@ -15,7 +15,7 @@ import {
 } from '@/shared/components/ui/hero-modal'
 import { TJob } from '@/shared/types'
 import { Button, Progress, Skeleton, Textarea } from '@heroui/react'
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { useFormik } from 'formik'
 import lodash from 'lodash'
 import { CheckCircle2, FileIcon, Send, UploadCloud, X } from 'lucide-react'
@@ -89,7 +89,7 @@ export const DeliverJobContent = ({
     onConfirm?: (data: TDeliverJobInput) => void
     showSelect: boolean
 }) => {
-    const deliverJobMutation = useDeliverJobMutation()
+    const deliverJobMutation = useMutation(deliverJobOptions)
 
     // State to manage files actively being uploaded or already uploaded in UI
     const [uploadStates, setUploadStates] = useState<UploadingFile[]>([])

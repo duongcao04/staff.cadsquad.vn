@@ -1,5 +1,4 @@
 import {
-    addToast,
     Button,
     Divider,
     Popover,
@@ -8,12 +7,12 @@ import {
     Tab,
     Tabs,
 } from '@heroui/react'
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { ChevronDown } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { useState } from 'react'
 
-import { useChangeStatusMutation, useProfile } from '@/lib/queries'
+import { updateJobStatusOptions, useProfile } from '@/lib/queries'
 import {
     jobStatusesListOptions,
     statusByOrderOptions,
@@ -40,13 +39,7 @@ export default function JobStatusDropdown({
 
     const { isAdmin } = useProfile()
 
-    const changeStatusMutation = useChangeStatusMutation((res) => {
-        addToast({
-            title: 'Job status updated',
-            description: `Job ${res.result?.no} has been successfully updated`,
-            color: 'success',
-        })
-    })
+    const changeStatusMutation = useMutation(updateJobStatusOptions)
 
     const { data: nextStatus } = useQuery({
         // If nextStatusOrder is null/undefined, pass -1 (or 0) to satisfy TS.

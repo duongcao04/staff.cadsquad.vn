@@ -43,18 +43,16 @@ export const createJobFolderTemplateOptions = () => {
     })
 }
 
-export const updateJobFolderTemplateOptions = () => {
-    return mutationOptions({
-        mutationFn: ({
-            id,
-            data,
-        }: {
-            id: string
-            data: TUpdateJobFolderTemplateInput
-        }) => jobFolderTemplateApi.update(id, data),
-        onError: (err) => onErrorToast(err, "Update failed")
-    })
-}
+export const updateJobFolderTemplateOptions = mutationOptions({
+    mutationFn: ({
+        id,
+        data,
+    }: {
+        id: string
+        data: TUpdateJobFolderTemplateInput
+    }) => jobFolderTemplateApi.update(id, data),
+    onError: (err) => onErrorToast(err, "Update failed")
+})
 
 export const deleteJobFolderTemplateOptions = () => {
     return mutationOptions({

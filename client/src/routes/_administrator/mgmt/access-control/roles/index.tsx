@@ -1,10 +1,10 @@
 import { AddRoleMemberModal } from '@/features/user-access/components/modals/AddRoleMemberModal'
 import CreateRoleModal from '@/features/user-access/components/modals/CreateRoleModal'
+import { permissionGroupsListOptions } from '@/lib'
 import {
-    permissionGroupsListOptions,
+    assignMemberRoleOptions,
     rolesListOptions,
 } from '@/lib/queries/options/role-queries'
-import { useAddMemberToRoleMutation } from '@/lib/queries/useRole'
 import { HeroButton, HeroCard } from '@/shared/components'
 import { TRole } from '@/shared/types'
 import {
@@ -15,7 +15,7 @@ import {
     Chip,
     useDisclosure,
 } from '@heroui/react'
-import { useSuspenseQueries } from '@tanstack/react-query'
+import { useMutation, useSuspenseQueries } from '@tanstack/react-query'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { Plus } from 'lucide-react'
 import { useState } from 'react'
@@ -29,7 +29,7 @@ export const Route = createFileRoute(
 export default function RolesPage() {
     const router = useRouter()
 
-    const addMemberToRoleMutation = useAddMemberToRoleMutation()
+    const addMemberToRole = useMutation(assignMemberRoleOptions)
     const [roleSelected, setRoleSelected] = useState<TRole | null>(null)
 
     const [
@@ -59,7 +59,7 @@ export default function RolesPage() {
         roleId: string
     ) => {
         // Gọi mutation
-        await addMemberToRoleMutation.mutateAsync({
+        await addMemberToRole.mutateAsync({
             roleId,
             userId,
         })

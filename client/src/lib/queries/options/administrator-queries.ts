@@ -1,10 +1,9 @@
-import { addToast } from '@heroui/react'
 import {
-	queryOptions,
-	useMutation,
-	useQueryClient,
+	mutationOptions,
+	queryOptions
 } from '@tanstack/react-query'
-import { administratorApi, IAdminDbStats } from '../../api'
+import { administratorApi, IAdminDbStats, jobApi } from '../../api'
+import { onErrorToast } from '../helper'
 
 // ==========================================
 // QUERIES
@@ -78,79 +77,47 @@ export const adminJobStatsOptions = ({ from, to }: { from?: string, to?: string 
 // ==========================================
 
 // --- USERS ---
-export const useAdminToggleUserStatusMutation = () => {
-	const queryClient = useQueryClient()
-	return useMutation({
-		mutationFn: ({
-			userId,
-			isActive,
-		}: {
-			userId: string
-			isActive: boolean
-		}) => administratorApi.users.toggleStatus(userId, isActive),
-		onSuccess: (data, variables) => {
-			addToast({
-				title: 'User status updated successfully',
-				color: 'success',
-			})
-			// Invalidate query để cập nhật lại danh sách staff
-			queryClient.invalidateQueries({ queryKey: ['users'] })
-			queryClient.invalidateQueries({
-				queryKey: ['user', variables.userId],
-			})
-		},
-	})
-}
+export const adminToggleUserStatusMutation = () => mutationOptions({
+	mutationFn: ({
+		userId,
+		isActive,
+	}: {
+		userId: string
+		isActive: boolean
+	}) => administratorApi.users.toggleStatus(userId, isActive),
+})
 
-export const useAdminForceLogoutMutation = () => {
-	return useMutation({
-		mutationFn: (userId: string) =>
-			administratorApi.users.forceLogout(userId),
-		onSuccess: () => {
-			addToast({ title: 'User sessions terminated', color: 'success' })
-		},
-	})
-}
+export const adminForceLogoutMutation = () => mutationOptions({
+	mutationFn: (userId: string) =>
+		administratorApi.users.forceLogout(userId),
+})
 
-export const useAdminDeleteUserMutation = () => {
-	const queryClient = useQueryClient()
-	return useMutation({
-		mutationFn: (userId: string) =>
-			administratorApi.users.deleteUser(userId),
-		onSuccess: () => {
-			addToast({ title: 'User deleted permanently', color: 'success' })
-			queryClient.invalidateQueries({ queryKey: ['users'] })
-		},
-	})
-}
+export const adminDeleteUserMutation = () => mutationOptions({
+	mutationFn: (userId: string) =>
+		administratorApi.users.deleteUser(userId),
+})
 
 // --- JOBS ---
-export const useAdminBulkUpdateJobStatusMutation = () => {
-	const queryClient = useQueryClient()
-	return useMutation({
-		mutationFn: (payload: { jobIds: string[]; statusId: string }) =>
-			administratorApi.jobs.bulkUpdateStatus(payload),
-		onSuccess: () => {
-			addToast({
-				title: 'Jobs status updated successfully',
-				color: 'success',
-			})
-			queryClient.invalidateQueries({ queryKey: ['jobs'] }) // Refresh job list
-		},
-	})
-}
+export const adminBulkUpdateJobStatusMutation = () => mutationOptions({
+	mutationFn: (payload: { jobIds: string[]; statusId: string }) =>
+		administratorApi.jobs.bulkUpdateStatus(payload),
+})
 
-export const useAdminBulkDeleteJobsMutation = () => {
-	const queryClient = useQueryClient()
-	return useMutation({
-		mutationFn: (payload: { jobIds: string[] }) =>
-			administratorApi.jobs.bulkDelete(payload),
-		onSuccess: () => {
-			addToast({
-				title: 'Selected jobs deleted permanently',
-				color: 'success',
-			})
-			queryClient.invalidateQueries({ queryKey: ['jobs'] })
-		},
-	})
-}
+export const adminBulkDeleteJobsMutation = () => mutationOptions({
+	mutationFn: (payload: { jobIds: string[] }) =>
+		administratorApi.jobs.bulkDelete(payload),
+})
+
+
+export const adminReviewJobDeliverOptions = mutationOptions({
+	mutationFn: ({
+		deliveryId,
+		action,
+		feedback,
+	}: {
+		deliveryId: string
+		action: 'approve' | 'reject'
+		feedback?: string
+	}) => jobApi.adminDeliverJobAction(deliveryId, action, feedback),
+	onError: (err) => onErrorToast(err, 'Review job failed'),
+})
