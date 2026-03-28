@@ -1,0 +1,9 @@
+{
+	"name": "staff.cadsquad.vn",
+	"private": true,
+	"workspaces": [
+		"client",
+		"server",
+		"shared"
+	]
+}

@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import { useProfile } from '../../lib'
+import { AppPermission } from '@staff-cadsquad/shared'
 
 export const usePermission = () => {
     const {
@@ -8,43 +9,60 @@ export const usePermission = () => {
         userPermissions,
     } = useProfile()
 
-    // Sử dụng useCallback để tránh tạo function mới mỗi lần render
-    const hasAnyPermission = useCallback(
-        (requiredPerms: string | string[]) => {
+    /**
+     * Checks if the current user possesses AT LEAST ONE of the specified permissions.
+     * * - If the user has the `'admin'` role, this automatically returns `true`.
+     * - If no permissions are required (empty array), it returns `true`.
+     * - If the user has no assigned role, it returns `false`.
+     * * @param requiredPerms - A single permission or an array of permissions to check.
+     * @returns `true` if the user has >= 1 of the required permissions (or is admin).
+     * * @example
+     * // Returns true if the user can either create OR update jobs
+     * const canEdit = hasSomePermissions([APP_PERMISSIONS.JOB.CREATE, APP_PERMISSIONS.JOB.UPDATE]);
+     */
+    const hasSomePermissions = useCallback(
+        (requiredPerms: AppPermission | AppPermission[] | string | string[]) => {
+            if (user?.role?.code === 'admin') return true
             if (!user?.role) return false
-            if (user.role.code === 'admin') return true
 
-            const required = Array.isArray(requiredPerms)
-                ? requiredPerms
-                : [requiredPerms]
+            const required = Array.isArray(requiredPerms) ? requiredPerms : [requiredPerms]
             if (required.length === 0) return true
 
-            return required.some((code) => userPermissions.includes(code))
+            return required.some((code) => userPermissions.includes(code as string))
         },
-        [user?.role, userPermissions]
+        [user?.role?.code, userPermissions]
     )
 
-    const hasAllPermissions = useCallback(
-        (requiredPerms: string | string[]) => {
+    /**
+     * Checks if the current user possesses ALL of the specified permissions.
+     * * - If the user has the `'admin'` role, this automatically returns `true`.
+     * - If no permissions are required (empty array), it returns `true`.
+     * - If the user has no assigned role, it returns `false`.
+     * * @param requiredPerms - A single permission or an array of permissions to check.
+     * @returns `true` if the user has EVERY required permission (or is admin).
+     * * @example
+     * // Returns true ONLY if the user has BOTH read and write access to clients
+     * const canManageClient = hasEveryPermissions([APP_PERMISSIONS.CLIENT.READ, APP_PERMISSIONS.CLIENT.WRITE]);
+     */
+    const hasEveryPermissions = useCallback(
+        (requiredPerms: AppPermission | AppPermission[] | string | string[]) => {
+            if (user?.role?.code === 'admin') return true
             if (!user?.role) return false
-            if (user.role.code === 'admin') return true
 
-            const required = Array.isArray(requiredPerms)
-                ? requiredPerms
-                : [requiredPerms]
+            const required = Array.isArray(requiredPerms) ? requiredPerms : [requiredPerms]
             if (required.length === 0) return true
 
-            return required.every((code) => userPermissions.includes(code))
+            return required.every((code) => userPermissions.includes(code as string))
         },
-        [user?.role, userPermissions]
+        [user?.role?.code, userPermissions]
     )
 
     return {
         user,
         userPermissions,
         loadingProfile,
-        hasAnyPermission,
-        hasAllPermissions,
-        hasPermission: hasAnyPermission,
+        hasSomePermissions,
+        hasEveryPermissions,
+        hasPermission: hasSomePermissions,
     }
 }

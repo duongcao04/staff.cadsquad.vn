@@ -34,6 +34,9 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@staff-cadsquad/shared": [
+        "../shared/index.ts"
       ]
     }
   },

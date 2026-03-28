@@ -45,7 +45,6 @@ function AdminLayout() {
     const topOffset = IS_SHOW_HEADER ? (isSmallView ? '44px' : '56px') : 0
 
     return (
-        // <AdministratorGuard></AdministratorGuard>
         <PageWithHeaderContainer
             // header={<AdminHeader />}
             header={<></>}

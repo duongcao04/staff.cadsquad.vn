@@ -13,7 +13,7 @@ import { Prisma, User } from '../../generated/prisma'
 import { MailService } from '../../providers/mail/mail.service'
 import { PrismaService } from '../../providers/prisma/prisma.service'
 import { IMAGES } from '../../utils'
-import { APP_PERMISSIONS } from '../../utils/_app-permissions'
+import { APP_PERMISSIONS } from '@staff-cadsquad/shared'
 import { BcryptService } from '../auth/bcrypt.service'
 import { NotificationService } from '../notification/notification.service'
 import {

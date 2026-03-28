@@ -1,3 +1,4 @@
+import { ProtectedRoute } from '@/shared/guards/protected-route'
 import {
     Avatar,
     AvatarGroup,
@@ -13,6 +14,7 @@ import {
     Tab,
     Tabs,
 } from '@heroui/react'
+import { APP_PERMISSIONS } from '@staff-cadsquad/shared'
 import { createFileRoute } from '@tanstack/react-router'
 import { useFormik } from 'formik'
 import {
@@ -26,17 +28,21 @@ import {
 } from 'lucide-react'
 import { useState } from 'react'
 
-import { getPageTitle } from '../../../lib'
-
 export const Route = createFileRoute('/_administrator/admin/settings')({
     head: () => ({
         meta: [
             {
-                title: getPageTitle('System Configuration'),
+                title: 'System Configuration',
             },
         ],
     }),
-    component: AdminSettingsPage,
+    component: () => {
+        return (
+            <ProtectedRoute permissions={APP_PERMISSIONS.SYSTEM.MANAGE}>
+                <AdminSettingsPage />
+            </ProtectedRoute>
+        )
+    },
 })
 
 // --- MOCK DATA ---

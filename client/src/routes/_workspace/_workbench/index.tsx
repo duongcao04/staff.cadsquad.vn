@@ -33,7 +33,7 @@ export const workbenchParamsSchema = z
 export type TWorkbenchSearch = z.infer<typeof workbenchParamsSchema>
 
 export const Route = createFileRoute('/_workspace/_workbench/')({
-    head: () => ({ meta: [{ title: getPageTitle('Workbench') }] }),
+    head: () => ({ meta: [{ title: 'Workbench' }] }),
     validateSearch: (search) => workbenchParamsSchema.parse(search),
     loaderDeps: ({ search }) => ({ search }),
     loader: ({ context, deps }) => {

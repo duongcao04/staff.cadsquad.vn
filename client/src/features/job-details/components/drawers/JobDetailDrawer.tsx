@@ -100,7 +100,7 @@ export default function JobDetailDrawer({
     const router = useRouter()
 
     const { profile } = useProfile()
-    const { hasPermission, hasAnyPermission } = usePermission()
+    const { hasPermission, hasSomePermissions } = usePermission()
     const updateJobGeneralInfoMutation = useMutation(
         updateJobGeneralInfoOptions
     )
@@ -815,7 +815,7 @@ export default function JobDetailDrawer({
                                                                                 )}
                                                                             </span>
                                                                         </div>
-                                                                        {hasAnyPermission(
+                                                                        {hasSomePermissions(
                                                                             [
                                                                                 APP_PERMISSIONS
                                                                                     .JOB

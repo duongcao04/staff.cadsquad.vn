@@ -1,7 +1,7 @@
 import { CreateJobModal } from '@/features/job-manage'
 import AdminManagementJobsTable from '@/features/job-manage/components/views/AdminManagementJobsTable'
 import { getPageTitle } from '@/lib'
-import { jobsListOptions } from '@/lib/queries'
+import { adminJobStatsOptions, jobsListOptions } from '@/lib/queries'
 import {
     AdminPageHeading,
     AppLoading,
@@ -9,6 +9,7 @@ import {
     HeroDateRangePicker,
 } from '@/shared/components'
 import AdminContentContainer from '@/shared/components/admin/AdminContentContainer'
+import { IPaginate } from '@/shared/interfaces'
 import { TJob } from '@/shared/types'
 import {
     Button,
@@ -37,11 +38,10 @@ import {
 } from 'lucide-react'
 import { startTransition, useEffect, useMemo, useState } from 'react'
 import { z } from 'zod'
-import { adminJobStatsOptions } from '../../../../lib/queries/options/administrator-queries'
-import { IPaginate } from '../../../../shared/interfaces'
+import { APP_PERMISSIONS } from '../../../../../../shared'
+import { ProtectedRoute } from '../../../../shared/guards/protected-route'
 
 const DEFAULT_SORT = 'displayName:asc'
-
 export const manageJobsParamsSchema = z.object({
     sort: z.string().optional().catch(DEFAULT_SORT),
     search: z.string().trim().optional(),
@@ -49,7 +49,6 @@ export const manageJobsParamsSchema = z.object({
     limit: z.coerce.number().int().min(1).max(100).optional().catch(10),
     page: z.coerce.number().int().min(1).optional().catch(1),
 })
-
 export type TManageJobsParams = z.infer<typeof manageJobsParamsSchema>
 
 export const Route = createFileRoute('/_administrator/mgmt/jobs/')({
@@ -101,7 +100,7 @@ export const Route = createFileRoute('/_administrator/mgmt/jobs/')({
         })
 
         return (
-            <>
+            <ProtectedRoute permissions={[APP_PERMISSIONS.JOB.MANAGE]}>
                 {createJobModalDisclosure.isOpen && (
                     <CreateJobModal
                         isOpen={createJobModalDisclosure.isOpen}
@@ -139,7 +138,7 @@ export const Route = createFileRoute('/_administrator/mgmt/jobs/')({
                         isLoadingJobs={isFetching}
                     />
                 </AdminContentContainer>
-            </>
+            </ProtectedRoute>
         )
     },
 })

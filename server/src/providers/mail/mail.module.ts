@@ -1,6 +1,6 @@
 import { mailConfig } from '@/config'
 import { MailerModule } from '@nestjs-modules/mailer'
-import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter'
+// @ts-ignore - Bypass TS2307: The library lacks an exports map for modern TS module resolution
 import { Module } from '@nestjs/common'
 import { ConfigType } from '@nestjs/config'
 import { join } from 'path'
@@ -11,6 +11,7 @@ import { MailService } from './mail.service'
 import { BullModule } from '@nestjs/bullmq'
 import { MAIL_QUEUE } from './mail.constants'
 import { MailProcessor } from './mail.processor'
+import { CustomHandlebarsAdapter } from './custom-handlebars.adapter'
 
 @Module({
 	imports: [
@@ -34,7 +35,7 @@ import { MailProcessor } from './mail.processor'
 				template: {
 					dir: join(process.cwd(), config.MAIL_TEMPLATE_PATH),
 
-					adapter: new HandlebarsAdapter({
+					adapter: new CustomHandlebarsAdapter({
 						eq: (a: any, b: any) => a === b,
 					}),
 					options: {
@@ -55,4 +56,4 @@ import { MailProcessor } from './mail.processor'
 	providers: [MailService, MailProcessor],
 	exports: [MailService],
 })
-export class MailModule {}
+export class MailModule { }

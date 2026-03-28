@@ -1,6 +1,6 @@
 import React from 'react'
-import { APP_PERMISSIONS } from '../../lib/utils/_app-permissions'
-import ProtectedRoute from './protected-route'
+import { APP_PERMISSIONS } from '@staff-cadsquad/shared'
+import { ProtectedRoute } from './protected-route'
 
 /**
  * 1. Basic Auth Guard
@@ -33,12 +33,7 @@ export function AdministratorGuard({
  */
 export function FinanceGuard({ children }: { children: React.ReactNode }) {
     return (
-        <ProtectedRoute
-            permissions={[
-                APP_PERMISSIONS.PAYMENT_CHANNEL.READ,
-                APP_PERMISSIONS.JOB.PAID,
-            ]}
-        >
+        <ProtectedRoute permissions={[APP_PERMISSIONS.JOB.PAID]}>
             {children}
         </ProtectedRoute>
     )

@@ -13,7 +13,7 @@ import { ResponseMessage } from '../../common/decorators/responseMessage.decorat
 import { UpdateClientDto } from './dto/update-client.dto'
 import { TokenPayload } from '../auth/dto/token-payload.dto'
 import { RequirePermissions } from '../../common/decorators/require-permissions.decorator'
-import { APP_PERMISSIONS } from '../../utils/_app-permissions'
+import { APP_PERMISSIONS } from '@staff-cadsquad/shared'
 import { PermissionsGuard } from '../../common/guards/permissions.guard'
 import { JwtGuard } from '../auth/jwt.guard'
 import { isUUID } from 'class-validator'

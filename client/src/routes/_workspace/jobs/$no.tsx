@@ -121,7 +121,7 @@ function JobDetailPage() {
     const financialModal = useDisclosure()
     const fullEditorDisclosure = useDisclosure()
 
-    const { hasPermission, hasAnyPermission } = usePermission()
+    const { hasPermission, hasSomePermissions } = usePermission()
 
     const { data: job } = useQuery({
         ...jobByNoOptions(no),
@@ -602,7 +602,7 @@ function JobDetailPage() {
                                                             )}
                                                         </span>
                                                     </div>
-                                                    {hasAnyPermission([
+                                                    {hasSomePermissions([
                                                         APP_PERMISSIONS.JOB
                                                             .PAID,
                                                         APP_PERMISSIONS.JOB

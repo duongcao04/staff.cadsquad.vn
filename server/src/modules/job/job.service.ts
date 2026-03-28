@@ -1,13 +1,8 @@
 import { PaginationMeta } from '@/common/interfaces/pagination-meta.interface'
-import { ActivityType, Job, JobStatusSystemType, NotificationType, Prisma } from '@/generated/prisma'
+import { ActivityType, Job, Prisma } from '@/generated/prisma'
 import { AuthService } from '@/modules/auth/auth.service'
-import { NotificationService } from '@/modules/notification/notification.service'
-import { SharePointService } from '@/modules/sharepoint/sharepoint.service'
 import { UserService } from '@/modules/user/user.service'
-import { MailService } from '@/providers/mail/mail.service'
 import { PrismaService } from '@/providers/prisma/prisma.service'
-import { IMAGES } from '@/utils'
-import { APP_PERMISSIONS } from '@/utils/_app-permissions'
 import {
 	BadRequestException,
 	forwardRef,
@@ -17,6 +12,8 @@ import {
 	Logger,
 	NotFoundException,
 } from '@nestjs/common'
+import { EventEmitter2 } from '@nestjs/event-emitter'
+import { APP_PERMISSIONS } from '@staff-cadsquad/shared'
 import { plainToInstance } from 'class-transformer'
 import dayjs from 'dayjs'
 import slugify from 'slugify'
@@ -25,7 +22,6 @@ import { ActivityLogService } from './activity-log.service'
 import { AssignMemberDto, UpdateAssignmentDto } from './dto/assign-member.dto'
 import { ChangeStatusDto } from './dto/change-status.dto'
 import { CreateJobDto } from './dto/create-job.dto'
-import { DeliverJobDto } from './dto/deliver-job.dto'
 import { JobFiltersBuilder } from './dto/job-filters.dto'
 import { JobQueryBuilder, JobQueryDto } from './dto/job-query.dto'
 import { JobResponseDto } from './dto/job-response.dto'
@@ -33,8 +29,7 @@ import { JobSortBuilder } from './dto/job-sort.dto'
 import { UpdateAttachmentsDto } from './dto/update-attachments.dto'
 import { UpdateGeneralJobDto } from './dto/update-general.dto'
 import { UpdateRevenueDto } from './dto/update-revenue.dto'
-import { JobTabEnum } from './enums/job-tab.enum'
-import lodash from 'lodash'
+import { JobActionEvent } from './events/job-action.event'
 
 @Injectable()
 export class JobService {
@@ -42,49 +37,43 @@ export class JobService {
 
 	constructor(
 		private readonly prisma: PrismaService,
-		private readonly notificationService: NotificationService,
 		@Inject(forwardRef(() => UserService))
 		private readonly userService: UserService,
 		private readonly authService: AuthService,
 		private readonly activityLogService: ActivityLogService,
 		private readonly permissionService: PermissionService,
-		private readonly mailService: MailService,
-		private readonly sharePointService: SharePointService
+		private readonly eventEmitter: EventEmitter2
 	) { }
 
 	/**
 	 * PRIVATE HELPER: Handles data privacy.
-	 * Members see personal 'staffCost'. Admins see 'incomeCost' and 'totalStaffCost'.
 	 */
 	private async mapRoleBasedData(
 		rawData: Prisma.JobGetPayload<{
-			include: {
-				assignments: { include: { user: true } }
-			}
+			include: { assignments: { include: { user: true } } }
 		}>[],
 		userId: string
 	) {
 		const userPermissions =
 			await this.authService.getEffectivePermissions(userId)
-
-		const canReadSensitiveData = userPermissions.includes(
-			APP_PERMISSIONS.JOB.READ_SENSITIVE
+		const canReadStaffCost = userPermissions.includes(
+			APP_PERMISSIONS.JOB.READ_STAFF_COST
 		)
 
-		const mapData = rawData.map((job) => {
+		return rawData.map((job) => {
 			const personalCost = job.assignments?.find(
 				(a: any) => a.userId === userId || a.user?.id === userId
 			)?.staffCost
 
 			return {
 				...job,
-				totalStaffCost: canReadSensitiveData
+				totalStaffCost: canReadStaffCost
 					? job.totalStaffCost
 					: undefined,
 				staffCost: personalCost ?? undefined,
 				assignments: job.assignments?.map((asm: any) => ({
 					...asm,
-					staffCost: canReadSensitiveData ? asm.staffCost : undefined,
+					staffCost: canReadStaffCost ? asm.staffCost : undefined,
 					user: asm.user
 						? {
 							id: asm.user.id,
@@ -97,7 +86,6 @@ export class JobService {
 				})),
 			}
 		})
-		return mapData
 	}
 
 	// -------------------------------------------------------------------------
@@ -142,11 +130,7 @@ export class JobService {
 					type: true,
 					status: true,
 					paymentChannel: true,
-					client: {
-						select: {
-							name: true,
-						},
-					},
+					client: { select: { name: true } },
 					assignments: { include: { user: true } },
 				},
 			}),
@@ -193,21 +177,16 @@ export class JobService {
 		jobNo: string
 	): Promise<Job> {
 		const userPermission = await this.buildPermission(userId)
-
 		const job = await this.prisma.job.findFirst({
 			where: { AND: [userPermission, { no: jobNo }] },
 			include: {
 				type: true,
-				assignments: {
-					include: { user: { include: { department: true } } },
-				},
 				createdBy: true,
 				paymentChannel: true,
 				status: true,
-				client: {
-					select: {
-						name: true,
-					},
+				client: { select: { name: true } },
+				assignments: {
+					include: { user: { include: { department: true } } },
 				},
 				comments: {
 					include: { user: true },
@@ -224,11 +203,7 @@ export class JobService {
 
 		return plainToInstance(JobResponseDto, mappedData, {
 			excludeExtraneousValues: true,
-			groups: [
-				userPermissions.find(
-					(item) => item === APP_PERMISSIONS.JOB.READ_SENSITIVE
-				) as string,
-			],
+			groups: userPermissions,
 		}) as unknown as Job
 	}
 
@@ -258,11 +233,7 @@ export class JobService {
 		const mappedData = await this.mapRoleBasedData(rawData, userId)
 		return plainToInstance(JobResponseDto, mappedData, {
 			excludeExtraneousValues: true,
-			groups: [
-				userPermissions.find(
-					(item) => item === APP_PERMISSIONS.JOB.READ_SENSITIVE
-				) as string,
-			],
+			groups: userPermissions,
 		}) as unknown as Job[]
 	}
 
@@ -282,8 +253,8 @@ export class JobService {
 			.month(month - 1)
 			.endOf('month')
 			.toDate()
-
 		const userPermission = await this.buildPermission(userId)
+
 		const rawData = await this.prisma.job.findMany({
 			where: {
 				AND: [
@@ -302,11 +273,7 @@ export class JobService {
 		const mappedData = await this.mapRoleBasedData(rawData, userId)
 		return plainToInstance(JobResponseDto, mappedData, {
 			excludeExtraneousValues: true,
-			groups: [
-				userPermissions.find(
-					(item) => item === APP_PERMISSIONS.JOB.READ_SENSITIVE
-				) as string,
-			],
+			groups: userPermissions,
 		}) as unknown as Job[]
 	}
 
@@ -330,11 +297,7 @@ export class JobService {
 		const mappedData = await this.mapRoleBasedData(rawData, userId)
 		return plainToInstance(JobResponseDto, mappedData, {
 			excludeExtraneousValues: true,
-			groups: [
-				userPermissions.find(
-					(item) => item === APP_PERMISSIONS.JOB.READ_SENSITIVE
-				) as string,
-			],
+			groups: userPermissions,
 		}) as unknown as Job[]
 	}
 
@@ -353,70 +316,86 @@ export class JobService {
 			},
 			orderBy: { completedAt: 'asc' },
 		})
-		const mappedData = result.map((it) => ({
+		return result.map((it) => ({
 			...it,
 			totalStaffCost: it.totalStaffCost,
 		}))
-		return mappedData
 	}
-	/**
-	 * Admin reviews a staff delivery.
-	 * If approved: Job moves to 'completed'.
-	 * If rejected: Job moves to 'revision'.
-	 */
-	async reviewDeliveryActions(
-		adminId: string,
-		deliveryId: string,
-		isApproved: boolean,
-		feedback?: string
-	) {
-		// 1. Perform Database Operations in Transaction
-		const result = await this.prisma.$transaction(async (tx) => {
-			// 1.1 Update the delivery status
-			const delivery = await tx.jobDelivery.update({
-				where: { id: deliveryId },
-				data: {
-					status: isApproved ? 'APPROVED' : 'REJECTED',
-					adminFeedback: feedback,
-				},
-				include: {
-					job: { include: { status: true } },
-					user: true,
-				},
-			})
 
-			// 1.2 Determine next status
-			const nextStatusCode = isApproved ? 'completed' : 'revision'
-			const nextStatus = await tx.jobStatus.findUnique({
-				where: { code: nextStatusCode },
-			})
+	// -------------------------------------------------------------------------
+	// WRITE / ACTION METHODS
+	// -------------------------------------------------------------------------
+	async create(createdById: string, data: CreateJobDto): Promise<Job> {
+		const defaultStatus = await this.prisma.jobStatus.findUnique({
+			where: { order: 1 },
+		})
+		if (!defaultStatus)
+			throw new InternalServerErrorException(
+				'Initial status order 1 not found'
+			)
 
-			if (!nextStatus) {
-				throw new NotFoundException(
-					`Status code '${nextStatusCode}' not found in DB`
+		const {
+			jobAssignments,
+			clientName,
+			typeId,
+			paymentChannelId,
+			incomeCost,
+			totalStaffCost,
+			attachmentUrls,
+			sharepointFolderId,
+			...jobData
+		} = data
+
+		const newJob = await this.prisma.$transaction(async (tx) => {
+			let client = await tx.client.findUnique({
+				where: { name: clientName },
+			})
+			if (!client) {
+				const newClientCode = await this.generateClientCode(
+					clientName,
+					tx
 				)
+				client = await tx.client.create({
+					data: { name: clientName, code: newClientCode },
+				})
 			}
 
-			// 1.3 Update the Job
-			const jobUpdated = await tx.job.update({
-				where: { id: delivery.jobId },
+			const createdJob = await tx.job.create({
 				data: {
-					statusId: nextStatus.id,
-					completedAt: isApproved ? new Date() : undefined,
-				},
-				select: {
-					no: true,
-					displayName: true,
-					status: { select: { thumbnailUrl: true } },
-					// [UPDATED] Select full user details for Email & Notification
+					...jobData,
+					status: { connect: { id: defaultStatus.id } },
+					createdBy: { connect: { id: createdById } },
+					type: { connect: { id: typeId } },
+					paymentChannel: paymentChannelId
+						? { connect: { id: paymentChannelId } }
+						: undefined,
+					incomeCost: parseFloat(incomeCost as any) || 0,
+					totalStaffCost: parseFloat(totalStaffCost as any) || 0,
+					client: { connect: { id: client.id } },
+					sharepointFolderId: sharepointFolderId || undefined,
+					attachmentUrls: Array.isArray(attachmentUrls)
+						? attachmentUrls
+						: [],
 					assignments: {
-						select: {
+						create:
+							jobAssignments?.map((asgn) => ({
+								user: { connect: { id: asgn.userId } },
+								staffCost:
+									parseFloat(asgn.staffCost as any) || 0,
+							})) || [],
+					},
+				},
+				include: {
+					status: true,
+					client: true,
+					assignments: {
+						include: {
 							user: {
 								select: {
 									id: true,
+									displayName: true,
 									email: true,
 									personalEmail: true,
-									displayName: true,
 								},
 							},
 						},
@@ -424,111 +403,680 @@ export class JobService {
 				},
 			})
 
-			// 1.4 Log the activity
-			await tx.jobActivityLog.create({
+			await this.activityLogService.create(
+				{
+					jobId: createdJob.id,
+					modifiedById: createdById,
+					activityType: ActivityType.CREATE_JOB,
+					fieldName: 'Job',
+					currentValue: createdJob.no,
+					requiredPermissionCode: 'job.view_financial',
+					metadata: {
+						incomeCost: createdJob.incomeCost,
+						clientName: client.name,
+						assignmentCount: jobAssignments?.length || 0,
+					},
+				},
+				tx
+			)
+
+			return createdJob
+		})
+
+		// Fire Event for Notifications & Emails
+		this.eventEmitter.emit(
+			'job.action',
+			new JobActionEvent(
+				ActivityType.CREATE_JOB,
+				newJob.id,
+				createdById,
+				{},
+				newJob
+			)
+		)
+
+		return plainToInstance(JobResponseDto, newJob, {
+			excludeExtraneousValues: true,
+		}) as unknown as Job
+	}
+
+	async updateGeneralInfo(
+		modifierId: string,
+		jobId: string,
+		dto: UpdateGeneralJobDto
+	) {
+		const jobBefore = await this.prisma.job.findUnique({
+			where: { id: jobId },
+			include: {
+				client: true,
+				status: true,
+				assignments: { include: { user: true } },
+			},
+		})
+		if (!jobBefore) throw new NotFoundException('Job not found')
+
+		const transactionResult = await this.prisma.$transaction(async (tx) => {
+			let clientId: string | undefined = undefined
+
+			if (
+				dto.clientName &&
+				dto.clientName.trim() !== jobBefore.client?.name
+			) {
+				const existingClient = await tx.client.findFirst({
+					where: {
+						name: {
+							equals: dto.clientName.trim(),
+							mode: 'insensitive',
+						},
+					},
+				})
+				if (existingClient) {
+					clientId = existingClient.id
+				} else {
+					const newClientCode = await this.generateClientCode(
+						dto.clientName,
+						tx
+					)
+					const newClient = await tx.client.create({
+						data: {
+							name: dto.clientName.trim(),
+							code: newClientCode,
+						},
+					})
+					clientId = newClient.id
+				}
+			}
+
+			const updatedJob = await tx.job.update({
+				where: { id: jobId },
 				data: {
-					jobId: delivery.jobId,
-					modifiedById: adminId,
-					fieldName: 'Status',
-					activityType: isApproved
-						? ActivityType.APPROVE
-						: ActivityType.REJECT,
-					currentValue: nextStatus.displayName,
-					notes: isApproved
-						? `Job completed and approved by Admin.`
-						: `Job sent back for revision.`,
-					metadata: !isApproved ? { adminFeedback: feedback } : {},
-					requiredPermissionCode: APP_PERMISSIONS.JOB.REVIEW,
+					displayName: dto.displayName,
+					clientId: clientId,
+					startedAt: dto.startedAt,
+					dueAt: dto.dueAt,
+					description: dto.description,
+				},
+				include: {
+					client: true,
+					status: true,
+					assignments: { include: { user: true } },
 				},
 			})
 
-			return { delivery, jobUpdated }
-		})
+			const updateTasks: Promise<any>[] = []
+			const trackableFields = [
+				{
+					key: 'displayName',
+					label: 'Title',
+					type: ActivityType.UPDATE_GENERAL_INFORMATION,
+				},
+				{
+					key: 'description',
+					label: 'Description',
+					type: ActivityType.UPDATE_GENERAL_INFORMATION,
+				},
+				{
+					key: 'startedAt',
+					label: 'Start Date',
+					type: ActivityType.RESCHEDULE,
+				},
+				{
+					key: 'dueAt',
+					label: 'Deadline',
+					type: ActivityType.RESCHEDULE,
+				},
+			]
 
-		// --- POST-TRANSACTION NOTIFICATIONS ---
-		const { delivery, jobUpdated } = result
+			for (const field of trackableFields) {
+				const newValue =
+					updatedJob[field.key as keyof typeof updatedJob]
+				const oldValue = jobBefore[field.key as keyof typeof jobBefore]
 
-		// Extract Users from assignments
-		const assignees = jobUpdated.assignments.map((it) => ({
-			email: it.user.email,
-			displayName: it.user.displayName,
-			personalEmail: it.user.personalEmail || it.user.email,
-			id: it.user.id,
-		}))
-		const assigneeIds = assignees.map((u) => u.id)
+				if (newValue?.toString() !== oldValue?.toString()) {
+					updateTasks.push(
+						this.activityLogService.create(
+							{
+								jobId,
+								modifiedById: modifierId,
+								activityType: field.type,
+								fieldName: field.label,
+								notes: `Updated ${field.label}`,
+								currentValue: newValue?.toString() || 'N/A',
+								metadata: {
+									rawOld: oldValue,
+									rawNew: newValue,
+									fieldKey: field.key,
+								},
+							},
+							tx
+						)
+					)
+				}
+			}
 
-		// 2. Send In-App Notifications
-		await this.notificationService.sendToUsers(assigneeIds, {
-			senderId: adminId,
-			title: isApproved
-				? `[${jobUpdated.no}] Delivery Approved!`
-				: `[${jobUpdated.no}] Revision Required`,
-			content: isApproved
-				? `Your delivery for ${jobUpdated.displayName} was approved.`
-				: `Your delivery was rejected. Feedback: ${feedback}`,
-			type: isApproved
-				? NotificationType.SUCCESS
-				: NotificationType.WARNING,
-			imageUrl:
-				jobUpdated.status.thumbnailUrl ||
-				IMAGES.NOTIFICATION_DEFAULT_IMAGE,
-			redirectUrl: `/jobs/${jobUpdated.no}`,
-		})
-
-		// 3. Send Email Notifications (New)
-		if (assignees.length > 0) {
-			if (isApproved) {
-				// Send "Job Approved" Email
-				await this.mailService.sendJobApprovedNotification(assignees, {
-					no: jobUpdated.no,
-					displayName: jobUpdated.displayName,
-				})
-			} else {
-				// Send "Job Rejected" Email
-				await this.mailService.sendJobRejectedNotification(
-					assignees,
-					{
-						no: jobUpdated.no,
-						displayName: jobUpdated.displayName,
-					},
-					feedback || 'Please review the comments in the system.'
+			if (clientId && clientId !== jobBefore.clientId) {
+				updateTasks.push(
+					this.activityLogService.create(
+						{
+							jobId,
+							modifiedById: modifierId,
+							activityType:
+								ActivityType.UPDATE_CLIENT_INFORMATION,
+							fieldName: 'Client',
+							notes: `Updated Client`,
+							currentValue: updatedJob.client?.name || 'N/A',
+							requiredPermissionCode: APP_PERMISSIONS.CLIENT.READ,
+							metadata: {
+								oldClientName: jobBefore.client?.name,
+								newClientName: updatedJob.client?.name,
+							},
+						},
+						tx
+					)
 				)
 			}
+
+			await Promise.all(updateTasks)
+			return updatedJob
+		})
+
+		// Fire Events if Rescheduled
+		if (dto.dueAt && dto.dueAt.toString() !== jobBefore.dueAt.toString()) {
+			this.eventEmitter.emit(
+				'job.action',
+				new JobActionEvent(
+					ActivityType.RESCHEDULE,
+					jobId,
+					modifierId,
+					{ newDueAt: dto.dueAt },
+					transactionResult
+				)
+			)
 		}
 
-		// 4. Notify Managers (Only if Approved)
-		if (isApproved) {
-			const managerIds = await this.permissionService
-				.findUserHasAnyPermission([
-					APP_PERMISSIONS.JOB.MANAGE,
-					APP_PERMISSIONS.SYSTEM.MANAGE,
-					APP_PERMISSIONS.JOB.PAID,
-				])
-				.then((res) => {
-					return res.filter((it) => !assigneeIds.includes(it))
-				})
+		return { id: transactionResult.id, no: transactionResult.no }
+	}
 
-			if (managerIds.length > 0) {
-				await this.notificationService.sendToUsers(managerIds, {
-					senderId: adminId,
-					title: `[${jobUpdated.no}] New Payout Pending`,
-					content: `Job #${jobUpdated.no} is completed and ready for payment.`,
-					type: NotificationType.JOB_UPDATE,
-					imageUrl:
-						jobUpdated.status.thumbnailUrl ||
-						IMAGES.NOTIFICATION_DEFAULT_IMAGE,
-					redirectUrl: `/financial/pending-payouts`,
+	async updateAttachments(
+		modifierId: string,
+		jobId: string,
+		dto: UpdateAttachmentsDto
+	) {
+		const job = await this.prisma.job.findUnique({
+			where: { id: jobId },
+			include: { status: true, assignments: { include: { user: true } } },
+		})
+		if (!job) throw new NotFoundException('Job not found')
+
+		const currentAttachments = (job.attachmentUrls as string[]) || []
+		let finalAttachments: string[] = []
+		let logNote = ''
+
+		if (dto.action === 'add') {
+			finalAttachments = [
+				...new Set([...currentAttachments, ...dto.files]),
+			]
+			logNote = `Added ${dto.files.length} new attachment(s)`
+		} else {
+			finalAttachments = currentAttachments.filter(
+				(url) => !dto.files.includes(url)
+			)
+			logNote = `Removed ${dto.files.length} attachment(s)`
+		}
+
+		const updatedJob = await this.prisma.$transaction(async (tx) => {
+			const result = await tx.job.update({
+				where: { id: jobId },
+				data: { attachmentUrls: finalAttachments },
+				select: { id: true, no: true, displayName: true },
+			})
+
+			await this.activityLogService.create(
+				{
+					jobId,
+					modifiedById: modifierId,
+					activityType: ActivityType.UPDATE_ATTACHMENTS,
+					fieldName: 'attachmentUrls',
+					notes: logNote,
+					currentValue: `${finalAttachments.length} files total`,
+					metadata: {
+						action: dto.action,
+						changedFiles: dto.files,
+						totalCount: finalAttachments.length,
+					},
+				},
+				tx
+			)
+
+			return result
+		})
+
+		this.eventEmitter.emit(
+			'job.action',
+			new JobActionEvent(
+				ActivityType.UPDATE_ATTACHMENTS,
+				jobId,
+				modifierId,
+				{ action: dto.action, filesCount: dto.files.length },
+				job
+			)
+		)
+
+		return {
+			id: updatedJob.id,
+			no: updatedJob.no,
+			attachments: finalAttachments,
+		}
+	}
+
+	async assignMember(
+		modifierId: string,
+		jobId: string,
+		dto: AssignMemberDto
+	) {
+		const { memberId, staffCost } = dto
+		const existingMember = await this.userService.findById(memberId)
+		if (!existingMember) throw new NotFoundException('Member not exist')
+
+		const jobUpdated = await this.prisma.$transaction(async (tx) => {
+			const job = await tx.job.findUnique({ where: { id: jobId } })
+			if (!job) throw new NotFoundException('Job not found')
+
+			try {
+				await tx.jobAssignment.create({
+					data: { jobId, userId: memberId, staffCost },
 				})
+			} catch (e) {
+				throw new BadRequestException(
+					'User is already assigned to this job'
+				)
 			}
-		}
+
+			const aggregate = await tx.jobAssignment.aggregate({
+				where: { jobId },
+				_sum: { staffCost: true },
+			})
+
+			const updated = await tx.job.update({
+				where: { id: jobId },
+				data: { totalStaffCost: aggregate._sum.staffCost || 0 },
+				include: {
+					status: true,
+					assignments: { include: { user: true } },
+					client: true,
+				},
+			})
+
+			await tx.jobActivityLog.create({
+				data: {
+					jobId,
+					modifiedById: modifierId,
+					activityType: ActivityType.ASSIGN_MEMBER,
+					fieldName: 'jobAssignments',
+					currentValue: memberId,
+					requiredPermissionCode: APP_PERMISSIONS.JOB.READ_INCOME,
+					notes: `[${updated.no}] Assigned ${existingMember.displayName} to this job`,
+					metadata: {
+						assignedUser: existingMember.displayName,
+						savedCost: staffCost,
+					},
+				},
+			})
+
+			return updated
+		})
+
+		this.eventEmitter.emit(
+			'job.action',
+			new JobActionEvent(
+				ActivityType.ASSIGN_MEMBER,
+				jobId,
+				modifierId,
+				{
+					memberId,
+					userEmail: existingMember.email,
+					userPersonalEmail: existingMember.personalEmail,
+					userDisplayName: existingMember.displayName,
+				},
+				jobUpdated
+			)
+		)
+
+		return jobUpdated
+	}
+
+	async updateAssignmentCost(
+		modifierId: string,
+		jobId: string,
+		memberId: string,
+		dto: UpdateAssignmentDto
+	) {
+		const { staffCost } = dto
+
+		const currentAssignment = await this.prisma.jobAssignment.findUnique({
+			where: { jobId_userId: { userId: memberId, jobId: jobId } },
+			include: {
+				user: { select: { displayName: true } },
+				job: { select: { no: true, displayName: true } },
+			},
+		})
+		if (!currentAssignment)
+			throw new NotFoundException('Assignment not found')
+
+		const jobUpdated = await this.prisma.$transaction(async (tx) => {
+			await tx.jobAssignment.update({
+				where: { jobId_userId: { userId: memberId, jobId: jobId } },
+				data: { staffCost },
+			})
+			const aggregate = await tx.jobAssignment.aggregate({
+				where: { jobId },
+				_sum: { staffCost: true },
+			})
+
+			const updated = await tx.job.update({
+				where: { id: jobId },
+				data: { totalStaffCost: aggregate._sum.staffCost || 0 },
+				include: { status: true },
+			})
+
+			await this.activityLogService.create(
+				{
+					jobId,
+					modifiedById: modifierId,
+					activityType: ActivityType.UPDATE_MEMBER_COST,
+					fieldName: currentAssignment.user.displayName,
+					currentValue: `${staffCost.toLocaleString()} VND`,
+					requiredPermissionCode: APP_PERMISSIONS.JOB.READ_STAFF_COST,
+					metadata: {
+						targetUser: currentAssignment.user.displayName,
+						oldCost: currentAssignment.staffCost,
+						newCost: staffCost,
+					},
+				},
+				tx
+			)
+
+			return updated
+		})
+
+		this.eventEmitter.emit(
+			'job.action',
+			new JobActionEvent(
+				ActivityType.UPDATE_MEMBER_COST,
+				jobId,
+				modifierId,
+				{ memberId },
+				jobUpdated
+			)
+		)
+
+		return jobUpdated
+	}
+
+	async removeMember(modifierId: string, jobId: string, userId: string) {
+		const assignment = await this.prisma.jobAssignment.findUnique({
+			where: { jobId_userId: { jobId, userId } },
+			include: {
+				user: { select: { displayName: true } },
+				job: { select: { no: true, displayName: true } },
+			},
+		})
+		if (!assignment) throw new NotFoundException('Assignment not found')
+
+		const jobUpdated = await this.prisma.$transaction(async (tx) => {
+			await tx.jobAssignment.delete({
+				where: { jobId_userId: { jobId, userId } },
+			})
+			const aggregate = await tx.jobAssignment.aggregate({
+				where: { jobId },
+				_sum: { staffCost: true },
+			})
+
+			const updated = await tx.job.update({
+				where: { id: jobId },
+				data: { totalStaffCost: aggregate._sum.staffCost || 0 },
+				include: { status: true },
+			})
+
+			await this.activityLogService.create(
+				{
+					jobId,
+					modifiedById: modifierId,
+					activityType: ActivityType.UNASSIGN_MEMBER,
+					fieldName: 'jobAssignments',
+					currentValue: assignment.user.displayName,
+					notes: `[${updated.no}] Removed ${assignment.user.displayName} from the job`,
+					requiredPermissionCode: APP_PERMISSIONS.JOB.READ_STAFF_COST,
+					metadata: {
+						removedUser: assignment.user.displayName,
+						savedCost: assignment.staffCost,
+					},
+				},
+				tx
+			)
+
+			return updated
+		})
+
+		this.eventEmitter.emit(
+			'job.action',
+			new JobActionEvent(
+				ActivityType.UNASSIGN_MEMBER,
+				jobId,
+				modifierId,
+				{ memberId: userId },
+				jobUpdated
+			)
+		)
+
+		return { success: true, removedUserId: userId }
+	}
+
+	async updateRevenue(
+		modifierId: string,
+		jobId: string,
+		dto: UpdateRevenueDto
+	) {
+		if (!dto.incomeCost && !dto.paymentChannelId)
+			throw new BadRequestException(
+				'No financial data provided for update'
+			)
+
+		const job = await this.prisma.job.findUnique({
+			where: { id: jobId },
+			include: { paymentChannel: true },
+		})
+		if (!job) throw new NotFoundException('Job not found')
+
+		const updatedJob = await this.prisma.$transaction(async (tx) => {
+			const updateData: any = {}
+			if (dto.paymentChannelId)
+				updateData.paymentChannelId = dto.paymentChannelId
+			if (dto.incomeCost)
+				updateData.incomeCost = parseFloat(dto.incomeCost.toString())
+
+			const updated = await tx.job.update({
+				where: { id: jobId },
+				data: updateData,
+				include: { paymentChannel: true },
+			})
+
+			await this.activityLogService.create(
+				{
+					jobId,
+					modifiedById: modifierId,
+					activityType: ActivityType.UPDATE_GENERAL_INFORMATION,
+					fieldName: 'Revenue/Payment Channel',
+					notes: `${job.incomeCost?.toLocaleString()} VND via ${job.paymentChannel?.displayName || 'N/A'}`,
+					currentValue: `${updated.incomeCost?.toLocaleString()} VND via ${updated.paymentChannel?.displayName || 'N/A'}`,
+					requiredPermissionCode: APP_PERMISSIONS.JOB.READ_STAFF_COST,
+					metadata: {
+						oldCost: job.incomeCost,
+						newCost: updated.incomeCost,
+					},
+				},
+				tx
+			)
+
+			return updated
+		})
+
+		this.eventEmitter.emit(
+			'job.action',
+			new JobActionEvent(
+				ActivityType.UPDATE_GENERAL_INFORMATION,
+				jobId,
+				modifierId,
+				{ isRevenueUpdate: true },
+				updatedJob
+			)
+		)
+
+		return { id: updatedJob.id, no: updatedJob.no }
+	}
+
+	async markPaid(jobId: string, modifierId: string) {
+		const job = await this.prisma.job.findUnique({
+			where: { id: jobId },
+			include: {
+				status: true,
+				assignments: { include: { user: true } },
+				client: true,
+				paymentChannel: true,
+			},
+		})
+
+		if (!job || job.isPaid)
+			throw new BadRequestException('Job already paid or not found')
+
+		const updatedJob = await this.prisma.$transaction(async (tx) => {
+			const finishStatus = await tx.jobStatus.findFirst({
+				where: { systemType: 'TERMINATED' },
+			})
+			const now = new Date()
+			const updateData: Prisma.JobUpdateInput = {
+				isPaid: true,
+				paidAt: now,
+			}
+
+			if (job.status.systemType === 'COMPLETED') {
+				updateData.status = { connect: { id: finishStatus?.id } }
+				updateData.finishedAt = now
+			}
+
+			const updated = await tx.job.update({
+				where: { id: jobId },
+				data: updateData,
+				include: { assignments: { include: { user: true } } },
+			})
+
+			await this.activityLogService.create(
+				{
+					jobId,
+					modifiedById: modifierId,
+					fieldName: 'Payment Status',
+					activityType: ActivityType.PAID,
+					currentValue: now.toISOString(),
+					requiredPermissionCode: APP_PERMISSIONS.JOB.PAID,
+					metadata: {
+						incomeCost: job.incomeCost,
+						totalStaffCost: job.totalStaffCost,
+						paidAt: now,
+					},
+				},
+				tx
+			)
+
+			return updated
+		})
+
+		this.eventEmitter.emit(
+			'job.action',
+			new JobActionEvent(
+				ActivityType.PAID,
+				jobId,
+				modifierId,
+				{},
+				updatedJob
+			)
+		)
+		return { id: updatedJob.id, no: updatedJob.no }
+	}
+
+	async reviewDeliveryActions(
+		adminId: string,
+		deliveryId: string,
+		isApproved: boolean,
+		feedback?: string
+	) {
+		const { delivery, jobUpdated } = await this.prisma.$transaction(
+			async (tx) => {
+				const delivery = await tx.jobDelivery.update({
+					where: { id: deliveryId },
+					data: {
+						status: isApproved ? 'APPROVED' : 'REJECTED',
+						adminFeedback: feedback,
+					},
+				})
+
+				const nextStatusCode = isApproved ? 'completed' : 'revision'
+				const nextStatus = await tx.jobStatus.findUnique({
+					where: { code: nextStatusCode },
+				})
+				if (!nextStatus)
+					throw new NotFoundException(
+						`Status code '${nextStatusCode}' not found in DB`
+					)
+
+				const jobUpdated = await tx.job.update({
+					where: { id: delivery.jobId },
+					data: {
+						statusId: nextStatus.id,
+						completedAt: isApproved ? new Date() : undefined,
+					},
+					include: {
+						status: true,
+						assignments: { include: { user: true } },
+					},
+				})
+
+				await tx.jobActivityLog.create({
+					data: {
+						jobId: delivery.jobId,
+						modifiedById: adminId,
+						fieldName: 'Status',
+						activityType: isApproved
+							? ActivityType.APPROVE
+							: ActivityType.REJECT,
+						currentValue: nextStatus.displayName,
+						notes: isApproved
+							? `Job approved.`
+							: `Sent back for revision.`,
+						metadata: !isApproved
+							? { adminFeedback: feedback }
+							: {},
+						requiredPermissionCode: APP_PERMISSIONS.JOB.REVIEW,
+					},
+				})
+
+				return { delivery, jobUpdated }
+			}
+		)
+
+		this.eventEmitter.emit(
+			'job.action',
+			new JobActionEvent(
+				isApproved ? ActivityType.APPROVE : ActivityType.REJECT,
+				delivery.jobId,
+				adminId,
+				{ feedback },
+				jobUpdated
+			)
+		)
 
 		return delivery
 	}
 
-	/**
-	 * Manually changes a job status.
-	 * Handles logic for system types like COMPLETED and TERMINATED.
-	 */
 	async changeStatus(
 		jobId: string,
 		modifierId: string,
@@ -564,9 +1112,8 @@ export class JobService {
 				where: { id: jobId },
 				data: updateData,
 				include: {
-					status: {
-						select: { thumbnailUrl: true },
-					},
+					status: true,
+					assignments: { include: { user: true } },
 				},
 			})
 
@@ -584,961 +1131,70 @@ export class JobService {
 			return result
 		})
 
-		const jobAssignmentIds = job.assignments.map((it) => it.userId)
-		const managerIds =
-			await this.permissionService.findUserHasAnyPermission([
-				APP_PERMISSIONS.JOB.MANAGE,
-				APP_PERMISSIONS.SYSTEM.MANAGE,
-				APP_PERMISSIONS.JOB.PAID,
-			])
-		const uniqueIds = [...new Set([...jobAssignmentIds, ...managerIds])]
-
-		// Notify staff if status moves from active to another state
-		await this.notificationService.sendToUsers(uniqueIds, {
-			title: `[${job.no}] Force Status Update`,
-			content: `Job #${job.no} moved from ${job.status.displayName} to ${targetStatus.displayName}.`,
-			imageUrl:
-				updatedJob.status.thumbnailUrl ||
-				IMAGES.NOTIFICATION_DEFAULT_IMAGE,
-			type: NotificationType.JOB_UPDATE,
-			redirectUrl: `/jobs/${job.no}`,
-		})
-
-		if (uniqueIds.length > 0) {
-			const recipients = await this.prisma.user
-				.findMany({
-					where: { id: { in: uniqueIds }, isActive: true },
-					select: {
-						email: true,
-						displayName: true,
-						personalEmail: true,
-					},
-				})
-				.then((res) =>
-					res.map((it) => ({
-						email: it.email,
-						personalEmail: it.personalEmail || it.email,
-						displayName: it.displayName,
-					}))
-				)
-
-			// 6. SEND EMAIL NOTIFICATION
-			await this.mailService.sendForceStatusUpdateNotification(
-				recipients,
-				{
-					jobNo: updatedJob.no,
-					jobTitle: updatedJob.displayName,
-					oldStatus: job.status.displayName,
-					newStatus: targetStatus.displayName,
-					modifierName: 'Administrator',
-				}
+		this.eventEmitter.emit(
+			'job.action',
+			new JobActionEvent(
+				ActivityType.FORCE_CHANGE_STATUS,
+				jobId,
+				modifierId,
+				{ oldStatusName: job.status.displayName },
+				updatedJob
 			)
-		}
+		)
 
 		return { id: jobId, no: updatedJob.no }
 	}
 
-	// -------------------------------------------------------------------------
-	// WRITE / ACTION METHODS
-	// -------------------------------------------------------------------------
-	async create(createdById: string, data: CreateJobDto): Promise<Job> {
-		// 1. Pre-fetch default status outside transaction
-		const defaultStatus = await this.prisma.jobStatus.findUnique({
-			where: { order: 1 },
+	async softDelete(jobId: string, modifierId: string) {
+		const job = await this.prisma.job.findUnique({
+			where: { id: jobId },
+			include: { status: true, assignments: true },
 		})
 
-		if (!defaultStatus) {
-			throw new InternalServerErrorException(
-				'Initial status order 1 not found'
-			)
-		}
+		if (!job) throw new NotFoundException('Job not found')
+		if (job.deletedAt)
+			throw new BadRequestException('Job is already deleted')
 
-		const {
-			jobAssignments,
-			clientName,
-			typeId,
-			paymentChannelId,
-			incomeCost,
-			totalStaffCost,
-			attachmentUrls,
-			sharepointFolderId,
-			...jobData
-		} = data
-
-		// 2. Execute Database Transaction
-		const job = await this.prisma.$transaction(async (tx) => {
-			// Handle Client Logic (Find or Create)
-			let client = await tx.client.findUnique({
-				where: { name: clientName },
+		const result = await this.prisma.$transaction(async (tx) => {
+			const now = new Date()
+			const updated = await tx.job.update({
+				where: { id: jobId },
+				data: { deletedAt: now, isPublished: false },
+				include: { status: true, assignments: true },
 			})
 
-			if (!client) {
-				const newClientCode = await this.generateClientCode(
-					clientName,
-					tx
-				)
-				client = await tx.client.create({
-					data: { name: clientName, code: newClientCode },
-				})
-			}
-
-			// Create the Job
-			const newJob = await tx.job.create({
-				data: {
-					...jobData,
-					status: { connect: { id: defaultStatus.id } },
-					createdBy: { connect: { id: createdById } },
-					type: { connect: { id: typeId } },
-					paymentChannel: paymentChannelId
-						? { connect: { id: paymentChannelId } }
-						: undefined,
-					incomeCost: parseFloat(incomeCost as any) || 0,
-					totalStaffCost: parseFloat(totalStaffCost as any) || 0,
-					client: { connect: { id: client.id } },
-					sharepointFolderId: sharepointFolderId || undefined,
-					attachmentUrls: Array.isArray(attachmentUrls)
-						? attachmentUrls
-						: [],
-					assignments: {
-						create:
-							jobAssignments?.map((asgn) => ({
-								user: { connect: { id: asgn.userId } },
-								staffCost:
-									parseFloat(asgn.staffCost as any) || 0,
-							})) || [],
-					},
-				},
-				include: {
-					status: true,
-					assignments: {
-						include: {
-							user: {
-								select: {
-									id: true,
-									displayName: true,
-									email: true,
-									personalEmail: true,
-								},
-							},
-							job: {
-								select: {
-									status: { select: { thumbnailUrl: true } },
-								},
-							},
-						},
-					},
-					client: true,
-				},
-			})
-
-			// 3. Log the Job Creation using ActivityLogService
-			// We log the Job No as the currentValue for the generated note
 			await this.activityLogService.create(
 				{
-					jobId: newJob.id,
-					modifiedById: createdById,
-					activityType: ActivityType.CREATE_JOB,
-					fieldName: 'Job',
-					currentValue: newJob.no,
-					// Financial details are stored in metadata and masked for regular users
-					requiredPermissionCode: 'job.view_financial',
-					metadata: {
-						incomeCost: newJob.incomeCost,
-						clientName: client.name,
-						assignmentCount: jobAssignments?.length || 0,
-					},
+					jobId: job.id,
+					modifiedById: modifierId,
+					activityType: ActivityType.DELETE,
+					fieldName: 'deletedAt',
+					currentValue: job.no,
+					notes: `Job #${job.no} (${job.displayName}) was soft-deleted.`,
+					requiredPermissionCode: APP_PERMISSIONS.JOB.DELETE,
 				},
 				tx
 			)
 
-			return newJob
+			return updated
 		})
 
-		// 4. Send Notifications to Assigned Staff (Outside Transaction)
-		try {
-			const jobAssignmentIds = job.assignments.map((it) => it.userId)
-			await this.notificationService.sendToUsers(jobAssignmentIds, {
-				senderId: createdById,
-				title: `[${job.no}] New Project Assignment`,
-				content: `You have been assigned to Job #${job.no}- ${job.displayName}.`,
-				type: NotificationType.JOB_ASSIGNED_MEMBER,
-				redirectUrl: `/jobs/${job.no}`,
-				imageUrl:
-					job.status.thumbnailUrl ||
-					IMAGES.NOTIFICATION_DEFAULT_IMAGE,
-			})
-			const managerIds = await this.permissionService
-				.findUserHasAnyPermission([
-					APP_PERMISSIONS.JOB.MANAGE,
-					APP_PERMISSIONS.SYSTEM.MANAGE,
-					APP_PERMISSIONS.JOB.PAID,
-				])
-				.then((res) => {
-					// Lấy ra admin không được assign
-					return res.filter((it) => !jobAssignmentIds.includes(it))
-				})
-			await this.notificationService.sendToUsers(managerIds, {
-				senderId: createdById,
-				title: `[${job.no}] New Project Created`,
-				content: `New project created Job #${job.no}- ${job.displayName}.`,
-				type: NotificationType.JOB_ASSIGNED_MEMBER,
-				redirectUrl: `/jobs/${job.no}`,
-				imageUrl:
-					job.status.thumbnailUrl ||
-					IMAGES.NOTIFICATION_DEFAULT_IMAGE,
-			})
-		} catch (error) {
-			this.logger.error(
-				`Notification failed for new job ${job.no}:`,
-				error
-			)
-		}
-
-		try {
-			const users = job.assignments.map((it) => ({
-				email: it.user.email,
-				personalEmail: it.user.personalEmail ?? undefined,
-				displayName: it.user.displayName,
-			}))
-			await this.mailService.sendJobAssignmentNotification(users, {
-				no: job.no,
-				displayName: job.displayName,
-				clientName: job.client?.name,
-				dueAt: job.dueAt,
-			})
-		} catch (error) {
-			this.logger.error('Error send mail to assignments')
-		}
-
-		return plainToInstance(JobResponseDto, job, {
-			excludeExtraneousValues: true,
-		}) as unknown as Job
-	}
-
-	async updateGeneralInfo(
-		modifierId: string,
-		jobId: string,
-		dto: UpdateGeneralJobDto
-	) {
-		// 1. Fetch current job state for comparison
-		const jobBefore = await this.prisma.job.findUnique({
-			where: { id: jobId },
-			include: {
-				client: true,
-				status: { select: { thumbnailUrl: true } },
-			},
-		})
-
-		if (!jobBefore) throw new NotFoundException('Job not found')
-
-		// 2. Perform Database Operations in Transaction
-		const transactionResult = await this.prisma.$transaction(async (tx) => {
-			let clientId: string | undefined = undefined
-
-			// --- A. Handle Client Logic (Find or Create) ---
-			if (
-				dto.clientName &&
-				dto.clientName.trim() !== jobBefore.client?.name
-			) {
-				const existingClient = await tx.client.findFirst({
-					where: {
-						name: {
-							equals: dto.clientName.trim(),
-							mode: 'insensitive',
-						},
-					},
-				})
-
-				if (existingClient) {
-					clientId = existingClient.id
-				} else {
-					const newClientCode = await this.generateClientCode(
-						dto.clientName,
-						tx
-					)
-					const newClient = await tx.client.create({
-						data: {
-							name: dto.clientName.trim(),
-							code: newClientCode,
-						},
-					})
-					clientId = newClient.id
-				}
-			}
-
-			// --- B. Execute Job Update ---
-			const updatedJob = await tx.job.update({
-				where: { id: jobId },
-				data: {
-					displayName: dto.displayName,
-					clientId: clientId,
-					startedAt: dto.startedAt,
-					dueAt: dto.dueAt,
-					description: dto.description,
-				},
-				include: { client: true },
-			})
-
-			// --- C. Detailed Activity Logging ---
-			const updateTasks: Promise<any>[] = []
-
-			// Define which fields to track and their specific ActivityType
-			const trackableFields = [
-				{
-					key: 'displayName',
-					label: 'Title',
-					type: ActivityType.UPDATE_GENERAL_INFORMATION,
-				},
-				{
-					key: 'description',
-					label: 'Description',
-					type: ActivityType.UPDATE_GENERAL_INFORMATION,
-				},
-				{
-					key: 'startedAt',
-					label: 'Start Date',
-					type: ActivityType.RESCHEDULE, // Special icon for dates
-				},
-				{
-					key: 'dueAt',
-					label: 'Deadline',
-					type: ActivityType.RESCHEDULE, // Special icon for dates
-				},
-			]
-
-			for (const field of trackableFields) {
-				const newValue =
-					updatedJob[field.key as keyof typeof updatedJob]
-				const oldValue = jobBefore[field.key as keyof typeof jobBefore]
-
-				// Compare values safely
-				if (newValue?.toString() !== oldValue?.toString()) {
-					updateTasks.push(
-						this.activityLogService.create(
-							{
-								jobId,
-								modifiedById: modifierId,
-								activityType: field.type, // Uses RESCHEDULE for dates
-								fieldName: field.label,
-
-								// Custom Note: "Updated Deadline" instead of "Modified dueAt"
-								notes: `Updated ${field.label}`,
-
-								currentValue: newValue?.toString() || 'N/A',
-								requiredPermissionCode: undefined, // Public info
-
-								// Save raw data for Frontend formatting
-								metadata: {
-									rawOld: oldValue,
-									rawNew: newValue,
-									fieldKey: field.key,
-								},
-							},
-							tx
-						)
-					)
-				}
-			}
-
-			// Special handling for Client change
-			if (clientId && clientId !== jobBefore.clientId) {
-				updateTasks.push(
-					this.activityLogService.create(
-						{
-							jobId,
-							modifiedById: modifierId,
-							activityType:
-								ActivityType.UPDATE_CLIENT_INFORMATION, // Specific type
-							fieldName: 'Client',
-							notes: `Updated Client`,
-							currentValue: updatedJob.client?.name || 'N/A',
-							requiredPermissionCode: APP_PERMISSIONS.CLIENT.READ,
-							metadata: {
-								oldClientName: jobBefore.client?.name ?? null,
-								newClientName: updatedJob.client?.name,
-								oldClientId: jobBefore.clientId,
-								newClientId: clientId,
-								oldClientCode: jobBefore.client?.code,
-								newClientCode: updatedJob.client?.code,
-							},
-						},
-						tx
-					)
-				)
-			}
-
-			await Promise.all(updateTasks)
-
-			return {
-				id: updatedJob.id,
-				no: updatedJob.no,
-				dueAt: updatedJob.dueAt,
-			}
-		})
-
-		// 3. Notification Logic (Outside Transaction)
-		// Check if the deadline actually changed before sending alerts
-		if (dto.dueAt && dto.dueAt.toString() !== jobBefore.dueAt.toString()) {
-			this.notifyDeadlineChange(
+		this.eventEmitter.emit(
+			'job.action',
+			new JobActionEvent(
+				ActivityType.DELETE,
 				jobId,
 				modifierId,
-				transactionResult.no,
-				transactionResult.dueAt,
-				jobBefore.status.thumbnailUrl ?? undefined
+				{},
+				result
 			)
-		}
-
-		return { id: transactionResult.id, no: transactionResult.no }
-	}
-
-	/**
-	 * Updates job attachments (add or remove) with detailed logging.
-	 * Matches Frontend: JobAttachmentsField & JobActivityHistory
-	 */
-	async updateAttachments(
-		modifierId: string,
-		jobId: string,
-		dto: UpdateAttachmentsDto
-	) {
-		// 1. Fetch current job (include assignments for notifications)
-		const job = await this.prisma.job.findUnique({
-			where: { id: jobId },
-			include: {
-				status: { select: { thumbnailUrl: true } },
-				assignments: { select: { userId: true } },
-			},
-		})
-
-		if (!job) throw new NotFoundException('Job not found')
-
-		// 2. Calculate New Attachment List
-		const currentAttachments = (job.attachmentUrls as string[]) || []
-		let finalAttachments: string[] = []
-		let logNote = ''
-
-		if (dto.action === 'add') {
-			// Logic: Combine arrays -> Set to remove duplicates -> Array
-			// This handles both single file adds and bulk uploads from frontend
-			finalAttachments = [
-				...new Set([...currentAttachments, ...dto.files]),
-			]
-			logNote = `Added ${dto.files.length} new attachment(s)`
-		} else {
-			// Logic: Filter out the files present in the DTO
-			finalAttachments = currentAttachments.filter(
-				(url) => !dto.files.includes(url)
-			)
-			logNote = `Removed ${dto.files.length} attachment(s)`
-		}
-
-		// 3. Execute Transaction (Update DB + Create Log)
-		const updatedJob = await this.prisma.$transaction(async (tx) => {
-			// A. Update the Job Record
-			const result = await tx.job.update({
-				where: { id: jobId },
-				data: { attachmentUrls: finalAttachments },
-				select: { id: true, no: true, displayName: true },
-			})
-
-			// B. Create Activity Log
-			// We save strict metadata so the Frontend 'JobActivityHistory'
-			// can verify 'meta.action' and render the file list 'meta.changedFiles'
-			await this.activityLogService.create(
-				{
-					jobId,
-					modifiedById: modifierId,
-					activityType: ActivityType.UPDATE_ATTACHMENTS,
-					fieldName: 'attachmentUrls',
-					notes: logNote, // Fallback text: "Added 1 new attachment(s)"
-					currentValue: `${finalAttachments.length} files total`,
-					requiredPermissionCode: undefined, // Files are generally public to the team
-					metadata: {
-						action: dto.action, // 'add' or 'remove'
-						changedFiles: dto.files, // The specific URLs changed
-						totalCount: finalAttachments.length,
-					},
-				},
-				tx
-			)
-
-			return result
-		})
-
-		// 4. Send Notifications (Only for 'add' action)
-		// We do this outside the transaction to prevent external API timeouts holding up the DB
-		if (dto.action === 'add' && job.assignments.length > 0) {
-			try {
-				await this.notificationService.sendMany(
-					job.assignments.map((assignee) => ({
-						userId: assignee.userId,
-						senderId: modifierId,
-						title: `[${updatedJob.no}] Files Updated`,
-						content: `${dto.files.length} new file(s) have been added to ${updatedJob.displayName}.`,
-						type: NotificationType.JOB_UPDATE,
-						imageUrl: job.status.thumbnailUrl || undefined,
-						// Deep link directly to the 'files' tab if your frontend supports it
-						redirectUrl: `/jobs/${updatedJob.no}?tab=files`,
-					}))
-				)
-			} catch (error) {
-				this.logger.error(
-					`Failed to send attachment notifications for Job ${updatedJob.no}`,
-					error
-				)
-			}
-		}
+		)
 
 		return {
-			id: updatedJob.id,
-			no: updatedJob.no,
-			attachments: finalAttachments,
+			id: result.id,
+			no: job.no,
+			message: 'Job moved to trash successfully',
 		}
-	}
-
-	async assignMember(
-		modifierId: string,
-		jobId: string,
-		dto: AssignMemberDto
-	) {
-		const { memberId, staffCost } = dto
-
-		const existingMember = await this.userService.findById(memberId)
-		if (!existingMember) {
-			this.logger.error(`Member with ${memberId} not exist!`)
-			throw new NotFoundException('Member not exist')
-		}
-		const jobAssigned = await this.prisma.$transaction(async (tx) => {
-			const job = await tx.job.findUnique({
-				where: { id: jobId },
-				select: { id: true, no: true, displayName: true },
-			})
-			if (!job) throw new NotFoundException('Job not found')
-
-			try {
-				await tx.jobAssignment.create({
-					data: { jobId, userId: memberId, staffCost },
-				})
-			} catch (e) {
-				throw new BadRequestException(
-					'User is already assigned to this job'
-				)
-			}
-
-			const aggregate = await tx.jobAssignment.aggregate({
-				where: { jobId },
-				_sum: { staffCost: true },
-			})
-
-			const jobUpdated = await tx.job.update({
-				where: { id: jobId },
-				data: { totalStaffCost: aggregate._sum.staffCost || 0 },
-				include: {
-					status: { select: { thumbnailUrl: true } },
-					assignments: true,
-				},
-			})
-
-			await tx.jobActivityLog.create({
-				data: {
-					jobId,
-					modifiedById: modifierId,
-					activityType: ActivityType.ASSIGN_MEMBER,
-					fieldName: 'jobAssignments',
-					currentValue: memberId,
-					requiredPermissionCode: APP_PERMISSIONS.JOB.READ_SENSITIVE,
-					notes: `[${jobUpdated.no}] Assigned ${existingMember.displayName} to this job`,
-					metadata: {
-						assignedUser: existingMember.displayName,
-						savedCost: staffCost,
-					},
-				},
-			})
-
-			return jobUpdated
-		})
-		try {
-			await this.notificationService.send({
-				userId: memberId,
-				senderId: modifierId,
-				// Hiển thị mã dự án ngay đầu tiêu đề để dễ nhận diện
-				title: `[#${jobAssigned.no}] New Job Assignment`,
-				content: `You have been assigned to job: ${jobAssigned.no}- ${jobAssigned.displayName}`,
-				type: NotificationType.JOB_ASSIGNED_MEMBER,
-				imageUrl:
-					jobAssigned.status.thumbnailUrl ||
-					IMAGES.NOTIFICATION_DEFAULT_IMAGE,
-				redirectUrl: `/jobs/${jobAssigned.no}`,
-			})
-		} catch (error) {
-			this.logger.error('Send notification error', (error as { stack: string }).stack)
-		}
-		return jobAssigned
-	}
-
-	async updateAssignmentCost(
-		modifierId: string,
-		jobId: string,
-		memberId: string,
-		dto: UpdateAssignmentDto
-	) {
-		const { staffCost } = dto
-
-		// 1. Fetch current assignment to get previous cost and job details
-		const currentAssignment = await this.prisma.jobAssignment.findUnique({
-			where: {
-				jobId_userId: { userId: memberId, jobId: jobId },
-			},
-			include: {
-				user: { select: { displayName: true } },
-				job: { select: { no: true, displayName: true } },
-			},
-		})
-
-		if (!currentAssignment)
-			throw new NotFoundException('Assignment not found')
-
-		// 2. Database updates in a transaction
-		const result = await this.prisma.$transaction(async (tx) => {
-			// Update the specific assignment
-			const updatedAssignment = await tx.jobAssignment.update({
-				where: {
-					jobId_userId: { userId: memberId, jobId: jobId },
-				},
-				data: { staffCost },
-			})
-
-			// Recalculate the total sum for the Job
-			const aggregate = await tx.jobAssignment.aggregate({
-				where: { jobId },
-				_sum: { staffCost: true },
-			})
-
-			const jobUpdated = await tx.job.update({
-				where: { id: jobId },
-				data: { totalStaffCost: aggregate._sum.staffCost || 0 },
-				include: {
-					status: {
-						select: {
-							thumbnailUrl: true,
-						},
-					},
-				},
-			})
-
-			// 3. Log the financial change using ActivityLogService
-			// We set requiredPermissionCode to hide the exact values from non-admins/accounting
-			await this.activityLogService.create(
-				{
-					jobId,
-					modifiedById: modifierId,
-					activityType: ActivityType.UPDATE_MEMBER_COST,
-					fieldName: currentAssignment.user.displayName,
-					currentValue: `${staffCost.toLocaleString()} VND`,
-					requiredPermissionCode: APP_PERMISSIONS.JOB.READ_SENSITIVE,
-					metadata: {
-						targetUser: currentAssignment.user.displayName,
-						oldCost: currentAssignment.staffCost,
-						newCost: staffCost,
-					},
-				},
-				tx
-			)
-
-			return jobUpdated
-		})
-
-		// 4. Send notification to the staff member (Outside Transaction)
-		try {
-			await this.notificationService.send({
-				userId: memberId,
-				senderId: modifierId,
-				title: 'Staff Cost Updated',
-				content: `Your cost assignment for Job #${currentAssignment.job.no} has been updated.`,
-				type: NotificationType.JOB_UPDATE,
-				imageUrl:
-					result.status.thumbnailUrl ||
-					IMAGES.NOTIFICATION_DEFAULT_IMAGE,
-				redirectUrl: `/jobs/${currentAssignment.job.no}`,
-			})
-		} catch (error) {
-			this.logger.error(
-				`Notification failed for member ${memberId} on cost update:`,
-				error
-			)
-		}
-
-		return result
-	}
-
-	async removeMember(modifierId: string, jobId: string, userId: string) {
-		// 1. Fetch assignment and job details first
-		const assignment = await this.prisma.jobAssignment.findUnique({
-			where: {
-				jobId_userId: { jobId, userId },
-			},
-			include: {
-				user: { select: { displayName: true } },
-				job: { select: { no: true, displayName: true } },
-			},
-		})
-
-		if (!assignment) throw new NotFoundException('Assignment not found')
-
-		// 2. Execute database changes in a transaction
-		const jobUpdated = await this.prisma.$transaction(async (tx) => {
-			// Delete the assignment
-			await tx.jobAssignment.delete({
-				where: {
-					jobId_userId: { jobId, userId },
-				},
-			})
-
-			// Recalculate the total staff cost for the Job
-			const aggregate = await tx.jobAssignment.aggregate({
-				where: { jobId },
-				_sum: { staffCost: true },
-			})
-
-			const jobUpdated = await tx.job.update({
-				where: { id: jobId },
-				data: {
-					totalStaffCost: aggregate._sum.staffCost || 0,
-				},
-				include: {
-					status: { select: { thumbnailUrl: true } },
-				},
-			})
-
-			// 3. Log the removal using ActivityLogService
-			// We log the staff cost in metadata so it remains private (Admin only)
-			await this.activityLogService.create(
-				{
-					jobId,
-					modifiedById: modifierId,
-					activityType: ActivityType.UNASSIGN_MEMBER,
-					fieldName: 'jobAssignments',
-					currentValue: assignment.user.displayName,
-					notes: `[${jobUpdated.no}] Removed ${assignment.user.displayName} from the job`,
-					requiredPermissionCode: APP_PERMISSIONS.JOB.READ_SENSITIVE, // Log contains cost-related context
-					metadata: {
-						removedUser: assignment.user.displayName,
-						savedCost: assignment.staffCost,
-					},
-				},
-				tx
-			)
-			return jobUpdated
-		})
-
-		// 4. Send notification OUTSIDE the transaction
-		try {
-			await this.notificationService.send({
-				userId: userId,
-				senderId: modifierId,
-				title: `[${jobUpdated.no}] Job Assignment Update`,
-				content: `You have been removed from job #${assignment.job.no}- ${assignment.job.displayName}.`,
-				type: NotificationType.JOB_ASSIGNED_MEMBER,
-				imageUrl:
-					jobUpdated.status.thumbnailUrl ||
-					IMAGES.NOTIFICATION_DEFAULT_IMAGE,
-				redirectUrl: `/project-center`,
-			})
-		} catch (error) {
-			this.logger.error(
-				`Notification failed for removed user ${userId}:`,
-				error
-			)
-		}
-
-		return { success: true, removedUserId: userId }
-	}
-
-	async updateRevenue(
-		modifierId: string,
-		jobId: string,
-		dto: UpdateRevenueDto
-	) {
-		// 1. Initial Validation
-		if (!dto.incomeCost && !dto.paymentChannelId) {
-			throw new BadRequestException(
-				'No financial data provided for update'
-			)
-		}
-
-		const job = await this.prisma.job.findUnique({
-			where: { id: jobId },
-			include: { paymentChannel: true },
-		})
-
-		if (!job) throw new NotFoundException('Job not found')
-
-		// 2. Perform Database updates in a transaction
-		const updatedJob = await this.prisma.$transaction(async (tx) => {
-			const updateData: {
-				paymentChannelId?: string
-				incomeCost?: number
-			} = {}
-
-			if (dto.paymentChannelId)
-				updateData.paymentChannelId = dto.paymentChannelId
-			if (dto.incomeCost)
-				updateData.incomeCost = parseFloat(dto.incomeCost.toString())
-
-			const updated = await tx.job.update({
-				where: { id: jobId },
-				data: updateData,
-				include: { paymentChannel: true },
-			})
-
-			// 3. Log Financial Activity (Locked behind permission)
-			// We log the change but mark it with a permission code so staff can't see the numbers
-			await this.activityLogService.create(
-				{
-					jobId,
-					modifiedById: modifierId,
-					activityType: ActivityType.UPDATE_GENERAL_INFORMATION,
-					fieldName: 'Revenue/Payment Channel',
-					notes: `${job.incomeCost?.toLocaleString()} VND via ${job.paymentChannel?.displayName || 'N/A'}`,
-					currentValue: `${updated.incomeCost?.toLocaleString()} VND via ${updated.paymentChannel?.displayName || 'N/A'}`,
-					requiredPermissionCode: APP_PERMISSIONS.JOB.READ_SENSITIVE, // ONLY authorized users see this log detail
-					metadata: {
-						oldCost: job.incomeCost,
-						newCost: updated.incomeCost,
-						oldChannel: job.paymentChannel?.displayName,
-						newChannel: updated.paymentChannel?.displayName,
-					},
-				},
-				tx
-			)
-
-			return updated
-		})
-
-		// 4. Notifications (Outside transaction for timeout safety)
-		try {
-			// Notify the creator or specific accounting roles that revenue was adjusted
-			await this.notificationService.send({
-				userId: job.createdById, // Notify owner/creator
-				senderId: modifierId,
-				title: 'Job Revenue Updated',
-				content: `Financial details for Job #${job.no} have been updated.`,
-				type: NotificationType.JOB_UPDATE,
-				redirectUrl: `/jobs/${job.no}`,
-			})
-		} catch (error) {
-			this.logger.error(
-				`Notification failed for revenue update on Job ${job.no}:`,
-				error
-			)
-		}
-
-		return { id: updatedJob.id, no: updatedJob.no }
-	}
-
-	async markPaid(jobId: string, modifierId: string) {
-		// 1. Pre-fetch job to check status and assignments
-		const job = await this.prisma.job.findUnique({
-			where: { id: jobId },
-			include: {
-				status: true,
-				assignments: {
-					include: { user: true },
-				},
-				client: true,
-				jobDeliveries: true,
-				paymentChannel: true,
-				createdBy: true,
-			},
-		})
-
-		if (!job || job.isPaid) {
-			throw new BadRequestException('Job already paid or not found')
-		}
-
-		// 2. Perform Database updates in a transaction
-		const updatedJob = await this.prisma.$transaction(async (tx) => {
-			const finishStatus = await tx.jobStatus.findFirst({
-				where: { systemType: 'TERMINATED' },
-			})
-
-			const now = new Date()
-			const updateData: Prisma.JobUpdateInput = {
-				isPaid: true,
-				paidAt: now,
-			}
-
-			// Transition status if currently COMPLETED
-			if (job.status.systemType === 'COMPLETED') {
-				updateData.status = { connect: { id: finishStatus?.id } }
-				updateData.finishedAt = now
-			}
-
-			const updated = await tx.job.update({
-				where: { id: jobId },
-				data: updateData,
-				select: { id: true, no: true, incomeCost: true },
-			})
-
-			// 3. Use ActivityLogService (Passing 'tx')
-			// We log the amount in metadata to keep it private from regular staff
-			await this.activityLogService.create(
-				{
-					jobId,
-					modifiedById: modifierId,
-					fieldName: 'Payment Status',
-					activityType: ActivityType.PAID,
-					currentValue: now.toISOString(), // For Admin/Accounting view
-					requiredPermissionCode: APP_PERMISSIONS.JOB.PAID, // Only users with this code see the amount
-					metadata: {
-						incomeCost: job.incomeCost,
-						totalStaffCost: job.totalStaffCost,
-						job: job,
-						paidAt: now,
-					},
-				},
-				tx
-			)
-
-			try {
-				try {
-					const users = job.assignments.map((it) => ({
-						email: it.user.email,
-						personalEmail: it.user.personalEmail ?? undefined,
-						displayName: it.user.displayName,
-					}))
-					await this.mailService.sendJobPaidNotification(users, {
-						no: job.no,
-						displayName: job.displayName,
-						incomeCost: job.incomeCost,
-						paidAt: job.paidAt ?? undefined,
-					})
-				} catch (error) {
-					this.logger.error('Error send mail to assignments')
-				}
-			} catch (error) {
-				this.logger.error('Send email paid error')
-			}
-			return updated
-		})
-
-		// 4. Send notifications OUTSIDE the transaction (Timeout Safety)
-		try {
-			if (job.assignments.length > 0) {
-				await this.notificationService.sendMany(
-					job.assignments.map((a) => ({
-						userId: a.userId,
-						title: `[${job.no}] Payment Confirmed`,
-						content: `Your work on Job #${job.no} has been paid.`,
-						type: NotificationType.JOB_PAID,
-						redirectUrl: `/jobs/${job.no}`,
-					}))
-				)
-			}
-		} catch (error) {
-			this.logger.error(`Notification failed for Job ${job.no}:`, error)
-		}
-
-		return { id: updatedJob.id, no: updatedJob.no }
 	}
 
 	// -------------------------------------------------------------------------
@@ -1558,98 +1214,6 @@ export class JobService {
 		return { isPinned: true }
 	}
 
-	async softDelete(jobId: string, modifierId: string) {
-		// 1. Verify job exists and include status/assignments for notification check
-		const job = await this.prisma.job.findUnique({
-			where: { id: jobId },
-			include: {
-				status: true,
-				assignments: true,
-			},
-		})
-
-		if (!job) throw new NotFoundException('Job not found')
-		if (job.deletedAt)
-			throw new BadRequestException('Job is already deleted')
-
-		// 2. Execute soft delete and logging in a transaction
-		const result = await this.prisma.$transaction(async (tx) => {
-			const now = new Date()
-
-			const updated = await tx.job.update({
-				where: { id: jobId },
-				data: {
-					deletedAt: now,
-					isPublished: false,
-				},
-			})
-
-			// 3. Log the deletion activity
-			await this.activityLogService.create(
-				{
-					jobId: job.id,
-					modifiedById: modifierId,
-					activityType: ActivityType.DELETE,
-					fieldName: 'deletedAt',
-					currentValue: job.no,
-					notes: `Job #${job.no} (${job.displayName}) was soft-deleted.`,
-					requiredPermissionCode: APP_PERMISSIONS.JOB.DELETE,
-					metadata: {
-						deletedAt: now,
-						jobNo: job.no,
-						jobTitle: job.displayName,
-					},
-				},
-				tx
-			)
-
-			return updated
-		})
-
-		// 4. Send notifications OUTSIDE the transaction
-		// Condition: Only send if the job was NOT already in a TERMINATED system status
-		try {
-			const isNotTerminated = job.status.systemType !== 'TERMINATED'
-			const notiData = {
-				title: 'Job Cancelled/Deleted',
-				content: `Job #${job.no} has been removed from the system.`,
-				type: NotificationType.JOB_DELETED,
-				redirectUrl: `/project-center`, // Redirect to list since job is now hidden
-			}
-			const jobAssignmentIds = job.assignments.map((it) => it.userId)
-			const managerIds = await this.permissionService
-				.findUserHasAnyPermission([
-					APP_PERMISSIONS.JOB.MANAGE,
-					APP_PERMISSIONS.SYSTEM.MANAGE,
-					APP_PERMISSIONS.JOB.PAID,
-				])
-				.then((res) =>
-					res.filter((it) => !jobAssignmentIds.includes(it))
-				)
-			await this.notificationService.sendToUsers(managerIds, {
-				senderId: modifierId,
-				...notiData,
-			})
-			if (isNotTerminated && job.assignments.length > 0) {
-				await this.notificationService.sendToUsers(jobAssignmentIds, {
-					senderId: modifierId,
-					...notiData,
-				})
-			}
-		} catch (error) {
-			this.logger.error(
-				`Failed to send deletion notifications for Job ${job.no}:`,
-				error
-			)
-		}
-
-		return {
-			id: result.id,
-			no: job.no,
-			message: 'Job moved to trash successfully',
-		}
-	}
-
 	private async buildPermission(
 		userId: string
 	): Promise<Prisma.JobWhereInput> {
@@ -1657,90 +1221,24 @@ export class JobService {
 		const canReadAll = userPermissions.includes(
 			APP_PERMISSIONS.JOB.READ_ALL
 		)
-
 		if (canReadAll) return {}
 		return { assignments: { some: { userId } } }
 	}
 
-	// Helper: Generate Client Code
 	private async generateClientCode(
 		name: string,
-		tx: Prisma.TransactionClient // Pass transaction context to check existence
+		tx: Prisma.TransactionClient
 	): Promise<string> {
-		// 1. Tạo base code từ tên (slugify + uppercase)
-		// Ví dụ: "Cadsquad Staff" -> "CADSQUAD-STAFF"
 		const baseCode = slugify(name, {
 			lower: true,
 			strict: true,
 		}).toUpperCase()
-
-		// 2. Kiểm tra xem code này đã tồn tại chưa
 		const existingClient = await tx.client.findUnique({
 			where: { code: baseCode },
 			select: { id: true },
 		})
-
-		// 3. Nếu chưa tồn tại, return luôn
-		if (!existingClient) {
-			return baseCode
-		}
-
-		// 4. Nếu đã tồn tại, thêm hậu tố (ví dụ: CADSQUAD-STAFF-A1B2)
+		if (!existingClient) return baseCode
 		const shortId = Math.random().toString(36).substring(2, 6).toUpperCase()
 		return `${baseCode}-${shortId}`
-	}
-
-	/**
-	 * Notifies all assigned members when a job deadline is modified.
-	 * @param jobId - The ID of the job
-	 * @param modifierId - The ID of the user who changed the deadline
-	 * @param jobNo - The human-readable Job Number (e.g., FV-001)
-	 * @param newDueDate - The newly assigned Date
-	 */
-	private async notifyDeadlineChange(
-		jobId: string,
-		modifierId: string,
-		jobNo: string,
-		newDueDate: Date,
-		thumbnailUrl?: string
-	) {
-		try {
-			// 1. Fetch all members assigned to this job
-			const assignments = await this.prisma.jobAssignment.findMany({
-				where: { jobId },
-				select: { userId: true },
-			})
-
-			if (assignments.length === 0) return
-
-			// 2. Format the date for the notification message
-			const formattedDate = newDueDate.toLocaleDateString('en-GB', {
-				day: '2-digit',
-				month: 'short',
-				year: 'numeric',
-			})
-
-			// 3. Dispatch notifications to all assigned staff
-			await this.notificationService.sendMany(
-				assignments.map((assignee) => ({
-					userId: assignee.userId,
-					senderId: modifierId,
-					title: `[${jobNo}] Schedule Updated`,
-					content: `The deadline for Job #${jobNo} has been changed to ${formattedDate}. Please check your schedule.`,
-					imageUrl: thumbnailUrl || IMAGES.NOTIFICATION_DEFAULT_IMAGE,
-					type: NotificationType.JOB_DEADLINE_REMINDER,
-					redirectUrl: `/jobs/${jobNo}`,
-				}))
-			)
-
-			this.logger.log(
-				`Deadline change notifications sent for Job #${jobNo}`
-			)
-		} catch (error) {
-			// We log the error but don't throw it, so the main updateGeneralInfo doesn't fail
-			this.logger.error(
-				`Failed to send deadline notifications for Job ${jobNo}: ${(error as { message: string }).message}`
-			)
-		}
 	}
 }

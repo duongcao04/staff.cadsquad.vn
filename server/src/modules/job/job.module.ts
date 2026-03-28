@@ -13,6 +13,7 @@ import { SharePointModule } from '../sharepoint/sharepoint.module'
 import { RoleModule } from '../role-permissions/role.module'
 import { MailModule } from '../../providers/mail/mail.module'
 import { JobDeliverService } from './job-deliver.service'
+import { JobNotificationListener } from './listeners/job-notification.listener'
 
 @Module({
 	imports: [
@@ -32,6 +33,7 @@ import { JobDeliverService } from './job-deliver.service'
 		ActivityLogService,
 		JobCommentService,
 		JobReminderService,
+		JobNotificationListener
 	],
 	exports: [JobService, ActivityLogService, JobCommentService],
 })

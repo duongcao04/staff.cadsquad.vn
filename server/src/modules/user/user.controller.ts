@@ -4,7 +4,6 @@ import { ResponseMessage } from '@/common/decorators/responseMessage.decorator'
 import { PermissionsGuard } from '@/common/guards/permissions.guard'
 import { TokenPayload } from '@/modules/auth/dto/token-payload.dto'
 import { JwtGuard } from '@/modules/auth/jwt.guard'
-import { APP_PERMISSIONS } from '@/utils/_app-permissions'
 import {
 	Body,
 	Controller,
@@ -25,7 +24,10 @@ import {
 	ApiResponse,
 	ApiTags,
 } from '@nestjs/swagger'
+import { APP_PERMISSIONS } from '@staff-cadsquad/shared'
 import { isUUID } from 'class-validator'
+import { AuditLog } from '../../common/decorators/audit-log.decorator'
+import { SystemModule } from '../../generated/prisma'
 import { AssignUserPermissionDto } from './dto/assign-user-permission.dto'
 import { CreateUserDto } from './dto/create-user.dto'
 import { ProtectUserResponseDto } from './dto/protect-user-response.dto'
@@ -36,8 +38,6 @@ import { UserQueryDto } from './dto/user-query.dto'
 import { UserResponseDto } from './dto/user-response.dto'
 import { UserSecurityService } from './user-security.service'
 import { UserService } from './user.service'
-import { AuditLog } from '../../common/decorators/audit-log.decorator'
-import { SystemModule } from '../../generated/prisma'
 
 @ApiTags('Users')
 @Controller('users')
