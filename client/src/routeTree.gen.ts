@@ -39,7 +39,6 @@ import { Route as WorkspaceJobsNoRouteImport } from './routes/_workspace/jobs/$n
 import { Route as AuthAuthResetPasswordRouteImport } from './routes/_auth/auth/reset-password'
 import { Route as AdministratorMgmtRevenueRouteImport } from './routes/_administrator/mgmt/revenue'
 import { Route as AdministratorMgmtInviteMemberRouteImport } from './routes/_administrator/mgmt/invite-member'
-import { Route as AdministratorMgmtAccessControlRouteImport } from './routes/_administrator/mgmt/access-control'
 import { Route as AdministratorFinancialSettingRouteImport } from './routes/_administrator/financial/setting'
 import { Route as AdministratorFinancialReceivablesRouteImport } from './routes/_administrator/financial/receivables'
 import { Route as AdministratorFinancialPaymentChannelsRouteImport } from './routes/_administrator/financial/payment-channels'
@@ -64,10 +63,10 @@ import { Route as AdministratorMgmtAccessControlMatrixRouteImport } from './rout
 import { Route as AdministratorFinancialPayoutsNoRouteImport } from './routes/_administrator/financial/payouts/$no'
 import { Route as AdministratorMgmtJobsFolderTemplatesIndexRouteImport } from './routes/_administrator/mgmt/jobs/folder-templates/index'
 import { Route as AdministratorMgmtAccessControlUsersIndexRouteImport } from './routes/_administrator/mgmt/access-control/users/index'
-import { Route as AdministratorMgmtAccessControlRolesIndexRouteImport } from './routes/_administrator/mgmt/access-control/roles/index'
 import { Route as AdministratorMgmtJobsFolderTemplatesIdRouteImport } from './routes/_administrator/mgmt/jobs/folder-templates/$id'
 import { Route as AdministratorMgmtAccessControlUsersUsernameRouteImport } from './routes/_administrator/mgmt/access-control/users/$username'
 import { Route as AdministratorMgmtAccessControlRolesCodeIndexRouteImport } from './routes/_administrator/mgmt/access-control/roles/$code/index'
+import { Route as AdministratorMgmtAccessControlRolesCodePermMatrixRouteImport } from './routes/_administrator/mgmt/access-control/roles/$code/perm-matrix'
 
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
@@ -223,12 +222,6 @@ const AdministratorMgmtInviteMemberRoute =
     path: '/mgmt/invite-member',
     getParentRoute: () => AdministratorRoute,
   } as any)
-const AdministratorMgmtAccessControlRoute =
-  AdministratorMgmtAccessControlRouteImport.update({
-    id: '/mgmt/access-control',
-    path: '/mgmt/access-control',
-    getParentRoute: () => AdministratorRoute,
-  } as any)
 const AdministratorFinancialSettingRoute =
   AdministratorFinancialSettingRouteImport.update({
     id: '/setting',
@@ -308,9 +301,9 @@ const AdministratorMgmtClientsIndexRoute =
   } as any)
 const AdministratorMgmtAccessControlIndexRoute =
   AdministratorMgmtAccessControlIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => AdministratorMgmtAccessControlRoute,
+    id: '/mgmt/access-control/',
+    path: '/mgmt/access-control/',
+    getParentRoute: () => AdministratorRoute,
   } as any)
 const AdministratorFinancialPayoutsIndexRoute =
   AdministratorFinancialPayoutsIndexRouteImport.update({
@@ -343,15 +336,15 @@ const AdministratorMgmtClientsCodeRoute =
   } as any)
 const AdministratorMgmtAccessControlPermissionsRoute =
   AdministratorMgmtAccessControlPermissionsRouteImport.update({
-    id: '/permissions',
-    path: '/permissions',
-    getParentRoute: () => AdministratorMgmtAccessControlRoute,
+    id: '/mgmt/access-control/permissions',
+    path: '/mgmt/access-control/permissions',
+    getParentRoute: () => AdministratorRoute,
   } as any)
 const AdministratorMgmtAccessControlMatrixRoute =
   AdministratorMgmtAccessControlMatrixRouteImport.update({
-    id: '/matrix',
-    path: '/matrix',
-    getParentRoute: () => AdministratorMgmtAccessControlRoute,
+    id: '/mgmt/access-control/matrix',
+    path: '/mgmt/access-control/matrix',
+    getParentRoute: () => AdministratorRoute,
   } as any)
 const AdministratorFinancialPayoutsNoRoute =
   AdministratorFinancialPayoutsNoRouteImport.update({
@@ -367,15 +360,9 @@ const AdministratorMgmtJobsFolderTemplatesIndexRoute =
   } as any)
 const AdministratorMgmtAccessControlUsersIndexRoute =
   AdministratorMgmtAccessControlUsersIndexRouteImport.update({
-    id: '/users/',
-    path: '/users/',
-    getParentRoute: () => AdministratorMgmtAccessControlRoute,
-  } as any)
-const AdministratorMgmtAccessControlRolesIndexRoute =
-  AdministratorMgmtAccessControlRolesIndexRouteImport.update({
-    id: '/roles/',
-    path: '/roles/',
-    getParentRoute: () => AdministratorMgmtAccessControlRoute,
+    id: '/mgmt/access-control/users/',
+    path: '/mgmt/access-control/users/',
+    getParentRoute: () => AdministratorRoute,
   } as any)
 const AdministratorMgmtJobsFolderTemplatesIdRoute =
   AdministratorMgmtJobsFolderTemplatesIdRouteImport.update({
@@ -385,15 +372,21 @@ const AdministratorMgmtJobsFolderTemplatesIdRoute =
   } as any)
 const AdministratorMgmtAccessControlUsersUsernameRoute =
   AdministratorMgmtAccessControlUsersUsernameRouteImport.update({
-    id: '/users/$username',
-    path: '/users/$username',
-    getParentRoute: () => AdministratorMgmtAccessControlRoute,
+    id: '/mgmt/access-control/users/$username',
+    path: '/mgmt/access-control/users/$username',
+    getParentRoute: () => AdministratorRoute,
   } as any)
 const AdministratorMgmtAccessControlRolesCodeIndexRoute =
   AdministratorMgmtAccessControlRolesCodeIndexRouteImport.update({
-    id: '/roles/$code/',
-    path: '/roles/$code/',
-    getParentRoute: () => AdministratorMgmtAccessControlRoute,
+    id: '/mgmt/access-control/roles/$code/',
+    path: '/mgmt/access-control/roles/$code/',
+    getParentRoute: () => AdministratorRoute,
+  } as any)
+const AdministratorMgmtAccessControlRolesCodePermMatrixRoute =
+  AdministratorMgmtAccessControlRolesCodePermMatrixRouteImport.update({
+    id: '/mgmt/access-control/roles/$code/perm-matrix',
+    path: '/mgmt/access-control/roles/$code/perm-matrix',
+    getParentRoute: () => AdministratorRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -420,7 +413,6 @@ export interface FileRoutesByFullPath {
   '/financial/payment-channels': typeof AdministratorFinancialPaymentChannelsRoute
   '/financial/receivables': typeof AdministratorFinancialReceivablesRoute
   '/financial/setting': typeof AdministratorFinancialSettingRoute
-  '/mgmt/access-control': typeof AdministratorMgmtAccessControlRouteWithChildren
   '/mgmt/invite-member': typeof AdministratorMgmtInviteMemberRoute
   '/mgmt/revenue': typeof AdministratorMgmtRevenueRoute
   '/auth/reset-password': typeof AuthAuthResetPasswordRoute
@@ -440,7 +432,7 @@ export interface FileRoutesByFullPath {
   '/mgmt/jobs/$no': typeof AdministratorMgmtJobsNoRoute
   '/mgmt/staff-directory/$code': typeof AdministratorMgmtStaffDirectoryCodeRoute
   '/financial/payouts': typeof AdministratorFinancialPayoutsIndexRoute
-  '/mgmt/access-control/': typeof AdministratorMgmtAccessControlIndexRoute
+  '/mgmt/access-control': typeof AdministratorMgmtAccessControlIndexRoute
   '/mgmt/clients': typeof AdministratorMgmtClientsIndexRoute
   '/mgmt/departments': typeof AdministratorMgmtDepartmentsIndexRoute
   '/mgmt/file-docs': typeof AdministratorMgmtFileDocsIndexRoute
@@ -448,9 +440,9 @@ export interface FileRoutesByFullPath {
   '/mgmt/staff-directory': typeof AdministratorMgmtStaffDirectoryIndexRoute
   '/mgmt/access-control/users/$username': typeof AdministratorMgmtAccessControlUsersUsernameRoute
   '/mgmt/jobs/folder-templates/$id': typeof AdministratorMgmtJobsFolderTemplatesIdRoute
-  '/mgmt/access-control/roles': typeof AdministratorMgmtAccessControlRolesIndexRoute
   '/mgmt/access-control/users': typeof AdministratorMgmtAccessControlUsersIndexRoute
   '/mgmt/jobs/folder-templates': typeof AdministratorMgmtJobsFolderTemplatesIndexRoute
+  '/mgmt/access-control/roles/$code/perm-matrix': typeof AdministratorMgmtAccessControlRolesCodePermMatrixRoute
   '/mgmt/access-control/roles/$code': typeof AdministratorMgmtAccessControlRolesCodeIndexRoute
 }
 export interface FileRoutesByTo {
@@ -501,9 +493,9 @@ export interface FileRoutesByTo {
   '/mgmt/staff-directory': typeof AdministratorMgmtStaffDirectoryIndexRoute
   '/mgmt/access-control/users/$username': typeof AdministratorMgmtAccessControlUsersUsernameRoute
   '/mgmt/jobs/folder-templates/$id': typeof AdministratorMgmtJobsFolderTemplatesIdRoute
-  '/mgmt/access-control/roles': typeof AdministratorMgmtAccessControlRolesIndexRoute
   '/mgmt/access-control/users': typeof AdministratorMgmtAccessControlUsersIndexRoute
   '/mgmt/jobs/folder-templates': typeof AdministratorMgmtJobsFolderTemplatesIndexRoute
+  '/mgmt/access-control/roles/$code/perm-matrix': typeof AdministratorMgmtAccessControlRolesCodePermMatrixRoute
   '/mgmt/access-control/roles/$code': typeof AdministratorMgmtAccessControlRolesCodeIndexRoute
 }
 export interface FileRoutesById {
@@ -535,7 +527,6 @@ export interface FileRoutesById {
   '/_administrator/financial/payment-channels': typeof AdministratorFinancialPaymentChannelsRoute
   '/_administrator/financial/receivables': typeof AdministratorFinancialReceivablesRoute
   '/_administrator/financial/setting': typeof AdministratorFinancialSettingRoute
-  '/_administrator/mgmt/access-control': typeof AdministratorMgmtAccessControlRouteWithChildren
   '/_administrator/mgmt/invite-member': typeof AdministratorMgmtInviteMemberRoute
   '/_administrator/mgmt/revenue': typeof AdministratorMgmtRevenueRoute
   '/_auth/auth/reset-password': typeof AuthAuthResetPasswordRoute
@@ -563,9 +554,9 @@ export interface FileRoutesById {
   '/_administrator/mgmt/staff-directory/': typeof AdministratorMgmtStaffDirectoryIndexRoute
   '/_administrator/mgmt/access-control/users/$username': typeof AdministratorMgmtAccessControlUsersUsernameRoute
   '/_administrator/mgmt/jobs/folder-templates/$id': typeof AdministratorMgmtJobsFolderTemplatesIdRoute
-  '/_administrator/mgmt/access-control/roles/': typeof AdministratorMgmtAccessControlRolesIndexRoute
   '/_administrator/mgmt/access-control/users/': typeof AdministratorMgmtAccessControlUsersIndexRoute
   '/_administrator/mgmt/jobs/folder-templates/': typeof AdministratorMgmtJobsFolderTemplatesIndexRoute
+  '/_administrator/mgmt/access-control/roles/$code/perm-matrix': typeof AdministratorMgmtAccessControlRolesCodePermMatrixRoute
   '/_administrator/mgmt/access-control/roles/$code/': typeof AdministratorMgmtAccessControlRolesCodeIndexRoute
 }
 export interface FileRouteTypes {
@@ -594,7 +585,6 @@ export interface FileRouteTypes {
     | '/financial/payment-channels'
     | '/financial/receivables'
     | '/financial/setting'
-    | '/mgmt/access-control'
     | '/mgmt/invite-member'
     | '/mgmt/revenue'
     | '/auth/reset-password'
@@ -614,7 +604,7 @@ export interface FileRouteTypes {
     | '/mgmt/jobs/$no'
     | '/mgmt/staff-directory/$code'
     | '/financial/payouts'
-    | '/mgmt/access-control/'
+    | '/mgmt/access-control'
     | '/mgmt/clients'
     | '/mgmt/departments'
     | '/mgmt/file-docs'
@@ -622,9 +612,9 @@ export interface FileRouteTypes {
     | '/mgmt/staff-directory'
     | '/mgmt/access-control/users/$username'
     | '/mgmt/jobs/folder-templates/$id'
-    | '/mgmt/access-control/roles'
     | '/mgmt/access-control/users'
     | '/mgmt/jobs/folder-templates'
+    | '/mgmt/access-control/roles/$code/perm-matrix'
     | '/mgmt/access-control/roles/$code'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -675,9 +665,9 @@ export interface FileRouteTypes {
     | '/mgmt/staff-directory'
     | '/mgmt/access-control/users/$username'
     | '/mgmt/jobs/folder-templates/$id'
-    | '/mgmt/access-control/roles'
     | '/mgmt/access-control/users'
     | '/mgmt/jobs/folder-templates'
+    | '/mgmt/access-control/roles/$code/perm-matrix'
     | '/mgmt/access-control/roles/$code'
   id:
     | '__root__'
@@ -708,7 +698,6 @@ export interface FileRouteTypes {
     | '/_administrator/financial/payment-channels'
     | '/_administrator/financial/receivables'
     | '/_administrator/financial/setting'
-    | '/_administrator/mgmt/access-control'
     | '/_administrator/mgmt/invite-member'
     | '/_administrator/mgmt/revenue'
     | '/_auth/auth/reset-password'
@@ -736,9 +725,9 @@ export interface FileRouteTypes {
     | '/_administrator/mgmt/staff-directory/'
     | '/_administrator/mgmt/access-control/users/$username'
     | '/_administrator/mgmt/jobs/folder-templates/$id'
-    | '/_administrator/mgmt/access-control/roles/'
     | '/_administrator/mgmt/access-control/users/'
     | '/_administrator/mgmt/jobs/folder-templates/'
+    | '/_administrator/mgmt/access-control/roles/$code/perm-matrix'
     | '/_administrator/mgmt/access-control/roles/$code/'
   fileRoutesById: FileRoutesById
 }
@@ -962,13 +951,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdministratorMgmtInviteMemberRouteImport
       parentRoute: typeof AdministratorRoute
     }
-    '/_administrator/mgmt/access-control': {
-      id: '/_administrator/mgmt/access-control'
-      path: '/mgmt/access-control'
-      fullPath: '/mgmt/access-control'
-      preLoaderRoute: typeof AdministratorMgmtAccessControlRouteImport
-      parentRoute: typeof AdministratorRoute
-    }
     '/_administrator/financial/setting': {
       id: '/_administrator/financial/setting'
       path: '/setting'
@@ -1062,10 +1044,10 @@ declare module '@tanstack/react-router' {
     }
     '/_administrator/mgmt/access-control/': {
       id: '/_administrator/mgmt/access-control/'
-      path: '/'
-      fullPath: '/mgmt/access-control/'
+      path: '/mgmt/access-control'
+      fullPath: '/mgmt/access-control'
       preLoaderRoute: typeof AdministratorMgmtAccessControlIndexRouteImport
-      parentRoute: typeof AdministratorMgmtAccessControlRoute
+      parentRoute: typeof AdministratorRoute
     }
     '/_administrator/financial/payouts/': {
       id: '/_administrator/financial/payouts/'
@@ -1104,17 +1086,17 @@ declare module '@tanstack/react-router' {
     }
     '/_administrator/mgmt/access-control/permissions': {
       id: '/_administrator/mgmt/access-control/permissions'
-      path: '/permissions'
+      path: '/mgmt/access-control/permissions'
       fullPath: '/mgmt/access-control/permissions'
       preLoaderRoute: typeof AdministratorMgmtAccessControlPermissionsRouteImport
-      parentRoute: typeof AdministratorMgmtAccessControlRoute
+      parentRoute: typeof AdministratorRoute
     }
     '/_administrator/mgmt/access-control/matrix': {
       id: '/_administrator/mgmt/access-control/matrix'
-      path: '/matrix'
+      path: '/mgmt/access-control/matrix'
       fullPath: '/mgmt/access-control/matrix'
       preLoaderRoute: typeof AdministratorMgmtAccessControlMatrixRouteImport
-      parentRoute: typeof AdministratorMgmtAccessControlRoute
+      parentRoute: typeof AdministratorRoute
     }
     '/_administrator/financial/payouts/$no': {
       id: '/_administrator/financial/payouts/$no'
@@ -1132,17 +1114,10 @@ declare module '@tanstack/react-router' {
     }
     '/_administrator/mgmt/access-control/users/': {
       id: '/_administrator/mgmt/access-control/users/'
-      path: '/users'
+      path: '/mgmt/access-control/users'
       fullPath: '/mgmt/access-control/users'
       preLoaderRoute: typeof AdministratorMgmtAccessControlUsersIndexRouteImport
-      parentRoute: typeof AdministratorMgmtAccessControlRoute
-    }
-    '/_administrator/mgmt/access-control/roles/': {
-      id: '/_administrator/mgmt/access-control/roles/'
-      path: '/roles'
-      fullPath: '/mgmt/access-control/roles'
-      preLoaderRoute: typeof AdministratorMgmtAccessControlRolesIndexRouteImport
-      parentRoute: typeof AdministratorMgmtAccessControlRoute
+      parentRoute: typeof AdministratorRoute
     }
     '/_administrator/mgmt/jobs/folder-templates/$id': {
       id: '/_administrator/mgmt/jobs/folder-templates/$id'
@@ -1153,17 +1128,24 @@ declare module '@tanstack/react-router' {
     }
     '/_administrator/mgmt/access-control/users/$username': {
       id: '/_administrator/mgmt/access-control/users/$username'
-      path: '/users/$username'
+      path: '/mgmt/access-control/users/$username'
       fullPath: '/mgmt/access-control/users/$username'
       preLoaderRoute: typeof AdministratorMgmtAccessControlUsersUsernameRouteImport
-      parentRoute: typeof AdministratorMgmtAccessControlRoute
+      parentRoute: typeof AdministratorRoute
     }
     '/_administrator/mgmt/access-control/roles/$code/': {
       id: '/_administrator/mgmt/access-control/roles/$code/'
-      path: '/roles/$code'
+      path: '/mgmt/access-control/roles/$code'
       fullPath: '/mgmt/access-control/roles/$code'
       preLoaderRoute: typeof AdministratorMgmtAccessControlRolesCodeIndexRouteImport
-      parentRoute: typeof AdministratorMgmtAccessControlRoute
+      parentRoute: typeof AdministratorRoute
+    }
+    '/_administrator/mgmt/access-control/roles/$code/perm-matrix': {
+      id: '/_administrator/mgmt/access-control/roles/$code/perm-matrix'
+      path: '/mgmt/access-control/roles/$code/perm-matrix'
+      fullPath: '/mgmt/access-control/roles/$code/perm-matrix'
+      preLoaderRoute: typeof AdministratorMgmtAccessControlRolesCodePermMatrixRouteImport
+      parentRoute: typeof AdministratorRoute
     }
   }
 }
@@ -1200,59 +1182,32 @@ const AdministratorFinancialRouteWithChildren =
     AdministratorFinancialRouteChildren,
   )
 
-interface AdministratorMgmtAccessControlRouteChildren {
-  AdministratorMgmtAccessControlMatrixRoute: typeof AdministratorMgmtAccessControlMatrixRoute
-  AdministratorMgmtAccessControlPermissionsRoute: typeof AdministratorMgmtAccessControlPermissionsRoute
-  AdministratorMgmtAccessControlIndexRoute: typeof AdministratorMgmtAccessControlIndexRoute
-  AdministratorMgmtAccessControlUsersUsernameRoute: typeof AdministratorMgmtAccessControlUsersUsernameRoute
-  AdministratorMgmtAccessControlRolesIndexRoute: typeof AdministratorMgmtAccessControlRolesIndexRoute
-  AdministratorMgmtAccessControlUsersIndexRoute: typeof AdministratorMgmtAccessControlUsersIndexRoute
-  AdministratorMgmtAccessControlRolesCodeIndexRoute: typeof AdministratorMgmtAccessControlRolesCodeIndexRoute
-}
-
-const AdministratorMgmtAccessControlRouteChildren: AdministratorMgmtAccessControlRouteChildren =
-  {
-    AdministratorMgmtAccessControlMatrixRoute:
-      AdministratorMgmtAccessControlMatrixRoute,
-    AdministratorMgmtAccessControlPermissionsRoute:
-      AdministratorMgmtAccessControlPermissionsRoute,
-    AdministratorMgmtAccessControlIndexRoute:
-      AdministratorMgmtAccessControlIndexRoute,
-    AdministratorMgmtAccessControlUsersUsernameRoute:
-      AdministratorMgmtAccessControlUsersUsernameRoute,
-    AdministratorMgmtAccessControlRolesIndexRoute:
-      AdministratorMgmtAccessControlRolesIndexRoute,
-    AdministratorMgmtAccessControlUsersIndexRoute:
-      AdministratorMgmtAccessControlUsersIndexRoute,
-    AdministratorMgmtAccessControlRolesCodeIndexRoute:
-      AdministratorMgmtAccessControlRolesCodeIndexRoute,
-  }
-
-const AdministratorMgmtAccessControlRouteWithChildren =
-  AdministratorMgmtAccessControlRoute._addFileChildren(
-    AdministratorMgmtAccessControlRouteChildren,
-  )
-
 interface AdministratorRouteChildren {
   AdministratorFinancialRoute: typeof AdministratorFinancialRouteWithChildren
   AdministratorAdminInboxRoute: typeof AdministratorAdminInboxRoute
   AdministratorAdminScheduleRoute: typeof AdministratorAdminScheduleRoute
   AdministratorAdminSettingsRoute: typeof AdministratorAdminSettingsRoute
-  AdministratorMgmtAccessControlRoute: typeof AdministratorMgmtAccessControlRouteWithChildren
   AdministratorMgmtInviteMemberRoute: typeof AdministratorMgmtInviteMemberRoute
   AdministratorMgmtRevenueRoute: typeof AdministratorMgmtRevenueRoute
   AdministratorAdminIndexRoute: typeof AdministratorAdminIndexRoute
+  AdministratorMgmtAccessControlMatrixRoute: typeof AdministratorMgmtAccessControlMatrixRoute
+  AdministratorMgmtAccessControlPermissionsRoute: typeof AdministratorMgmtAccessControlPermissionsRoute
   AdministratorMgmtClientsCodeRoute: typeof AdministratorMgmtClientsCodeRoute
   AdministratorMgmtDepartmentsCodeRoute: typeof AdministratorMgmtDepartmentsCodeRoute
   AdministratorMgmtJobsNoRoute: typeof AdministratorMgmtJobsNoRoute
   AdministratorMgmtStaffDirectoryCodeRoute: typeof AdministratorMgmtStaffDirectoryCodeRoute
+  AdministratorMgmtAccessControlIndexRoute: typeof AdministratorMgmtAccessControlIndexRoute
   AdministratorMgmtClientsIndexRoute: typeof AdministratorMgmtClientsIndexRoute
   AdministratorMgmtDepartmentsIndexRoute: typeof AdministratorMgmtDepartmentsIndexRoute
   AdministratorMgmtFileDocsIndexRoute: typeof AdministratorMgmtFileDocsIndexRoute
   AdministratorMgmtJobsIndexRoute: typeof AdministratorMgmtJobsIndexRoute
   AdministratorMgmtStaffDirectoryIndexRoute: typeof AdministratorMgmtStaffDirectoryIndexRoute
+  AdministratorMgmtAccessControlUsersUsernameRoute: typeof AdministratorMgmtAccessControlUsersUsernameRoute
   AdministratorMgmtJobsFolderTemplatesIdRoute: typeof AdministratorMgmtJobsFolderTemplatesIdRoute
+  AdministratorMgmtAccessControlUsersIndexRoute: typeof AdministratorMgmtAccessControlUsersIndexRoute
   AdministratorMgmtJobsFolderTemplatesIndexRoute: typeof AdministratorMgmtJobsFolderTemplatesIndexRoute
+  AdministratorMgmtAccessControlRolesCodePermMatrixRoute: typeof AdministratorMgmtAccessControlRolesCodePermMatrixRoute
+  AdministratorMgmtAccessControlRolesCodeIndexRoute: typeof AdministratorMgmtAccessControlRolesCodeIndexRoute
 }
 
 const AdministratorRouteChildren: AdministratorRouteChildren = {
@@ -1260,16 +1215,20 @@ const AdministratorRouteChildren: AdministratorRouteChildren = {
   AdministratorAdminInboxRoute: AdministratorAdminInboxRoute,
   AdministratorAdminScheduleRoute: AdministratorAdminScheduleRoute,
   AdministratorAdminSettingsRoute: AdministratorAdminSettingsRoute,
-  AdministratorMgmtAccessControlRoute:
-    AdministratorMgmtAccessControlRouteWithChildren,
   AdministratorMgmtInviteMemberRoute: AdministratorMgmtInviteMemberRoute,
   AdministratorMgmtRevenueRoute: AdministratorMgmtRevenueRoute,
   AdministratorAdminIndexRoute: AdministratorAdminIndexRoute,
+  AdministratorMgmtAccessControlMatrixRoute:
+    AdministratorMgmtAccessControlMatrixRoute,
+  AdministratorMgmtAccessControlPermissionsRoute:
+    AdministratorMgmtAccessControlPermissionsRoute,
   AdministratorMgmtClientsCodeRoute: AdministratorMgmtClientsCodeRoute,
   AdministratorMgmtDepartmentsCodeRoute: AdministratorMgmtDepartmentsCodeRoute,
   AdministratorMgmtJobsNoRoute: AdministratorMgmtJobsNoRoute,
   AdministratorMgmtStaffDirectoryCodeRoute:
     AdministratorMgmtStaffDirectoryCodeRoute,
+  AdministratorMgmtAccessControlIndexRoute:
+    AdministratorMgmtAccessControlIndexRoute,
   AdministratorMgmtClientsIndexRoute: AdministratorMgmtClientsIndexRoute,
   AdministratorMgmtDepartmentsIndexRoute:
     AdministratorMgmtDepartmentsIndexRoute,
@@ -1277,10 +1236,18 @@ const AdministratorRouteChildren: AdministratorRouteChildren = {
   AdministratorMgmtJobsIndexRoute: AdministratorMgmtJobsIndexRoute,
   AdministratorMgmtStaffDirectoryIndexRoute:
     AdministratorMgmtStaffDirectoryIndexRoute,
+  AdministratorMgmtAccessControlUsersUsernameRoute:
+    AdministratorMgmtAccessControlUsersUsernameRoute,
   AdministratorMgmtJobsFolderTemplatesIdRoute:
     AdministratorMgmtJobsFolderTemplatesIdRoute,
+  AdministratorMgmtAccessControlUsersIndexRoute:
+    AdministratorMgmtAccessControlUsersIndexRoute,
   AdministratorMgmtJobsFolderTemplatesIndexRoute:
     AdministratorMgmtJobsFolderTemplatesIndexRoute,
+  AdministratorMgmtAccessControlRolesCodePermMatrixRoute:
+    AdministratorMgmtAccessControlRolesCodePermMatrixRoute,
+  AdministratorMgmtAccessControlRolesCodeIndexRoute:
+    AdministratorMgmtAccessControlRolesCodeIndexRoute,
 }
 
 const AdministratorRouteWithChildren = AdministratorRoute._addFileChildren(

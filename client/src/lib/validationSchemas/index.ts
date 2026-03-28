@@ -1,4 +1,5 @@
 export * from './_analytics.schema';
+export * from './_audit-log.schema';
 export * from './_auth.schema';
 export * from './_browserSubscribe.schema';
 export * from './_client.schema';
@@ -10,9 +11,10 @@ export * from './_email.schema';
 export * from './_excel.schema';
 export * from './_job-activity-log.schema';
 export * from './_job-comment.schema';
+export * from './_job-delivery.schema';
 export * from './_job-filter.schema';
-export * from './_job-status.schema';
 export * from './_job-folder-template.schema';
+export * from './_job-status.schema';
 export * from './_job-title.schema';
 export * from './_job-type.schema';
 export * from './_job.schema';

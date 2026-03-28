@@ -1,6 +1,7 @@
 export * from './administrator.api';
 export * from './_ably.api';
 export * from './_analytics.api';
+export * from './_audit-log.api';
 export * from './_auth.api';
 export * from './_client.api';
 export * from './_community.api';

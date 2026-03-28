@@ -22,42 +22,35 @@ export class AuditLogInterceptor implements NestInterceptor {
 	) { }
 
 	intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-		const auditMeta = this.reflector.get<AuditLogMeta>(
-			AUDIT_LOG_KEY,
-			context.getHandler(),
-		);
-
-		// Nếu không có decorator, cho đi qua bình thường
+		const auditMeta = this.reflector.get<AuditLogMeta>(AUDIT_LOG_KEY, context.getHandler());
 		if (!auditMeta) return next.handle();
 
 		const request = context.switchToHttp().getRequest();
 
-		// 1. Lấy thông tin WHO (Người thực hiện) & SECURITY (Bảo mật)
-		const actorId = request.user?.id || null; // Giả sử bạn có AuthGuard gắn user vào request
+		const actorId = request.user.sub || null;
 		const ipAddress = request.ip;
 		const userAgent = request.headers['user-agent'];
 
-		// 2. Chờ Controller xử lý và bắt kết quả (Response)
 		return next.handle().pipe(
 			tap(async (responseData) => {
-				// --- KHI API THÀNH CÔNG ---
+				// ƯU TIÊN: Lấy từ request['auditTargetId'] hoặc request['targetId'] nếu Controller có gán
+				const targetId = request['auditTargetId'] || request['targetId'] || responseData?.id || request.params?.id || null;
 
-				// Cố gắng tự động tìm targetId từ response hoặc params
-				const targetId = responseData?.id || request.params?.id || null;
-
-				// Tự động trích xuất tên/tiêu đề để hiển thị ra UI
+				// ƯU TIÊN: Lấy từ request['targetDisplay'] nếu Controller có gán thủ công
 				const targetDisplay =
-					responseData?.name ||
+					request['auditTargetDisplay'] ||
+					responseData?.displayName ||
 					responseData?.title ||
 					responseData?.code ||
-					(targetId ? `ID: ${targetId}` : 'Hệ thống');
+					(targetId ? `ID: ${targetId}` : 'No target');
 
-				// Lọc bỏ dữ liệu nhạy cảm trước khi lưu (VD: password)
+				// Lấy metadata bổ sung từ Controller nếu có
+				const customMetadata = request['auditMetadata'] || {};
+
 				const newValues = { ...responseData };
 				delete newValues.password;
 				delete newValues.refreshToken;
 
-				// Đẩy vào BullMQ
 				await this.auditQueue.add('create-log', {
 					actorId,
 					action: auditMeta.action,
@@ -67,26 +60,28 @@ export class AuditLogInterceptor implements NestInterceptor {
 					newValues,
 					ipAddress,
 					userAgent,
+					metadata: customMetadata,
 					status: 'SUCCESS',
-				}, { removeOnComplete: true, removeOnFail: false }); // Cấu hình Job
+				}, { removeOnComplete: true });
 			}),
 			catchError((error) => {
-				// --- KHI API THẤT BẠI (Bắn lỗi 400, 500...) ---
-				// Vẫn ghi log lại để biết ai vừa cố làm trò gì đó mà bị lỗi!
+				// Đối với lỗi, cũng ưu tiên lấy targetDisplay từ request nếu đã được gán trước khi crash
 				this.auditQueue.add('create-log', {
 					actorId,
 					action: auditMeta.action,
 					module: auditMeta.module,
-					targetId: request.params?.id || null,
-					targetDisplay: 'Failed Action',
+					targetId: request['targetId'] || request.params?.id || null,
+					targetDisplay: request['auditTargetDisplay'] || 'Failed Action',
 					newValues: null,
-					metadata: { errorMessage: error.message }, // Lưu lại lỗi
+					metadata: {
+						errorMessage: error.message,
+						...(request['auditMetadata'] || {})
+					},
 					ipAddress,
 					userAgent,
 					status: 'FAILED',
 				});
-
-				throw error; // Ném lỗi trả về cho Frontend như bình thường
+				throw error;
 			}),
 		);
 	}

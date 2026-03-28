@@ -51,8 +51,6 @@ export const INTERNAL_URLS = {
     inviteMember: '/' + 'admin/mgmt/invite-member',
     revenueReports: '/' + 'admin/mgmt/revenue',
     roleAndPermissionManage: '/' + 'admin/mgmt/access-control',
-    editRolePermMatrix: (roleCode: string) =>
-        '/' + 'admin/mgmt/access-control/roles/' + roleCode + '/perm-matrix',
     userRolePermissionManage: (username: string) =>
         '/' + 'admin/mgmt/access-control/users/' + username,
     /**
@@ -77,6 +75,8 @@ export const INTERNAL_URLS = {
         accessControl: ['', 'mgmt', 'access-control'].join('/'),
         accessControlUser: ['', 'mgmt', 'access-control', 'user'].join('/'),
         roles: ['', 'mgmt', 'access-control', 'roles'].join('/'),
+        roleDetail: (code: string) => ['', 'mgmt', 'access-control', 'roles', code].join('/'),
+        rolePermMatrix: (code: string) => ['', 'mgmt', 'access-control', 'roles', code, 'perm-matrix'].join('/'),
         permissions: ['', 'mgmt', 'access-control', 'permissions'].join('/'),
         team: ['', 'mgmt', 'staff-directory'].join('/'),
         staffDetail: (username: string) => ['', 'mgmt', 'staff-directory', username].join('/'),

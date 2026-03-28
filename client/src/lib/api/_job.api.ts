@@ -11,7 +11,6 @@ import {
     type TUpdateJobInput,
     TUpdateJobRevenue,
 } from '@/lib/validationSchemas'
-import { TJobGeneralDetails } from '@/routes/_administrator/mgmt/jobs/$no'
 import { ProjectCenterTabEnum } from '@/shared/enums'
 import type {
     IPaginate,
@@ -207,7 +206,7 @@ export const jobApi = {
     // =========================================================================
     updateGeneralInfo: async (
         jobId: string,
-        data: Partial<TJobGeneralDetails>
+        data: Partial<any>
     ) => {
         return axiosClient
             .patch<ApiResponse<JobUpdateResponse>>(

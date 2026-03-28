@@ -88,11 +88,17 @@ export class UserController {
 	})
 	@AuditLog('Created new User', SystemModule.USER_MANAGEMENT)
 	async create(
+		@Req() request: Request,
 		@Body() createUserDto: CreateUserDto,
 		@Query() sendInviteEmail: '0' | '1'
 	) {
 		const isSendInviteEmail = Boolean(sendInviteEmail)
-		return this.userService.create(createUserDto, isSendInviteEmail)
+		const result = await this.userService.create(createUserDto, isSendInviteEmail)
+
+		request['auditTargetDisplay'] = `${result.code}- ${result.displayName}`
+		request['auditTargetId'] = result.id
+
+		return result
 	}
 
 	@Get('security-logs')

@@ -8,15 +8,13 @@ import {
     sharepointApi,
     updateJobFolderTemplateOptions,
 } from '@/lib'
-import {
-    AdminPageHeading,
-    HeroBreadcrumbItem,
-    HeroBreadcrumbs,
-} from '@/shared/components'
+import { AdminPageHeading } from '@/shared/components'
 import AdminContentContainer from '@/shared/components/admin/AdminContentContainer'
 import { JobStatusSystemTypeEnum } from '@/shared/enums'
 import {
     addToast,
+    BreadcrumbItem,
+    Breadcrumbs,
     Button,
     Card,
     CardBody,
@@ -143,7 +141,7 @@ export default function JobFolderTemplateDetailPage() {
     const { data: template } = useSuspenseQuery(jobFolderTemplateOptions(id))
 
     const updateFolderTemplate = useMutation({
-        ...updateJobFolderTemplateOptions(),
+        ...updateJobFolderTemplateOptions,
         onSuccess() {
             queryClient.refetchQueries({
                 queryKey: jobFolderTemplateQueryKeys.detailById(id),
@@ -202,26 +200,26 @@ export default function JobFolderTemplateDetailPage() {
 
     return (
         <AdminContentContainer className="pt-0 space-y-4">
-            <HeroBreadcrumbs className="text-xs">
-                <HeroBreadcrumbItem>
+            <Breadcrumbs className="text-xs">
+                <BreadcrumbItem>
                     <Link
                         to={INTERNAL_URLS.admin.overview}
                         className="text-text-subdued!"
                     >
                         Management
                     </Link>
-                </HeroBreadcrumbItem>
-                <HeroBreadcrumbItem>Job</HeroBreadcrumbItem>
-                <HeroBreadcrumbItem>
+                </BreadcrumbItem>
+                <BreadcrumbItem>Jobs</BreadcrumbItem>
+                <BreadcrumbItem>
                     <Link
                         to={INTERNAL_URLS.management.jobFolderTemplates}
                         className="text-text-subdued!"
                     >
                         Folder Templates
                     </Link>
-                </HeroBreadcrumbItem>
-                <HeroBreadcrumbItem>Standard 3D Project</HeroBreadcrumbItem>
-            </HeroBreadcrumbs>
+                </BreadcrumbItem>
+                <BreadcrumbItem>{template.displayName}</BreadcrumbItem>
+            </Breadcrumbs>
 
             <div className="space-y-6">
                 {/* TOP SECTION: Details Grid */}

@@ -5,7 +5,7 @@ import {
     AdminKpiCards,
 } from '@/features/admin-dashboard'
 import { CreateJobModal } from '@/features/job-manage'
-import { getPageTitle, INTERNAL_URLS } from '@/lib'
+import { auditLogsListOptions, getPageTitle, INTERNAL_URLS } from '@/lib'
 import {
     adminDashboardDbStatsOptions,
     adminDashboardKpisOptions,
@@ -77,14 +77,21 @@ export const Route = createFileRoute('/_administrator/admin/')({
 })
 
 function AdminDashboardContent() {
-    const [{ data: dbStats }, { data: dbKpis }, { data: dbOverview }] =
-        useSuspenseQueries({
-            queries: [
-                adminDashboardDbStatsOptions(),
-                adminDashboardKpisOptions(),
-                adminDashboardOvewviewOptions(),
-            ],
-        })
+    const [
+        { data: dbStats },
+        { data: dbKpis },
+        { data: dbOverview },
+        {
+            data: { logs },
+        },
+    ] = useSuspenseQueries({
+        queries: [
+            adminDashboardDbStatsOptions(),
+            adminDashboardKpisOptions(),
+            adminDashboardOvewviewOptions(),
+            auditLogsListOptions(),
+        ],
+    })
     return (
         <>
             {/* Pass raw dbStats down */}
@@ -105,7 +112,7 @@ function AdminDashboardContent() {
                 countByStatus={dbStats.jobs.countByStatus || []}
             />
 
-            <AdminActivityLogs />
+            <AdminActivityLogs auditLogs={logs} />
 
             <AdminDatabaseStats {...dbOverview} />
         </>

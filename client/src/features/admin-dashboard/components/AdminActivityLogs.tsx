@@ -1,3 +1,5 @@
+import { dateFormatter, INTERNAL_URLS } from '@/lib'
+import { TAuditLog } from '@/shared/types'
 import {
     Button,
     Card,
@@ -10,8 +12,9 @@ import {
     TableCell,
     TableColumn,
     TableHeader,
-    TableRow
+    TableRow,
 } from '@heroui/react'
+import { Link } from '@tanstack/react-router'
 import {
     Activity,
     ArrowUpRight,
@@ -20,10 +23,8 @@ import {
     ListTree,
     Settings,
     Users,
-    Zap
+    Zap,
 } from 'lucide-react'
-import { INTERNAL_URLS } from '../../../lib'
-import { Link } from '@tanstack/react-router'
 
 const RECENT_ACTIVITY_LOGS = [
     {
@@ -64,11 +65,14 @@ const RECENT_ACTIVITY_LOGS = [
     },
 ]
 
-export function AdminActivityLogs() {
+interface AdminActivityLogsProps {
+    auditLogs: TAuditLog[]
+}
+export function AdminActivityLogs({ auditLogs }: AdminActivityLogsProps) {
     return (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <Card
-                shadow="sm"
+                shadow="none"
                 className="border border-primary-200 bg-primary-50 lg:col-span-1"
             >
                 <CardHeader className="px-6 py-4 border-b border-primary-100 flex justify-between items-center bg-primary-100/50">
@@ -149,8 +153,8 @@ export function AdminActivityLogs() {
             </Card>
 
             <Card
-                shadow="sm"
-                className="border border-default-200 lg:col-span-2"
+                shadow="none"
+                className="border border-border-default lg:col-span-2"
             >
                 <div className="px-6 py-4 border-b border-divider flex justify-between items-center bg-default-50">
                     <h2 className="text-lg font-bold text-default-900 flex items-center gap-2">
@@ -174,18 +178,18 @@ export function AdminActivityLogs() {
                         <TableColumn align="end">TIME</TableColumn>
                     </TableHeader>
                     <TableBody>
-                        {RECENT_ACTIVITY_LOGS.map((log) => (
+                        {auditLogs?.map((log) => (
                             <TableRow key={log.id}>
                                 <TableCell>
-                                    {log.avatar ? (
+                                    {log.actor ? (
                                         <HeroUser
                                             name={
                                                 <span className="text-sm font-medium">
-                                                    {log.user}
+                                                    {log.actor.displayName}
                                                 </span>
                                             }
                                             avatarProps={{
-                                                src: log.avatar,
+                                                src: log.actor.avatar,
                                                 size: 'sm',
                                             }}
                                         />
@@ -196,7 +200,7 @@ export function AdminActivityLogs() {
                                                 className="text-primary"
                                             />
                                             <span className="text-sm font-bold text-primary">
-                                                {log.user}
+                                                System
                                             </span>
                                         </div>
                                     )}
@@ -208,7 +212,7 @@ export function AdminActivityLogs() {
                                 </TableCell>
                                 <TableCell>
                                     <span className="text-sm font-semibold text-default-900">
-                                        {log.target}
+                                        {log.targetDisplay}
                                     </span>
                                 </TableCell>
                                 <TableCell>
@@ -216,21 +220,23 @@ export function AdminActivityLogs() {
                                         size="sm"
                                         variant="flat"
                                         color={
-                                            log.type === 'SECURITY'
+                                            log.module === 'SECURITY'
                                                 ? 'danger'
-                                                : log.type === 'FINANCIAL'
+                                                : log.module === 'FINANCIAL'
                                                   ? 'success'
-                                                  : log.type === 'SYSTEM'
+                                                  : log.module === 'SYSTEM'
                                                     ? 'primary'
                                                     : 'default'
                                         }
                                     >
-                                        {log.type}
+                                        {log.module}
                                     </Chip>
                                 </TableCell>
                                 <TableCell>
                                     <span className="text-xs text-default-500 whitespace-nowrap">
-                                        {log.time}
+                                        {dateFormatter(log.createdAt, {
+                                            isDistance: true,
+                                        })}
                                     </span>
                                 </TableCell>
                             </TableRow>

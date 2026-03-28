@@ -1,15 +1,26 @@
+import { AddRoleMemberModal } from '@/features/user-access/components/modals/AddRoleMemberModal'
 import { INTERNAL_URLS, optimizeCloudinary } from '@/lib'
 import {
     assignMemberRoleOptions,
     removeMemberRoleOptions,
     roleOptions,
 } from '@/lib/queries'
+import { queryClient } from '@/main'
+import { AdminPageHeading, AppLoading } from '@/shared/components'
+import AdminContentContainer from '@/shared/components/admin/AdminContentContainer'
+import { TRole, TUser } from '@/shared/types'
+import { Plus, Xmark } from '@gravity-ui/icons'
 import {
+    addToast,
     Avatar,
     BreadcrumbItem,
     Breadcrumbs,
     Button,
+    Card,
+    CardBody,
+    CardHeader,
     Chip,
+    Divider,
     Dropdown,
     DropdownItem,
     DropdownMenu,
@@ -19,16 +30,18 @@ import {
     ModalContent,
     ModalFooter,
     ModalHeader,
+    Table,
     TableBody,
     TableCell,
     TableColumn,
     TableHeader,
     TableRow,
+    Tooltip,
     useDisclosure,
     User,
 } from '@heroui/react'
 import { useMutation, useSuspenseQueries } from '@tanstack/react-query'
-import { createFileRoute, useRouter } from '@tanstack/react-router'
+import { createFileRoute, Link, useRouter } from '@tanstack/react-router'
 import {
     AlertTriangle,
     ArrowLeft,
@@ -40,38 +53,165 @@ import {
     ShieldCheck,
     Trash2,
     UserMinus,
-    UserPlus,
 } from 'lucide-react'
 import { useState } from 'react'
-import { AddRoleMemberModal } from '../../../../../../features/user-access/components/modals/AddRoleMemberModal'
-import {
-    HeroCard,
-    HeroCardBody,
-    HeroTable,
-} from '../../../../../../shared/components'
-import { TRole, TUser } from '../../../../../../shared/types'
 
 export const Route = createFileRoute(
     '/_administrator/mgmt/access-control/roles/$code/'
 )({
-    component: RoleDetailPage,
+    pendingComponent: AppLoading,
+    component: () => {
+        const router = useRouter()
+        const { code } = Route.useParams()
+
+        const [
+            {
+                data: { role, permissions: rolePermissions },
+            },
+        ] = useSuspenseQueries({
+            queries: [
+                {
+                    ...roleOptions(code),
+                },
+            ],
+        })
+
+        const addRoleMemberModalState = useDisclosure({
+            id: 'AddRoleMemberModal',
+        })
+        const [roleSelected, setRoleSelected] = useState<TRole | null>(null)
+
+        const addMemberToRole = useMutation(assignMemberRoleOptions)
+
+        const handleAddRoleMember = (role: TRole) => {
+            setRoleSelected(role)
+            addRoleMemberModalState.onOpen()
+        }
+
+        const handleConfirmAddMemberToRole = async (
+            userId: string,
+            roleId: string
+        ) => {
+            // Gọi mutation
+            await addMemberToRole.mutateAsync(
+                {
+                    roleId,
+                    userId,
+                },
+                {
+                    onSuccess() {
+                        addToast({
+                            title: 'Successfully',
+                            description: (
+                                <p>
+                                    Assign member to role{' '}
+                                    <span
+                                        className="font-medium"
+                                        style={{ color: role.hexColor }}
+                                    >
+                                        {role.displayName}
+                                    </span>{' '}
+                                    successfully
+                                </p>
+                            ),
+                            color: 'success',
+                        })
+                        addRoleMemberModalState.onClose()
+                        queryClient.refetchQueries({
+                            queryKey: roleOptions(code).queryKey,
+                        })
+                    },
+                }
+            )
+        }
+        return (
+            <>
+                {addRoleMemberModalState.isOpen && roleSelected && (
+                    <AddRoleMemberModal
+                        isOpen={addRoleMemberModalState.isOpen}
+                        onClose={addRoleMemberModalState.onClose}
+                        onConfirm={handleConfirmAddMemberToRole}
+                        role={roleSelected}
+                    />
+                )}
+                <AdminPageHeading
+                    title={
+                        <div className="flex items-center gap-4">
+                            <Button
+                                isIconOnly
+                                variant="flat"
+                                onPress={() => router.history.back()}
+                            >
+                                <ArrowLeft size={18} />
+                            </Button>
+                            <div>
+                                <h1 className="text-2xl font-bold text-default-900">
+                                    {role.displayName}
+                                </h1>
+                                <p className="text-sm text-text-subdued font-normal">
+                                    Review your members roles and allocate
+                                    permissions
+                                </p>
+                            </div>
+                        </div>
+                    }
+                    actions={
+                        <div className="flex gap-3">
+                            <Button
+                                color="primary"
+                                onPress={() => handleAddRoleMember(role)}
+                                startContent={<Plus fontSize={14} />}
+                                className="font-medium shadow-sm w-full sm:w-auto"
+                            >
+                                Assign to member
+                            </Button>
+                        </div>
+                    }
+                />
+                <AdminContentContainer className="pt-0 space-y-4">
+                    <Breadcrumbs className="text-xs">
+                        <BreadcrumbItem>
+                            <Link
+                                to={INTERNAL_URLS.admin.overview}
+                                className="text-text-subdued!"
+                            >
+                                Management
+                            </Link>
+                        </BreadcrumbItem>
+                        <BreadcrumbItem>
+                            <Link
+                                to={INTERNAL_URLS.management.accessControl}
+                                className="text-text-subdued!"
+                            >
+                                Access Control
+                            </Link>
+                        </BreadcrumbItem>
+                        <BreadcrumbItem>Roles</BreadcrumbItem>
+                        <BreadcrumbItem>{role.displayName}</BreadcrumbItem>
+                    </Breadcrumbs>
+
+                    <div className="space-y-6">
+                        <RoleDetailPage
+                            data={role}
+                            rolePermissions={rolePermissions}
+                        />
+                    </div>
+                </AdminContentContainer>
+            </>
+        )
+    },
 })
 
-export default function RoleDetailPage() {
+interface RoleDetailPageProps {
+    data: TRole
+    rolePermissions: string[]
+}
+export default function RoleDetailPage({
+    data: role,
+    rolePermissions,
+}: RoleDetailPageProps) {
     const removeMemberRole = useMutation(removeMemberRoleOptions)
     const router = useRouter()
-    const { code } = Route.useParams()
-    const [
-        {
-            data: { role, permissions: rolePermissions },
-        },
-    ] = useSuspenseQueries({
-        queries: [
-            {
-                ...roleOptions(code),
-            },
-        ],
-    })
 
     const [selectedUser, setSelectedUser] = useState<TUser | null>(null)
 
@@ -104,171 +244,153 @@ export default function RoleDetailPage() {
                     user={selectedUser}
                 />
             )}
-            <div className="space-y-4 animate-in fade-in duration-500">
-                <Breadcrumbs variant="light">
-                    <BreadcrumbItem
-                        onPress={() =>
-                            router.navigate({
-                                href: '..',
-                            })
-                        }
+            <div className="mt-7 grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Left Column: Role Stats */}
+                <div className="space-y-6">
+                    <Card
+                        shadow="none"
+                        className="border border-border-default"
                     >
-                        Roles
-                    </BreadcrumbItem>
-                    <BreadcrumbItem>{role.displayName}</BreadcrumbItem>
-                </Breadcrumbs>
-                {/* Breadcrumbs / Back */}
-                <div className="flex items-center gap-4">
-                    <Button
-                        isIconOnly
-                        variant="flat"
-                        radius="full"
-                        onPress={() => router.navigate({ href: '..' })}
-                    >
-                        <ArrowLeft size={20} />
-                    </Button>
-                    <div className="space-y-1">
-                        <h1 className="text-2xl font-black">
-                            {role.displayName}
-                        </h1>
-                        <p className="text-xs text-text-subdued font-bold uppercase tracking-wider">
-                            Role Management
-                        </p>
-                    </div>
+                        <CardBody className="p-6 space-y-4">
+                            <div className="flex justify-between items-start">
+                                <div
+                                    className="w-12 h-12 rounded-2xl flex items-center justify-center text-white"
+                                    style={{
+                                        backgroundColor: role.hexColor,
+                                    }}
+                                >
+                                    <ShieldCheck size={28} />
+                                </div>
+                                <QuickActionsDropdown role={role} />
+                            </div>
+                            <div>
+                                <h4 className="font-medium text-lg">
+                                    Role Details
+                                </h4>
+                                <p className="text-sm text-text-subdued mt-1">
+                                    {/* {role.description} */}
+                                </p>
+                            </div>
+                            <div className="flex flex-wrap gap-2 pt-2">
+                                <Chip
+                                    variant="flat"
+                                    color="primary"
+                                    className="font-bold"
+                                >
+                                    {rolePermissions.length} Permissions
+                                </Chip>
+                                <Chip variant="flat" className="font-bold">
+                                    Organization Scope
+                                </Chip>
+                            </div>
+                            <Button
+                                fullWidth
+                                color="primary"
+                                variant="flat"
+                                startContent={<Settings2 size={18} />}
+                                className="font-bold mt-4"
+                                onPress={() =>
+                                    router.navigate({
+                                        href: INTERNAL_URLS.management.rolePermMatrix(
+                                            role.code
+                                        ),
+                                    })
+                                }
+                            >
+                                Edit Permissions Matrix
+                            </Button>
+                        </CardBody>
+                    </Card>
                 </div>
 
-                <div className="mt-7 grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Left Column: Role Stats */}
-                    <div className="space-y-6">
-                        <HeroCard shadow="sm" className="border-none">
-                            <HeroCardBody className="p-6 space-y-4">
-                                <div className="flex justify-between items-start">
-                                    <div
-                                        className="w-12 h-12 rounded-2xl flex items-center justify-center text-white"
-                                        style={{
-                                            backgroundColor: role.hexColor,
-                                        }}
-                                    >
-                                        <ShieldCheck size={28} />
-                                    </div>
-                                    <QuickActionsDropdown role={role} />
-                                </div>
-                                <div>
-                                    <h4 className="font-medium text-lg">
-                                        Role Details
-                                    </h4>
-                                    <p className="text-sm text-text-subdued mt-1">
-                                        {/* {role.description} */}
-                                    </p>
-                                </div>
-                                <div className="flex flex-wrap gap-2 pt-2">
-                                    <Chip
-                                        variant="flat"
-                                        color="primary"
-                                        className="font-bold"
-                                    >
-                                        {rolePermissions.length} Permissions
-                                    </Chip>
-                                    <Chip variant="flat" className="font-bold">
-                                        Organization Scope
-                                    </Chip>
-                                </div>
-                                <Button
-                                    fullWidth
-                                    color="primary"
-                                    variant="flat"
-                                    startContent={<Settings2 size={18} />}
-                                    className="font-bold mt-4"
-                                    onPress={() =>
-                                        router.navigate({
-                                            href: INTERNAL_URLS.editRolePermMatrix(
-                                                code
-                                            ),
-                                        })
-                                    }
+                {/* Right Column: Member Table */}
+                <div className="lg:col-span-2 space-y-4">
+                    <Card
+                        shadow="none"
+                        className="border border-border-default"
+                    >
+                        <CardHeader className="p-0">
+                            <div className="p-6 w-full  flex justify-between items-center">
+                                <h3 className="font-medium text-lg">
+                                    Assigned Members
+                                </h3>
+                                <Chip
+                                    variant="dot"
+                                    color="success"
+                                    className="font-medium"
                                 >
-                                    Edit Permissions Matrix
-                                </Button>
-                            </HeroCardBody>
-                        </HeroCard>
-                    </div>
+                                    {role.users.length} Active Users
+                                </Chip>
+                            </div>
+                        </CardHeader>
 
-                    {/* Right Column: Member Table */}
-                    <div className="lg:col-span-2 space-y-4">
-                        <HeroCard
-                            shadow="none"
-                            className="border border-border-muted"
-                        >
-                            <HeroCardBody className="p-0">
-                                <div className="p-6 border-b border-divider flex justify-between items-center">
-                                    <h3 className="font-medium text-lg">
-                                        Assigned Members
-                                    </h3>
-                                    <Chip
-                                        size="sm"
-                                        variant="dot"
-                                        color="success"
-                                        className="font-medium"
-                                    >
-                                        {role.users.length} Active Users
-                                    </Chip>
-                                </div>
-                            </HeroCardBody>
-                        </HeroCard>
-                        <HeroTable
-                            aria-label="Members table"
-                            className="bg-background"
-                        >
-                            <TableHeader>
-                                <TableColumn>NAME</TableColumn>
-                                <TableColumn>CONTACT</TableColumn>
-                                <TableColumn align="end">ACTIONS</TableColumn>
-                            </TableHeader>
-                            <TableBody>
-                                {role.users.map((user) => (
-                                    <TableRow
-                                        key={user.id}
-                                        className="hover:bg-default-50 transition-colors"
-                                    >
-                                        <TableCell>
-                                            <User
-                                                name={user.displayName}
-                                                avatarProps={{
-                                                    src: optimizeCloudinary(
-                                                        user.avatar
-                                                    ),
-                                                    radius: 'lg',
-                                                }}
-                                            />
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex items-center gap-2 text-default-400">
-                                                <Mail size={14} />
-                                                <span className="text-xs font-medium">
-                                                    {user.email}
-                                                </span>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Button
-                                                size="sm"
-                                                variant="light"
-                                                color="danger"
-                                                className="font-bold"
-                                                onPress={() =>
-                                                    handleOpenConfirmRemoveMemberModal(
-                                                        user
-                                                    )
-                                                }
-                                            >
-                                                Remove
-                                            </Button>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </HeroTable>
-                    </div>
+                        <Divider />
+
+                        <CardBody className="px-0">
+                            <Table
+                                aria-label="Members table"
+                                classNames={{
+                                    wrapper: 'shadow-none',
+                                }}
+                            >
+                                <TableHeader>
+                                    <TableColumn>NAME</TableColumn>
+                                    <TableColumn>CONTACT</TableColumn>
+                                    <TableColumn align="end">
+                                        ACTIONS
+                                    </TableColumn>
+                                </TableHeader>
+                                <TableBody>
+                                    {role.users.map((user) => (
+                                        <TableRow
+                                            key={user.id}
+                                            className="hover:bg-default-50 transition-colors"
+                                        >
+                                            <TableCell>
+                                                <User
+                                                    name={user.displayName}
+                                                    avatarProps={{
+                                                        src: optimizeCloudinary(
+                                                            user.avatar
+                                                        ),
+                                                        radius: 'lg',
+                                                    }}
+                                                />
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex items-center gap-2 text-default-400">
+                                                    <Mail size={14} />
+                                                    <span className="text-xs font-medium">
+                                                        {user.email}
+                                                    </span>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Tooltip
+                                                    content="Remove"
+                                                    color="danger"
+                                                >
+                                                    <Button
+                                                        size="sm"
+                                                        isIconOnly
+                                                        variant="flat"
+                                                        color="danger"
+                                                        onPress={() =>
+                                                            handleOpenConfirmRemoveMemberModal(
+                                                                user
+                                                            )
+                                                        }
+                                                    >
+                                                        <Xmark fontSize={16} />
+                                                    </Button>
+                                                </Tooltip>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </CardBody>
+                    </Card>
                 </div>
             </div>
         </>
@@ -288,38 +410,8 @@ export const QuickActionsDropdown = ({
     onDuplicate,
     role,
 }: QuickActionsProps) => {
-    const addRoleMemberModalDisclosure = useDisclosure({
-        id: 'AddRoleMemberModal',
-    })
-    const [roleSelected, setRoleSelected] = useState<TRole | null>(null)
-
-    const addMemberToRole = useMutation(assignMemberRoleOptions)
-
-    const handleAddRoleMember = (role: TRole) => {
-        setRoleSelected(role)
-        addRoleMemberModalDisclosure.onOpen()
-    }
-
-    const handleConfirmAddMemberToRole = async (
-        userId: string,
-        roleId: string
-    ) => {
-        // Gọi mutation
-        await addMemberToRole.mutateAsync({
-            roleId,
-            userId,
-        })
-    }
     return (
         <>
-            {addRoleMemberModalDisclosure.isOpen && roleSelected && (
-                <AddRoleMemberModal
-                    isOpen={addRoleMemberModalDisclosure.isOpen}
-                    onClose={addRoleMemberModalDisclosure.onClose}
-                    onConfirm={handleConfirmAddMemberToRole}
-                    role={roleSelected}
-                />
-            )}
             <Dropdown placement="bottom-end">
                 <DropdownTrigger>
                     <Button isIconOnly variant="light" radius="full">
@@ -343,13 +435,6 @@ export const QuickActionsDropdown = ({
                         onPress={onDuplicate}
                     >
                         Duplicate Role
-                    </DropdownItem>
-                    <DropdownItem
-                        key="assign"
-                        startContent={<UserPlus size={16} />}
-                        onPress={() => handleAddRoleMember(role)}
-                    >
-                        Assign to Members
                     </DropdownItem>
                     <DropdownItem
                         key="delete"

@@ -22,3 +22,4 @@ export * from './options/search-queries';
 export * from './options/sharepoint-queries';
 export * from './options/user-config-queries';
 export * from './options/user-queries';
+export * from './options/_audit-log.queries';

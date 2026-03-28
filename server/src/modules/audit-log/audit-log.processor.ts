@@ -1,6 +1,6 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
-import { PrismaService } from '../prisma/prisma.service'; // ⚠️ Adjust this path
+import { PrismaService } from '../../providers/prisma/prisma.service'; // ⚠️ Adjust this path
 import { SystemModule } from '../../generated/prisma';
 
 @Processor('audit-logs')
