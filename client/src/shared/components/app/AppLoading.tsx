@@ -9,7 +9,7 @@ import { GlassBackground } from '@/shared/components'
 import CSDLogo from '../../../assets/logo.webp'
 import WhiteCSDLogo from '../../../assets/logo-white.webp'
 
-export default function AppLoading() {
+export function AppLoading() {
     const { theme, systemTheme } = useTheme()
 
     let logo = CSDLogo

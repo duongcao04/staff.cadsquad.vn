@@ -5,6 +5,7 @@ import {
     Popover,
     PopoverContent,
     PopoverTrigger,
+    Tooltip,
 } from '@heroui/react'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { Link, useRouterState } from '@tanstack/react-router'
@@ -24,20 +25,17 @@ import {
     LandmarkIcon,
     LayoutGridIcon,
     LogOut,
-    Search,
     Settings as SettingsIcon,
     ShieldUser,
     User,
     UsersRoundIcon,
-    WalletIcon,
+    WalletIcon
 } from 'lucide-react'
 import React from 'react'
-
 import { INTERNAL_URLS, profileOptions } from '@/lib'
 import { jobsPendingPayoutsOptions } from '../../../../lib/queries'
 import { toggleAdminLeftSidebar } from '../../../stores'
 import CadsquadLogo from '../../CadsquadLogo'
-import { HeroTooltip } from '../../ui/hero-tooltip'
 import { ScrollArea, ScrollBar } from '../../ui/scroll-area'
 
 // --- Sidebar Item Component ---
@@ -64,7 +62,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
     const isActive = defaultActive || pathname === url
 
     return (
-        <HeroTooltip
+        <Tooltip
             isDisabled={!isCollapsed}
             content={label}
             placement="right"
@@ -105,7 +103,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                         ))}
                 </div>
             </Link>
-        </HeroTooltip>
+        </Tooltip>
     )
 }
 
@@ -214,21 +212,6 @@ export const AdminSidebar = ({
                         </div>
                     </PopoverContent>
                 </Popover>
-            </div>
-
-            {/* 3. SEARCH BAR */}
-            <div className="px-6 mb-4">
-                <div
-                    className={`flex items-center gap-2 bg-[#1a1a1e] border border-[#2d2d33] rounded-xl px-3 h-9 ${isCollapsed ? 'justify-center cursor-pointer hover:bg-background-hovered' : ''}`}
-                >
-                    <Search size={15} className="text-[#62626c] shrink-0" />
-                    {!isCollapsed && (
-                        <input
-                            className="bg-transparent text-xs text-white outline-none w-full placeholder-[#62626c]"
-                            placeholder="Search..."
-                        />
-                    )}
-                </div>
             </div>
 
             {/* 4. NAVIGATION SECTION */}

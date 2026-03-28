@@ -1,0 +1,44 @@
+model SystemAuditLog {
+    id String @id @default(uuid())
+
+    // 1. WHO did it? (Actor)
+    // If actorId is null, it represents a "System" action (e.g., auto-syncs, cron jobs)
+    actorId String?
+    actor   User?   @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+    // 2. WHAT did they do? (Action & Module)
+    action String // Maps to UI "ACTION" column (e.g., "Created new Job", "Processed Bulk Payout")
+    module SystemModule // Maps to UI "MODULE" badge
+
+    // 3. TO WHAT entity? (Target)
+    targetId      String? // The actual UUID of the modified record (allows deep linking)
+    targetDisplay String // Maps to UI "TARGET" column (e.g., "#JOB-2026-088", "Folder Templates", "$4,320.00")
+
+    // 4. THE DATA (For the "View Full Audit Log" detail page)
+    oldValues Json? // Snapshot of data BEFORE the change
+    newValues Json? // Snapshot of data AFTER the change
+    metadata  Json? // Extra context (e.g., {"reason": "Client requested change"})
+
+    // 5. SECURITY CONTEXT
+    ipAddress String?
+    userAgent String?
+
+    createdAt DateTime @default(now())
+
+    // Indexes for fast filtering and searching in the admin dashboard
+    @@index([actorId])
+    @@index([module])
+    @@index([targetId])
+    @@index([createdAt])
+}
+
+enum SystemModule {
+    JOB
+    DELIVERY
+    FINANCIAL
+    SYSTEM
+    SECURITY
+    USER_MANAGEMENT
+    CLIENT
+    ASSET
+}

@@ -8,6 +8,7 @@ import { NOTIFICATION_QUEUE } from './notification.constants'
 import { NotificationController } from './notification.controller'
 import { NotificationService } from './notification.service'
 import { NotificationProcessor } from './notification.processor'
+import { NotificationListener } from './notification.listener'
 
 @Module({
 	imports: [
@@ -22,7 +23,7 @@ import { NotificationProcessor } from './notification.processor'
 		FirebaseModule,
 	],
 	controllers: [NotificationController],
-	providers: [NotificationService, NotificationProcessor],
+	providers: [NotificationService, NotificationProcessor, NotificationListener],
 	exports: [NotificationService],
 })
-export class NotificationModule {}
+export class NotificationModule { }

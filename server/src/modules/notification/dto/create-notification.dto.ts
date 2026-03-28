@@ -18,7 +18,7 @@ export class CreateNotificationDto {
 		example: 'You have a new message from John Doe.',
 	})
 	@IsString()
-	content: string
+	content!: string
 
 	@ApiProperty({
 		description: 'URL of an image for the notification',
@@ -53,5 +53,5 @@ export class CreateNotificationDto {
 
 	@ApiProperty({ description: 'ID of the user to receive the notification' })
 	@IsString()
-	userId: string
+	userId!: string
 }

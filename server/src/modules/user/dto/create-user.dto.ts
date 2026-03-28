@@ -19,7 +19,6 @@ export class CreateUserDto {
 		example: 'john.doe@example.com',
 	})
 	@IsOptional()
-	@IsEmail()
 	personalEmail?: string
 
 	@ApiProperty({ description: 'ID of the user role', required: false })
@@ -34,7 +33,7 @@ export class CreateUserDto {
 	})
 	@IsNotEmpty()
 	@IsString()
-	password: string
+	password!: string
 
 	@ApiProperty({ description: "ID of the user's job title", required: false })
 	@IsOptional()

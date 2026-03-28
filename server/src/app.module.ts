@@ -46,6 +46,12 @@ import { ScheduleModule } from '@nestjs/schedule'
 import { PrometheusModule } from '@willsoto/nestjs-prometheus'
 import { AdministratorModule } from './modules/administrator/administrator.module'
 import { BullConfigProvider } from './providers/bull-mq/bull-mq.provider'
+import { AuditLogProcessor } from './providers/bull-mq/audit-log.processor'
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { BullMQAdapter } from '@bull-board/api/bullMQAdapter'
+import { APP_INTERCEPTOR } from '@nestjs/core'
+import { AuditLogInterceptor } from './common/interceptors/audit-log.interceptor'
+
 @Module({
 	imports: [
 		ConfigModule.forRoot({
@@ -73,12 +79,23 @@ import { BullConfigProvider } from './providers/bull-mq/bull-mq.provider'
 			imports: [ConfigModule.forFeature(bullConfig)],
 			useClass: BullConfigProvider,
 		}),
+		BullModule.registerQueue({
+			name: 'audit-logs',
+		}),
 		// Cấu hình Bull Board Root (Tạo route truy cập)
 		BullBoardModule.forRoot({
 			route: '/queues', // Đường dẫn truy cập UI
-			adapter: ExpressAdapter, // Dùng adapter Express
+			adapter: ExpressAdapter,
+		}),
+		BullBoardModule.forFeature({
+			name: 'audit-logs',
+			adapter: BullMQAdapter,
 		}),
 		ScheduleModule.forRoot(),
+		EventEmitterModule.forRoot({
+			wildcard: true,
+			delimiter: '.', // Ký tự phân cách (mặc định là dấu chấm)
+		}),
 		PrismaModule,
 		RedisModule,
 		MailModule,
@@ -108,6 +125,9 @@ import { BullConfigProvider } from './providers/bull-mq/bull-mq.provider'
 		AdministratorModule
 	],
 	controllers: [AppController],
-	providers: [AppService],
+	providers: [AppService, AuditLogProcessor, {
+		provide: APP_INTERCEPTOR,
+		useClass: AuditLogInterceptor,
+	},],
 })
 export class AppModule { }

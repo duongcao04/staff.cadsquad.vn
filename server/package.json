@@ -40,6 +40,7 @@
 		"@nestjs/common": "11.1.9",
 		"@nestjs/config": "^4.0.2",
 		"@nestjs/core": "11.1.9",
+		"@nestjs/event-emitter": "^3.0.1",
 		"@nestjs/jwt": "11.0.1",
 		"@nestjs/passport": "^11.0.5",
 		"@nestjs/platform-express": "^11.1.9",
@@ -116,6 +117,9 @@
 		"tsconfig-paths": "4.2.0",
 		"typescript": "^5.9.3",
 		"typescript-eslint": "8.48.0"
+	},
+	"prisma": {
+		"schema": "./src/providers/prisma/schema"
 	},
 	"jest": {
 		"moduleFileExtensions": [

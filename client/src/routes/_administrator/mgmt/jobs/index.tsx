@@ -4,6 +4,7 @@ import { getPageTitle } from '@/lib'
 import { jobsListOptions } from '@/lib/queries'
 import {
     AdminPageHeading,
+    AppLoading,
     HeroButton,
     HeroDateRangePicker,
 } from '@/shared/components'
@@ -75,6 +76,7 @@ export const Route = createFileRoute('/_administrator/mgmt/jobs/')({
             })
         )
     },
+    pendingComponent: AppLoading,
     component: () => {
         const searchParams = Route.useSearch()
 

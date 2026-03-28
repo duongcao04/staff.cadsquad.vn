@@ -36,6 +36,8 @@ import { UserQueryDto } from './dto/user-query.dto'
 import { UserResponseDto } from './dto/user-response.dto'
 import { UserSecurityService } from './user-security.service'
 import { UserService } from './user.service'
+import { AuditLog } from '../../common/decorators/audit-log.decorator'
+import { SystemModule } from '../../generated/prisma'
 
 @ApiTags('Users')
 @Controller('users')
@@ -84,6 +86,7 @@ export class UserController {
 		description: 'The user has been successfully created.',
 		type: UserResponseDto,
 	})
+	@AuditLog('Created new User', SystemModule.USER_MANAGEMENT)
 	async create(
 		@Body() createUserDto: CreateUserDto,
 		@Query() sendInviteEmail: '0' | '1'

@@ -1,5 +1,5 @@
 import queryString from 'query-string'
-import { TClient, TJob } from '../../shared/types'
+import { TClient, TJob, TJobStatus } from '../../shared/types'
 import { ApiResponse, axiosClient } from '../axios'
 
 export interface IAdminDashboardKpis {
@@ -16,12 +16,16 @@ export interface IAdminDashboardKpis {
 	}
 }
 
+export type ICountByStatus = Pick<TJobStatus, 'displayName' | 'hexColor'> & {
+	_count: { jobs: number }
+}
 export interface IAdminDbStats {
 	auth: { users: number; roles: number }
 	jobs: {
 		total: number
 		actives: number
 		pendingReviews: number, pendingPayouts: number
+		countByStatus: ICountByStatus[]
 	}
 	clients: {
 		total: number
@@ -49,6 +53,12 @@ export const administratorApi = {
 		getDbStats: async (): Promise<ApiResponse<IAdminDbStats>> => {
 			const { data } = await axiosClient.get(
 				'/v1/admin/dashboard/db-stats'
+			)
+			return data
+		},
+		getDbOverview: async (): Promise<ApiResponse<any>> => {
+			const { data } = await axiosClient.get(
+				'/v1/admin/dashboard/db-overview'
 			)
 			return data
 		},

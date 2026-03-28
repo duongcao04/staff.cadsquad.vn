@@ -26,7 +26,9 @@ import { UpdatePasswordDto } from './dto/update-password.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { UserQueryDto } from './dto/user-query.dto'
 import { UserResponseDto } from './dto/user-response.dto'
-
+import lodash from 'lodash'
+import { EventEmitter2 } from '@nestjs/event-emitter'
+import { NotifyEventPayload } from '../notification/interfaces/notification.events'
 @Injectable()
 export class UserService {
 	private readonly logger = new Logger(UserService.name)
@@ -34,83 +36,47 @@ export class UserService {
 		private readonly prismaService: PrismaService,
 		private readonly bcryptService: BcryptService,
 		private readonly mailService: MailService,
-		private readonly notificationService: NotificationService
+		private readonly eventEmitter: EventEmitter2,
 	) { }
 
 	async create(dto: CreateUserDto, sendInviteEmail: boolean) {
-		// 1. Check if user exists (including soft-deleted ones)
-		const existingUser = await this.prismaService.user.findFirst({
+		const existingEmail = await this.prismaService.user.findFirst({
 			where: { email: dto.email },
 		})
-
-		// If user is active (deletedAt is null), throw conflict
-		if (existingUser && !existingUser.deletedAt) {
-			throw new ConflictException('Email already exists')
+		if (existingEmail) {
+			throw new ConflictException(`Email ${dto.email} already exists. Please try again with a different email address.`)
 		}
 
-		// Prepare shared data
+
 		const hashedPassword = await this.bcryptService.hash(dto.password)
 		const username = await this.generateUsernameFromEmail(dto.email)
 		const avatar = this.generateAvatar(dto.displayName)
+		const staffCode = await this.generateStaffCode()
+		const roleId = lodash.isEmpty(dto.roleId) ? await this.getAccountDefaultRole() : dto.roleId
 
-		let roleId = dto.roleId
-		if (!roleId) {
-			const staffRole = await this.prismaService.role.findUnique({
-				where: { code: 'staff' },
-			})
-			roleId = staffRole?.id
-		}
-
-		const userData = {
-			...dto,
-			password: hashedPassword,
-			username,
-			avatar,
-			roleId,
-			isActive: true,
-			deletedAt: null, // Critical: Reset the delete flag
-		}
-
-		// 2. Transaction for Create or Update (Restore)
-		const user = await this.prismaService.$transaction(async (tx) => {
-			let userResult
-
-			if (existingUser && existingUser.deletedAt) {
-				// RESTORE LOGIC
-				userResult = await tx.user.update({
-					where: { id: existingUser.id },
-					data: userData,
-					include: { role: true },
-				})
-			} else {
-				// NORMAL CREATE LOGIC
-				// Using create instead of createManyAndReturn for single objects is cleaner
-				userResult = await tx.user.create({
-					data: {
-						...userData,
-						code: await this.generateUserCode()
-					},
-					include: { role: true },
-				})
-			}
-			return userResult
+		const user = await this.prismaService.user.create({
+			data: {
+				displayName: dto.displayName,
+				email: dto.email,
+				personalEmail: dto.personalEmail,
+				jobTitleId: lodash.isEmpty(dto.jobTitleId) ? null : dto.jobTitleId,
+				departmentId: lodash.isEmpty(dto.departmentId) ? null : dto.departmentId,
+				roleId: roleId,
+				password: hashedPassword,
+				username,
+				avatar,
+				isActive: true,
+				deletedAt: null,
+				code: staffCode
+			},
+			include: { role: true },
 		})
 
-		try {
-			await this.notificationService.send({
-				userId: user.id,
-				title: existingUser
-					? 'Account Restored'
-					: 'Welcome to CADSQUAD',
-				content: 'Your account has been successfully set up.',
-				type: 'SUCCESS',
-				imageUrl: IMAGES.NOTIFICATION_DEFAULT_IMAGE,
-				redirectUrl: '/profile',
-			})
-		} catch (sideEffectError) {
-			// Log the error but don't fail the User creation
-			this.logger.error('Send user notification error:', sideEffectError)
-		}
+		this.eventEmitter.emit('notify.user.created', {
+			eventName: 'notify.user.created',
+			targetUserId: user.id,
+			data: { name: user.displayName },
+		} satisfies NotifyEventPayload);
 
 		// 3. Send Email
 		try {
@@ -689,11 +655,23 @@ export class UserService {
 	}
 
 
-	private async generateUserCode() {
-		const result = await this.prismaService.user.findMany().then(res => {
-			const userNum = res[-1].code.slice(-3)
-			return String(Number(userNum) + 1).padStart(4, '0')
+	private async generateStaffCode() {
+		const result = await this.prismaService.user.findMany({
+			orderBy: {
+				code: "asc"
+			}
+		}).then(res => {
+			const arr = [...res] as Array<any>
+			const userNum = arr.at(-1).code.slice(-3)
+			return String(Number(userNum) + 1).padStart(3, '0')
 		})
-		return result
+
+		return "ST" + result
+	}
+	private async getAccountDefaultRole() {
+		const result = await this.prismaService.role.findUnique({
+			where: { code: 'staff' },
+		})
+		return result?.id
 	}
 }

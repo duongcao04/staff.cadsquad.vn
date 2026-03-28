@@ -120,6 +120,21 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.SystemAuditLogScalarFieldEnum = {
+  id: 'id',
+  actorId: 'actorId',
+  action: 'action',
+  module: 'module',
+  targetId: 'targetId',
+  targetDisplay: 'targetDisplay',
+  oldValues: 'oldValues',
+  newValues: 'newValues',
+  metadata: 'metadata',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.BrowserSubscribesScalarFieldEnum = {
   id: 'id',
   endpoint: 'endpoint',
@@ -532,12 +547,12 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
-exports.Prisma.JsonNullValueInput = {
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
   JsonNull: Prisma.JsonNull
 };
 
-exports.Prisma.NullableJsonNullValueInput = {
-  DbNull: Prisma.DbNull,
+exports.Prisma.JsonNullValueInput = {
   JsonNull: Prisma.JsonNull
 };
 
@@ -546,16 +561,27 @@ exports.Prisma.QueryMode = {
   insensitive: 'insensitive'
 };
 
-exports.Prisma.NullsOrder = {
-  first: 'first',
-  last: 'last'
-};
-
 exports.Prisma.JsonNullValueFilter = {
   DbNull: Prisma.DbNull,
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
 };
+
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
+exports.SystemModule = exports.$Enums.SystemModule = {
+  JOB: 'JOB',
+  DELIVERY: 'DELIVERY',
+  FINANCIAL: 'FINANCIAL',
+  SYSTEM: 'SYSTEM',
+  SECURITY: 'SECURITY',
+  USER_MANAGEMENT: 'USER_MANAGEMENT',
+  CLIENT: 'CLIENT',
+  ASSET: 'ASSET'
+};
+
 exports.SecurityLogStatus = exports.$Enums.SecurityLogStatus = {
   SUCCESS: 'SUCCESS',
   FAILED: 'FAILED',
@@ -678,6 +704,7 @@ exports.TopicType = exports.$Enums.TopicType = {
 };
 
 exports.Prisma.ModelName = {
+  SystemAuditLog: 'SystemAuditLog',
   BrowserSubscribes: 'BrowserSubscribes',
   UserDevices: 'UserDevices',
   User: 'User',

@@ -35,6 +35,8 @@ import { JobCommentService } from './job-comment.service'
 import { JobService } from './job.service'
 import { UpdateAttachmentsDto } from './dto/update-attachments.dto'
 import { JobDeliverService } from './job-deliver.service'
+import { SystemModule } from '../../generated/prisma'
+import { AuditLog } from '../../common/decorators/audit-log.decorator'
 
 @ApiTags('Jobs')
 @Controller('jobs')
@@ -178,7 +180,8 @@ export class JobController {
 	@UseGuards(PermissionsGuard)
 	@RequirePermissions(APP_PERMISSIONS.JOB.CREATE)
 	@ResponseMessage('The job has been successfully created.')
-	async create(@Req() request: Request, @Body() createJobDto: CreateJobDto) {
+	@AuditLog('Create new job', SystemModule.JOB)
+	async createJob(@Req() request: Request, @Body() createJobDto: CreateJobDto) {
 		const user: TokenPayload = request['user']
 		const created = await this.jobService.create(user.sub, createJobDto)
 		return created
@@ -193,6 +196,7 @@ export class JobController {
 	@Post(':id/deliver')
 	@UseGuards(PermissionsGuard)
 	@RequirePermissions(APP_PERMISSIONS.JOB.DELIVER)
+	@AuditLog('Delivered job', SystemModule.DELIVERY)
 	async deliverJob(
 		@Req() request: Request,
 		@Param('id') id: string,
@@ -226,6 +230,7 @@ export class JobController {
 	@Post(':id/mark-paid')
 	@UseGuards(PermissionsGuard)
 	@RequirePermissions(APP_PERMISSIONS.JOB.PAID)
+	@AuditLog('Paid for job', SystemModule.FINANCIAL)
 	async markPaid(@Req() request: Request, @Param('id') id: string) {
 		const user: TokenPayload = request['user']
 		return this.jobService.markPaid(id, user.sub)
@@ -264,6 +269,7 @@ export class JobController {
 	@UseGuards(PermissionsGuard)
 	@RequirePermissions(APP_PERMISSIONS.JOB.ASSIGN_MEMBER)
 	@ResponseMessage('Member assigned successfully')
+	@AuditLog('Assign new member for job', SystemModule.JOB)
 	async assignMember(
 		@Req() request: Request,
 		@Param('id') id: string,
@@ -295,6 +301,7 @@ export class JobController {
 	@Delete(':id/assignments/:memberId')
 	@UseGuards(PermissionsGuard)
 	@RequirePermissions(APP_PERMISSIONS.JOB.ASSIGN_MEMBER)
+	@AuditLog('Remove assignment member from job', SystemModule.JOB)
 	async unassignMember(
 		@Req() request: Request,
 		@Param('id') jobId: string,
@@ -307,6 +314,7 @@ export class JobController {
 	@Patch(':id/update-revenue')
 	@UseGuards(PermissionsGuard)
 	@RequirePermissions(APP_PERMISSIONS.JOB.UPDATE)
+	@AuditLog('Update revenue', SystemModule.FINANCIAL)
 	async updateRevenue(
 		@Req() request: Request,
 		@Param('id') id: string,
@@ -319,6 +327,7 @@ export class JobController {
 	@Patch(':id/change-status')
 	@UseGuards(PermissionsGuard)
 	@RequirePermissions(APP_PERMISSIONS.JOB.UPDATE)
+	@AuditLog('Force update job status', SystemModule.JOB)
 	async changeStatus(
 		@Req() request: Request,
 		@Param('id') id: string,

@@ -1,5 +1,5 @@
 import { Header, PageWithHeaderContainer, Sidebar } from '@/shared/components'
-import AppLoading from '@/shared/components/app/AppLoading'
+import { AppLoading } from '@/shared/components'
 import MobileHeader from '@/shared/components/layouts/Header/MobileHeader'
 import { AuthGuard } from '@/shared/guards'
 import { useDevice } from '@/shared/hooks'

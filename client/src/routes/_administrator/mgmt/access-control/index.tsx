@@ -1,5 +1,5 @@
 import { permissionsListOptions, rolesListOptions } from '@/lib/queries'
-import { HeroCard, HeroCardBody } from '@/shared/components'
+import { AppLoading, HeroCard, HeroCardBody } from '@/shared/components'
 import {
     Button,
     CardBody,
@@ -25,9 +25,8 @@ import {
 } from 'lucide-react'
 import React from 'react'
 
-export const Route = createFileRoute(
-    '/_administrator/mgmt/access-control/'
-)({
+export const Route = createFileRoute('/_administrator/mgmt/access-control/')({
+    pendingComponent: AppLoading,
     component: RolePermissionOverviewPage,
 })
 

@@ -1,6 +1,6 @@
 import { ablyClient } from '@/lib/ably'
 import { queryClient } from '@/main'
-import AppLoading from '@/shared/components/app/AppLoading'
+import { AppLoading } from '@/shared/components'
 import {
     AppThemeProvider,
     useAppTheme,

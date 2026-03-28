@@ -143,10 +143,56 @@ export class AdminDashboardService {
 						},
 					})
 				).length,
+				countByStatus: await this.prisma.jobStatus.findMany({
+					select: {
+						displayName: true,
+						hexColor: true,
+						_count: {
+							select: { jobs: true }
+						}
+					},
+				})
 			},
 			clients: {
 				total: await this.prisma.client.count(),
 			},
+		}
+	}
+
+	async getDatabaseOverview() {
+		return {
+			users: await this.prisma.user.count(),
+			staff: await this.prisma.user.count({
+				where: {
+					role: {
+						code: "staff"
+					}
+				}
+			}),
+			roles: await this.prisma.role.count(),
+			permissions: await this.prisma.permission.count(),
+			departments: await this.prisma.department.count(),
+			jobTitles: await this.prisma.jobTitle.count(),
+			jobTypes: await this.prisma.jobType.count(),
+			jobs: await this.prisma.job.count(),
+			clients: await this.prisma.client.count(),
+			jobDeliveres: await this.prisma.jobDelivery.count(),
+			jobFinished: await this.prisma.job.count({
+				where: {
+					status: {
+						systemType: "TERMINATED"
+					}
+				}
+			}),
+			communities: await this.prisma.community.count(),
+			posts: await this.prisma.post.count(),
+			jobComments: await this.prisma.jobComment.count(),
+			fileSystems: await this.prisma.fileSystem.count(),
+			folderTemplates: await this.prisma.jobFolderTemplate.count(),
+			paymentChannels: await this.prisma.paymentChannel.count(),
+			payouts: await this.prisma.job.count({
+				where: { isPaid: true }
+			})
 		}
 	}
 }

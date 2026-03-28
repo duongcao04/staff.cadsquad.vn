@@ -7,7 +7,7 @@
 generator client {
     provider      = "prisma-client-js"
     binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
-    output        = "../../../src/generated/prisma"
+    output        = "../../../../src/generated/prisma"
 }
 
 datasource db {
@@ -81,10 +81,11 @@ model User {
     userPermissions UserPermission[]
     securityLogs    UserSecurityLog[]
 
-    deletedAt   DateTime?
-    lastLoginAt DateTime?
-    createdAt   DateTime  @default(now())
-    updatedAt   DateTime  @updatedAt
+    deletedAt       DateTime?
+    lastLoginAt     DateTime?
+    createdAt       DateTime         @default(now())
+    updatedAt       DateTime         @updatedAt
+    systemAuditLogs SystemAuditLog[]
 }
 
 model UserSecurityLog {

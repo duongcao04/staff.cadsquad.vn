@@ -5,7 +5,7 @@ import {
     jobFolderTemplateQueryKeys,
     jobFolderTemplatesListOptions,
 } from '@/lib'
-import { AdminPageHeading, HeroButton } from '@/shared/components'
+import { AdminPageHeading, AppLoading, HeroButton } from '@/shared/components'
 import AdminContentContainer from '@/shared/components/admin/AdminContentContainer'
 import {
     addToast,
@@ -41,6 +41,7 @@ import { queryClient } from '../../../../../main'
 export const Route = createFileRoute(
     '/_administrator/mgmt/jobs/folder-templates/'
 )({
+    pendingComponent: AppLoading,
     component: () => {
         const { isOpen, onOpen, onClose } = useDisclosure()
 
