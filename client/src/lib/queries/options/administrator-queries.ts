@@ -18,7 +18,7 @@ export const adminDashboardKeys = {
 
 export const adminJobKeys = {
 	resource: ['admin-jobs'] as const,
-	stats: () => [...adminJobKeys.resource, 'stats'] as const,
+	stats: ({ from, to }: { from?: string, to?: string }) => [...adminJobKeys.resource, 'stats', `from:${from?.split('T')[0]}`, `to:${to?.split('T')[0]}}`] as const,
 }
 
 export const adminDashboardKpisOptions = () =>
@@ -93,10 +93,10 @@ export interface IAdminJobStats {
 	late: number,
 	finished: number
 }
-export const adminJobStatsOptions = ({ from, to }: { from?: string, to?: string }) =>
+export const adminJobStatsOptions = (dateRange: { from?: string, to?: string }) =>
 	queryOptions({
-		queryKey: adminJobKeys.stats(),
-		queryFn: () => administratorApi.jobs.getStats({ from, to }),
+		queryKey: adminJobKeys.stats(dateRange),
+		queryFn: () => administratorApi.jobs.getStats(dateRange),
 		select(data) {
 			const result = data.result as IAdminJobStats
 			return result

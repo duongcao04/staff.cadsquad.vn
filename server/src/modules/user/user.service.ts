@@ -7,15 +7,16 @@ import {
 	Logger,
 	NotFoundException,
 } from '@nestjs/common'
+import { EventEmitter2 } from '@nestjs/event-emitter'
+import { APP_PERMISSIONS } from '@staff-cadsquad/shared'
 import { plainToInstance } from 'class-transformer'
 import dayjs from 'dayjs'
+import lodash from 'lodash'
 import { Prisma, User } from '../../generated/prisma'
 import { MailService } from '../../providers/mail/mail.service'
 import { PrismaService } from '../../providers/prisma/prisma.service'
-import { IMAGES } from '../../utils'
-import { APP_PERMISSIONS } from '@staff-cadsquad/shared'
 import { BcryptService } from '../auth/bcrypt.service'
-import { NotificationService } from '../notification/notification.service'
+import { NotifyEventPayload } from '../notification/interfaces/notification.events'
 import {
 	AssignUserPermissionDto,
 	PermissionAction,
@@ -26,9 +27,6 @@ import { UpdatePasswordDto } from './dto/update-password.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { UserQueryDto } from './dto/user-query.dto'
 import { UserResponseDto } from './dto/user-response.dto'
-import lodash from 'lodash'
-import { EventEmitter2 } from '@nestjs/event-emitter'
-import { NotifyEventPayload } from '../notification/interfaces/notification.events'
 @Injectable()
 export class UserService {
 	private readonly logger = new Logger(UserService.name)

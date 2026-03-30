@@ -1,4 +1,3 @@
-import { JobActivityHistory } from '@/features/job-details'
 import {
     GeneralDetailForm,
     JobFinancialForm,
@@ -50,7 +49,6 @@ import {
     Switch,
     Tab,
     Tabs,
-    Textarea,
     useDisclosure,
 } from '@heroui/react'
 import {
@@ -65,16 +63,13 @@ import {
     ChevronLeft,
     Copy,
     DollarSign,
-    Download,
     ExternalLink,
     FileText,
     MessageSquare,
     MoreVertical,
     Package,
-    Paperclip,
     Printer,
     Save,
-    Send,
     Trash2,
     Users,
 } from 'lucide-react'

@@ -64,6 +64,7 @@ export const INTERNAL_URLS = {
     // MANAGEMENT
     management: {
         jobs: ['', 'mgmt', 'jobs'].join('/'),
+        jobCreation: ['', 'mgmt', 'jobs', 'create'].join('/'),
         jobDetail: (jobNo: string) => ['', 'mgmt', 'jobs', jobNo].join('/'),
         jobFolderTemplates: ['', 'mgmt', 'jobs', 'folder-templates'].join('/'),
         jobFolderTemplateDetail: (id: string) => ['', 'mgmt', 'jobs', 'folder-templates', id].join('/'),
@@ -323,8 +324,8 @@ export const APP_TABLE_SIZES = [
 
 export const DUE_DATE_PRESETS = [
     { key: 'lt_1_week', label: '< 1 week' },
-    { key: 'lt_2_weeks', label: '< 2 weeks' }, // Corrected "week" to "weeks"
-    { key: 'lt_3_weeks', label: '< 3 weeks' }, // Corrected "week" to "weeks"
+    { key: 'lt_2_weeks', label: '< 2 weeks' },
+    { key: 'lt_3_weeks', label: '< 3 weeks' },
     { key: 'lt_1_month', label: '< 1 month' },
     { key: 'gt_1_month', label: '> 1 month' },
 ] as const

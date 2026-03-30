@@ -389,13 +389,13 @@ model Job {
     startedAt        DateTime           @default(now())
     priority         JobPriority        @default(MEDIUM)
     files            FileSystem[]
-    // isPinned         Boolean            @default(false)
     isPublished      Boolean            @default(false)
     isPaid           Boolean            @default(false)
     dueAt            DateTime
     completedAt      DateTime?
     finishedAt       DateTime?
-    paidAt           DateTime?
+    paymentStatus    JOB_PAYMENT_STATUS @default(UNPAID)
+    payoutDate       DateTime?
     createdAt        DateTime           @default(now())
     updatedAt        DateTime           @updatedAt
     deletedAt        DateTime?
@@ -411,6 +411,13 @@ model Job {
     @@index([statusId])
     @@index([createdById])
     @@index([priority])
+}
+
+enum JOB_PAYMENT_STATUS {
+    PAID
+    PENDING
+    UNPAID
+    FAILED
 }
 
 model JobAssignment {

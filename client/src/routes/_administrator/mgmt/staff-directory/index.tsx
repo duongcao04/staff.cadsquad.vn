@@ -3,7 +3,7 @@ import StaffDirectoryGrid from '@/features/staff-directory/components/views/Staf
 import StaffDirectoryTable from '@/features/staff-directory/components/views/StaffDirectoryTable'
 import { COLORS } from '@/lib'
 import { departmentsListOptions, usersListOptions } from '@/lib/queries'
-import { getPageTitle, useUpdateSearchParams } from '@/lib/utils'
+import { getPageTitle, RouteUtil } from '@/lib/utils'
 import AdminContentContainer from '@/shared/components/admin/AdminContentContainer'
 import {
     Button,
@@ -25,7 +25,7 @@ import {
     TableIcon,
     UserRoundPlusIcon,
 } from 'lucide-react'
-import { useCallback, useMemo } from 'react'
+import { useMemo } from 'react'
 import { z } from 'zod'
 import CreateUserModal from '../../../../features/staff-directory/components/modals/CreateUserModal'
 import { AdminPageHeading, HeroButton } from '../../../../shared/components'
@@ -142,7 +142,6 @@ export const Route = createFileRoute('/_administrator/mgmt/staff-directory/')({
 // --- 3. MAIN PAGE COMPONENT ---
 function StaffDirectoryPage() {
     const searchParams = Route.useSearch()
-    const updateSearch = useUpdateSearchParams(Route.fullPath)
 
     const [
         {
@@ -170,55 +169,30 @@ function StaffDirectoryPage() {
     })
 
     // --- Handlers ---
-    const handlePageChange = useCallback(
-        (newPage: number) =>
-            updateSearch((old: TStaffSearchValues) => ({
-                ...old,
-                page: newPage,
-            })),
-        [updateSearch]
-    )
+    const handlePageChange = (newPage: number) => {
+        RouteUtil.updateParams<TStaffSearchValues>({ page: newPage })
+    }
 
-    const handleLimitChange = useCallback(
-        (newLimit: number) =>
-            updateSearch((old: TStaffSearchValues) => ({
-                ...old,
-                limit: newLimit,
-                page: 1,
-            })),
-        [updateSearch]
-    )
+    const handleLimitChange = (newLimit: number) =>
+        RouteUtil.updateParams<TStaffSearchValues>({ limit: newLimit })
 
-    const handleSearchChange = useCallback(
-        (newSearch?: string) =>
-            updateSearch((old: TStaffSearchValues) => ({
-                ...old,
-                search: newSearch,
-                page: 1,
-            })),
-        [updateSearch]
-    )
+    const handleSearchChange = (newSearch?: string) =>
+        RouteUtil.updateParams<TStaffSearchValues>({
+            search: newSearch,
+            page: 1,
+        })
 
-    const handleViewChange = useCallback(
-        (newView: any) =>
-            updateSearch((old: TStaffSearchValues) => ({
-                ...old,
-                view: newView,
-                page: 1,
-            })),
-        [updateSearch]
-    )
+    const handleViewChange = (newView: any) =>
+        RouteUtil.updateParams<TStaffSearchValues>({
+            view: newView,
+            page: 1,
+        })
 
-    const handleFilters = useCallback(
-        (deptId: string) => {
-            updateSearch((old: TStaffSearchValues) => ({
-                ...old,
-                departmentId: deptId === 'all' ? undefined : deptId,
-                page: 1,
-            }))
-        },
-        [updateSearch]
-    )
+    const handleFilters = (deptId: string) =>
+        RouteUtil.updateParams<TStaffSearchValues>({
+            departmentId: deptId === 'all' ? undefined : deptId,
+            page: 1,
+        })
 
     // Now debouncedSearchChange won't reset on every render
     const debouncedSearchChange = useMemo(

@@ -55,6 +55,7 @@ import { Route as AdministratorMgmtClientsIndexRouteImport } from './routes/_adm
 import { Route as AdministratorMgmtAccessControlIndexRouteImport } from './routes/_administrator/mgmt/access-control/index'
 import { Route as AdministratorFinancialPayoutsIndexRouteImport } from './routes/_administrator/financial/payouts/index'
 import { Route as AdministratorMgmtStaffDirectoryCodeRouteImport } from './routes/_administrator/mgmt/staff-directory/$code'
+import { Route as AdministratorMgmtJobsCreateRouteImport } from './routes/_administrator/mgmt/jobs/create'
 import { Route as AdministratorMgmtJobsNoRouteImport } from './routes/_administrator/mgmt/jobs/$no'
 import { Route as AdministratorMgmtDepartmentsCodeRouteImport } from './routes/_administrator/mgmt/departments/$code'
 import { Route as AdministratorMgmtClientsCodeRouteImport } from './routes/_administrator/mgmt/clients/$code'
@@ -318,6 +319,12 @@ const AdministratorMgmtStaffDirectoryCodeRoute =
     path: '/mgmt/staff-directory/$code',
     getParentRoute: () => AdministratorRoute,
   } as any)
+const AdministratorMgmtJobsCreateRoute =
+  AdministratorMgmtJobsCreateRouteImport.update({
+    id: '/mgmt/jobs/create',
+    path: '/mgmt/jobs/create',
+    getParentRoute: () => AdministratorRoute,
+  } as any)
 const AdministratorMgmtJobsNoRoute = AdministratorMgmtJobsNoRouteImport.update({
   id: '/mgmt/jobs/$no',
   path: '/mgmt/jobs/$no',
@@ -431,6 +438,7 @@ export interface FileRoutesByFullPath {
   '/mgmt/clients/$code': typeof AdministratorMgmtClientsCodeRoute
   '/mgmt/departments/$code': typeof AdministratorMgmtDepartmentsCodeRoute
   '/mgmt/jobs/$no': typeof AdministratorMgmtJobsNoRoute
+  '/mgmt/jobs/create': typeof AdministratorMgmtJobsCreateRoute
   '/mgmt/staff-directory/$code': typeof AdministratorMgmtStaffDirectoryCodeRoute
   '/financial/payouts/': typeof AdministratorFinancialPayoutsIndexRoute
   '/mgmt/access-control/': typeof AdministratorMgmtAccessControlIndexRoute
@@ -484,6 +492,7 @@ export interface FileRoutesByTo {
   '/mgmt/clients/$code': typeof AdministratorMgmtClientsCodeRoute
   '/mgmt/departments/$code': typeof AdministratorMgmtDepartmentsCodeRoute
   '/mgmt/jobs/$no': typeof AdministratorMgmtJobsNoRoute
+  '/mgmt/jobs/create': typeof AdministratorMgmtJobsCreateRoute
   '/mgmt/staff-directory/$code': typeof AdministratorMgmtStaffDirectoryCodeRoute
   '/financial/payouts': typeof AdministratorFinancialPayoutsIndexRoute
   '/mgmt/access-control': typeof AdministratorMgmtAccessControlIndexRoute
@@ -545,6 +554,7 @@ export interface FileRoutesById {
   '/_administrator/mgmt/clients/$code': typeof AdministratorMgmtClientsCodeRoute
   '/_administrator/mgmt/departments/$code': typeof AdministratorMgmtDepartmentsCodeRoute
   '/_administrator/mgmt/jobs/$no': typeof AdministratorMgmtJobsNoRoute
+  '/_administrator/mgmt/jobs/create': typeof AdministratorMgmtJobsCreateRoute
   '/_administrator/mgmt/staff-directory/$code': typeof AdministratorMgmtStaffDirectoryCodeRoute
   '/_administrator/financial/payouts/': typeof AdministratorFinancialPayoutsIndexRoute
   '/_administrator/mgmt/access-control/': typeof AdministratorMgmtAccessControlIndexRoute
@@ -603,6 +613,7 @@ export interface FileRouteTypes {
     | '/mgmt/clients/$code'
     | '/mgmt/departments/$code'
     | '/mgmt/jobs/$no'
+    | '/mgmt/jobs/create'
     | '/mgmt/staff-directory/$code'
     | '/financial/payouts/'
     | '/mgmt/access-control/'
@@ -656,6 +667,7 @@ export interface FileRouteTypes {
     | '/mgmt/clients/$code'
     | '/mgmt/departments/$code'
     | '/mgmt/jobs/$no'
+    | '/mgmt/jobs/create'
     | '/mgmt/staff-directory/$code'
     | '/financial/payouts'
     | '/mgmt/access-control'
@@ -716,6 +728,7 @@ export interface FileRouteTypes {
     | '/_administrator/mgmt/clients/$code'
     | '/_administrator/mgmt/departments/$code'
     | '/_administrator/mgmt/jobs/$no'
+    | '/_administrator/mgmt/jobs/create'
     | '/_administrator/mgmt/staff-directory/$code'
     | '/_administrator/financial/payouts/'
     | '/_administrator/mgmt/access-control/'
@@ -1064,6 +1077,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdministratorMgmtStaffDirectoryCodeRouteImport
       parentRoute: typeof AdministratorRoute
     }
+    '/_administrator/mgmt/jobs/create': {
+      id: '/_administrator/mgmt/jobs/create'
+      path: '/mgmt/jobs/create'
+      fullPath: '/mgmt/jobs/create'
+      preLoaderRoute: typeof AdministratorMgmtJobsCreateRouteImport
+      parentRoute: typeof AdministratorRoute
+    }
     '/_administrator/mgmt/jobs/$no': {
       id: '/_administrator/mgmt/jobs/$no'
       path: '/mgmt/jobs/$no'
@@ -1202,6 +1222,7 @@ interface AdministratorRouteChildren {
   AdministratorMgmtClientsCodeRoute: typeof AdministratorMgmtClientsCodeRoute
   AdministratorMgmtDepartmentsCodeRoute: typeof AdministratorMgmtDepartmentsCodeRoute
   AdministratorMgmtJobsNoRoute: typeof AdministratorMgmtJobsNoRoute
+  AdministratorMgmtJobsCreateRoute: typeof AdministratorMgmtJobsCreateRoute
   AdministratorMgmtStaffDirectoryCodeRoute: typeof AdministratorMgmtStaffDirectoryCodeRoute
   AdministratorFinancialPayoutsIndexRoute: typeof AdministratorFinancialPayoutsIndexRoute
   AdministratorMgmtClientsIndexRoute: typeof AdministratorMgmtClientsIndexRoute
@@ -1235,6 +1256,7 @@ const AdministratorRouteChildren: AdministratorRouteChildren = {
   AdministratorMgmtClientsCodeRoute: AdministratorMgmtClientsCodeRoute,
   AdministratorMgmtDepartmentsCodeRoute: AdministratorMgmtDepartmentsCodeRoute,
   AdministratorMgmtJobsNoRoute: AdministratorMgmtJobsNoRoute,
+  AdministratorMgmtJobsCreateRoute: AdministratorMgmtJobsCreateRoute,
   AdministratorMgmtStaffDirectoryCodeRoute:
     AdministratorMgmtStaffDirectoryCodeRoute,
   AdministratorFinancialPayoutsIndexRoute:

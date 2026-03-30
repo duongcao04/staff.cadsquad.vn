@@ -74,9 +74,16 @@ export const renderProjectCenterCell = (
 
         case 'displayName':
             return (
-                <p className="w-62.5 line-clamp-1 font-medium select-text cursor-text">
-                    {data.displayName}
-                </p>
+                <div>
+                    <p className="font-bold text-text-default">
+                        {data.displayName}
+                    </p>
+                    <div className="flex items-center gap-2 mt-0.5">
+                        <span className="text-xs font-mono bg-background-hovered text-text-subdued px-1 py-0.5 rounded">
+                            {data.type.displayName}
+                        </span>
+                    </div>
+                </div>
             )
 
         case 'incomeCost':

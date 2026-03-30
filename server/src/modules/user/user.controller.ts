@@ -18,6 +18,7 @@ import {
 	Req,
 	UseGuards,
 } from '@nestjs/common'
+import { QueryBus } from '@nestjs/cqrs'
 import {
 	ApiBearerAuth,
 	ApiOperation,
@@ -36,6 +37,7 @@ import { UpdatePasswordDto } from './dto/update-password.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { UserQueryDto } from './dto/user-query.dto'
 import { UserResponseDto } from './dto/user-response.dto'
+import { GetScheduleQuery } from './queries/impl/get-schedule.query'
 import { UserSecurityService } from './user-security.service'
 import { UserService } from './user.service'
 
@@ -45,7 +47,8 @@ import { UserService } from './user.service'
 export class UserController {
 	constructor(
 		private readonly userService: UserService,
-		private readonly userSecurityService: UserSecurityService
+		private readonly userSecurityService: UserSecurityService,
+		private readonly queryBus: QueryBus
 	) { }
 
 	@Get('search')
@@ -67,12 +70,14 @@ export class UserController {
 	) {
 		const userPayload: TokenPayload = await request['user']
 		if (!month && !year) return []
-		return this.userService.getUserSchedule(
-			userPayload.sub,
-			userPayload.permissions,
-			month,
-			year,
-			day
+
+		return this.queryBus.execute(
+			new GetScheduleQuery(
+				userPayload.sub,
+				userPayload.permissions,
+				month,
+				year,
+				day)
 		)
 	}
 
@@ -93,7 +98,10 @@ export class UserController {
 		@Query() sendInviteEmail: '0' | '1'
 	) {
 		const isSendInviteEmail = Boolean(sendInviteEmail)
-		const result = await this.userService.create(createUserDto, isSendInviteEmail)
+		const result = await this.userService.create(
+			createUserDto,
+			isSendInviteEmail
+		)
 
 		request['auditTargetDisplay'] = `${result.code}- ${result.displayName}`
 		request['auditTargetId'] = result.id

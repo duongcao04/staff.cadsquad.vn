@@ -23,7 +23,7 @@ type CancelModalProps = {
         | 'success'
         | 'warning'
 }
-export default function CancelModal({
+export function CancelModal({
     isOpen,
     onClose,
     onConfirm,

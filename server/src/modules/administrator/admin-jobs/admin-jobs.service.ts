@@ -32,9 +32,6 @@ export class AdminJobsService {
 			}),
 		}
 
-		console.log(dateRangeCodition);
-
-
 		const [total, ongoing, delivered, late, finished] = await Promise.all([
 			// total quey
 			this.prisma.job.count({

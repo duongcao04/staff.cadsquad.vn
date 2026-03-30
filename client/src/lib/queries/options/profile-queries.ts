@@ -14,7 +14,7 @@ export const profileScheduleOptions = (
         select: (res) => {
             const jobsData = res?.result?.jobsSchedule
             return {
-                jobsSchedule: parseList(jobsData, JobSchema),
+                jobsSchedule: parseList(JobSchema, jobsData),
                 total: jobsData?.length ?? 0,
             }
         },

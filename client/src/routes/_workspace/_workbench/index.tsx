@@ -2,23 +2,31 @@ import JobDetailDrawer from '@/features/job-details/components/drawers/JobDetail
 import AddAttachmentsModal from '@/features/project-center/components/modals/AddAttachmentsModal'
 import AssignMemberModal from '@/features/project-center/components/modals/AssignMemberModal'
 import {
-    WorkbenchDataList,
     WorkbenchMobileContent,
     WorkbenchMobileSkeleton,
     WorkbenchToolbar,
     WorkbenchViewColumnsDrawer,
 } from '@/features/workbench'
-import { getPageTitle } from '@/lib'
-import { workbenchDataOptions } from '@/lib/queries'
+import { jobsListOptions, workbenchDataOptions } from '@/lib/queries'
 import { jobFiltersSchema, TJobFilters } from '@/lib/validationSchemas'
 import { PageHeading } from '@/shared/components'
 import { useDevice } from '@/shared/hooks'
-import { Button, Spinner, useDisclosure } from '@heroui/react'
+import {
+    Button,
+    Pagination,
+    Select,
+    SelectItem,
+    Spinner,
+    useDisclosure,
+} from '@heroui/react'
+import { useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import lodash from 'lodash'
 import { Suspense, useMemo, useState } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { z } from 'zod'
+import WorkbenchTable from '../../../features/workbench/components/views/WorkbenchTable'
+import { RouteUtil, TABLE_ROW_PER_PAGE_OPTIONS } from '../../../lib'
 import { useWorkbenchFilters } from './-hooks/useWorkbenchFilters'
 
 const DEFAULT_SORT = 'displayName:asc'
@@ -28,6 +36,7 @@ export const workbenchParamsSchema = z
         search: z.string().trim().optional(),
         limit: z.coerce.number().int().min(1).max(100).optional().catch(10),
         page: z.coerce.number().int().min(1).optional().catch(1),
+        showAll: z.coerce.boolean().optional().catch(false),
     })
     .merge(jobFiltersSchema)
 export type TWorkbenchSearch = z.infer<typeof workbenchParamsSchema>
@@ -73,23 +82,22 @@ function WorkbenchPage() {
                         </div>
                     }
                 >
-                    <WorkbenchContainer />
+                    <WorkbenchPageContent />
                 </ErrorBoundary>
             </div>
         </>
     )
 }
 
-function WorkbenchContainer() {
+function WorkbenchPageContent() {
     const { isSmallView } = useDevice()
     const {
         search,
+        isPending,
         onFiltersChange,
-        onLimitChange,
         onPageChange,
         onSearchChange,
         onSortChange,
-        isPending,
     } = useWorkbenchFilters()
 
     // Modals
@@ -119,6 +127,30 @@ function WorkbenchContainer() {
     const debouncedSearchChange = useMemo(
         () => lodash.debounce((val: string) => onSearchChange(val), 500),
         [onSearchChange]
+    )
+
+    const {
+        data: { jobs, paginate },
+        isFetching,
+        refetch,
+    } = useSuspenseQuery({
+        ...jobsListOptions({
+            ...search,
+            limit: search.limit,
+            page: search.page,
+            sort: [search.sort ?? DEFAULT_SORT],
+            isAll: search.showAll ? '1' : '0',
+        }),
+    })
+
+    const pagination = useMemo(
+        () => ({
+            limit: paginate?.limit ?? 10,
+            page: paginate?.page ?? 1,
+            totalPages: paginate?.totalPages ?? 1,
+            total: paginate?.total ?? 0,
+        }),
+        [paginate]
     )
 
     return (
@@ -182,22 +214,76 @@ function WorkbenchContainer() {
 
                     {/* B. Table Data (Suspended) */}
                     <div
-                        className={`${isPending ? 'opacity-70 pointer-events-none' : 'opacity-100'} transition-opacity min-h-125`}
+                        className={`${isPending ? 'opacity-70 pointer-events-none' : 'opacity-100'} transition-opacity min-h-125 flex flex-col h-full space-y-4`}
                     >
                         <Suspense fallback={<TableLoadingFallback />}>
-                            <WorkbenchDataList
-                                search={search}
+                            <WorkbenchTable
+                                data={jobs}
+                                isLoadingData={isFetching}
+                                // Pagination props đã bị loại bỏ khỏi đây
+                                sort={search.sort ?? DEFAULT_SORT}
                                 onSortChange={onSortChange}
-                                onPageChange={onPageChange}
-                                onLimitChange={onLimitChange}
-                                onViewDetail={(no) => handleAction('view', no)}
-                                onAssignMember={(no) =>
-                                    handleAction('assign', no)
+                                onRefresh={refetch}
+                                onViewDetail={(jobNo) =>
+                                    handleAction('view', jobNo)
                                 }
-                                onAddAttachments={(no) =>
-                                    handleAction('attachments', no)
+                                onAssignMember={(jobNo) =>
+                                    handleAction('assign', jobNo)
+                                }
+                                onAddAttachments={(jobNo) =>
+                                    handleAction('attachments', jobNo)
                                 }
                             />
+
+                            {/* 2. PAGINATION (Nằm ngay bên dưới Table) */}
+                            <div className="flex justify-between items-center">
+                                <Select
+                                    className="w-40"
+                                    label="Rows per page"
+                                    variant="bordered"
+                                    size="sm"
+                                    defaultSelectedKeys={[
+                                        pagination.limit.toString(),
+                                    ]}
+                                    onSelectionChange={(keys) => {
+                                        if (!keys.anchorKey) {
+                                            RouteUtil.updateParams<TWorkbenchSearch>(
+                                                {
+                                                    limit: undefined,
+                                                    page: undefined,
+                                                    showAll: true,
+                                                }
+                                            )
+                                        } else {
+                                            const limit = Number(
+                                                Array.from(keys)[0]
+                                            )
+                                            RouteUtil.updateParams<TWorkbenchSearch>(
+                                                {
+                                                    limit,
+                                                    page: 1,
+                                                    showAll: false,
+                                                }
+                                            )
+                                        }
+                                    }}
+                                >
+                                    {TABLE_ROW_PER_PAGE_OPTIONS.map((opt) => (
+                                        <SelectItem key={opt.value}>
+                                            {opt.displayName}
+                                        </SelectItem>
+                                    ))}
+                                </Select>
+                                <Pagination
+                                    isCompact
+                                    showControls
+                                    color="primary"
+                                    page={pagination.page}
+                                    total={pagination.totalPages}
+                                    onChange={onPageChange}
+                                />
+                                <div className="w-40" />
+                            </div>
                         </Suspense>
                     </div>
                 </div>

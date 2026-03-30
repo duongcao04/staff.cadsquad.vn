@@ -121,6 +121,7 @@ export const jobsPendingPayoutsOptions = () =>
             }
         },
     })
+
 export const jobScheduleOptions = (month: number, year: number) =>
     queryOptions({
         queryKey: ['jobs', 'schedule', `${month}/${year}`],

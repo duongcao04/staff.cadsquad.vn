@@ -41,6 +41,7 @@ import { flattenErrors } from '../../../../lib/formik'
 import { JobNoField } from '../JobNoField'
 
 type CreateJobFormProps = {
+    setDirtyForm: Dispatch<SetStateAction<boolean>>
     onSubmit?: (values: TCreateJobFormValues) => void
     afterSubmit?: (values?: TCreateJobFormValues) => void
     isSubmitting?: boolean
@@ -48,6 +49,7 @@ type CreateJobFormProps = {
     setRootSharepointFolderId: Dispatch<SetStateAction<string | null>>
 }
 export default function CreateJobForm({
+    setDirtyForm,
     onSubmit,
     isSubmitting = false,
     afterSubmit,
@@ -147,8 +149,6 @@ export default function CreateJobForm({
     // Safely access items
     const existingSharepointFolders = data?.items ?? []
 
-    console.log(existingSharepointFolders)
-
     // Memoized Total Calculation
     const calculatedTotal = useMemo(
         () =>
@@ -163,6 +163,10 @@ export default function CreateJobForm({
     useEffect(() => {
         formik.setFieldValue('totalStaffCost', calculatedTotal)
     }, [calculatedTotal])
+
+    useEffect(() => {
+        setDirtyForm(formik.dirty)
+    }, [formik.dirty])
 
     const handleNext = async () => {
         const currentFields = fieldsByStep[currentStep]

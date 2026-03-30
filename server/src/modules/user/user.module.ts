@@ -7,6 +7,10 @@ import { NotificationModule } from '../notification/notification.module'
 import { UserSecurityService } from './user-security.service'
 import { UserController } from './user.controller'
 import { UserService } from './user.service'
+import { CqrsModule } from '@nestjs/cqrs'
+import { QueryHandlers } from './queries'
+import { UserHelperService } from './user-helper.service'
+import { GetScheduleQuery } from './queries/impl/get-schedule.query'
 
 @Module({
 	imports: [
@@ -15,9 +19,15 @@ import { UserService } from './user.service'
 		forwardRef(() => JobModule),
 		MailModule,
 		NotificationModule,
+		CqrsModule,
 	],
 	controllers: [UserController],
-	providers: [UserService, UserSecurityService],
+	providers: [
+		UserHelperService,
+		UserService,
+		UserSecurityService,
+		...QueryHandlers,
+	],
 	exports: [UserService, UserSecurityService],
 })
-export class UserModule {}
+export class UserModule { }

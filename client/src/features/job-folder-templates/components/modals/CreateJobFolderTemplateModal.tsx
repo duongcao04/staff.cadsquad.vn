@@ -17,7 +17,7 @@ import {
     TCreateJobFolderTemplateInput,
 } from '../../../../lib'
 import { HeroButton, HeroInput } from '../../../../shared/components'
-import CancelModal from '../../../../shared/components/ui/cancel-modal'
+import { CancelModal } from '../../../../shared/components/ui/cancel-modal'
 import lodash from 'lodash'
 
 interface ModalProps {

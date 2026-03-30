@@ -1,5 +1,3 @@
-export * from './components/WorkbenchDataList'
-export * from './components/WorkbenchPagination'
 export * from './components/WorkbenchToolbar'
 export * from './components/modals/WorkbenchTableQuickActions'
 export * from './components/views/WorkbenchMobileContent'

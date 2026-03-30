@@ -43,7 +43,7 @@ import {
     Trash2Icon,
 } from 'lucide-react'
 import { queryClient } from '../../../../../main'
-import CancelModal from '../../../../../shared/components/ui/cancel-modal'
+import { CancelModal } from '../../../../../shared/components/ui/cancel-modal'
 
 export const Route = createFileRoute(
     '/_administrator/mgmt/jobs/folder-templates/$id'
@@ -185,6 +185,9 @@ export default function JobFolderTemplateDetailPage() {
             },
             {
                 onSuccess() {
+                    queryClient.refetchQueries({
+                        queryKey: jobFolderTemplateQueryKeys.detailById(id),
+                    })
                     addToast({
                         title: 'Sync successfully',
                         description: 'Sync Sharepoint status successfully',
