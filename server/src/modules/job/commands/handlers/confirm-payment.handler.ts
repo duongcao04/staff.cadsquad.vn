@@ -3,7 +3,7 @@ import { BadRequestException } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PrismaService } from '@/providers/prisma/prisma.service';
 import { ActivityType, Prisma } from '@/generated/prisma';
-import { APP_PERMISSIONS } from '@staff-cadsquad/shared';
+import { APP_PERMISSIONS } from '@/utils';
 import { ConfirmPaymentCommand } from '../impl/confirm-payment.command';
 import { JobActionEvent } from '../../events/job-action.event';
 import { ActivityLogService } from '../../activity-log.service';
@@ -42,8 +42,8 @@ export class ConfirmPaymentHandler implements ICommandHandler<ConfirmPaymentComm
 			});
 
 			const updateData: Prisma.JobUpdateInput = {
-				isPaid: true,
-				paidAt: now,
+				paymentStatus: 'PAID',
+				payoutDate: now,
 			};
 
 			// Logic: Nếu đã xong việc (COMPLETED) mà giờ mới trả tiền thì đóng Job luôn (TERMINATED)
@@ -70,7 +70,7 @@ export class ConfirmPaymentHandler implements ICommandHandler<ConfirmPaymentComm
 					metadata: {
 						incomeCost: job.incomeCost,
 						totalStaffCost: job.totalStaffCost,
-						paidAt: now,
+						payoutDate: now,
 					},
 				},
 				tx

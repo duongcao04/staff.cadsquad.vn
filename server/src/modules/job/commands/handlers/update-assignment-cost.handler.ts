@@ -3,7 +3,7 @@ import { NotFoundException } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PrismaService } from '@/providers/prisma/prisma.service';
 import { ActivityType } from '@/generated/prisma';
-import { APP_PERMISSIONS } from '@staff-cadsquad/shared';
+import { APP_PERMISSIONS } from '@/utils';
 import { UpdateAssignmentCostCommand } from '../impl/update-assignment-cost.command';
 import { JobActionEvent } from '../../events/job-action.event';
 

@@ -1,17 +1,20 @@
-import { INTERNAL_URLS, profileOptions } from '@/lib'
-import { jobsPendingPayoutsOptions } from '@/lib/queries'
+import { APP_PERMISSIONS, INTERNAL_URLS, profileOptions } from '@/lib'
+import { jobsPendingPayoutsOptions, logoutOptions } from '@/lib/queries'
 import {
+    addToast,
     Avatar,
     Divider,
     User as HeroUser,
+    Listbox,
+    ListboxItem,
+    ListboxSection,
     Popover,
     PopoverContent,
     PopoverTrigger,
     Tooltip,
 } from '@heroui/react'
-import { APP_PERMISSIONS } from '@staff-cadsquad/shared'
-import { useSuspenseQuery } from '@tanstack/react-query'
-import { Link, useRouterState } from '@tanstack/react-router'
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query'
+import { Link, useRouter, useRouterState } from '@tanstack/react-router'
 import {
     BadgeDollarSignIcon,
     BanknoteArrowUpIcon,
@@ -22,15 +25,14 @@ import {
     ChevronLeft,
     ChevronRight,
     CogIcon,
-    CreditCard,
     FolderGit2Icon,
     HandshakeIcon,
     LandmarkIcon,
     LayoutGridIcon,
-    LogOut,
+    LogOutIcon,
     Settings as SettingsIcon,
     ShieldUser,
-    User,
+    User2Icon,
     UsersRoundIcon,
     WalletIcon,
 } from 'lucide-react'
@@ -111,6 +113,8 @@ export const AdminSidebar = ({
 }: {
     isCollapsed?: boolean
 }) => {
+    const router = useRouter()
+    const logout = useMutation(logoutOptions)
     const {
         data: { pendingPayouts },
     } = useSuspenseQuery({
@@ -122,6 +126,18 @@ export const AdminSidebar = ({
     } = useSuspenseQuery(profileOptions())
 
     const { hasPermission, hasSomePermissions } = usePermission()
+
+    const handleLogout = async () => {
+        logout.mutateAsync().then(() => {
+            addToast({
+                title: 'Logout successfully!',
+                color: 'success',
+            })
+            router.navigate({
+                href: INTERNAL_URLS.login,
+            })
+        })
+    }
 
     return (
         <aside
@@ -194,23 +210,36 @@ export const AdminSidebar = ({
                                 />
                             </div>
                             <Divider className="bg-border-muted my-1" />
-                            <div className="p-1 space-y-0.5">
-                                <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-text-default hover:bg-background-hovered transition-colors text-sm cursor-pointer">
-                                    <User size={16} /> My Profile
-                                </button>
-                                <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-text-default hover:bg-background-hovered transition-colors text-sm cursor-pointer">
-                                    <SettingsIcon size={16} /> Settings
-                                </button>
-                                <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-text-default hover:bg-background-hovered transition-colors text-sm cursor-pointer">
-                                    <CreditCard size={16} /> Billing
-                                </button>
-                            </div>
-                            <Divider className="bg-border-muted my-1" />
-                            <div className="p-1">
-                                <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-red-400 hover:bg-red-500/10 transition-colors text-sm cursor-pointer">
-                                    <LogOut size={16} /> Log Out
-                                </button>
-                            </div>
+
+                            <Listbox>
+                                <ListboxSection showDivider>
+                                    <ListboxItem
+                                        startContent={<User2Icon size={16} />}
+                                        as={Link}
+                                        href={INTERNAL_URLS.profile}
+                                    >
+                                        My profile
+                                    </ListboxItem>
+                                    <ListboxItem
+                                        startContent={
+                                            <SettingsIcon size={16} />
+                                        }
+                                        as={Link}
+                                        href={INTERNAL_URLS.settings.overview}
+                                    >
+                                        Settings
+                                    </ListboxItem>
+                                </ListboxSection>
+                                <ListboxSection>
+                                    <ListboxItem
+                                        color="danger"
+                                        startContent={<LogOutIcon size={16} />}
+                                        onPress={handleLogout}
+                                    >
+                                        Logout
+                                    </ListboxItem>
+                                </ListboxSection>
+                            </Listbox>
                         </div>
                     </PopoverContent>
                 </Popover>

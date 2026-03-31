@@ -39,7 +39,7 @@ export const Route = createFileRoute('/_administrator/admin/schedule')({
     }),
     loader: async ({ context, deps }) => {
         context.queryClient.ensureQueryData(
-            profileScheduleOptions(deps.month, deps.year)
+            profileScheduleOptions(deps.year, deps.month)
         )
     },
     pendingComponent: () => (
@@ -80,7 +80,6 @@ function ScheduleLayout({ children }: { children: React.ReactNode }) {
                 actions={
                     <>
                         <div className="flex flex-wrap items-center justify-center gap-3">
-                            {/* Month Navigator */}
                             <div className="flex items-center bg-background-hovered rounded-xl border border-border-default p-1 shadow-sm">
                                 <Button
                                     isIconOnly
@@ -184,7 +183,7 @@ function SchedulePage() {
         data: { jobsSchedule },
         isFetching,
     } = useSuspenseQuery(
-        profileScheduleOptions(searchParams.month, searchParams.year)
+        profileScheduleOptions(searchParams.year, searchParams.month)
     )
 
     // Modal State

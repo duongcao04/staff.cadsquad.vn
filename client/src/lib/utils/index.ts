@@ -6,6 +6,7 @@ export * from './_convert';
 export * from './_device';
 export * from './_email-templates';
 export * from './_email';
+export * from './_job-helper';
 export * from './_job';
 export * from './_mapper';
 export * from './_number';

@@ -1,12 +1,11 @@
-import { Processor, WorkerHost } from '@nestjs/bullmq'
-import { Job } from 'bullmq'
-import { Logger } from '@nestjs/common'
 import { NotificationType } from '@/generated/prisma'
+import { Processor, WorkerHost } from '@nestjs/bullmq'
+import { Logger } from '@nestjs/common'
+import { Job } from 'bullmq'
 import { AblyService } from '../ably/ably.service'
-import { FirebaseService } from '@/providers/firebase/firebase.service'
 import {
-	NOTIFICATION_QUEUE,
 	JOB_SEND_NOTIFICATION,
+	NOTIFICATION_QUEUE,
 } from './notification.constants'
 
 @Processor(NOTIFICATION_QUEUE)
@@ -15,7 +14,6 @@ export class NotificationProcessor extends WorkerHost {
 
 	constructor(
 		private readonly ablyService: AblyService,
-		private readonly firebaseService: FirebaseService
 	) {
 		super()
 	}
@@ -43,13 +41,6 @@ export class NotificationProcessor extends WorkerHost {
 					createdAt: notification.createdAt || new Date(),
 				}
 			)
-
-			// 2. Gửi Push Notification (Firebase)
-			await this.firebaseService.sendToUser(notification.userId, {
-				title: notification.title ?? 'CADSQUAD System',
-				body: notification.content,
-				url: notification.redirectUrl ?? undefined,
-			})
 
 			this.logger.log(`Sent notification to User ${notification.userId}`)
 		} catch (error) {

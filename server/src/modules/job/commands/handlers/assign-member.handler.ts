@@ -4,7 +4,7 @@ import { PrismaService } from '@/providers/prisma/prisma.service';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { APP_PERMISSIONS } from '@staff-cadsquad/shared';
+import { APP_PERMISSIONS } from '@/utils';
 import { JobActionEvent } from '../../events/job-action.event';
 import { AssignMemberCommand } from '../impl/assign-member.command';
 

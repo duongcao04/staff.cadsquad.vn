@@ -1,5 +1,5 @@
 import { forwardRef, Inject, Injectable } from "@nestjs/common"
-import { APP_PERMISSIONS } from "@staff-cadsquad/shared"
+import { APP_PERMISSIONS } from "@/utils"
 import slugify from "slugify"
 import { Prisma } from "../../generated/prisma"
 import { AuthService } from "../auth/auth.service"

@@ -1,8 +1,7 @@
-import { HeroCard, HeroCardBody } from "@/shared/components"
-import { TJob } from "@/shared/types"
-import { Chip } from "@heroui/react"
-import { Calendar1Icon, CheckCircle2, ClockAlert, Flag } from "lucide-react"
-import { useMemo } from "react"
+import { TJob } from '@/shared/types'
+import { Card, CardBody, CardHeader, Chip, Divider } from '@heroui/react'
+import { Calendar1Icon, CheckCircle2, ClockAlert, Flag } from 'lucide-react'
+import { useMemo } from 'react'
 
 export function JobTimelineCard({ job }: { job: TJob }) {
     const timelineData = useMemo(() => {
@@ -46,11 +45,10 @@ export function JobTimelineCard({ job }: { job: TJob }) {
     }, [job])
 
     return (
-        <HeroCard className="w-full border border-border-muted" shadow="none">
-            <HeroCardBody className="p-5 flex flex-col gap-5">
-                {/* Header & Badges */}
-                <div className="flex justify-between items-center">
-                    <h3 className="text-sm font-bold text-default-800 uppercase tracking-wider">
+        <Card className="w-full border border-border-default" shadow="none">
+            <CardHeader className="bg-background-muted">
+                <div className="w-full px-2 py-0 flex justify-between items-center">
+                    <h3 className="text-sm font-bold text-text-default uppercase tracking-wider">
                         Timeline
                     </h3>
 
@@ -83,7 +81,9 @@ export function JobTimelineCard({ job }: { job: TJob }) {
                         </Chip>
                     )}
                 </div>
-
+            </CardHeader>
+            <Divider className="bg-border-muted" />
+            <CardBody className="p-5 flex flex-col gap-5">
                 {/* Dates Container */}
                 <div className="flex items-center justify-between gap-4">
                     {/* Started Date */}
@@ -138,7 +138,7 @@ export function JobTimelineCard({ job }: { job: TJob }) {
                         </span>
                     </div>
                 </div>
-            </HeroCardBody>
-        </HeroCard>
+            </CardBody>
+        </Card>
     )
 }

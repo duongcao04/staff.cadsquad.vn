@@ -1,6 +1,6 @@
+import { useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { jobsListOptions } from '../../lib/queries'
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
 
 export const Route = createFileRoute('/_workspace/schedule')({
     component: SchedulePage,
@@ -29,9 +29,9 @@ export function SchedulePage() {
 
 import { HeroCard, HeroCardBody, PageHeading } from '@/shared/components'
 import { TJob } from '@/shared/types'
-import { Clock, Filter } from 'lucide-react'
 import { Button, Chip } from '@heroui/react'
 import dayjs from 'dayjs'
+import { Clock, Filter } from 'lucide-react'
 import UserScheduleMobileContent from '../../features/schedules/components/views/UserScheduleMobileContent'
 
 export const ScheduleDesktopContent = ({ jobs }: { jobs: TJob[] }) => {

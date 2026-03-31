@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { APP_PERMISSIONS } from '@staff-cadsquad/shared'
+import { APP_PERMISSIONS } from '@/utils'
 import { Expose, Type } from 'class-transformer'
 import { Client } from 'pg'
 import { JobAssignment } from '../../../generated/prisma'
@@ -71,6 +71,10 @@ export class JobResponseDto {
 	@Expose()
 	sharepointFolderId?: string
 
+
+	@Expose()
+	sharepointFolder?: any
+
 	@ApiProperty({ description: 'Start date of the job' })
 	@Expose()
 	startedAt!: Date
@@ -89,7 +93,7 @@ export class JobResponseDto {
 
 	@ApiProperty({ description: 'Paid date of the job', required: false })
 	@Expose()
-	paidAt?: Date
+	payoutDate?: Date
 
 	@ApiProperty({ description: 'Deletion date of the job', required: false })
 	@Expose()

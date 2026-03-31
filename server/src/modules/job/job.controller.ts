@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
-import { APP_PERMISSIONS } from '@staff-cadsquad/shared'
+import { APP_PERMISSIONS } from '@/utils'
 import { AuditLog } from '../../common/decorators/audit-log.decorator'
 import { RequirePermissions } from '../../common/decorators/require-permissions.decorator'
 import { ResponseMessage } from '../../common/decorators/responseMessage.decorator'

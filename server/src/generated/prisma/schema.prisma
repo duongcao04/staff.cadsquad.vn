@@ -407,18 +407,20 @@ model FileSystem {
 
 model Job {
   id String @id @default(uuid())
-  no String @unique // Job No. example FV-0001
+  no String @unique // Job No. example F260001
 
   type   JobType @relation(fields: [typeId], references: [id])
   typeId String
 
-  displayName        String
-  description        String?
-  attachmentUrls     String[] @default([])
-  sharepointFolderId String? // optionally store linked existing SharePoint folder ID
-  client             Client?  @relation(fields: [clientId], references: [id])
-  clientId           String?
-  incomeCost         Float
+  displayName    String
+  description    String?
+  attachmentUrls String[] @default([])
+  client         Client?  @relation(fields: [clientId], references: [id])
+  clientId       String?
+  incomeCost     Float
+
+  sharepointFolderId String?
+  sharepointFolder   SharepointItem? @relation(fields: [sharepointFolderId], references: [id])
 
   totalStaffCost Float @default(0)
 
@@ -434,13 +436,13 @@ model Job {
   startedAt        DateTime           @default(now())
   priority         JobPriority        @default(MEDIUM)
   files            FileSystem[]
-  // isPinned         Boolean            @default(false)
   isPublished      Boolean            @default(false)
   isPaid           Boolean            @default(false)
   dueAt            DateTime
   completedAt      DateTime?
   finishedAt       DateTime?
-  paidAt           DateTime?
+  paymentStatus    JOB_PAYMENT_STATUS @default(UNPAID)
+  payoutDate       DateTime?
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
   deletedAt        DateTime?
@@ -458,13 +460,34 @@ model Job {
   @@index([priority])
 }
 
+model SharepointItem {
+  id              String  @id @default(uuid())
+  itemId          String
+  displayName     String?
+  isFolder        Boolean @default(false)
+  size            Int?
+  webUrl          String?
+  createdDateTime String?
+  createdBy       String?
+  jobs            Job[]
+
+  @@unique([itemId, id])
+}
+
+enum JOB_PAYMENT_STATUS {
+  PAID
+  PENDING
+  UNPAID
+  FAILED
+}
+
 model JobAssignment {
   id         String   @id @default(uuid())
   job        Job      @relation(fields: [jobId], references: [id])
   jobId      String
   user       User     @relation(fields: [userId], references: [id])
   userId     String
-  staffCost  Float    @default(0) // Specific cost for THIS staff on THIS job
+  staffCost  Float    @default(0)
   assignedAt DateTime @default(now())
 
   @@unique([jobId, userId]) // Prevents assigning the same person twice

@@ -363,7 +363,7 @@ VALUES
 		'Fiverr',
 		'F',
 		'012FXBO3JFIRND5UAJSZAKOBEOL2XAODZ4',
-		"#173912',
+		'#173912',
 		NOW (),
 		NOW ()
 	),
@@ -456,13 +456,14 @@ INSERT INTO
 	"User" (
 		id,
 		email,
+		"code",
 		"username",
 		"displayName",
 		"avatar",
 		"phoneNumber",
 		"roleId",
 		"departmentId",
-		"emailVerified", -- Required for Better Auth
+		"emailVerified",
 		"password",
 		"createdAt",
 		"updatedAt"
@@ -471,6 +472,7 @@ VALUES
 	(
 		'a9f843e6-dce5-47b4-a6a9-97f7a38b9a0d',
 		'pt.phong@cadsquad.vn',
+		'ST001',
 		'pt.phong',
 		'Phạm Tiền Phong',
 		'https://res.cloudinary.com/dqx1guyc0/image/upload/v1761629822/Cadsquad/STAFF/Avatar/PT.Phong.jpg',
@@ -485,6 +487,7 @@ VALUES
 	(
 		'c4d35f1b-9b37-4a3f-804b-373f7b0e1a24',
 		'nb.vy@cadsquad.vn',
+		'ST002',
 		'nb.vy',
 		'Nguyễn Bảo Vy',
 		'https://res.cloudinary.com/dqx1guyc0/image/upload/v1761629788/Cadsquad/STAFF/Avatar/NB.Vy.jpg',
@@ -499,6 +502,7 @@ VALUES
 	(
 		'e3f41716-3f91-4e6c-8f4c-2df89a9cf403',
 		'lt.dat@cadsquad.vn',
+		'ST003',
 		'lt.dat',
 		'Lê Thành Đạt',
 		'https://res.cloudinary.com/dqx1guyc0/image/upload/v1761629776/Cadsquad/STAFF/Avatar/LT.Dat.jpg',
@@ -513,6 +517,7 @@ VALUES
 	(
 		'b9f2ab5c-8442-4f1c-84b8-6471e6a51c65',
 		'nkh.minh@cadsquad.vn',
+		'ST004',
 		'nkh.minh',
 		'Nguyễn Khoa Hải Minh',
 		'https://res.cloudinary.com/dqx1guyc0/image/upload/v1761629833/Cadsquad/STAFF/Avatar/NKH.Minh.jpg',
@@ -527,6 +532,7 @@ VALUES
 	(
 		'f77e8bb3-d633-46cb-a269-4e2f17e91173',
 		'nc.hieu@cadsquad.vn',
+		'ST005',
 		'nc.hieu',
 		'Nguyễn Chí Hiếu',
 		'https://res.cloudinary.com/dqx1guyc0/image/upload/v1761629795/Cadsquad/STAFF/Avatar/NC.Hieu.jpg',
@@ -541,6 +547,7 @@ VALUES
 	(
 		'2d17d7c3-1b1f-4b3b-9551-f1cdbdb69b70',
 		'ch.duong@cadsquad.vn',
+		'ST006',
 		'ch.duong',
 		'Cao Hải Dương',
 		'https://res.cloudinary.com/dqx1guyc0/image/upload/v1761629744/Cadsquad/STAFF/Avatar/CH.Duong.jpg',
@@ -555,6 +562,7 @@ VALUES
 	(
 		'bc08c27c-1dd3-4e88-9b3f-8c8a9d71b290',
 		'dc.son@cadsquad.vn',
+		'ST007',
 		'dc.son',
 		'Đoàn Công Sơn',
 		'https://res.cloudinary.com/dqx1guyc0/image/upload/v1761629761/Cadsquad/STAFF/Avatar/DC.Son.jpg',
@@ -569,6 +577,7 @@ VALUES
 	(
 		'0e0dbee2-1c97-4ed8-a1d8-55437d32cb7d',
 		'nt.phong@cadsquad.vn',
+		'ST008',
 		'nt.phong',
 		'Nguyễn Thanh Phong',
 		'https://ui-avatars.com/api/?name=nguyen+thanh+phong&background=random&size=128',
@@ -583,6 +592,7 @@ VALUES
 	(
 		'52ccbfae-1814-4e77-b8f2-0f3f7e23d6c8',
 		'dq.trong@cadsquad.vn',
+		'ST009',
 		'dq.trong',
 		'Đặng Quốc Trọng',
 		'https://ui-avatars.com/api/?name=dang+quoc+trong&background=random&size=128',
@@ -597,6 +607,7 @@ VALUES
 	(
 		'ae24968c-0e5c-42e6-ad41-1eb9cfdbb73b',
 		'nd.tinh@cadsquad.vn',
+		'ST010',
 		'nd.tinh',
 		'Nguyễn Duy Tính',
 		'https://ui-avatars.com/api/?name=nguyen+duy+tinh&background=random&size=128',
@@ -611,6 +622,7 @@ VALUES
 	(
 		'45b613e6-b537-4ad6-9790-4e9ce4c3ddab',
 		'hh.dang@cadsquad.vn',
+		'ST011',
 		'hh.dang',
 		'Hồ Hải Đăng',
 		'https://ui-avatars.com/api/?name=ho+hai+dang&background=random&size=128',
@@ -625,6 +637,7 @@ VALUES
 	(
 		'0b919637-aa00-4210-85fc-5667808d8559',
 		'ht.my@cadsquad.vn',
+		'ST012',
 		'ht.my',
 		'Hồ Thiên Mỹ',
 		'https://ui-avatars.com/api/?name=ho+thien+my&background=random&size=128',
@@ -639,6 +652,7 @@ VALUES
 	(
 		'aa272ffc-f92c-4e26-ad57-f3cfc2376362',
 		'plv.phong@cadsquad.vn',
+		'ST013',
 		'plv.phong',
 		'Phạm Lê Vĩnh Phong',
 		'https://res.cloudinary.com/dqx1guyc0/image/upload/v1768241268/Cadsquad/STAFF/Avatar/PLV.Phong_xbrkif.jpg',
@@ -653,6 +667,7 @@ VALUES
 	(
 		'6173e6a8-9ca2-4ca7-b33a-a0d81e8ea348',
 		'dq.huy@cadsquad.vn',
+		'ST014',
 		'dq.huy',
 		'Đinh Quốc Huy',
 		'https://res.cloudinary.com/dqx1guyc0/image/upload/v1768241268/Cadsquad/STAFF/Avatar/Q.Huy_sxk5at.jpg',
@@ -667,6 +682,7 @@ VALUES
 	(
 		'8561f7d5-d746-4ff3-b1fc-5e28dc62038f',
 		'nh.nhat@cadsquad.vn',
+		'ST015',
 		'nh.nhat',
 		'Nguyễn Huy Nhất',
 		'https://res.cloudinary.com/dqx1guyc0/image/upload/v1768241269/Cadsquad/STAFF/Avatar/NH.Nhat_ngdfd4.jpg',

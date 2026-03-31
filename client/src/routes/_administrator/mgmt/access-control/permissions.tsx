@@ -15,7 +15,7 @@ import {
 } from '@heroui/react'
 import { useSuspenseQueries } from '@tanstack/react-query'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
-import { PlusIcon, SearchIcon, TrashIcon } from 'lucide-react'
+import { SearchIcon, TrashIcon } from 'lucide-react'
 import { useMemo, useState } from 'react'
 
 export const Route = createFileRoute(

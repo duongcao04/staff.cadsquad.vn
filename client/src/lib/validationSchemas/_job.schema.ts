@@ -1,7 +1,7 @@
 import { isAfter, isValid, parseISO } from 'date-fns'
 import * as yup from 'yup'
 import { z, ZodType } from 'zod'
-import { ProjectCenterTabEnum } from '../../shared/enums'
+import { EJobPaymentStatus, ProjectCenterTabEnum } from '../../shared/enums'
 import { TJob } from '../../shared/types'
 import { ClientSchema } from './_client.schema'
 import { JobActivityLogSchema } from './_job-activity-log.schema'
@@ -10,6 +10,8 @@ import { JobStatusSchema } from './_job-status.schema'
 import { JobTypeSchema } from './_job-type.schema'
 import { PaymentChannelSchema } from './_payment-channel.schema'
 import { UserSchema } from './_user.schema'
+import { JobFolderTemplateSchema } from './_job-folder-template.schema'
+import { SharepointItemSchema } from './_sharepoint-item.schema'
 
 export const JobSchema: ZodType<TJob> = z.lazy(() => z.object({
     id: z.string().catch('N/A'),
@@ -23,12 +25,18 @@ export const JobSchema: ZodType<TJob> = z.lazy(() => z.object({
     client: z.lazy(() => ClientSchema.partial()).nullable().catch(null),
     comments: z.array(z.any()).default([]),
     jobDeliveries: z.array(z.any()).default([]),
-    sharepointFolderId: z.string().nullable(),
+    sharepointFolderId: z.string().nullish(),
+    sharepointFolder: z.lazy(() => SharepointItemSchema).nullish(),
     // Tự động ép kiểu số cho các trường tiền tệ
     incomeCost: z.coerce.number().catch(0),
     staffCost: z.coerce.number().catch(0),
+    folderTemplate: z.lazy(() => JobFolderTemplateSchema).nullable().catch(null),
+    folderTemplateId: z.string().nullable().catch(null),
     totalStaffCost: z.coerce.number().catch(0),
-    isPaid: z.preprocess((v) => Boolean(v), z.boolean().default(false)),
+    paymentStatus: z
+        .nativeEnum(EJobPaymentStatus)
+        .optional()
+        .default(EJobPaymentStatus.FAILED),
     isPinned: z.preprocess((v) => Boolean(v), z.boolean().default(false)),
     isPublished: z.preprocess((v) => Boolean(v), z.boolean().default(false)),
     paymentChannel: z.lazy(() => PaymentChannelSchema).nullable().catch(null),
@@ -36,7 +44,7 @@ export const JobSchema: ZodType<TJob> = z.lazy(() => z.object({
     description: z.string().nullable().catch(null),
     type: z.lazy(() => JobTypeSchema).optional(),
     // Dates
-    paidAt: z.coerce.date().nullable().catch(null),
+    payoutDate: z.coerce.date().nullable().catch(null),
     finishedAt: z.coerce.date().nullable().catch(null),
     createdAt: z.coerce.date().catch(new Date()),
     dueAt: z.coerce.date().catch(new Date()),

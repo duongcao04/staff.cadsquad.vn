@@ -1,5 +1,6 @@
 import {
     Button,
+    Chip,
     Divider,
     Dropdown,
     DropdownItem,
@@ -35,22 +36,22 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import dayjs from 'dayjs'
 import {
     currencyFormatter,
+    getJobPaymentStatusDisplay,
     INTERNAL_URLS,
     optimizeCloudinary,
     RouteUtil,
 } from '../../../../lib'
 import { jobStatusesListOptions } from '../../../../lib/queries'
 import { TManageJobsParams } from '../../../../routes/_administrator/mgmt/jobs'
+import { HeroCopyButton } from '../../../../shared/components'
 import JobFinishChip from '../../../../shared/components/chips/JobFinishChip'
 import { JobStatusChip } from '../../../../shared/components/chips/JobStatusChip'
-import { PaidChip } from '../../../../shared/components/chips/PaidChip'
 import CountdownTimer from '../../../../shared/components/ui/countdown-timer'
 import { HeroButton } from '../../../../shared/components/ui/hero-button'
 import { HeroTable } from '../../../../shared/components/ui/hero-table'
 import { HeroTooltip } from '../../../../shared/components/ui/hero-tooltip'
 import { JobStatusSystemTypeEnum } from '../../../../shared/enums'
 import { TJob } from '../../../../shared/types'
-import { HeroCopyButton } from '../../../../shared/components'
 
 const columns = [
     { name: 'Job no', uid: 'no', sortable: false },
@@ -282,16 +283,17 @@ export function JobManagementTable({
                             }}
                         />
                     )
-                case 'isPaid':
-                    return (
-                        <PaidChip
-                            status={data.isPaid ? 'paid' : 'unpaid'}
-                            classNames={{
-                                base: '!w-[100px]',
-                                content: '!w-[100px] text-center',
-                            }}
-                        />
+                case 'isPaid': {
+                    const paymentDisplay = getJobPaymentStatusDisplay(
+                        data.paymentStatus
                     )
+
+                    return (
+                        <Chip color={paymentDisplay.colorName}>
+                            {paymentDisplay.title}
+                        </Chip>
+                    )
+                }
 
                 case 'dueAt': {
                     const isCompleted =

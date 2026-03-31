@@ -4,9 +4,10 @@ import { COOKIES } from '@/lib/utils'
 import {
     UserSchema,
     type TLoginInput,
-    type TUpdateProfileInput } from '@/lib/validationSchemas'
+    type TUpdateProfileInput,
+} from '@/lib/validationSchemas'
 import type { TUser } from '@/shared/types'
-import { toast } from '@heroui/react'
+import { addToast, toast } from '@heroui/react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import { queryClient } from '../../main'
@@ -90,7 +91,7 @@ export const useRevokeSessionMutation = () => {
         mutationKey: ['revokeSession'],
         mutationFn: (sessionId: string) => authApi.revokeSession(sessionId),
         onSuccess: (res) => {
-            toast(res.message)
+            addToast({ title: res.message, color: 'success' })
             queryClient.refetchQueries({
                 queryKey: profileOptions().queryKey,
             })

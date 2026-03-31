@@ -64,6 +64,8 @@ export class FindAllJobsHandler implements IQueryHandler<FindAllJobsQuery> {
 					paymentChannel: true,
 					client: { select: { name: true } },
 					assignments: { include: { user: true } },
+					folderTemplate: true,
+					sharepointFolder: true
 				},
 			}),
 			this.prisma.job.count({ where: queryBuilder }),

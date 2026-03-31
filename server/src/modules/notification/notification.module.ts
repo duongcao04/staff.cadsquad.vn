@@ -1,5 +1,4 @@
 import { AuthModule } from '@/modules/auth/auth.module'
-import { FirebaseModule } from '@/providers/firebase/firebase.module'
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter'
 import { BullBoardModule } from '@bull-board/nestjs'
 import { BullModule } from '@nestjs/bullmq'
@@ -20,7 +19,6 @@ import { NotificationListener } from './notification.listener'
 			adapter: BullMQAdapter,
 		}),
 		forwardRef(() => AuthModule),
-		FirebaseModule,
 	],
 	controllers: [NotificationController],
 	providers: [NotificationService, NotificationProcessor, NotificationListener],

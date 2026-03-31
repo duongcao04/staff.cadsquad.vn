@@ -25,7 +25,7 @@ import {
 	ApiResponse,
 	ApiTags,
 } from '@nestjs/swagger'
-import { APP_PERMISSIONS } from '@staff-cadsquad/shared'
+import { APP_PERMISSIONS } from '@/utils'
 import { isUUID } from 'class-validator'
 import { AuditLog } from '../../common/decorators/audit-log.decorator'
 import { SystemModule } from '../../generated/prisma'
@@ -77,7 +77,8 @@ export class UserController {
 				userPayload.permissions,
 				month,
 				year,
-				day)
+				day
+			)
 		)
 	}
 

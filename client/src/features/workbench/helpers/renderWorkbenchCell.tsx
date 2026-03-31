@@ -1,14 +1,18 @@
 import { dateFormatter } from '@/lib'
 import { optimizeCloudinary } from '@/lib/cloudinary'
-import { currencyFormatter, IMAGES, INTERNAL_URLS } from '@/lib/utils'
+import {
+    currencyFormatter,
+    getJobPaymentStatusDisplay,
+    IMAGES,
+    INTERNAL_URLS,
+} from '@/lib/utils'
 import { HeroButton, HeroCopyButton, HeroTooltip } from '@/shared/components'
 import JobFinishChip from '@/shared/components/chips/JobFinishChip'
 import JobStatusDropdown from '@/shared/components/dropdowns/JobStatusDropdown'
-import PaymentStatusDropdown from '@/shared/components/dropdowns/PaymentStatusDropdown'
 import CountdownTimer from '@/shared/components/ui/countdown-timer'
 import { JobStatusSystemTypeEnum } from '@/shared/enums'
 import { JobColumnKey, TJob, TJobStatus } from '@/shared/types'
-import { Button } from '@heroui/react'
+import { Button, Chip } from '@heroui/react'
 import { Avatar, Image } from 'antd'
 import dayjs from 'dayjs'
 import lodash from 'lodash'
@@ -199,8 +203,16 @@ export const renderWorkbenchCell = (
                 </div>
             )
 
-        case 'isPaid':
-            return <PaymentStatusDropdown jobData={data} />
+        case 'paymentStatus':
+            const paymentDisplay = getJobPaymentStatusDisplay(
+                data.paymentStatus
+            )
+
+            return (
+                <Chip color={paymentDisplay.colorName}>
+                    {paymentDisplay.title}
+                </Chip>
+            )
 
         case 'paymentChannel':
             return data.paymentChannel ? (

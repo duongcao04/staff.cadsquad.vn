@@ -1,8 +1,8 @@
 import {
     currencyFormatter,
     dateFormatter,
+    getJobPaymentStatusDisplay,
     INTERNAL_URLS,
-    PAID_STATUS_COLOR,
     useProfile,
 } from '@/lib'
 import {
@@ -11,7 +11,6 @@ import {
     TJobDetailSearch,
 } from '@/routes/_workspace/jobs/$no'
 import {
-    addToast,
     Avatar,
     Button,
     Chip,
@@ -50,12 +49,14 @@ import {
     HeroCardBody,
 } from '../../../../shared/components/ui/hero-card'
 import HtmlReactParser from '../../../../shared/components/ui/html-react-parser'
-import { JobStatusSystemTypeEnum } from '../../../../shared/enums'
+import {
+    EJobPaymentStatus,
+    JobStatusSystemTypeEnum,
+} from '../../../../shared/enums'
 import { DeliverJobModal } from '../../../job-manage/components/modals/DeliverJobModal'
 import UpdateCostModal from '../../../project-center/components/modals/UpdateCostModal'
 import JobDescriptionModal from '../modals/JobDescriptionModal'
 import { JobActivityHistory } from '../views/JobActivityHistory'
-import JobAssigneesView from '../views/JobAssigneesView'
 import JobCommentsView from '../views/JobCommentsView'
 
 function MobileJobDetailPage() {
@@ -286,7 +287,7 @@ function MobileJobDetailPage() {
                                     </div>
                                 </div>
 
-                                <JobAssigneesView data={job} />
+                                {/* <JobAssigneesView data={job} /> */}
 
                                 <div className="space-y-3">
                                     <h3 className="text-sm font-bold text-text-subdued">
@@ -396,7 +397,7 @@ function MobileJobDetailPage() {
                             <span className="text-xs text-slate-500">
                                 Payment Status
                             </span>
-                            <PaidChip status={job.isPaid ? 'paid' : 'unpaid'} />
+                            <PaidChip status={job.paymentStatus} />
                         </div>
                         {isAdmin && (
                             <div className="flex justify-between items-center">
@@ -499,7 +500,7 @@ function MobileJobDetailPage() {
     )
 }
 
-const PaidChip = ({ status }: { status: 'paid' | 'unpaid' }) => (
+const PaidChip = ({ status }: { status: EJobPaymentStatus }) => (
     <Chip
         size="sm"
         variant="flat"
@@ -507,9 +508,15 @@ const PaidChip = ({ status }: { status: 'paid' | 'unpaid' }) => (
     >
         <div
             className="size-1.5 rounded-full"
-            style={{ backgroundColor: PAID_STATUS_COLOR[status].hexColor }}
+            style={{
+                backgroundColor: getJobPaymentStatusDisplay(status).hexColor,
+            }}
         />
-        <span style={{ color: PAID_STATUS_COLOR[status].hexColor }}>
+        <span
+            style={{
+                color: getJobPaymentStatusDisplay(status).hexColor,
+            }}
+        >
             {status.toUpperCase()}
         </span>
     </Chip>

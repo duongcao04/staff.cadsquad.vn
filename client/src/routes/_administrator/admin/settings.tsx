@@ -14,7 +14,7 @@ import {
     Tab,
     Tabs,
 } from '@heroui/react'
-import { APP_PERMISSIONS } from '@staff-cadsquad/shared'
+import { APP_PERMISSIONS } from '@/lib'
 import { createFileRoute } from '@tanstack/react-router'
 import { useFormik } from 'formik'
 import {

@@ -24,12 +24,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 7.2.0
- * Query Engine version: 0c8ef2ce45c83248ab3df073180d5eda9e8be7a3
+ * Prisma Client JS version: 7.6.0
+ * Query Engine version: 75cbdc1eb7150937890ad5465d861175c6624711
  */
 Prisma.prismaVersion = {
-  client: "7.2.0",
-  engine: "0c8ef2ce45c83248ab3df073180d5eda9e8be7a3"
+  client: "7.6.0",
+  engine: "75cbdc1eb7150937890ad5465d861175c6624711"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -324,9 +324,9 @@ exports.Prisma.JobScalarFieldEnum = {
   displayName: 'displayName',
   description: 'description',
   attachmentUrls: 'attachmentUrls',
-  sharepointFolderId: 'sharepointFolderId',
   clientId: 'clientId',
   incomeCost: 'incomeCost',
+  sharepointFolderId: 'sharepointFolderId',
   totalStaffCost: 'totalStaffCost',
   createdById: 'createdById',
   paymentChannelId: 'paymentChannelId',
@@ -338,11 +338,23 @@ exports.Prisma.JobScalarFieldEnum = {
   dueAt: 'dueAt',
   completedAt: 'completedAt',
   finishedAt: 'finishedAt',
-  paidAt: 'paidAt',
+  paymentStatus: 'paymentStatus',
+  payoutDate: 'payoutDate',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt',
   folderTemplateId: 'folderTemplateId'
+};
+
+exports.Prisma.SharepointItemScalarFieldEnum = {
+  id: 'id',
+  itemId: 'itemId',
+  displayName: 'displayName',
+  isFolder: 'isFolder',
+  size: 'size',
+  webUrl: 'webUrl',
+  createdDateTime: 'createdDateTime',
+  createdBy: 'createdBy'
 };
 
 exports.Prisma.JobAssignmentScalarFieldEnum = {
@@ -622,6 +634,13 @@ exports.JobPriority = exports.$Enums.JobPriority = {
   URGENT: 'URGENT'
 };
 
+exports.JOB_PAYMENT_STATUS = exports.$Enums.JOB_PAYMENT_STATUS = {
+  PAID: 'PAID',
+  PENDING: 'PENDING',
+  UNPAID: 'UNPAID',
+  FAILED: 'FAILED'
+};
+
 exports.ClientType = exports.$Enums.ClientType = {
   INDIVIDUAL: 'INDIVIDUAL',
   COMPANY: 'COMPANY'
@@ -723,6 +742,7 @@ exports.Prisma.ModelName = {
   UserConfig: 'UserConfig',
   FileSystem: 'FileSystem',
   Job: 'Job',
+  SharepointItem: 'SharepointItem',
   JobAssignment: 'JobAssignment',
   JobFolderTemplate: 'JobFolderTemplate',
   Client: 'Client',

@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 import { ProtectedRoute } from '@/shared/guards/protected-route'
-import { APP_PERMISSIONS } from '@staff-cadsquad/shared'
+import { APP_PERMISSIONS } from '@/lib'
 
 export const Route = createFileRoute('/_administrator/mgmt/access-control')({
     component: () => {

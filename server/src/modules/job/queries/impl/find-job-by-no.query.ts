@@ -43,6 +43,8 @@ export class FindJobByNoHandler implements IQueryHandler<FindJobByNoQuery> {
 					include: { modifiedBy: true },
 					orderBy: { modifiedAt: 'desc' },
 				},
+				sharepointFolder: true,
+				folderTemplate: true
 			},
 		})
 		if (!job) throw new NotFoundException('Job not found')

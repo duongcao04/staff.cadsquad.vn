@@ -1,45 +1,73 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { PrismaService } from '@/providers/prisma/prisma.service';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { InternalServerErrorException } from '@nestjs/common';
-import { CreateJobCommand } from '../impl/create-job.command';
-import { ActivityLogService } from '../../activity-log.service';
-import { ActivityType } from '@/generated/prisma';
-import { JobActionEvent } from '../../events/job-action.event';
-import { plainToInstance } from 'class-transformer';
-import { JobResponseDto } from '../../dto/job-response.dto';
-import slugify from 'slugify';
-
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
+import { PrismaService } from '@/providers/prisma/prisma.service'
+import { EventEmitter2 } from '@nestjs/event-emitter'
+import { InternalServerErrorException } from '@nestjs/common'
+import { CreateJobCommand } from '../impl/create-job.command'
+import { ActivityLogService } from '../../activity-log.service'
+import { ActivityType } from '@/generated/prisma'
+import { JobActionEvent } from '../../events/job-action.event'
+import { plainToInstance } from 'class-transformer'
+import { JobResponseDto } from '../../dto/job-response.dto'
+import slugify from 'slugify'
+import { randomUUID } from 'node:crypto'
+import { SharePointService } from '../../../sharepoint/sharepoint.service'
 @CommandHandler(CreateJobCommand)
 export class CreateJobHandler implements ICommandHandler<CreateJobCommand> {
 	constructor(
 		private readonly prisma: PrismaService,
 		private readonly activityLogService: ActivityLogService,
-		private readonly eventEmitter: EventEmitter2,
+		private readonly sharepointService: SharePointService,
+		private readonly eventEmitter: EventEmitter2
 	) { }
 
 	async execute(command: CreateJobCommand) {
-		const { creatorId, dto } = command;
+		const { creatorId, dto } = command
 
 		const defaultStatus = await this.prisma.jobStatus.findUnique({
 			where: { order: 1 },
-		});
-		if (!defaultStatus) throw new InternalServerErrorException('Initial status order 1 not found');
+		})
+		if (!defaultStatus)
+			throw new InternalServerErrorException(
+				'Initial status order 1 not found'
+			)
 
-		const { jobAssignments, clientName, typeId, paymentChannelId, incomeCost, totalStaffCost, attachmentUrls, sharepointFolderId, ...jobData } = dto;
+		const {
+			jobAssignments,
+			clientName,
+			typeId,
+			paymentChannelId,
+			incomeCost,
+			totalStaffCost,
+			attachmentUrls,
+			sharepointFolderId,
+			...jobData
+		} = dto
+
+		const folderDetail =
+			sharepointFolderId &&
+			(await this.sharepointService.getFolderDetails(sharepointFolderId))
 
 		// Xử lý Transaction y hệt logic cũ của bạn
 		const newJob = await this.prisma.$transaction(async (tx) => {
-			let client = await tx.client.findUnique({ where: { name: clientName } });
+			let client = await tx.client.findUnique({
+				where: { name: clientName },
+			})
 
 			if (!client) {
-				const baseCode = slugify(clientName, { lower: true, strict: true }).toUpperCase();
-				const existing = await tx.client.findUnique({ where: { code: baseCode } });
-				const newClientCode = existing ? `${baseCode}-${Math.random().toString(36).substring(2, 6).toUpperCase()}` : baseCode;
+				const baseCode = slugify(clientName, {
+					lower: true,
+					strict: true,
+				}).toUpperCase()
+				const existing = await tx.client.findUnique({
+					where: { code: baseCode },
+				})
+				const newClientCode = existing
+					? `${baseCode}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`
+					: baseCode
 
 				client = await tx.client.create({
 					data: { name: clientName, code: newClientCode },
-				});
+				})
 			}
 
 			const createdJob = await tx.job.create({
@@ -54,7 +82,21 @@ export class CreateJobHandler implements ICommandHandler<CreateJobCommand> {
 					incomeCost: parseFloat(incomeCost as any) || 0,
 					totalStaffCost: parseFloat(totalStaffCost as any) || 0,
 					client: { connect: { id: client.id } },
-					sharepointFolderId: sharepointFolderId || undefined,
+					sharepointFolder: sharepointFolderId
+						? {
+							create: {
+								id: randomUUID(),
+								itemId: sharepointFolderId,
+								webUrl: folderDetail.webUrl,
+								displayName: folderDetail.name,
+								isFolder: true,
+								createdBy: folderDetail.createdBy.name || folderDetail.createdBy.displayName || folderDetail.createdBy.user.displayName || 'Unknown',
+								createdDateTime:
+									folderDetail.createdDateTime,
+								size: folderDetail.size || 0,
+							},
+						}
+						: undefined,
 					attachmentUrls: Array.isArray(attachmentUrls)
 						? attachmentUrls
 						: [],
@@ -85,25 +127,39 @@ export class CreateJobHandler implements ICommandHandler<CreateJobCommand> {
 				},
 			})
 
-			await this.activityLogService.create({
-				jobId: createdJob.id,
-				modifiedById: creatorId,
-				activityType: ActivityType.CREATE_JOB,
-				fieldName: 'Job',
-				currentValue: createdJob.no,
-				requiredPermissionCode: 'job.view_financial',
-				metadata: { clientName: client.name, assignmentCount: jobAssignments?.length || 0 },
-			}, tx);
+			await this.activityLogService.create(
+				{
+					jobId: createdJob.id,
+					modifiedById: creatorId,
+					activityType: ActivityType.CREATE_JOB,
+					fieldName: 'Job',
+					currentValue: createdJob.no,
+					requiredPermissionCode: 'job.view_financial',
+					metadata: {
+						clientName: client.name,
+						assignmentCount: jobAssignments?.length || 0,
+					},
+				},
+				tx
+			)
 
-			return createdJob;
-		});
+			return createdJob
+		})
 
 		// Bắn event sau khi transaction thành công
 		this.eventEmitter.emit(
 			'job.action',
-			new JobActionEvent(ActivityType.CREATE_JOB, newJob.id, creatorId, {}, newJob)
-		);
+			new JobActionEvent(
+				ActivityType.CREATE_JOB,
+				newJob.id,
+				creatorId,
+				{},
+				newJob
+			)
+		)
 
-		return plainToInstance(JobResponseDto, newJob, { excludeExtraneousValues: true });
+		return plainToInstance(JobResponseDto, newJob, {
+			excludeExtraneousValues: true,
+		})
 	}
 }

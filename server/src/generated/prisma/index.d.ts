@@ -109,6 +109,11 @@ export type FileSystem = $Result.DefaultSelection<Prisma.$FileSystemPayload>
  */
 export type Job = $Result.DefaultSelection<Prisma.$JobPayload>
 /**
+ * Model SharepointItem
+ * 
+ */
+export type SharepointItem = $Result.DefaultSelection<Prisma.$SharepointItemPayload>
+/**
  * Model JobAssignment
  * 
  */
@@ -274,6 +279,16 @@ export const AccountProvider: {
 export type AccountProvider = (typeof AccountProvider)[keyof typeof AccountProvider]
 
 
+export const JOB_PAYMENT_STATUS: {
+  PAID: 'PAID',
+  PENDING: 'PENDING',
+  UNPAID: 'UNPAID',
+  FAILED: 'FAILED'
+};
+
+export type JOB_PAYMENT_STATUS = (typeof JOB_PAYMENT_STATUS)[keyof typeof JOB_PAYMENT_STATUS]
+
+
 export const ClientType: {
   INDIVIDUAL: 'INDIVIDUAL',
   COMPANY: 'COMPANY'
@@ -408,6 +423,10 @@ export type AccountProvider = $Enums.AccountProvider
 
 export const AccountProvider: typeof $Enums.AccountProvider
 
+export type JOB_PAYMENT_STATUS = $Enums.JOB_PAYMENT_STATUS
+
+export const JOB_PAYMENT_STATUS: typeof $Enums.JOB_PAYMENT_STATUS
+
 export type ClientType = $Enums.ClientType
 
 export const ClientType: typeof $Enums.ClientType
@@ -450,7 +469,9 @@ export const TopicType: typeof $Enums.TopicType
  * Type-safe database client for TypeScript & Node.js
  * @example
  * ```
- * const prisma = new PrismaClient()
+ * const prisma = new PrismaClient({
+ *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
+ * })
  * // Fetch zero or more SystemAuditLogs
  * const systemAuditLogs = await prisma.systemAuditLog.findMany()
  * ```
@@ -471,7 +492,9 @@ export class PrismaClient<
    * Type-safe database client for TypeScript & Node.js
    * @example
    * ```
-   * const prisma = new PrismaClient()
+   * const prisma = new PrismaClient({
+   *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
+   * })
    * // Fetch zero or more SystemAuditLogs
    * const systemAuditLogs = await prisma.systemAuditLog.findMany()
    * ```
@@ -551,7 +574,7 @@ export class PrismaClient<
    * ])
    * ```
    * 
-   * Read more in our [docs](https://www.prisma.io/docs/concepts/components/prisma-client/transactions).
+   * Read more in our [docs](https://www.prisma.io/docs/orm/prisma-client/queries/transactions).
    */
   $transaction<P extends Prisma.PrismaPromise<any>[]>(arg: [...P], options?: { isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<runtime.Types.Utils.UnwrapTuple<P>>
 
@@ -750,6 +773,16 @@ export class PrismaClient<
     * ```
     */
   get job(): Prisma.JobDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.sharepointItem`: Exposes CRUD operations for the **SharepointItem** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SharepointItems
+    * const sharepointItems = await prisma.sharepointItem.findMany()
+    * ```
+    */
+  get sharepointItem(): Prisma.SharepointItemDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.jobAssignment`: Exposes CRUD operations for the **JobAssignment** model.
@@ -970,8 +1003,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 7.2.0
-   * Query Engine version: 0c8ef2ce45c83248ab3df073180d5eda9e8be7a3
+   * Prisma Client JS version: 7.6.0
+   * Query Engine version: 75cbdc1eb7150937890ad5465d861175c6624711
    */
   export type PrismaVersion = {
     client: string
@@ -1373,6 +1406,7 @@ export namespace Prisma {
     UserConfig: 'UserConfig',
     FileSystem: 'FileSystem',
     Job: 'Job',
+    SharepointItem: 'SharepointItem',
     JobAssignment: 'JobAssignment',
     JobFolderTemplate: 'JobFolderTemplate',
     Client: 'Client',
@@ -1405,7 +1439,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "systemAuditLog" | "browserSubscribes" | "userDevices" | "user" | "userSecurityLog" | "role" | "permission" | "userPermission" | "permissionGroup" | "session" | "account" | "verification" | "gallery" | "jobComment" | "jobTitle" | "department" | "userConfig" | "fileSystem" | "job" | "jobAssignment" | "jobFolderTemplate" | "client" | "pinnedJob" | "paymentChannel" | "jobType" | "jobStatus" | "jobDeliverFile" | "jobDelivery" | "jobStatusHistory" | "jobActivityLog" | "notification" | "community" | "communityMember" | "topic" | "post" | "postEvent"
+      modelProps: "systemAuditLog" | "browserSubscribes" | "userDevices" | "user" | "userSecurityLog" | "role" | "permission" | "userPermission" | "permissionGroup" | "session" | "account" | "verification" | "gallery" | "jobComment" | "jobTitle" | "department" | "userConfig" | "fileSystem" | "job" | "sharepointItem" | "jobAssignment" | "jobFolderTemplate" | "client" | "pinnedJob" | "paymentChannel" | "jobType" | "jobStatus" | "jobDeliverFile" | "jobDelivery" | "jobStatusHistory" | "jobActivityLog" | "notification" | "community" | "communityMember" | "topic" | "post" | "postEvent"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2815,6 +2849,80 @@ export namespace Prisma {
           }
         }
       }
+      SharepointItem: {
+        payload: Prisma.$SharepointItemPayload<ExtArgs>
+        fields: Prisma.SharepointItemFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SharepointItemFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SharepointItemPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SharepointItemFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SharepointItemPayload>
+          }
+          findFirst: {
+            args: Prisma.SharepointItemFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SharepointItemPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SharepointItemFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SharepointItemPayload>
+          }
+          findMany: {
+            args: Prisma.SharepointItemFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SharepointItemPayload>[]
+          }
+          create: {
+            args: Prisma.SharepointItemCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SharepointItemPayload>
+          }
+          createMany: {
+            args: Prisma.SharepointItemCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SharepointItemCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SharepointItemPayload>[]
+          }
+          delete: {
+            args: Prisma.SharepointItemDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SharepointItemPayload>
+          }
+          update: {
+            args: Prisma.SharepointItemUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SharepointItemPayload>
+          }
+          deleteMany: {
+            args: Prisma.SharepointItemDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SharepointItemUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SharepointItemUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SharepointItemPayload>[]
+          }
+          upsert: {
+            args: Prisma.SharepointItemUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SharepointItemPayload>
+          }
+          aggregate: {
+            args: Prisma.SharepointItemAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSharepointItem>
+          }
+          groupBy: {
+            args: Prisma.SharepointItemGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SharepointItemGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SharepointItemCountArgs<ExtArgs>
+            result: $Utils.Optional<SharepointItemCountAggregateOutputType> | number
+          }
+        }
+      }
       JobAssignment: {
         payload: Prisma.$JobAssignmentPayload<ExtArgs>
         fields: Prisma.JobAssignmentFieldRefs
@@ -4200,6 +4308,7 @@ export namespace Prisma {
     userConfig?: UserConfigOmit
     fileSystem?: FileSystemOmit
     job?: JobOmit
+    sharepointItem?: SharepointItemOmit
     jobAssignment?: JobAssignmentOmit
     jobFolderTemplate?: JobFolderTemplateOmit
     client?: ClientOmit
@@ -4829,6 +4938,37 @@ export namespace Prisma {
    */
   export type JobCountOutputTypeCountJobDeliveriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: JobDeliveryWhereInput
+  }
+
+
+  /**
+   * Count Type SharepointItemCountOutputType
+   */
+
+  export type SharepointItemCountOutputType = {
+    jobs: number
+  }
+
+  export type SharepointItemCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    jobs?: boolean | SharepointItemCountOutputTypeCountJobsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * SharepointItemCountOutputType without action
+   */
+  export type SharepointItemCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SharepointItemCountOutputType
+     */
+    select?: SharepointItemCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * SharepointItemCountOutputType without action
+   */
+  export type SharepointItemCountOutputTypeCountJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JobWhereInput
   }
 
 
@@ -6021,6 +6161,11 @@ export namespace Prisma {
      * Skip the first `n` SystemAuditLogs.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SystemAuditLogs.
+     */
     distinct?: SystemAuditLogScalarFieldEnum | SystemAuditLogScalarFieldEnum[]
   }
 
@@ -7063,6 +7208,11 @@ export namespace Prisma {
      * Skip the first `n` BrowserSubscribes.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BrowserSubscribes.
+     */
     distinct?: BrowserSubscribesScalarFieldEnum | BrowserSubscribesScalarFieldEnum[]
   }
 
@@ -8093,6 +8243,11 @@ export namespace Prisma {
      * Skip the first `n` UserDevices.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserDevices.
+     */
     distinct?: UserDevicesScalarFieldEnum | UserDevicesScalarFieldEnum[]
   }
 
@@ -9447,6 +9602,11 @@ export namespace Prisma {
      * Skip the first `n` Users.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Users.
+     */
     distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
   }
 
@@ -11135,6 +11295,11 @@ export namespace Prisma {
      * Skip the first `n` UserSecurityLogs.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserSecurityLogs.
+     */
     distinct?: UserSecurityLogScalarFieldEnum | UserSecurityLogScalarFieldEnum[]
   }
 
@@ -12180,6 +12345,11 @@ export namespace Prisma {
      * Skip the first `n` Roles.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Roles.
+     */
     distinct?: RoleScalarFieldEnum | RoleScalarFieldEnum[]
   }
 
@@ -13327,6 +13497,11 @@ export namespace Prisma {
      * Skip the first `n` Permissions.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Permissions.
+     */
     distinct?: PermissionScalarFieldEnum | PermissionScalarFieldEnum[]
   }
 
@@ -14473,6 +14648,11 @@ export namespace Prisma {
      * Skip the first `n` UserPermissions.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserPermissions.
+     */
     distinct?: UserPermissionScalarFieldEnum | UserPermissionScalarFieldEnum[]
   }
 
@@ -15574,6 +15754,11 @@ export namespace Prisma {
      * Skip the first `n` PermissionGroups.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PermissionGroups.
+     */
     distinct?: PermissionGroupScalarFieldEnum | PermissionGroupScalarFieldEnum[]
   }
 
@@ -16687,6 +16872,11 @@ export namespace Prisma {
      * Skip the first `n` Sessions.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Sessions.
+     */
     distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
   }
 
@@ -17810,6 +18000,11 @@ export namespace Prisma {
      * Skip the first `n` Accounts.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Accounts.
+     */
     distinct?: AccountScalarFieldEnum | AccountScalarFieldEnum[]
   }
 
@@ -18846,6 +19041,11 @@ export namespace Prisma {
      * Skip the first `n` Verifications.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Verifications.
+     */
     distinct?: VerificationScalarFieldEnum | VerificationScalarFieldEnum[]
   }
 
@@ -19902,6 +20102,11 @@ export namespace Prisma {
      * Skip the first `n` Galleries.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Galleries.
+     */
     distinct?: GalleryScalarFieldEnum | GalleryScalarFieldEnum[]
   }
 
@@ -21008,6 +21213,11 @@ export namespace Prisma {
      * Skip the first `n` JobComments.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobComments.
+     */
     distinct?: JobCommentScalarFieldEnum | JobCommentScalarFieldEnum[]
   }
 
@@ -22118,6 +22328,11 @@ export namespace Prisma {
      * Skip the first `n` JobTitles.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobTitles.
+     */
     distinct?: JobTitleScalarFieldEnum | JobTitleScalarFieldEnum[]
   }
 
@@ -23214,6 +23429,11 @@ export namespace Prisma {
      * Skip the first `n` Departments.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Departments.
+     */
     distinct?: DepartmentScalarFieldEnum | DepartmentScalarFieldEnum[]
   }
 
@@ -24336,6 +24556,11 @@ export namespace Prisma {
      * Skip the first `n` UserConfigs.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserConfigs.
+     */
     distinct?: UserConfigScalarFieldEnum | UserConfigScalarFieldEnum[]
   }
 
@@ -25535,6 +25760,11 @@ export namespace Prisma {
      * Skip the first `n` FileSystems.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FileSystems.
+     */
     distinct?: FileSystemScalarFieldEnum | FileSystemScalarFieldEnum[]
   }
 
@@ -25824,9 +26054,9 @@ export namespace Prisma {
     typeId: string | null
     displayName: string | null
     description: string | null
-    sharepointFolderId: string | null
     clientId: string | null
     incomeCost: number | null
+    sharepointFolderId: string | null
     totalStaffCost: number | null
     createdById: string | null
     paymentChannelId: string | null
@@ -25838,7 +26068,8 @@ export namespace Prisma {
     dueAt: Date | null
     completedAt: Date | null
     finishedAt: Date | null
-    paidAt: Date | null
+    paymentStatus: $Enums.JOB_PAYMENT_STATUS | null
+    payoutDate: Date | null
     createdAt: Date | null
     updatedAt: Date | null
     deletedAt: Date | null
@@ -25851,9 +26082,9 @@ export namespace Prisma {
     typeId: string | null
     displayName: string | null
     description: string | null
-    sharepointFolderId: string | null
     clientId: string | null
     incomeCost: number | null
+    sharepointFolderId: string | null
     totalStaffCost: number | null
     createdById: string | null
     paymentChannelId: string | null
@@ -25865,7 +26096,8 @@ export namespace Prisma {
     dueAt: Date | null
     completedAt: Date | null
     finishedAt: Date | null
-    paidAt: Date | null
+    paymentStatus: $Enums.JOB_PAYMENT_STATUS | null
+    payoutDate: Date | null
     createdAt: Date | null
     updatedAt: Date | null
     deletedAt: Date | null
@@ -25879,9 +26111,9 @@ export namespace Prisma {
     displayName: number
     description: number
     attachmentUrls: number
-    sharepointFolderId: number
     clientId: number
     incomeCost: number
+    sharepointFolderId: number
     totalStaffCost: number
     createdById: number
     paymentChannelId: number
@@ -25893,7 +26125,8 @@ export namespace Prisma {
     dueAt: number
     completedAt: number
     finishedAt: number
-    paidAt: number
+    paymentStatus: number
+    payoutDate: number
     createdAt: number
     updatedAt: number
     deletedAt: number
@@ -25918,9 +26151,9 @@ export namespace Prisma {
     typeId?: true
     displayName?: true
     description?: true
-    sharepointFolderId?: true
     clientId?: true
     incomeCost?: true
+    sharepointFolderId?: true
     totalStaffCost?: true
     createdById?: true
     paymentChannelId?: true
@@ -25932,7 +26165,8 @@ export namespace Prisma {
     dueAt?: true
     completedAt?: true
     finishedAt?: true
-    paidAt?: true
+    paymentStatus?: true
+    payoutDate?: true
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
@@ -25945,9 +26179,9 @@ export namespace Prisma {
     typeId?: true
     displayName?: true
     description?: true
-    sharepointFolderId?: true
     clientId?: true
     incomeCost?: true
+    sharepointFolderId?: true
     totalStaffCost?: true
     createdById?: true
     paymentChannelId?: true
@@ -25959,7 +26193,8 @@ export namespace Prisma {
     dueAt?: true
     completedAt?: true
     finishedAt?: true
-    paidAt?: true
+    paymentStatus?: true
+    payoutDate?: true
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
@@ -25973,9 +26208,9 @@ export namespace Prisma {
     displayName?: true
     description?: true
     attachmentUrls?: true
-    sharepointFolderId?: true
     clientId?: true
     incomeCost?: true
+    sharepointFolderId?: true
     totalStaffCost?: true
     createdById?: true
     paymentChannelId?: true
@@ -25987,7 +26222,8 @@ export namespace Prisma {
     dueAt?: true
     completedAt?: true
     finishedAt?: true
-    paidAt?: true
+    paymentStatus?: true
+    payoutDate?: true
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
@@ -26088,9 +26324,9 @@ export namespace Prisma {
     displayName: string
     description: string | null
     attachmentUrls: string[]
-    sharepointFolderId: string | null
     clientId: string | null
     incomeCost: number
+    sharepointFolderId: string | null
     totalStaffCost: number
     createdById: string
     paymentChannelId: string | null
@@ -26102,7 +26338,8 @@ export namespace Prisma {
     dueAt: Date
     completedAt: Date | null
     finishedAt: Date | null
-    paidAt: Date | null
+    paymentStatus: $Enums.JOB_PAYMENT_STATUS
+    payoutDate: Date | null
     createdAt: Date
     updatedAt: Date
     deletedAt: Date | null
@@ -26135,9 +26372,9 @@ export namespace Prisma {
     displayName?: boolean
     description?: boolean
     attachmentUrls?: boolean
-    sharepointFolderId?: boolean
     clientId?: boolean
     incomeCost?: boolean
+    sharepointFolderId?: boolean
     totalStaffCost?: boolean
     createdById?: boolean
     paymentChannelId?: boolean
@@ -26149,13 +26386,15 @@ export namespace Prisma {
     dueAt?: boolean
     completedAt?: boolean
     finishedAt?: boolean
-    paidAt?: boolean
+    paymentStatus?: boolean
+    payoutDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
     folderTemplateId?: boolean
     type?: boolean | JobTypeDefaultArgs<ExtArgs>
     client?: boolean | Job$clientArgs<ExtArgs>
+    sharepointFolder?: boolean | Job$sharepointFolderArgs<ExtArgs>
     assignments?: boolean | Job$assignmentsArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     paymentChannel?: boolean | Job$paymentChannelArgs<ExtArgs>
@@ -26177,9 +26416,9 @@ export namespace Prisma {
     displayName?: boolean
     description?: boolean
     attachmentUrls?: boolean
-    sharepointFolderId?: boolean
     clientId?: boolean
     incomeCost?: boolean
+    sharepointFolderId?: boolean
     totalStaffCost?: boolean
     createdById?: boolean
     paymentChannelId?: boolean
@@ -26191,13 +26430,15 @@ export namespace Prisma {
     dueAt?: boolean
     completedAt?: boolean
     finishedAt?: boolean
-    paidAt?: boolean
+    paymentStatus?: boolean
+    payoutDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
     folderTemplateId?: boolean
     type?: boolean | JobTypeDefaultArgs<ExtArgs>
     client?: boolean | Job$clientArgs<ExtArgs>
+    sharepointFolder?: boolean | Job$sharepointFolderArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     paymentChannel?: boolean | Job$paymentChannelArgs<ExtArgs>
     status?: boolean | JobStatusDefaultArgs<ExtArgs>
@@ -26211,9 +26452,9 @@ export namespace Prisma {
     displayName?: boolean
     description?: boolean
     attachmentUrls?: boolean
-    sharepointFolderId?: boolean
     clientId?: boolean
     incomeCost?: boolean
+    sharepointFolderId?: boolean
     totalStaffCost?: boolean
     createdById?: boolean
     paymentChannelId?: boolean
@@ -26225,13 +26466,15 @@ export namespace Prisma {
     dueAt?: boolean
     completedAt?: boolean
     finishedAt?: boolean
-    paidAt?: boolean
+    paymentStatus?: boolean
+    payoutDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
     folderTemplateId?: boolean
     type?: boolean | JobTypeDefaultArgs<ExtArgs>
     client?: boolean | Job$clientArgs<ExtArgs>
+    sharepointFolder?: boolean | Job$sharepointFolderArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     paymentChannel?: boolean | Job$paymentChannelArgs<ExtArgs>
     status?: boolean | JobStatusDefaultArgs<ExtArgs>
@@ -26245,9 +26488,9 @@ export namespace Prisma {
     displayName?: boolean
     description?: boolean
     attachmentUrls?: boolean
-    sharepointFolderId?: boolean
     clientId?: boolean
     incomeCost?: boolean
+    sharepointFolderId?: boolean
     totalStaffCost?: boolean
     createdById?: boolean
     paymentChannelId?: boolean
@@ -26259,17 +26502,19 @@ export namespace Prisma {
     dueAt?: boolean
     completedAt?: boolean
     finishedAt?: boolean
-    paidAt?: boolean
+    paymentStatus?: boolean
+    payoutDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
     folderTemplateId?: boolean
   }
 
-  export type JobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "no" | "typeId" | "displayName" | "description" | "attachmentUrls" | "sharepointFolderId" | "clientId" | "incomeCost" | "totalStaffCost" | "createdById" | "paymentChannelId" | "statusId" | "startedAt" | "priority" | "isPublished" | "isPaid" | "dueAt" | "completedAt" | "finishedAt" | "paidAt" | "createdAt" | "updatedAt" | "deletedAt" | "folderTemplateId", ExtArgs["result"]["job"]>
+  export type JobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "no" | "typeId" | "displayName" | "description" | "attachmentUrls" | "clientId" | "incomeCost" | "sharepointFolderId" | "totalStaffCost" | "createdById" | "paymentChannelId" | "statusId" | "startedAt" | "priority" | "isPublished" | "isPaid" | "dueAt" | "completedAt" | "finishedAt" | "paymentStatus" | "payoutDate" | "createdAt" | "updatedAt" | "deletedAt" | "folderTemplateId", ExtArgs["result"]["job"]>
   export type JobInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     type?: boolean | JobTypeDefaultArgs<ExtArgs>
     client?: boolean | Job$clientArgs<ExtArgs>
+    sharepointFolder?: boolean | Job$sharepointFolderArgs<ExtArgs>
     assignments?: boolean | Job$assignmentsArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     paymentChannel?: boolean | Job$paymentChannelArgs<ExtArgs>
@@ -26286,6 +26531,7 @@ export namespace Prisma {
   export type JobIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     type?: boolean | JobTypeDefaultArgs<ExtArgs>
     client?: boolean | Job$clientArgs<ExtArgs>
+    sharepointFolder?: boolean | Job$sharepointFolderArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     paymentChannel?: boolean | Job$paymentChannelArgs<ExtArgs>
     status?: boolean | JobStatusDefaultArgs<ExtArgs>
@@ -26294,6 +26540,7 @@ export namespace Prisma {
   export type JobIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     type?: boolean | JobTypeDefaultArgs<ExtArgs>
     client?: boolean | Job$clientArgs<ExtArgs>
+    sharepointFolder?: boolean | Job$sharepointFolderArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     paymentChannel?: boolean | Job$paymentChannelArgs<ExtArgs>
     status?: boolean | JobStatusDefaultArgs<ExtArgs>
@@ -26305,6 +26552,7 @@ export namespace Prisma {
     objects: {
       type: Prisma.$JobTypePayload<ExtArgs>
       client: Prisma.$ClientPayload<ExtArgs> | null
+      sharepointFolder: Prisma.$SharepointItemPayload<ExtArgs> | null
       assignments: Prisma.$JobAssignmentPayload<ExtArgs>[]
       createdBy: Prisma.$UserPayload<ExtArgs>
       paymentChannel: Prisma.$PaymentChannelPayload<ExtArgs> | null
@@ -26324,9 +26572,9 @@ export namespace Prisma {
       displayName: string
       description: string | null
       attachmentUrls: string[]
-      sharepointFolderId: string | null
       clientId: string | null
       incomeCost: number
+      sharepointFolderId: string | null
       totalStaffCost: number
       createdById: string
       paymentChannelId: string | null
@@ -26338,7 +26586,8 @@ export namespace Prisma {
       dueAt: Date
       completedAt: Date | null
       finishedAt: Date | null
-      paidAt: Date | null
+      paymentStatus: $Enums.JOB_PAYMENT_STATUS
+      payoutDate: Date | null
       createdAt: Date
       updatedAt: Date
       deletedAt: Date | null
@@ -26739,6 +26988,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     type<T extends JobTypeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobTypeDefaultArgs<ExtArgs>>): Prisma__JobTypeClient<$Result.GetResult<Prisma.$JobTypePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     client<T extends Job$clientArgs<ExtArgs> = {}>(args?: Subset<T, Job$clientArgs<ExtArgs>>): Prisma__ClientClient<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    sharepointFolder<T extends Job$sharepointFolderArgs<ExtArgs> = {}>(args?: Subset<T, Job$sharepointFolderArgs<ExtArgs>>): Prisma__SharepointItemClient<$Result.GetResult<Prisma.$SharepointItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     assignments<T extends Job$assignmentsArgs<ExtArgs> = {}>(args?: Subset<T, Job$assignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     createdBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     paymentChannel<T extends Job$paymentChannelArgs<ExtArgs> = {}>(args?: Subset<T, Job$paymentChannelArgs<ExtArgs>>): Prisma__PaymentChannelClient<$Result.GetResult<Prisma.$PaymentChannelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -26785,9 +27035,9 @@ export namespace Prisma {
     readonly displayName: FieldRef<"Job", 'String'>
     readonly description: FieldRef<"Job", 'String'>
     readonly attachmentUrls: FieldRef<"Job", 'String[]'>
-    readonly sharepointFolderId: FieldRef<"Job", 'String'>
     readonly clientId: FieldRef<"Job", 'String'>
     readonly incomeCost: FieldRef<"Job", 'Float'>
+    readonly sharepointFolderId: FieldRef<"Job", 'String'>
     readonly totalStaffCost: FieldRef<"Job", 'Float'>
     readonly createdById: FieldRef<"Job", 'String'>
     readonly paymentChannelId: FieldRef<"Job", 'String'>
@@ -26799,7 +27049,8 @@ export namespace Prisma {
     readonly dueAt: FieldRef<"Job", 'DateTime'>
     readonly completedAt: FieldRef<"Job", 'DateTime'>
     readonly finishedAt: FieldRef<"Job", 'DateTime'>
-    readonly paidAt: FieldRef<"Job", 'DateTime'>
+    readonly paymentStatus: FieldRef<"Job", 'JOB_PAYMENT_STATUS'>
+    readonly payoutDate: FieldRef<"Job", 'DateTime'>
     readonly createdAt: FieldRef<"Job", 'DateTime'>
     readonly updatedAt: FieldRef<"Job", 'DateTime'>
     readonly deletedAt: FieldRef<"Job", 'DateTime'>
@@ -27000,6 +27251,11 @@ export namespace Prisma {
      * Skip the first `n` Jobs.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Jobs.
+     */
     distinct?: JobScalarFieldEnum | JobScalarFieldEnum[]
   }
 
@@ -27216,6 +27472,25 @@ export namespace Prisma {
      */
     include?: ClientInclude<ExtArgs> | null
     where?: ClientWhereInput
+  }
+
+  /**
+   * Job.sharepointFolder
+   */
+  export type Job$sharepointFolderArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SharepointItem
+     */
+    select?: SharepointItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SharepointItem
+     */
+    omit?: SharepointItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SharepointItemInclude<ExtArgs> | null
+    where?: SharepointItemWhereInput
   }
 
   /**
@@ -27440,6 +27715,1154 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: JobInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model SharepointItem
+   */
+
+  export type AggregateSharepointItem = {
+    _count: SharepointItemCountAggregateOutputType | null
+    _avg: SharepointItemAvgAggregateOutputType | null
+    _sum: SharepointItemSumAggregateOutputType | null
+    _min: SharepointItemMinAggregateOutputType | null
+    _max: SharepointItemMaxAggregateOutputType | null
+  }
+
+  export type SharepointItemAvgAggregateOutputType = {
+    size: number | null
+  }
+
+  export type SharepointItemSumAggregateOutputType = {
+    size: number | null
+  }
+
+  export type SharepointItemMinAggregateOutputType = {
+    id: string | null
+    itemId: string | null
+    displayName: string | null
+    isFolder: boolean | null
+    size: number | null
+    webUrl: string | null
+    createdDateTime: string | null
+    createdBy: string | null
+  }
+
+  export type SharepointItemMaxAggregateOutputType = {
+    id: string | null
+    itemId: string | null
+    displayName: string | null
+    isFolder: boolean | null
+    size: number | null
+    webUrl: string | null
+    createdDateTime: string | null
+    createdBy: string | null
+  }
+
+  export type SharepointItemCountAggregateOutputType = {
+    id: number
+    itemId: number
+    displayName: number
+    isFolder: number
+    size: number
+    webUrl: number
+    createdDateTime: number
+    createdBy: number
+    _all: number
+  }
+
+
+  export type SharepointItemAvgAggregateInputType = {
+    size?: true
+  }
+
+  export type SharepointItemSumAggregateInputType = {
+    size?: true
+  }
+
+  export type SharepointItemMinAggregateInputType = {
+    id?: true
+    itemId?: true
+    displayName?: true
+    isFolder?: true
+    size?: true
+    webUrl?: true
+    createdDateTime?: true
+    createdBy?: true
+  }
+
+  export type SharepointItemMaxAggregateInputType = {
+    id?: true
+    itemId?: true
+    displayName?: true
+    isFolder?: true
+    size?: true
+    webUrl?: true
+    createdDateTime?: true
+    createdBy?: true
+  }
+
+  export type SharepointItemCountAggregateInputType = {
+    id?: true
+    itemId?: true
+    displayName?: true
+    isFolder?: true
+    size?: true
+    webUrl?: true
+    createdDateTime?: true
+    createdBy?: true
+    _all?: true
+  }
+
+  export type SharepointItemAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SharepointItem to aggregate.
+     */
+    where?: SharepointItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SharepointItems to fetch.
+     */
+    orderBy?: SharepointItemOrderByWithRelationInput | SharepointItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SharepointItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SharepointItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SharepointItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SharepointItems
+    **/
+    _count?: true | SharepointItemCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SharepointItemAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SharepointItemSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SharepointItemMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SharepointItemMaxAggregateInputType
+  }
+
+  export type GetSharepointItemAggregateType<T extends SharepointItemAggregateArgs> = {
+        [P in keyof T & keyof AggregateSharepointItem]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSharepointItem[P]>
+      : GetScalarType<T[P], AggregateSharepointItem[P]>
+  }
+
+
+
+
+  export type SharepointItemGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SharepointItemWhereInput
+    orderBy?: SharepointItemOrderByWithAggregationInput | SharepointItemOrderByWithAggregationInput[]
+    by: SharepointItemScalarFieldEnum[] | SharepointItemScalarFieldEnum
+    having?: SharepointItemScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SharepointItemCountAggregateInputType | true
+    _avg?: SharepointItemAvgAggregateInputType
+    _sum?: SharepointItemSumAggregateInputType
+    _min?: SharepointItemMinAggregateInputType
+    _max?: SharepointItemMaxAggregateInputType
+  }
+
+  export type SharepointItemGroupByOutputType = {
+    id: string
+    itemId: string
+    displayName: string | null
+    isFolder: boolean
+    size: number | null
+    webUrl: string | null
+    createdDateTime: string | null
+    createdBy: string | null
+    _count: SharepointItemCountAggregateOutputType | null
+    _avg: SharepointItemAvgAggregateOutputType | null
+    _sum: SharepointItemSumAggregateOutputType | null
+    _min: SharepointItemMinAggregateOutputType | null
+    _max: SharepointItemMaxAggregateOutputType | null
+  }
+
+  type GetSharepointItemGroupByPayload<T extends SharepointItemGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SharepointItemGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SharepointItemGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SharepointItemGroupByOutputType[P]>
+            : GetScalarType<T[P], SharepointItemGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SharepointItemSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    itemId?: boolean
+    displayName?: boolean
+    isFolder?: boolean
+    size?: boolean
+    webUrl?: boolean
+    createdDateTime?: boolean
+    createdBy?: boolean
+    jobs?: boolean | SharepointItem$jobsArgs<ExtArgs>
+    _count?: boolean | SharepointItemCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["sharepointItem"]>
+
+  export type SharepointItemSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    itemId?: boolean
+    displayName?: boolean
+    isFolder?: boolean
+    size?: boolean
+    webUrl?: boolean
+    createdDateTime?: boolean
+    createdBy?: boolean
+  }, ExtArgs["result"]["sharepointItem"]>
+
+  export type SharepointItemSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    itemId?: boolean
+    displayName?: boolean
+    isFolder?: boolean
+    size?: boolean
+    webUrl?: boolean
+    createdDateTime?: boolean
+    createdBy?: boolean
+  }, ExtArgs["result"]["sharepointItem"]>
+
+  export type SharepointItemSelectScalar = {
+    id?: boolean
+    itemId?: boolean
+    displayName?: boolean
+    isFolder?: boolean
+    size?: boolean
+    webUrl?: boolean
+    createdDateTime?: boolean
+    createdBy?: boolean
+  }
+
+  export type SharepointItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "itemId" | "displayName" | "isFolder" | "size" | "webUrl" | "createdDateTime" | "createdBy", ExtArgs["result"]["sharepointItem"]>
+  export type SharepointItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    jobs?: boolean | SharepointItem$jobsArgs<ExtArgs>
+    _count?: boolean | SharepointItemCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type SharepointItemIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type SharepointItemIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $SharepointItemPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SharepointItem"
+    objects: {
+      jobs: Prisma.$JobPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      itemId: string
+      displayName: string | null
+      isFolder: boolean
+      size: number | null
+      webUrl: string | null
+      createdDateTime: string | null
+      createdBy: string | null
+    }, ExtArgs["result"]["sharepointItem"]>
+    composites: {}
+  }
+
+  type SharepointItemGetPayload<S extends boolean | null | undefined | SharepointItemDefaultArgs> = $Result.GetResult<Prisma.$SharepointItemPayload, S>
+
+  type SharepointItemCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SharepointItemFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SharepointItemCountAggregateInputType | true
+    }
+
+  export interface SharepointItemDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SharepointItem'], meta: { name: 'SharepointItem' } }
+    /**
+     * Find zero or one SharepointItem that matches the filter.
+     * @param {SharepointItemFindUniqueArgs} args - Arguments to find a SharepointItem
+     * @example
+     * // Get one SharepointItem
+     * const sharepointItem = await prisma.sharepointItem.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SharepointItemFindUniqueArgs>(args: SelectSubset<T, SharepointItemFindUniqueArgs<ExtArgs>>): Prisma__SharepointItemClient<$Result.GetResult<Prisma.$SharepointItemPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SharepointItem that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SharepointItemFindUniqueOrThrowArgs} args - Arguments to find a SharepointItem
+     * @example
+     * // Get one SharepointItem
+     * const sharepointItem = await prisma.sharepointItem.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SharepointItemFindUniqueOrThrowArgs>(args: SelectSubset<T, SharepointItemFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SharepointItemClient<$Result.GetResult<Prisma.$SharepointItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SharepointItem that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SharepointItemFindFirstArgs} args - Arguments to find a SharepointItem
+     * @example
+     * // Get one SharepointItem
+     * const sharepointItem = await prisma.sharepointItem.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SharepointItemFindFirstArgs>(args?: SelectSubset<T, SharepointItemFindFirstArgs<ExtArgs>>): Prisma__SharepointItemClient<$Result.GetResult<Prisma.$SharepointItemPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SharepointItem that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SharepointItemFindFirstOrThrowArgs} args - Arguments to find a SharepointItem
+     * @example
+     * // Get one SharepointItem
+     * const sharepointItem = await prisma.sharepointItem.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SharepointItemFindFirstOrThrowArgs>(args?: SelectSubset<T, SharepointItemFindFirstOrThrowArgs<ExtArgs>>): Prisma__SharepointItemClient<$Result.GetResult<Prisma.$SharepointItemPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SharepointItems that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SharepointItemFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SharepointItems
+     * const sharepointItems = await prisma.sharepointItem.findMany()
+     * 
+     * // Get first 10 SharepointItems
+     * const sharepointItems = await prisma.sharepointItem.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const sharepointItemWithIdOnly = await prisma.sharepointItem.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SharepointItemFindManyArgs>(args?: SelectSubset<T, SharepointItemFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SharepointItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SharepointItem.
+     * @param {SharepointItemCreateArgs} args - Arguments to create a SharepointItem.
+     * @example
+     * // Create one SharepointItem
+     * const SharepointItem = await prisma.sharepointItem.create({
+     *   data: {
+     *     // ... data to create a SharepointItem
+     *   }
+     * })
+     * 
+     */
+    create<T extends SharepointItemCreateArgs>(args: SelectSubset<T, SharepointItemCreateArgs<ExtArgs>>): Prisma__SharepointItemClient<$Result.GetResult<Prisma.$SharepointItemPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SharepointItems.
+     * @param {SharepointItemCreateManyArgs} args - Arguments to create many SharepointItems.
+     * @example
+     * // Create many SharepointItems
+     * const sharepointItem = await prisma.sharepointItem.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SharepointItemCreateManyArgs>(args?: SelectSubset<T, SharepointItemCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SharepointItems and returns the data saved in the database.
+     * @param {SharepointItemCreateManyAndReturnArgs} args - Arguments to create many SharepointItems.
+     * @example
+     * // Create many SharepointItems
+     * const sharepointItem = await prisma.sharepointItem.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SharepointItems and only return the `id`
+     * const sharepointItemWithIdOnly = await prisma.sharepointItem.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SharepointItemCreateManyAndReturnArgs>(args?: SelectSubset<T, SharepointItemCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SharepointItemPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SharepointItem.
+     * @param {SharepointItemDeleteArgs} args - Arguments to delete one SharepointItem.
+     * @example
+     * // Delete one SharepointItem
+     * const SharepointItem = await prisma.sharepointItem.delete({
+     *   where: {
+     *     // ... filter to delete one SharepointItem
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SharepointItemDeleteArgs>(args: SelectSubset<T, SharepointItemDeleteArgs<ExtArgs>>): Prisma__SharepointItemClient<$Result.GetResult<Prisma.$SharepointItemPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SharepointItem.
+     * @param {SharepointItemUpdateArgs} args - Arguments to update one SharepointItem.
+     * @example
+     * // Update one SharepointItem
+     * const sharepointItem = await prisma.sharepointItem.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SharepointItemUpdateArgs>(args: SelectSubset<T, SharepointItemUpdateArgs<ExtArgs>>): Prisma__SharepointItemClient<$Result.GetResult<Prisma.$SharepointItemPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SharepointItems.
+     * @param {SharepointItemDeleteManyArgs} args - Arguments to filter SharepointItems to delete.
+     * @example
+     * // Delete a few SharepointItems
+     * const { count } = await prisma.sharepointItem.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SharepointItemDeleteManyArgs>(args?: SelectSubset<T, SharepointItemDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SharepointItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SharepointItemUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SharepointItems
+     * const sharepointItem = await prisma.sharepointItem.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SharepointItemUpdateManyArgs>(args: SelectSubset<T, SharepointItemUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SharepointItems and returns the data updated in the database.
+     * @param {SharepointItemUpdateManyAndReturnArgs} args - Arguments to update many SharepointItems.
+     * @example
+     * // Update many SharepointItems
+     * const sharepointItem = await prisma.sharepointItem.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SharepointItems and only return the `id`
+     * const sharepointItemWithIdOnly = await prisma.sharepointItem.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SharepointItemUpdateManyAndReturnArgs>(args: SelectSubset<T, SharepointItemUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SharepointItemPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SharepointItem.
+     * @param {SharepointItemUpsertArgs} args - Arguments to update or create a SharepointItem.
+     * @example
+     * // Update or create a SharepointItem
+     * const sharepointItem = await prisma.sharepointItem.upsert({
+     *   create: {
+     *     // ... data to create a SharepointItem
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SharepointItem we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SharepointItemUpsertArgs>(args: SelectSubset<T, SharepointItemUpsertArgs<ExtArgs>>): Prisma__SharepointItemClient<$Result.GetResult<Prisma.$SharepointItemPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SharepointItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SharepointItemCountArgs} args - Arguments to filter SharepointItems to count.
+     * @example
+     * // Count the number of SharepointItems
+     * const count = await prisma.sharepointItem.count({
+     *   where: {
+     *     // ... the filter for the SharepointItems we want to count
+     *   }
+     * })
+    **/
+    count<T extends SharepointItemCountArgs>(
+      args?: Subset<T, SharepointItemCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SharepointItemCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SharepointItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SharepointItemAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SharepointItemAggregateArgs>(args: Subset<T, SharepointItemAggregateArgs>): Prisma.PrismaPromise<GetSharepointItemAggregateType<T>>
+
+    /**
+     * Group by SharepointItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SharepointItemGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SharepointItemGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SharepointItemGroupByArgs['orderBy'] }
+        : { orderBy?: SharepointItemGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SharepointItemGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSharepointItemGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SharepointItem model
+   */
+  readonly fields: SharepointItemFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SharepointItem.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SharepointItemClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    jobs<T extends SharepointItem$jobsArgs<ExtArgs> = {}>(args?: Subset<T, SharepointItem$jobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SharepointItem model
+   */
+  interface SharepointItemFieldRefs {
+    readonly id: FieldRef<"SharepointItem", 'String'>
+    readonly itemId: FieldRef<"SharepointItem", 'String'>
+    readonly displayName: FieldRef<"SharepointItem", 'String'>
+    readonly isFolder: FieldRef<"SharepointItem", 'Boolean'>
+    readonly size: FieldRef<"SharepointItem", 'Int'>
+    readonly webUrl: FieldRef<"SharepointItem", 'String'>
+    readonly createdDateTime: FieldRef<"SharepointItem", 'String'>
+    readonly createdBy: FieldRef<"SharepointItem", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SharepointItem findUnique
+   */
+  export type SharepointItemFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SharepointItem
+     */
+    select?: SharepointItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SharepointItem
+     */
+    omit?: SharepointItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SharepointItemInclude<ExtArgs> | null
+    /**
+     * Filter, which SharepointItem to fetch.
+     */
+    where: SharepointItemWhereUniqueInput
+  }
+
+  /**
+   * SharepointItem findUniqueOrThrow
+   */
+  export type SharepointItemFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SharepointItem
+     */
+    select?: SharepointItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SharepointItem
+     */
+    omit?: SharepointItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SharepointItemInclude<ExtArgs> | null
+    /**
+     * Filter, which SharepointItem to fetch.
+     */
+    where: SharepointItemWhereUniqueInput
+  }
+
+  /**
+   * SharepointItem findFirst
+   */
+  export type SharepointItemFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SharepointItem
+     */
+    select?: SharepointItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SharepointItem
+     */
+    omit?: SharepointItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SharepointItemInclude<ExtArgs> | null
+    /**
+     * Filter, which SharepointItem to fetch.
+     */
+    where?: SharepointItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SharepointItems to fetch.
+     */
+    orderBy?: SharepointItemOrderByWithRelationInput | SharepointItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SharepointItems.
+     */
+    cursor?: SharepointItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SharepointItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SharepointItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SharepointItems.
+     */
+    distinct?: SharepointItemScalarFieldEnum | SharepointItemScalarFieldEnum[]
+  }
+
+  /**
+   * SharepointItem findFirstOrThrow
+   */
+  export type SharepointItemFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SharepointItem
+     */
+    select?: SharepointItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SharepointItem
+     */
+    omit?: SharepointItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SharepointItemInclude<ExtArgs> | null
+    /**
+     * Filter, which SharepointItem to fetch.
+     */
+    where?: SharepointItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SharepointItems to fetch.
+     */
+    orderBy?: SharepointItemOrderByWithRelationInput | SharepointItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SharepointItems.
+     */
+    cursor?: SharepointItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SharepointItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SharepointItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SharepointItems.
+     */
+    distinct?: SharepointItemScalarFieldEnum | SharepointItemScalarFieldEnum[]
+  }
+
+  /**
+   * SharepointItem findMany
+   */
+  export type SharepointItemFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SharepointItem
+     */
+    select?: SharepointItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SharepointItem
+     */
+    omit?: SharepointItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SharepointItemInclude<ExtArgs> | null
+    /**
+     * Filter, which SharepointItems to fetch.
+     */
+    where?: SharepointItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SharepointItems to fetch.
+     */
+    orderBy?: SharepointItemOrderByWithRelationInput | SharepointItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SharepointItems.
+     */
+    cursor?: SharepointItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SharepointItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SharepointItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SharepointItems.
+     */
+    distinct?: SharepointItemScalarFieldEnum | SharepointItemScalarFieldEnum[]
+  }
+
+  /**
+   * SharepointItem create
+   */
+  export type SharepointItemCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SharepointItem
+     */
+    select?: SharepointItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SharepointItem
+     */
+    omit?: SharepointItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SharepointItemInclude<ExtArgs> | null
+    /**
+     * The data needed to create a SharepointItem.
+     */
+    data: XOR<SharepointItemCreateInput, SharepointItemUncheckedCreateInput>
+  }
+
+  /**
+   * SharepointItem createMany
+   */
+  export type SharepointItemCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SharepointItems.
+     */
+    data: SharepointItemCreateManyInput | SharepointItemCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SharepointItem createManyAndReturn
+   */
+  export type SharepointItemCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SharepointItem
+     */
+    select?: SharepointItemSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SharepointItem
+     */
+    omit?: SharepointItemOmit<ExtArgs> | null
+    /**
+     * The data used to create many SharepointItems.
+     */
+    data: SharepointItemCreateManyInput | SharepointItemCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SharepointItem update
+   */
+  export type SharepointItemUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SharepointItem
+     */
+    select?: SharepointItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SharepointItem
+     */
+    omit?: SharepointItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SharepointItemInclude<ExtArgs> | null
+    /**
+     * The data needed to update a SharepointItem.
+     */
+    data: XOR<SharepointItemUpdateInput, SharepointItemUncheckedUpdateInput>
+    /**
+     * Choose, which SharepointItem to update.
+     */
+    where: SharepointItemWhereUniqueInput
+  }
+
+  /**
+   * SharepointItem updateMany
+   */
+  export type SharepointItemUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SharepointItems.
+     */
+    data: XOR<SharepointItemUpdateManyMutationInput, SharepointItemUncheckedUpdateManyInput>
+    /**
+     * Filter which SharepointItems to update
+     */
+    where?: SharepointItemWhereInput
+    /**
+     * Limit how many SharepointItems to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SharepointItem updateManyAndReturn
+   */
+  export type SharepointItemUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SharepointItem
+     */
+    select?: SharepointItemSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SharepointItem
+     */
+    omit?: SharepointItemOmit<ExtArgs> | null
+    /**
+     * The data used to update SharepointItems.
+     */
+    data: XOR<SharepointItemUpdateManyMutationInput, SharepointItemUncheckedUpdateManyInput>
+    /**
+     * Filter which SharepointItems to update
+     */
+    where?: SharepointItemWhereInput
+    /**
+     * Limit how many SharepointItems to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SharepointItem upsert
+   */
+  export type SharepointItemUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SharepointItem
+     */
+    select?: SharepointItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SharepointItem
+     */
+    omit?: SharepointItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SharepointItemInclude<ExtArgs> | null
+    /**
+     * The filter to search for the SharepointItem to update in case it exists.
+     */
+    where: SharepointItemWhereUniqueInput
+    /**
+     * In case the SharepointItem found by the `where` argument doesn't exist, create a new SharepointItem with this data.
+     */
+    create: XOR<SharepointItemCreateInput, SharepointItemUncheckedCreateInput>
+    /**
+     * In case the SharepointItem was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SharepointItemUpdateInput, SharepointItemUncheckedUpdateInput>
+  }
+
+  /**
+   * SharepointItem delete
+   */
+  export type SharepointItemDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SharepointItem
+     */
+    select?: SharepointItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SharepointItem
+     */
+    omit?: SharepointItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SharepointItemInclude<ExtArgs> | null
+    /**
+     * Filter which SharepointItem to delete.
+     */
+    where: SharepointItemWhereUniqueInput
+  }
+
+  /**
+   * SharepointItem deleteMany
+   */
+  export type SharepointItemDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SharepointItems to delete
+     */
+    where?: SharepointItemWhereInput
+    /**
+     * Limit how many SharepointItems to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SharepointItem.jobs
+   */
+  export type SharepointItem$jobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Job
+     */
+    select?: JobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Job
+     */
+    omit?: JobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobInclude<ExtArgs> | null
+    where?: JobWhereInput
+    orderBy?: JobOrderByWithRelationInput | JobOrderByWithRelationInput[]
+    cursor?: JobWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JobScalarFieldEnum | JobScalarFieldEnum[]
+  }
+
+  /**
+   * SharepointItem without action
+   */
+  export type SharepointItemDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SharepointItem
+     */
+    select?: SharepointItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SharepointItem
+     */
+    omit?: SharepointItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SharepointItemInclude<ExtArgs> | null
   }
 
 
@@ -28325,6 +29748,11 @@ export namespace Prisma {
      * Skip the first `n` JobAssignments.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobAssignments.
+     */
     distinct?: JobAssignmentScalarFieldEnum | JobAssignmentScalarFieldEnum[]
   }
 
@@ -29452,6 +30880,11 @@ export namespace Prisma {
      * Skip the first `n` JobFolderTemplates.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobFolderTemplates.
+     */
     distinct?: JobFolderTemplateScalarFieldEnum | JobFolderTemplateScalarFieldEnum[]
   }
 
@@ -30699,6 +32132,11 @@ export namespace Prisma {
      * Skip the first `n` Clients.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Clients.
+     */
     distinct?: ClientScalarFieldEnum | ClientScalarFieldEnum[]
   }
 
@@ -31755,6 +33193,11 @@ export namespace Prisma {
      * Skip the first `n` PinnedJobs.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PinnedJobs.
+     */
     distinct?: PinnedJobScalarFieldEnum | PinnedJobScalarFieldEnum[]
   }
 
@@ -32848,6 +34291,11 @@ export namespace Prisma {
      * Skip the first `n` PaymentChannels.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PaymentChannels.
+     */
     distinct?: PaymentChannelScalarFieldEnum | PaymentChannelScalarFieldEnum[]
   }
 
@@ -33944,6 +35392,11 @@ export namespace Prisma {
      * Skip the first `n` JobTypes.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobTypes.
+     */
     distinct?: JobTypeScalarFieldEnum | JobTypeScalarFieldEnum[]
   }
 
@@ -35160,6 +36613,11 @@ export namespace Prisma {
      * Skip the first `n` JobStatuses.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobStatuses.
+     */
     distinct?: JobStatusScalarFieldEnum | JobStatusScalarFieldEnum[]
   }
 
@@ -36284,6 +37742,11 @@ export namespace Prisma {
      * Skip the first `n` JobDeliverFiles.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobDeliverFiles.
+     */
     distinct?: JobDeliverFileScalarFieldEnum | JobDeliverFileScalarFieldEnum[]
   }
 
@@ -37408,6 +38871,11 @@ export namespace Prisma {
      * Skip the first `n` JobDeliveries.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobDeliveries.
+     */
     distinct?: JobDeliveryScalarFieldEnum | JobDeliveryScalarFieldEnum[]
   }
 
@@ -38592,6 +40060,11 @@ export namespace Prisma {
      * Skip the first `n` JobStatusHistories.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobStatusHistories.
+     */
     distinct?: JobStatusHistoryScalarFieldEnum | JobStatusHistoryScalarFieldEnum[]
   }
 
@@ -39719,6 +41192,11 @@ export namespace Prisma {
      * Skip the first `n` JobActivityLogs.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobActivityLogs.
+     */
     distinct?: JobActivityLogScalarFieldEnum | JobActivityLogScalarFieldEnum[]
   }
 
@@ -40867,6 +42345,11 @@ export namespace Prisma {
      * Skip the first `n` Notifications.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Notifications.
+     */
     distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
   }
 
@@ -41996,6 +43479,11 @@ export namespace Prisma {
      * Skip the first `n` Communities.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Communities.
+     */
     distinct?: CommunityScalarFieldEnum | CommunityScalarFieldEnum[]
   }
 
@@ -43102,6 +44590,11 @@ export namespace Prisma {
      * Skip the first `n` CommunityMembers.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CommunityMembers.
+     */
     distinct?: CommunityMemberScalarFieldEnum | CommunityMemberScalarFieldEnum[]
   }
 
@@ -44218,6 +45711,11 @@ export namespace Prisma {
      * Skip the first `n` Topics.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Topics.
+     */
     distinct?: TopicScalarFieldEnum | TopicScalarFieldEnum[]
   }
 
@@ -45407,6 +46905,11 @@ export namespace Prisma {
      * Skip the first `n` Posts.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Posts.
+     */
     distinct?: PostScalarFieldEnum | PostScalarFieldEnum[]
   }
 
@@ -46510,6 +48013,11 @@ export namespace Prisma {
      * Skip the first `n` PostEvents.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PostEvents.
+     */
     distinct?: PostEventScalarFieldEnum | PostEventScalarFieldEnum[]
   }
 
@@ -47000,9 +48508,9 @@ export namespace Prisma {
     displayName: 'displayName',
     description: 'description',
     attachmentUrls: 'attachmentUrls',
-    sharepointFolderId: 'sharepointFolderId',
     clientId: 'clientId',
     incomeCost: 'incomeCost',
+    sharepointFolderId: 'sharepointFolderId',
     totalStaffCost: 'totalStaffCost',
     createdById: 'createdById',
     paymentChannelId: 'paymentChannelId',
@@ -47014,7 +48522,8 @@ export namespace Prisma {
     dueAt: 'dueAt',
     completedAt: 'completedAt',
     finishedAt: 'finishedAt',
-    paidAt: 'paidAt',
+    paymentStatus: 'paymentStatus',
+    payoutDate: 'payoutDate',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     deletedAt: 'deletedAt',
@@ -47022,6 +48531,20 @@ export namespace Prisma {
   };
 
   export type JobScalarFieldEnum = (typeof JobScalarFieldEnum)[keyof typeof JobScalarFieldEnum]
+
+
+  export const SharepointItemScalarFieldEnum: {
+    id: 'id',
+    itemId: 'itemId',
+    displayName: 'displayName',
+    isFolder: 'isFolder',
+    size: 'size',
+    webUrl: 'webUrl',
+    createdDateTime: 'createdDateTime',
+    createdBy: 'createdBy'
+  };
+
+  export type SharepointItemScalarFieldEnum = (typeof SharepointItemScalarFieldEnum)[keyof typeof SharepointItemScalarFieldEnum]
 
 
   export const JobAssignmentScalarFieldEnum: {
@@ -47469,6 +48992,20 @@ export namespace Prisma {
    * Reference to a field of type 'JobPriority[]'
    */
   export type ListEnumJobPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobPriority[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'JOB_PAYMENT_STATUS'
+   */
+  export type EnumJOB_PAYMENT_STATUSFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JOB_PAYMENT_STATUS'>
+    
+
+
+  /**
+   * Reference to a field of type 'JOB_PAYMENT_STATUS[]'
+   */
+  export type ListEnumJOB_PAYMENT_STATUSFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JOB_PAYMENT_STATUS[]'>
     
 
 
@@ -48970,9 +50507,9 @@ export namespace Prisma {
     displayName?: StringFilter<"Job"> | string
     description?: StringNullableFilter<"Job"> | string | null
     attachmentUrls?: StringNullableListFilter<"Job">
-    sharepointFolderId?: StringNullableFilter<"Job"> | string | null
     clientId?: StringNullableFilter<"Job"> | string | null
     incomeCost?: FloatFilter<"Job"> | number
+    sharepointFolderId?: StringNullableFilter<"Job"> | string | null
     totalStaffCost?: FloatFilter<"Job"> | number
     createdById?: StringFilter<"Job"> | string
     paymentChannelId?: StringNullableFilter<"Job"> | string | null
@@ -48984,13 +50521,15 @@ export namespace Prisma {
     dueAt?: DateTimeFilter<"Job"> | Date | string
     completedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
     finishedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
-    paidAt?: DateTimeNullableFilter<"Job"> | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFilter<"Job"> | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: DateTimeNullableFilter<"Job"> | Date | string | null
     createdAt?: DateTimeFilter<"Job"> | Date | string
     updatedAt?: DateTimeFilter<"Job"> | Date | string
     deletedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
     folderTemplateId?: StringNullableFilter<"Job"> | string | null
     type?: XOR<JobTypeScalarRelationFilter, JobTypeWhereInput>
     client?: XOR<ClientNullableScalarRelationFilter, ClientWhereInput> | null
+    sharepointFolder?: XOR<SharepointItemNullableScalarRelationFilter, SharepointItemWhereInput> | null
     assignments?: JobAssignmentListRelationFilter
     createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
     paymentChannel?: XOR<PaymentChannelNullableScalarRelationFilter, PaymentChannelWhereInput> | null
@@ -49011,9 +50550,9 @@ export namespace Prisma {
     displayName?: SortOrder
     description?: SortOrderInput | SortOrder
     attachmentUrls?: SortOrder
-    sharepointFolderId?: SortOrderInput | SortOrder
     clientId?: SortOrderInput | SortOrder
     incomeCost?: SortOrder
+    sharepointFolderId?: SortOrderInput | SortOrder
     totalStaffCost?: SortOrder
     createdById?: SortOrder
     paymentChannelId?: SortOrderInput | SortOrder
@@ -49025,13 +50564,15 @@ export namespace Prisma {
     dueAt?: SortOrder
     completedAt?: SortOrderInput | SortOrder
     finishedAt?: SortOrderInput | SortOrder
-    paidAt?: SortOrderInput | SortOrder
+    paymentStatus?: SortOrder
+    payoutDate?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
     folderTemplateId?: SortOrderInput | SortOrder
     type?: JobTypeOrderByWithRelationInput
     client?: ClientOrderByWithRelationInput
+    sharepointFolder?: SharepointItemOrderByWithRelationInput
     assignments?: JobAssignmentOrderByRelationAggregateInput
     createdBy?: UserOrderByWithRelationInput
     paymentChannel?: PaymentChannelOrderByWithRelationInput
@@ -49055,9 +50596,9 @@ export namespace Prisma {
     displayName?: StringFilter<"Job"> | string
     description?: StringNullableFilter<"Job"> | string | null
     attachmentUrls?: StringNullableListFilter<"Job">
-    sharepointFolderId?: StringNullableFilter<"Job"> | string | null
     clientId?: StringNullableFilter<"Job"> | string | null
     incomeCost?: FloatFilter<"Job"> | number
+    sharepointFolderId?: StringNullableFilter<"Job"> | string | null
     totalStaffCost?: FloatFilter<"Job"> | number
     createdById?: StringFilter<"Job"> | string
     paymentChannelId?: StringNullableFilter<"Job"> | string | null
@@ -49069,13 +50610,15 @@ export namespace Prisma {
     dueAt?: DateTimeFilter<"Job"> | Date | string
     completedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
     finishedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
-    paidAt?: DateTimeNullableFilter<"Job"> | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFilter<"Job"> | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: DateTimeNullableFilter<"Job"> | Date | string | null
     createdAt?: DateTimeFilter<"Job"> | Date | string
     updatedAt?: DateTimeFilter<"Job"> | Date | string
     deletedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
     folderTemplateId?: StringNullableFilter<"Job"> | string | null
     type?: XOR<JobTypeScalarRelationFilter, JobTypeWhereInput>
     client?: XOR<ClientNullableScalarRelationFilter, ClientWhereInput> | null
+    sharepointFolder?: XOR<SharepointItemNullableScalarRelationFilter, SharepointItemWhereInput> | null
     assignments?: JobAssignmentListRelationFilter
     createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
     paymentChannel?: XOR<PaymentChannelNullableScalarRelationFilter, PaymentChannelWhereInput> | null
@@ -49096,9 +50639,9 @@ export namespace Prisma {
     displayName?: SortOrder
     description?: SortOrderInput | SortOrder
     attachmentUrls?: SortOrder
-    sharepointFolderId?: SortOrderInput | SortOrder
     clientId?: SortOrderInput | SortOrder
     incomeCost?: SortOrder
+    sharepointFolderId?: SortOrderInput | SortOrder
     totalStaffCost?: SortOrder
     createdById?: SortOrder
     paymentChannelId?: SortOrderInput | SortOrder
@@ -49110,7 +50653,8 @@ export namespace Prisma {
     dueAt?: SortOrder
     completedAt?: SortOrderInput | SortOrder
     finishedAt?: SortOrderInput | SortOrder
-    paidAt?: SortOrderInput | SortOrder
+    paymentStatus?: SortOrder
+    payoutDate?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
@@ -49132,9 +50676,9 @@ export namespace Prisma {
     displayName?: StringWithAggregatesFilter<"Job"> | string
     description?: StringNullableWithAggregatesFilter<"Job"> | string | null
     attachmentUrls?: StringNullableListFilter<"Job">
-    sharepointFolderId?: StringNullableWithAggregatesFilter<"Job"> | string | null
     clientId?: StringNullableWithAggregatesFilter<"Job"> | string | null
     incomeCost?: FloatWithAggregatesFilter<"Job"> | number
+    sharepointFolderId?: StringNullableWithAggregatesFilter<"Job"> | string | null
     totalStaffCost?: FloatWithAggregatesFilter<"Job"> | number
     createdById?: StringWithAggregatesFilter<"Job"> | string
     paymentChannelId?: StringNullableWithAggregatesFilter<"Job"> | string | null
@@ -49146,11 +50690,85 @@ export namespace Prisma {
     dueAt?: DateTimeWithAggregatesFilter<"Job"> | Date | string
     completedAt?: DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
     finishedAt?: DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
-    paidAt?: DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSWithAggregatesFilter<"Job"> | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Job"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Job"> | Date | string
     deletedAt?: DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
     folderTemplateId?: StringNullableWithAggregatesFilter<"Job"> | string | null
+  }
+
+  export type SharepointItemWhereInput = {
+    AND?: SharepointItemWhereInput | SharepointItemWhereInput[]
+    OR?: SharepointItemWhereInput[]
+    NOT?: SharepointItemWhereInput | SharepointItemWhereInput[]
+    id?: StringFilter<"SharepointItem"> | string
+    itemId?: StringFilter<"SharepointItem"> | string
+    displayName?: StringNullableFilter<"SharepointItem"> | string | null
+    isFolder?: BoolFilter<"SharepointItem"> | boolean
+    size?: IntNullableFilter<"SharepointItem"> | number | null
+    webUrl?: StringNullableFilter<"SharepointItem"> | string | null
+    createdDateTime?: StringNullableFilter<"SharepointItem"> | string | null
+    createdBy?: StringNullableFilter<"SharepointItem"> | string | null
+    jobs?: JobListRelationFilter
+  }
+
+  export type SharepointItemOrderByWithRelationInput = {
+    id?: SortOrder
+    itemId?: SortOrder
+    displayName?: SortOrderInput | SortOrder
+    isFolder?: SortOrder
+    size?: SortOrderInput | SortOrder
+    webUrl?: SortOrderInput | SortOrder
+    createdDateTime?: SortOrderInput | SortOrder
+    createdBy?: SortOrderInput | SortOrder
+    jobs?: JobOrderByRelationAggregateInput
+  }
+
+  export type SharepointItemWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    itemId_id?: SharepointItemItemIdIdCompoundUniqueInput
+    AND?: SharepointItemWhereInput | SharepointItemWhereInput[]
+    OR?: SharepointItemWhereInput[]
+    NOT?: SharepointItemWhereInput | SharepointItemWhereInput[]
+    itemId?: StringFilter<"SharepointItem"> | string
+    displayName?: StringNullableFilter<"SharepointItem"> | string | null
+    isFolder?: BoolFilter<"SharepointItem"> | boolean
+    size?: IntNullableFilter<"SharepointItem"> | number | null
+    webUrl?: StringNullableFilter<"SharepointItem"> | string | null
+    createdDateTime?: StringNullableFilter<"SharepointItem"> | string | null
+    createdBy?: StringNullableFilter<"SharepointItem"> | string | null
+    jobs?: JobListRelationFilter
+  }, "id" | "itemId_id">
+
+  export type SharepointItemOrderByWithAggregationInput = {
+    id?: SortOrder
+    itemId?: SortOrder
+    displayName?: SortOrderInput | SortOrder
+    isFolder?: SortOrder
+    size?: SortOrderInput | SortOrder
+    webUrl?: SortOrderInput | SortOrder
+    createdDateTime?: SortOrderInput | SortOrder
+    createdBy?: SortOrderInput | SortOrder
+    _count?: SharepointItemCountOrderByAggregateInput
+    _avg?: SharepointItemAvgOrderByAggregateInput
+    _max?: SharepointItemMaxOrderByAggregateInput
+    _min?: SharepointItemMinOrderByAggregateInput
+    _sum?: SharepointItemSumOrderByAggregateInput
+  }
+
+  export type SharepointItemScalarWhereWithAggregatesInput = {
+    AND?: SharepointItemScalarWhereWithAggregatesInput | SharepointItemScalarWhereWithAggregatesInput[]
+    OR?: SharepointItemScalarWhereWithAggregatesInput[]
+    NOT?: SharepointItemScalarWhereWithAggregatesInput | SharepointItemScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SharepointItem"> | string
+    itemId?: StringWithAggregatesFilter<"SharepointItem"> | string
+    displayName?: StringNullableWithAggregatesFilter<"SharepointItem"> | string | null
+    isFolder?: BoolWithAggregatesFilter<"SharepointItem"> | boolean
+    size?: IntNullableWithAggregatesFilter<"SharepointItem"> | number | null
+    webUrl?: StringNullableWithAggregatesFilter<"SharepointItem"> | string | null
+    createdDateTime?: StringNullableWithAggregatesFilter<"SharepointItem"> | string | null
+    createdBy?: StringNullableWithAggregatesFilter<"SharepointItem"> | string | null
   }
 
   export type JobAssignmentWhereInput = {
@@ -51940,7 +53558,6 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
@@ -51950,12 +53567,14 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     type: JobTypeCreateNestedOneWithoutJobsInput
     client?: ClientCreateNestedOneWithoutJobsInput
+    sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
@@ -51976,9 +53595,9 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     paymentChannelId?: string | null
@@ -51990,7 +53609,8 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -52010,7 +53630,6 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -52020,12 +53639,14 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     type?: JobTypeUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneWithoutJobsNestedInput
+    sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
@@ -52046,9 +53667,9 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52060,7 +53681,8 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -52081,9 +53703,9 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     paymentChannelId?: string | null
@@ -52095,7 +53717,8 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -52108,7 +53731,6 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -52118,7 +53740,8 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -52131,9 +53754,9 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52145,11 +53768,93 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type SharepointItemCreateInput = {
+    id?: string
+    itemId: string
+    displayName?: string | null
+    isFolder?: boolean
+    size?: number | null
+    webUrl?: string | null
+    createdDateTime?: string | null
+    createdBy?: string | null
+    jobs?: JobCreateNestedManyWithoutSharepointFolderInput
+  }
+
+  export type SharepointItemUncheckedCreateInput = {
+    id?: string
+    itemId: string
+    displayName?: string | null
+    isFolder?: boolean
+    size?: number | null
+    webUrl?: string | null
+    createdDateTime?: string | null
+    createdBy?: string | null
+    jobs?: JobUncheckedCreateNestedManyWithoutSharepointFolderInput
+  }
+
+  export type SharepointItemUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    itemId?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    isFolder?: BoolFieldUpdateOperationsInput | boolean
+    size?: NullableIntFieldUpdateOperationsInput | number | null
+    webUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdDateTime?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    jobs?: JobUpdateManyWithoutSharepointFolderNestedInput
+  }
+
+  export type SharepointItemUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    itemId?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    isFolder?: BoolFieldUpdateOperationsInput | boolean
+    size?: NullableIntFieldUpdateOperationsInput | number | null
+    webUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdDateTime?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    jobs?: JobUncheckedUpdateManyWithoutSharepointFolderNestedInput
+  }
+
+  export type SharepointItemCreateManyInput = {
+    id?: string
+    itemId: string
+    displayName?: string | null
+    isFolder?: boolean
+    size?: number | null
+    webUrl?: string | null
+    createdDateTime?: string | null
+    createdBy?: string | null
+  }
+
+  export type SharepointItemUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    itemId?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    isFolder?: BoolFieldUpdateOperationsInput | boolean
+    size?: NullableIntFieldUpdateOperationsInput | number | null
+    webUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdDateTime?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type SharepointItemUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    itemId?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    isFolder?: BoolFieldUpdateOperationsInput | boolean
+    size?: NullableIntFieldUpdateOperationsInput | number | null
+    webUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdDateTime?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type JobAssignmentCreateInput = {
@@ -54822,6 +56527,13 @@ export namespace Prisma {
     not?: NestedEnumJobPriorityFilter<$PrismaModel> | $Enums.JobPriority
   }
 
+  export type EnumJOB_PAYMENT_STATUSFilter<$PrismaModel = never> = {
+    equals?: $Enums.JOB_PAYMENT_STATUS | EnumJOB_PAYMENT_STATUSFieldRefInput<$PrismaModel>
+    in?: $Enums.JOB_PAYMENT_STATUS[] | ListEnumJOB_PAYMENT_STATUSFieldRefInput<$PrismaModel>
+    notIn?: $Enums.JOB_PAYMENT_STATUS[] | ListEnumJOB_PAYMENT_STATUSFieldRefInput<$PrismaModel>
+    not?: NestedEnumJOB_PAYMENT_STATUSFilter<$PrismaModel> | $Enums.JOB_PAYMENT_STATUS
+  }
+
   export type JobTypeScalarRelationFilter = {
     is?: JobTypeWhereInput
     isNot?: JobTypeWhereInput
@@ -54830,6 +56542,11 @@ export namespace Prisma {
   export type ClientNullableScalarRelationFilter = {
     is?: ClientWhereInput | null
     isNot?: ClientWhereInput | null
+  }
+
+  export type SharepointItemNullableScalarRelationFilter = {
+    is?: SharepointItemWhereInput | null
+    isNot?: SharepointItemWhereInput | null
   }
 
   export type PaymentChannelNullableScalarRelationFilter = {
@@ -54854,9 +56571,9 @@ export namespace Prisma {
     displayName?: SortOrder
     description?: SortOrder
     attachmentUrls?: SortOrder
-    sharepointFolderId?: SortOrder
     clientId?: SortOrder
     incomeCost?: SortOrder
+    sharepointFolderId?: SortOrder
     totalStaffCost?: SortOrder
     createdById?: SortOrder
     paymentChannelId?: SortOrder
@@ -54868,7 +56585,8 @@ export namespace Prisma {
     dueAt?: SortOrder
     completedAt?: SortOrder
     finishedAt?: SortOrder
-    paidAt?: SortOrder
+    paymentStatus?: SortOrder
+    payoutDate?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
@@ -54886,9 +56604,9 @@ export namespace Prisma {
     typeId?: SortOrder
     displayName?: SortOrder
     description?: SortOrder
-    sharepointFolderId?: SortOrder
     clientId?: SortOrder
     incomeCost?: SortOrder
+    sharepointFolderId?: SortOrder
     totalStaffCost?: SortOrder
     createdById?: SortOrder
     paymentChannelId?: SortOrder
@@ -54900,7 +56618,8 @@ export namespace Prisma {
     dueAt?: SortOrder
     completedAt?: SortOrder
     finishedAt?: SortOrder
-    paidAt?: SortOrder
+    paymentStatus?: SortOrder
+    payoutDate?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
@@ -54913,9 +56632,9 @@ export namespace Prisma {
     typeId?: SortOrder
     displayName?: SortOrder
     description?: SortOrder
-    sharepointFolderId?: SortOrder
     clientId?: SortOrder
     incomeCost?: SortOrder
+    sharepointFolderId?: SortOrder
     totalStaffCost?: SortOrder
     createdById?: SortOrder
     paymentChannelId?: SortOrder
@@ -54927,7 +56646,8 @@ export namespace Prisma {
     dueAt?: SortOrder
     completedAt?: SortOrder
     finishedAt?: SortOrder
-    paidAt?: SortOrder
+    paymentStatus?: SortOrder
+    payoutDate?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
@@ -54963,6 +56683,62 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumJobPriorityFilter<$PrismaModel>
     _max?: NestedEnumJobPriorityFilter<$PrismaModel>
+  }
+
+  export type EnumJOB_PAYMENT_STATUSWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.JOB_PAYMENT_STATUS | EnumJOB_PAYMENT_STATUSFieldRefInput<$PrismaModel>
+    in?: $Enums.JOB_PAYMENT_STATUS[] | ListEnumJOB_PAYMENT_STATUSFieldRefInput<$PrismaModel>
+    notIn?: $Enums.JOB_PAYMENT_STATUS[] | ListEnumJOB_PAYMENT_STATUSFieldRefInput<$PrismaModel>
+    not?: NestedEnumJOB_PAYMENT_STATUSWithAggregatesFilter<$PrismaModel> | $Enums.JOB_PAYMENT_STATUS
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumJOB_PAYMENT_STATUSFilter<$PrismaModel>
+    _max?: NestedEnumJOB_PAYMENT_STATUSFilter<$PrismaModel>
+  }
+
+  export type SharepointItemItemIdIdCompoundUniqueInput = {
+    itemId: string
+    id: string
+  }
+
+  export type SharepointItemCountOrderByAggregateInput = {
+    id?: SortOrder
+    itemId?: SortOrder
+    displayName?: SortOrder
+    isFolder?: SortOrder
+    size?: SortOrder
+    webUrl?: SortOrder
+    createdDateTime?: SortOrder
+    createdBy?: SortOrder
+  }
+
+  export type SharepointItemAvgOrderByAggregateInput = {
+    size?: SortOrder
+  }
+
+  export type SharepointItemMaxOrderByAggregateInput = {
+    id?: SortOrder
+    itemId?: SortOrder
+    displayName?: SortOrder
+    isFolder?: SortOrder
+    size?: SortOrder
+    webUrl?: SortOrder
+    createdDateTime?: SortOrder
+    createdBy?: SortOrder
+  }
+
+  export type SharepointItemMinOrderByAggregateInput = {
+    id?: SortOrder
+    itemId?: SortOrder
+    displayName?: SortOrder
+    isFolder?: SortOrder
+    size?: SortOrder
+    webUrl?: SortOrder
+    createdDateTime?: SortOrder
+    createdBy?: SortOrder
+  }
+
+  export type SharepointItemSumOrderByAggregateInput = {
+    size?: SortOrder
   }
 
   export type JobAssignmentJobIdUserIdCompoundUniqueInput = {
@@ -57453,6 +59229,12 @@ export namespace Prisma {
     connect?: ClientWhereUniqueInput
   }
 
+  export type SharepointItemCreateNestedOneWithoutJobsInput = {
+    create?: XOR<SharepointItemCreateWithoutJobsInput, SharepointItemUncheckedCreateWithoutJobsInput>
+    connectOrCreate?: SharepointItemCreateOrConnectWithoutJobsInput
+    connect?: SharepointItemWhereUniqueInput
+  }
+
   export type JobAssignmentCreateNestedManyWithoutJobInput = {
     create?: XOR<JobAssignmentCreateWithoutJobInput, JobAssignmentUncheckedCreateWithoutJobInput> | JobAssignmentCreateWithoutJobInput[] | JobAssignmentUncheckedCreateWithoutJobInput[]
     connectOrCreate?: JobAssignmentCreateOrConnectWithoutJobInput | JobAssignmentCreateOrConnectWithoutJobInput[]
@@ -57592,6 +59374,10 @@ export namespace Prisma {
     set?: $Enums.JobPriority
   }
 
+  export type EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput = {
+    set?: $Enums.JOB_PAYMENT_STATUS
+  }
+
   export type JobTypeUpdateOneRequiredWithoutJobsNestedInput = {
     create?: XOR<JobTypeCreateWithoutJobsInput, JobTypeUncheckedCreateWithoutJobsInput>
     connectOrCreate?: JobTypeCreateOrConnectWithoutJobsInput
@@ -57608,6 +59394,16 @@ export namespace Prisma {
     delete?: ClientWhereInput | boolean
     connect?: ClientWhereUniqueInput
     update?: XOR<XOR<ClientUpdateToOneWithWhereWithoutJobsInput, ClientUpdateWithoutJobsInput>, ClientUncheckedUpdateWithoutJobsInput>
+  }
+
+  export type SharepointItemUpdateOneWithoutJobsNestedInput = {
+    create?: XOR<SharepointItemCreateWithoutJobsInput, SharepointItemUncheckedCreateWithoutJobsInput>
+    connectOrCreate?: SharepointItemCreateOrConnectWithoutJobsInput
+    upsert?: SharepointItemUpsertWithoutJobsInput
+    disconnect?: SharepointItemWhereInput | boolean
+    delete?: SharepointItemWhereInput | boolean
+    connect?: SharepointItemWhereUniqueInput
+    update?: XOR<XOR<SharepointItemUpdateToOneWithWhereWithoutJobsInput, SharepointItemUpdateWithoutJobsInput>, SharepointItemUncheckedUpdateWithoutJobsInput>
   }
 
   export type JobAssignmentUpdateManyWithoutJobNestedInput = {
@@ -57840,6 +59636,48 @@ export namespace Prisma {
     update?: JobDeliveryUpdateWithWhereUniqueWithoutJobInput | JobDeliveryUpdateWithWhereUniqueWithoutJobInput[]
     updateMany?: JobDeliveryUpdateManyWithWhereWithoutJobInput | JobDeliveryUpdateManyWithWhereWithoutJobInput[]
     deleteMany?: JobDeliveryScalarWhereInput | JobDeliveryScalarWhereInput[]
+  }
+
+  export type JobCreateNestedManyWithoutSharepointFolderInput = {
+    create?: XOR<JobCreateWithoutSharepointFolderInput, JobUncheckedCreateWithoutSharepointFolderInput> | JobCreateWithoutSharepointFolderInput[] | JobUncheckedCreateWithoutSharepointFolderInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutSharepointFolderInput | JobCreateOrConnectWithoutSharepointFolderInput[]
+    createMany?: JobCreateManySharepointFolderInputEnvelope
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+  }
+
+  export type JobUncheckedCreateNestedManyWithoutSharepointFolderInput = {
+    create?: XOR<JobCreateWithoutSharepointFolderInput, JobUncheckedCreateWithoutSharepointFolderInput> | JobCreateWithoutSharepointFolderInput[] | JobUncheckedCreateWithoutSharepointFolderInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutSharepointFolderInput | JobCreateOrConnectWithoutSharepointFolderInput[]
+    createMany?: JobCreateManySharepointFolderInputEnvelope
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+  }
+
+  export type JobUpdateManyWithoutSharepointFolderNestedInput = {
+    create?: XOR<JobCreateWithoutSharepointFolderInput, JobUncheckedCreateWithoutSharepointFolderInput> | JobCreateWithoutSharepointFolderInput[] | JobUncheckedCreateWithoutSharepointFolderInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutSharepointFolderInput | JobCreateOrConnectWithoutSharepointFolderInput[]
+    upsert?: JobUpsertWithWhereUniqueWithoutSharepointFolderInput | JobUpsertWithWhereUniqueWithoutSharepointFolderInput[]
+    createMany?: JobCreateManySharepointFolderInputEnvelope
+    set?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    disconnect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    delete?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    update?: JobUpdateWithWhereUniqueWithoutSharepointFolderInput | JobUpdateWithWhereUniqueWithoutSharepointFolderInput[]
+    updateMany?: JobUpdateManyWithWhereWithoutSharepointFolderInput | JobUpdateManyWithWhereWithoutSharepointFolderInput[]
+    deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
+  }
+
+  export type JobUncheckedUpdateManyWithoutSharepointFolderNestedInput = {
+    create?: XOR<JobCreateWithoutSharepointFolderInput, JobUncheckedCreateWithoutSharepointFolderInput> | JobCreateWithoutSharepointFolderInput[] | JobUncheckedCreateWithoutSharepointFolderInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutSharepointFolderInput | JobCreateOrConnectWithoutSharepointFolderInput[]
+    upsert?: JobUpsertWithWhereUniqueWithoutSharepointFolderInput | JobUpsertWithWhereUniqueWithoutSharepointFolderInput[]
+    createMany?: JobCreateManySharepointFolderInputEnvelope
+    set?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    disconnect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    delete?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    update?: JobUpdateWithWhereUniqueWithoutSharepointFolderInput | JobUpdateWithWhereUniqueWithoutSharepointFolderInput[]
+    updateMany?: JobUpdateManyWithWhereWithoutSharepointFolderInput | JobUpdateManyWithWhereWithoutSharepointFolderInput[]
+    deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
   }
 
   export type JobCreateNestedOneWithoutAssignmentsInput = {
@@ -58948,6 +60786,13 @@ export namespace Prisma {
     not?: NestedEnumJobPriorityFilter<$PrismaModel> | $Enums.JobPriority
   }
 
+  export type NestedEnumJOB_PAYMENT_STATUSFilter<$PrismaModel = never> = {
+    equals?: $Enums.JOB_PAYMENT_STATUS | EnumJOB_PAYMENT_STATUSFieldRefInput<$PrismaModel>
+    in?: $Enums.JOB_PAYMENT_STATUS[] | ListEnumJOB_PAYMENT_STATUSFieldRefInput<$PrismaModel>
+    notIn?: $Enums.JOB_PAYMENT_STATUS[] | ListEnumJOB_PAYMENT_STATUSFieldRefInput<$PrismaModel>
+    not?: NestedEnumJOB_PAYMENT_STATUSFilter<$PrismaModel> | $Enums.JOB_PAYMENT_STATUS
+  }
+
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[] | ListFloatFieldRefInput<$PrismaModel>
@@ -58972,6 +60817,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumJobPriorityFilter<$PrismaModel>
     _max?: NestedEnumJobPriorityFilter<$PrismaModel>
+  }
+
+  export type NestedEnumJOB_PAYMENT_STATUSWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.JOB_PAYMENT_STATUS | EnumJOB_PAYMENT_STATUSFieldRefInput<$PrismaModel>
+    in?: $Enums.JOB_PAYMENT_STATUS[] | ListEnumJOB_PAYMENT_STATUSFieldRefInput<$PrismaModel>
+    notIn?: $Enums.JOB_PAYMENT_STATUS[] | ListEnumJOB_PAYMENT_STATUSFieldRefInput<$PrismaModel>
+    not?: NestedEnumJOB_PAYMENT_STATUSWithAggregatesFilter<$PrismaModel> | $Enums.JOB_PAYMENT_STATUS
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumJOB_PAYMENT_STATUSFilter<$PrismaModel>
+    _max?: NestedEnumJOB_PAYMENT_STATUSFilter<$PrismaModel>
   }
 
   export type NestedEnumClientTypeFilter<$PrismaModel = never> = {
@@ -59576,7 +61431,6 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
@@ -59586,12 +61440,14 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     type: JobTypeCreateNestedOneWithoutJobsInput
     client?: ClientCreateNestedOneWithoutJobsInput
+    sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
     status: JobStatusCreateNestedOneWithoutJobsInput
@@ -59611,9 +61467,9 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     paymentChannelId?: string | null
     statusId: string
@@ -59624,7 +61480,8 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -60556,9 +62413,9 @@ export namespace Prisma {
     displayName?: StringFilter<"Job"> | string
     description?: StringNullableFilter<"Job"> | string | null
     attachmentUrls?: StringNullableListFilter<"Job">
-    sharepointFolderId?: StringNullableFilter<"Job"> | string | null
     clientId?: StringNullableFilter<"Job"> | string | null
     incomeCost?: FloatFilter<"Job"> | number
+    sharepointFolderId?: StringNullableFilter<"Job"> | string | null
     totalStaffCost?: FloatFilter<"Job"> | number
     createdById?: StringFilter<"Job"> | string
     paymentChannelId?: StringNullableFilter<"Job"> | string | null
@@ -60570,7 +62427,8 @@ export namespace Prisma {
     dueAt?: DateTimeFilter<"Job"> | Date | string
     completedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
     finishedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
-    paidAt?: DateTimeNullableFilter<"Job"> | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFilter<"Job"> | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: DateTimeNullableFilter<"Job"> | Date | string | null
     createdAt?: DateTimeFilter<"Job"> | Date | string
     updatedAt?: DateTimeFilter<"Job"> | Date | string
     deletedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
@@ -62653,7 +64511,6 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
@@ -62663,12 +64520,14 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     type: JobTypeCreateNestedOneWithoutJobsInput
     client?: ClientCreateNestedOneWithoutJobsInput
+    sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
@@ -62688,9 +64547,9 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     paymentChannelId?: string | null
@@ -62702,7 +64561,8 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -62883,7 +64743,6 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -62893,12 +64752,14 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     type?: JobTypeUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneWithoutJobsNestedInput
+    sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
@@ -62918,9 +64779,9 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -62932,7 +64793,8 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -63689,7 +65551,6 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
@@ -63699,12 +65560,14 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     type: JobTypeCreateNestedOneWithoutJobsInput
     client?: ClientCreateNestedOneWithoutJobsInput
+    sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
@@ -63724,9 +65587,9 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     paymentChannelId?: string | null
@@ -63738,7 +65601,8 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -63886,7 +65750,6 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -63896,12 +65759,14 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     type?: JobTypeUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneWithoutJobsNestedInput
+    sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
@@ -63921,9 +65786,9 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -63935,7 +65800,8 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -64014,6 +65880,33 @@ export namespace Prisma {
   export type ClientCreateOrConnectWithoutJobsInput = {
     where: ClientWhereUniqueInput
     create: XOR<ClientCreateWithoutJobsInput, ClientUncheckedCreateWithoutJobsInput>
+  }
+
+  export type SharepointItemCreateWithoutJobsInput = {
+    id?: string
+    itemId: string
+    displayName?: string | null
+    isFolder?: boolean
+    size?: number | null
+    webUrl?: string | null
+    createdDateTime?: string | null
+    createdBy?: string | null
+  }
+
+  export type SharepointItemUncheckedCreateWithoutJobsInput = {
+    id?: string
+    itemId: string
+    displayName?: string | null
+    isFolder?: boolean
+    size?: number | null
+    webUrl?: string | null
+    createdDateTime?: string | null
+    createdBy?: string | null
+  }
+
+  export type SharepointItemCreateOrConnectWithoutJobsInput = {
+    where: SharepointItemWhereUniqueInput
+    create: XOR<SharepointItemCreateWithoutJobsInput, SharepointItemUncheckedCreateWithoutJobsInput>
   }
 
   export type JobAssignmentCreateWithoutJobInput = {
@@ -64492,6 +66385,39 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type SharepointItemUpsertWithoutJobsInput = {
+    update: XOR<SharepointItemUpdateWithoutJobsInput, SharepointItemUncheckedUpdateWithoutJobsInput>
+    create: XOR<SharepointItemCreateWithoutJobsInput, SharepointItemUncheckedCreateWithoutJobsInput>
+    where?: SharepointItemWhereInput
+  }
+
+  export type SharepointItemUpdateToOneWithWhereWithoutJobsInput = {
+    where?: SharepointItemWhereInput
+    data: XOR<SharepointItemUpdateWithoutJobsInput, SharepointItemUncheckedUpdateWithoutJobsInput>
+  }
+
+  export type SharepointItemUpdateWithoutJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    itemId?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    isFolder?: BoolFieldUpdateOperationsInput | boolean
+    size?: NullableIntFieldUpdateOperationsInput | number | null
+    webUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdDateTime?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type SharepointItemUncheckedUpdateWithoutJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    itemId?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    isFolder?: BoolFieldUpdateOperationsInput | boolean
+    size?: NullableIntFieldUpdateOperationsInput | number | null
+    webUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdDateTime?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
   export type JobAssignmentUpsertWithWhereUniqueWithoutJobInput = {
     where: JobAssignmentWhereUniqueInput
     update: XOR<JobAssignmentUpdateWithoutJobInput, JobAssignmentUncheckedUpdateWithoutJobInput>
@@ -64812,13 +66738,12 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type JobCreateWithoutAssignmentsInput = {
+  export type JobCreateWithoutSharepointFolderInput = {
     id?: string
     no: string
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
@@ -64828,12 +66753,110 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     type: JobTypeCreateNestedOneWithoutJobsInput
     client?: ClientCreateNestedOneWithoutJobsInput
+    assignments?: JobAssignmentCreateNestedManyWithoutJobInput
+    createdBy: UserCreateNestedOneWithoutJobsCreatedInput
+    paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
+    status: JobStatusCreateNestedOneWithoutJobsInput
+    activityLog?: JobActivityLogCreateNestedManyWithoutJobInput
+    files?: FileSystemCreateNestedManyWithoutJobInput
+    comments?: JobCommentCreateNestedManyWithoutJobInput
+    statusHistory?: JobStatusHistoryCreateNestedManyWithoutJobInput
+    pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
+    jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
+    folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+  }
+
+  export type JobUncheckedCreateWithoutSharepointFolderInput = {
+    id?: string
+    no: string
+    typeId: string
+    displayName: string
+    description?: string | null
+    attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    clientId?: string | null
+    incomeCost: number
+    totalStaffCost?: number
+    createdById: string
+    paymentChannelId?: string | null
+    statusId: string
+    startedAt?: Date | string
+    priority?: $Enums.JobPriority
+    isPublished?: boolean
+    isPaid?: boolean
+    dueAt: Date | string
+    completedAt?: Date | string | null
+    finishedAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    folderTemplateId?: string | null
+    assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
+    activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
+    files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
+    comments?: JobCommentUncheckedCreateNestedManyWithoutJobInput
+    statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
+    pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
+    jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+  }
+
+  export type JobCreateOrConnectWithoutSharepointFolderInput = {
+    where: JobWhereUniqueInput
+    create: XOR<JobCreateWithoutSharepointFolderInput, JobUncheckedCreateWithoutSharepointFolderInput>
+  }
+
+  export type JobCreateManySharepointFolderInputEnvelope = {
+    data: JobCreateManySharepointFolderInput | JobCreateManySharepointFolderInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type JobUpsertWithWhereUniqueWithoutSharepointFolderInput = {
+    where: JobWhereUniqueInput
+    update: XOR<JobUpdateWithoutSharepointFolderInput, JobUncheckedUpdateWithoutSharepointFolderInput>
+    create: XOR<JobCreateWithoutSharepointFolderInput, JobUncheckedCreateWithoutSharepointFolderInput>
+  }
+
+  export type JobUpdateWithWhereUniqueWithoutSharepointFolderInput = {
+    where: JobWhereUniqueInput
+    data: XOR<JobUpdateWithoutSharepointFolderInput, JobUncheckedUpdateWithoutSharepointFolderInput>
+  }
+
+  export type JobUpdateManyWithWhereWithoutSharepointFolderInput = {
+    where: JobScalarWhereInput
+    data: XOR<JobUpdateManyMutationInput, JobUncheckedUpdateManyWithoutSharepointFolderInput>
+  }
+
+  export type JobCreateWithoutAssignmentsInput = {
+    id?: string
+    no: string
+    displayName: string
+    description?: string | null
+    attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    incomeCost: number
+    totalStaffCost?: number
+    startedAt?: Date | string
+    priority?: $Enums.JobPriority
+    isPublished?: boolean
+    isPaid?: boolean
+    dueAt: Date | string
+    completedAt?: Date | string | null
+    finishedAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    type: JobTypeCreateNestedOneWithoutJobsInput
+    client?: ClientCreateNestedOneWithoutJobsInput
+    sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
     status: JobStatusCreateNestedOneWithoutJobsInput
@@ -64853,9 +66876,9 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     paymentChannelId?: string | null
@@ -64867,7 +66890,8 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -64993,7 +67017,6 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -65003,12 +67026,14 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     type?: JobTypeUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneWithoutJobsNestedInput
+    sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
     status?: JobStatusUpdateOneRequiredWithoutJobsNestedInput
@@ -65028,9 +67053,9 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -65042,7 +67067,8 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -65158,7 +67184,6 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
@@ -65168,12 +67193,14 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     type: JobTypeCreateNestedOneWithoutJobsInput
     client?: ClientCreateNestedOneWithoutJobsInput
+    sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
@@ -65193,9 +67220,9 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     paymentChannelId?: string | null
@@ -65207,7 +67234,8 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -65252,7 +67280,6 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
@@ -65262,11 +67289,13 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     type: JobTypeCreateNestedOneWithoutJobsInput
+    sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
@@ -65287,8 +67316,8 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     paymentChannelId?: string | null
@@ -65300,7 +67329,8 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -65437,7 +67467,6 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
@@ -65447,12 +67476,14 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     type: JobTypeCreateNestedOneWithoutJobsInput
     client?: ClientCreateNestedOneWithoutJobsInput
+    sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
@@ -65472,9 +67503,9 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     paymentChannelId?: string | null
@@ -65486,7 +67517,8 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -65618,7 +67650,6 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -65628,12 +67659,14 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     type?: JobTypeUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneWithoutJobsNestedInput
+    sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
@@ -65653,9 +67686,9 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -65667,7 +67700,8 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -65686,7 +67720,6 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
@@ -65696,12 +67729,14 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     type: JobTypeCreateNestedOneWithoutJobsInput
     client?: ClientCreateNestedOneWithoutJobsInput
+    sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
     status: JobStatusCreateNestedOneWithoutJobsInput
@@ -65721,9 +67756,9 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     statusId: string
@@ -65734,7 +67769,8 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -65780,7 +67816,6 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
@@ -65790,11 +67825,13 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     client?: ClientCreateNestedOneWithoutJobsInput
+    sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
@@ -65814,9 +67851,9 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     paymentChannelId?: string | null
@@ -65828,7 +67865,8 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -65874,7 +67912,6 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
@@ -65884,12 +67921,14 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     type: JobTypeCreateNestedOneWithoutJobsInput
     client?: ClientCreateNestedOneWithoutJobsInput
+    sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
@@ -65909,9 +67948,9 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     paymentChannelId?: string | null
@@ -65922,7 +67961,8 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -66080,7 +68120,6 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
@@ -66090,12 +68129,14 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     type: JobTypeCreateNestedOneWithoutJobsInput
     client?: ClientCreateNestedOneWithoutJobsInput
+    sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
@@ -66115,9 +68156,9 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     paymentChannelId?: string | null
@@ -66129,7 +68170,8 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -66283,7 +68325,6 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -66293,12 +68334,14 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     type?: JobTypeUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneWithoutJobsNestedInput
+    sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
@@ -66318,9 +68361,9 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -66332,7 +68375,8 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -66477,7 +68521,6 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
@@ -66487,12 +68530,14 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     type: JobTypeCreateNestedOneWithoutJobsInput
     client?: ClientCreateNestedOneWithoutJobsInput
+    sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
@@ -66512,9 +68557,9 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     paymentChannelId?: string | null
@@ -66526,7 +68571,8 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -66691,7 +68737,6 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -66701,12 +68746,14 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     type?: JobTypeUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneWithoutJobsNestedInput
+    sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
@@ -66726,9 +68773,9 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -66740,7 +68787,8 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -66901,7 +68949,6 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
@@ -66911,12 +68958,14 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     type: JobTypeCreateNestedOneWithoutJobsInput
     client?: ClientCreateNestedOneWithoutJobsInput
+    sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
@@ -66936,9 +68985,9 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     paymentChannelId?: string | null
@@ -66950,7 +68999,8 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -67076,7 +69126,6 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -67086,12 +69135,14 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     type?: JobTypeUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneWithoutJobsNestedInput
+    sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
@@ -67111,9 +69162,9 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -67125,7 +69176,8 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -68484,9 +70536,9 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     paymentChannelId?: string | null
     statusId: string
@@ -68497,7 +70549,8 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -68750,7 +70803,6 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -68760,12 +70812,14 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     type?: JobTypeUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneWithoutJobsNestedInput
+    sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
     status?: JobStatusUpdateOneRequiredWithoutJobsNestedInput
@@ -68785,9 +70839,9 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: StringFieldUpdateOperationsInput | string
@@ -68798,7 +70852,8 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -68819,9 +70874,9 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: StringFieldUpdateOperationsInput | string
@@ -68832,7 +70887,8 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -70478,14 +72534,13 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type JobCreateManyFolderTemplateInput = {
+  export type JobCreateManySharepointFolderInput = {
     id?: string
     no: string
     typeId: string
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
     totalStaffCost?: number
@@ -70499,7 +72554,135 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    folderTemplateId?: string | null
+  }
+
+  export type JobUpdateWithoutSharepointFolderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    no?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    incomeCost?: FloatFieldUpdateOperationsInput | number
+    totalStaffCost?: FloatFieldUpdateOperationsInput | number
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
+    isPublished?: BoolFieldUpdateOperationsInput | boolean
+    isPaid?: BoolFieldUpdateOperationsInput | boolean
+    dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    type?: JobTypeUpdateOneRequiredWithoutJobsNestedInput
+    client?: ClientUpdateOneWithoutJobsNestedInput
+    assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
+    paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
+    status?: JobStatusUpdateOneRequiredWithoutJobsNestedInput
+    activityLog?: JobActivityLogUpdateManyWithoutJobNestedInput
+    files?: FileSystemUpdateManyWithoutJobNestedInput
+    comments?: JobCommentUpdateManyWithoutJobNestedInput
+    statusHistory?: JobStatusHistoryUpdateManyWithoutJobNestedInput
+    pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
+    jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
+    folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+  }
+
+  export type JobUncheckedUpdateWithoutSharepointFolderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    no?: StringFieldUpdateOperationsInput | string
+    typeId?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    incomeCost?: FloatFieldUpdateOperationsInput | number
+    totalStaffCost?: FloatFieldUpdateOperationsInput | number
+    createdById?: StringFieldUpdateOperationsInput | string
+    paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
+    statusId?: StringFieldUpdateOperationsInput | string
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
+    isPublished?: BoolFieldUpdateOperationsInput | boolean
+    isPaid?: BoolFieldUpdateOperationsInput | boolean
+    dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
+    activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
+    files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
+    comments?: JobCommentUncheckedUpdateManyWithoutJobNestedInput
+    statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
+    pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
+    jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+  }
+
+  export type JobUncheckedUpdateManyWithoutSharepointFolderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    no?: StringFieldUpdateOperationsInput | string
+    typeId?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    incomeCost?: FloatFieldUpdateOperationsInput | number
+    totalStaffCost?: FloatFieldUpdateOperationsInput | number
+    createdById?: StringFieldUpdateOperationsInput | string
+    paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
+    statusId?: StringFieldUpdateOperationsInput | string
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
+    isPublished?: BoolFieldUpdateOperationsInput | boolean
+    isPaid?: BoolFieldUpdateOperationsInput | boolean
+    dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type JobCreateManyFolderTemplateInput = {
+    id?: string
+    no: string
+    typeId: string
+    displayName: string
+    description?: string | null
+    attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    clientId?: string | null
+    incomeCost: number
+    sharepointFolderId?: string | null
+    totalStaffCost?: number
+    createdById: string
+    paymentChannelId?: string | null
+    statusId: string
+    startedAt?: Date | string
+    priority?: $Enums.JobPriority
+    isPublished?: boolean
+    isPaid?: boolean
+    dueAt: Date | string
+    completedAt?: Date | string | null
+    finishedAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -70511,7 +72694,6 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -70521,12 +72703,14 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     type?: JobTypeUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneWithoutJobsNestedInput
+    sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
@@ -70546,9 +72730,9 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -70560,7 +72744,8 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -70580,9 +72765,9 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -70594,7 +72779,8 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -70607,8 +72793,8 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     paymentChannelId?: string | null
@@ -70620,7 +72806,8 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -70633,7 +72820,6 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -70643,11 +72829,13 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     type?: JobTypeUpdateOneRequiredWithoutJobsNestedInput
+    sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
@@ -70668,8 +72856,8 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -70681,7 +72869,8 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -70702,8 +72891,8 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -70715,7 +72904,8 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -70729,9 +72919,9 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     statusId: string
@@ -70742,7 +72932,8 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -70755,7 +72946,6 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -70765,12 +72955,14 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     type?: JobTypeUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneWithoutJobsNestedInput
+    sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
     status?: JobStatusUpdateOneRequiredWithoutJobsNestedInput
@@ -70790,9 +72982,9 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     statusId?: StringFieldUpdateOperationsInput | string
@@ -70803,7 +72995,8 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -70824,9 +73017,9 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     statusId?: StringFieldUpdateOperationsInput | string
@@ -70837,7 +73030,8 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -70850,9 +73044,9 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     paymentChannelId?: string | null
@@ -70864,7 +73058,8 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -70877,7 +73072,6 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -70887,11 +73081,13 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     client?: ClientUpdateOneWithoutJobsNestedInput
+    sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
@@ -70911,9 +73107,9 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -70925,7 +73121,8 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -70945,9 +73142,9 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -70959,7 +73156,8 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -70973,9 +73171,9 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     paymentChannelId?: string | null
@@ -70986,7 +73184,8 @@ export namespace Prisma {
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -71010,7 +73209,6 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -71020,12 +73218,14 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     type?: JobTypeUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneWithoutJobsNestedInput
+    sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
@@ -71045,9 +73245,9 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -71058,7 +73258,8 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -71079,9 +73280,9 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -71092,7 +73293,8 @@ export namespace Prisma {
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null

@@ -1,16 +1,8 @@
-import { Avatar, Button, Divider, useDisclosure } from '@heroui/react'
-import {
-    Download,
-    FileText,
-    Paperclip,
-    Plus,
-    Trash2,
-    Users,
-} from 'lucide-react'
-import { HeroTooltip } from '@/shared/components'
+import AssignMemberModal from '@/features/project-center/components/modals/AssignMemberModal'
 import { optimizeCloudinary } from '@/lib'
 import { TJob } from '@/shared/types'
-import AssignMemberModal from '@/features/project-center/components/modals/AssignMemberModal'
+import { Avatar, Button, useDisclosure, Tooltip } from '@heroui/react'
+import { Download, FileText, Paperclip, Plus, Trash2 } from 'lucide-react'
 
 type JobTeamAndFilesProps = {
     job: TJob
@@ -41,7 +33,7 @@ export function JobTeamAndFiles({ job, onRemoveMember }: JobTeamAndFilesProps) {
                         <h1 className="text-lg font-bold text-text-default">
                             Assigned Team
                         </h1>
-                        <HeroTooltip
+                        <Tooltip
                             placement="right"
                             content={
                                 <div className="px-1 py-1 max-w-[250px] text-tiny text-default-600">
@@ -54,7 +46,7 @@ export function JobTeamAndFiles({ job, onRemoveMember }: JobTeamAndFilesProps) {
                             <div className="flex items-center justify-center w-4 h-4 rounded-full bg-default-200 hover:bg-default-300 text-[10px] font-bold text-default-600 cursor-help transition-colors">
                                 !
                             </div>
-                        </HeroTooltip>
+                        </Tooltip>
                     </div>
                     <p className="text-sm text-text-subdued">
                         Manage experts and collaborators working on this
@@ -85,9 +77,7 @@ export function JobTeamAndFiles({ job, onRemoveMember }: JobTeamAndFilesProps) {
                                     </p>
                                 </div>
                             </div>
-                            <HeroTooltip
-                                content={`Remove @${ass.user.username}`}
-                            >
+                            <Tooltip content={`Remove @${ass.user.username}`}>
                                 <Button
                                     isIconOnly
                                     size="sm"
@@ -98,7 +88,7 @@ export function JobTeamAndFiles({ job, onRemoveMember }: JobTeamAndFilesProps) {
                                 >
                                     <Trash2 size={16} />
                                 </Button>
-                            </HeroTooltip>
+                            </Tooltip>
                         </div>
                     ))}
 
@@ -126,7 +116,7 @@ export function JobTeamAndFiles({ job, onRemoveMember }: JobTeamAndFilesProps) {
                             <h1 className="text-lg font-bold text-text-default">
                                 Project Files
                             </h1>
-                            <HeroTooltip
+                            <Tooltip
                                 placement="right"
                                 content={
                                     <div className="px-1 py-1 max-w-[250px] text-tiny text-default-600">
@@ -139,7 +129,7 @@ export function JobTeamAndFiles({ job, onRemoveMember }: JobTeamAndFilesProps) {
                                 <div className="flex items-center justify-center w-4 h-4 rounded-full bg-default-200 hover:bg-default-300 text-[10px] font-bold text-default-600 cursor-help transition-colors">
                                     !
                                 </div>
-                            </HeroTooltip>
+                            </Tooltip>
                         </div>
                         <Button
                             size="sm"
@@ -181,7 +171,7 @@ export function JobTeamAndFiles({ job, onRemoveMember }: JobTeamAndFilesProps) {
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-1">
-                                    <HeroTooltip content="Download">
+                                    <Tooltip content="Download">
                                         <Button
                                             isIconOnly
                                             size="sm"
@@ -190,7 +180,7 @@ export function JobTeamAndFiles({ job, onRemoveMember }: JobTeamAndFilesProps) {
                                         >
                                             <Download size={18} />
                                         </Button>
-                                    </HeroTooltip>
+                                    </Tooltip>
                                     <Button
                                         isIconOnly
                                         size="sm"

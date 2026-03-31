@@ -513,7 +513,7 @@ function EditStaffPage({ data: user }: { data: TUser }) {
 // ============================================================================
 function EditProfileTab({ user }: { user: TUser }) {
     const router = useRouter()
-    const updateUserMutation = useUpdateUserMutation()
+    const updateUserMutation = useMutation(updateUserOptions)
 
     const formik = useFormik<TEditUser & { code?: string }>({
         initialValues: {
@@ -685,7 +685,7 @@ function EditProfileTab({ user }: { user: TUser }) {
 // TAB 2: ORGANIZATION & FINANCE
 // ============================================================================
 function OrganizationDepartment({ user }: { user: TUser }) {
-    const updateUserMutation = useUpdateUserMutation()
+    const updateUserMutation = useMutation(updateUserOptions)
     const [
         {
             data: { departments },

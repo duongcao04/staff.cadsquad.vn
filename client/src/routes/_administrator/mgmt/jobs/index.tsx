@@ -29,7 +29,7 @@ import {
     Spinner,
     useDisclosure
 } from '@heroui/react'
-import { APP_PERMISSIONS } from '@staff-cadsquad/shared'
+import { APP_PERMISSIONS } from '@/lib'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import {

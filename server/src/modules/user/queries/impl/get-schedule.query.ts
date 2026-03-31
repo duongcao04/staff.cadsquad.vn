@@ -1,6 +1,6 @@
 import { PrismaService } from "@/providers/prisma/prisma.service";
 import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
-import { APP_PERMISSIONS } from "@staff-cadsquad/shared";
+import { APP_PERMISSIONS } from "@/utils"
 import dayjs from "dayjs";
 
 export class GetScheduleQuery {
@@ -20,7 +20,6 @@ export class GetScheduleHandler implements IQueryHandler<GetScheduleQuery> {
 	async execute(query: GetScheduleQuery) {
 		const { userId, month, userPermissions, year, day } = query;
 
-		// 1. FIX: Khởi tạo baseDate phải bind chính xác year và month (dayjs tính tháng từ 0-11)
 		const baseDate = dayjs().year(year).month(month - 1);
 
 		let start: Date;
@@ -52,7 +51,7 @@ export class GetScheduleHandler implements IQueryHandler<GetScheduleQuery> {
 		const jobsSchedule = await this.prisma.job.findMany({
 			where: {
 				AND: [
-					buildPermission, // Rải object thẳng vào đây
+					buildPermission,
 					{
 						dueAt: {
 							gte: start,

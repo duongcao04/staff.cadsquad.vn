@@ -5,6 +5,7 @@ export * from './useImage';
 export * from './useNotification';
 export * from './options/administrator-queries';
 export * from './options/analytics-queries';
+export * from './options/auth-queries';
 export * from './options/client-queries';
 export * from './options/department-queries';
 export * from './options/job-comments-queries';

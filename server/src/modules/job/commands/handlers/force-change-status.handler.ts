@@ -46,7 +46,7 @@ export class ForceChangeStatusHandler implements ICommandHandler<ForceChangeStat
 				updateData.finishedAt = now;
 				updateData.isPaid = true;
 				// Chỉ cập nhật ngày thanh toán nếu trước đó chưa có
-				if (!job.paidAt) updateData.paidAt = now;
+				if (!job.payoutDate) updateData.payoutDate = now;
 			}
 
 			const result = await tx.job.update({

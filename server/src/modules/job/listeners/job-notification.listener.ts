@@ -5,7 +5,7 @@ import { MailService } from '@/providers/mail/mail.service';
 import { IMAGES } from '@/utils';
 import { Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
-import { APP_PERMISSIONS } from '@staff-cadsquad/shared';
+import { APP_PERMISSIONS } from '@/utils';
 import { JobActionEvent } from '../events/job-action.event';
 
 @Injectable()
@@ -290,7 +290,7 @@ export class JobNotificationListener {
                 no: job.no,
                 displayName: job.displayName,
                 incomeCost: job.incomeCost,
-                paidAt: job.paidAt,
+                payoutDate: job.payoutDate,
             });
         }
     }

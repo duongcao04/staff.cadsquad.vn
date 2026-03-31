@@ -1,9 +1,9 @@
 import { appConfig, databaseConfig } from '@/config'
-import { PrismaClient } from '@/generated/prisma'
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common'
 import type { ConfigType } from '@nestjs/config'
 import { PrismaPg } from '@prisma/adapter-pg'
 import { Pool } from 'pg'
+import { PrismaClient } from '../../generated/prisma'
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {

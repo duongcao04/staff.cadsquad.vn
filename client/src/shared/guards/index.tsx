@@ -1,5 +1,5 @@
 import React from 'react'
-import { APP_PERMISSIONS } from '@staff-cadsquad/shared'
+import { APP_PERMISSIONS } from '@/lib'
 import { ProtectedRoute } from './protected-route'
 
 /**

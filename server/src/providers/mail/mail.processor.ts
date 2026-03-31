@@ -125,7 +125,7 @@ export class MailProcessor extends WorkerHost {
 					style: 'currency',
 					currency: 'VND',
 				}).format(data.amount),
-				paidDate: new Date(data.paidAt).toLocaleDateString('vi-VN'),
+				paidDate: new Date(data.payoutDate).toLocaleDateString('vi-VN'),
 				jobLink: `${this.config.CLIENT_URL}/jobs/${data.jobNo}`,
 				logoUrl: IMAGES.NOTIFICATION_DEFAULT_IMAGE,
 			}

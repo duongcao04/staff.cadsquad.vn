@@ -18,18 +18,18 @@ import {
 import { RequirePermissions } from '../../common/decorators/require-permissions.decorator'
 import { ResponseMessage } from '../../common/decorators/responseMessage.decorator'
 import { PermissionsGuard } from '../../common/guards/permissions.guard'
-import { APP_PERMISSIONS } from '@staff-cadsquad/shared'
 import { CreateJobTitleDto } from './dto/create-job-title.dto'
 import { JobTitleResponseDto } from './dto/job-title-response.dto'
 import { UpdateJobTitleDto } from './dto/update-job-title.dto'
 import { JobTitleService } from './job-title.service'
 import { JwtGuard } from '../auth/jwt.guard'
+import { APP_PERMISSIONS } from '@/utils'
 
 @ApiTags('Job Titles')
 @Controller('job-titles')
 @UseGuards(JwtGuard)
 export class JobTitleController {
-    constructor(private readonly jobTitleService: JobTitleService) {}
+    constructor(private readonly jobTitleService: JobTitleService) { }
 
     @Post()
     @HttpCode(201)

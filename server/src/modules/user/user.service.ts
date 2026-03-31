@@ -8,7 +8,7 @@ import {
 	NotFoundException,
 } from '@nestjs/common'
 import { EventEmitter2 } from '@nestjs/event-emitter'
-import { APP_PERMISSIONS } from '@staff-cadsquad/shared'
+import { APP_PERMISSIONS } from '@/utils'
 import { plainToInstance } from 'class-transformer'
 import dayjs from 'dayjs'
 import lodash from 'lodash'
@@ -519,93 +519,6 @@ export class UserService {
 			},
 			take: 20,
 		})
-	}
-
-	async getUserSchedule(
-		userId: string,
-		userPermissions: string[],
-		month: number,
-		year: number,
-		day?: number
-	) {
-		// 1. Tạo object cơ sở để tránh lặp lại logic .year().month()
-		const baseDate = dayjs('2026/01/14')
-
-		let start: Date
-		let end: Date
-
-		if (day) {
-			// Kiểm tra nếu day không hợp lệ cho tháng đó (VD: 31/02)
-			const daysInMonth = baseDate.daysInMonth()
-			const targetDay = day > daysInMonth ? daysInMonth : day
-
-			const dateObj = baseDate.date(targetDay)
-			start = dateObj.startOf('day').toDate()
-			end = dateObj.endOf('day').toDate()
-		} else {
-			start = baseDate.startOf('month').toDate()
-			end = baseDate.endOf('month').toDate()
-		}
-
-		const buildPermission = userPermissions.includes(
-			APP_PERMISSIONS.JOB.READ_ALL
-		)
-			? {}
-			: {
-				assignments: {
-					some: {
-						userId: userId,
-					},
-				},
-			}
-
-		const jobsSchedule = await this.prismaService.job.findMany({
-			where: {
-				AND: [
-					{
-						...buildPermission,
-					},
-					{
-						dueAt: {
-							gte: start,
-							lte: end,
-						},
-					},
-					{
-						status: {
-							systemType: { notIn: ['TERMINATED', 'COMPLETED'] },
-						},
-					},
-					{
-						deletedAt: null,
-					},
-				],
-			},
-			include: {
-				status: {
-					select: {
-						displayName: true,
-						hexColor: true,
-						code: true,
-						thumbnailUrl: true,
-					},
-				},
-				type: true,
-			},
-			orderBy: {
-				dueAt: 'asc',
-			},
-		})
-
-		return {
-			jobsSchedule,
-			meta: {
-				start,
-				end,
-				type: day ? 'day' : 'month',
-				total: jobsSchedule.length,
-			},
-		}
 	}
 
 	/**

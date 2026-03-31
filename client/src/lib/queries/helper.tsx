@@ -1,5 +1,4 @@
-import { toast } from '@heroui/react'
-
+import { addToast } from '@heroui/react'
 import { type ApiError } from '../axios'
 
 export const onErrorToast = (error: unknown, title: string) => {
@@ -26,7 +25,9 @@ export const onErrorToast = (error: unknown, title: string) => {
         }
     }
 
-    toast.danger(title, {
+    addToast({
+        title,
         description,
+        color: 'danger',
     })
 }
