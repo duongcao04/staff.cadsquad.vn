@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger'
 import { APP_PERMISSIONS } from '@/utils'
 import { Expose, Type } from 'class-transformer'
 import { Client } from 'pg'
-import { JobAssignment } from '../../../generated/prisma'
+import { JOB_PAYMENT_STATUS, JobAssignment } from '../../../generated/prisma'
 import { JobFolderTemplateResponseDto } from '../../job-folder-template/dto/job-folder-template-response.dto'
 import { JobStatusResponseDto } from '../../job-status/dto/job-status-response.dto'
 import { JobTypeResponseDto } from '../../job-type/dto/job-type-response.dto'
@@ -71,9 +71,11 @@ export class JobResponseDto {
 	@Expose()
 	sharepointFolderId?: string
 
-
 	@Expose()
 	sharepointFolder?: any
+
+	@Expose()
+	paymentStatus?: JOB_PAYMENT_STATUS
 
 	@ApiProperty({ description: 'Start date of the job' })
 	@Expose()

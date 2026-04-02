@@ -4,7 +4,7 @@ import AssignMemberModal from '@/features/project-center/components/modals/Assig
 import UpdateCostModal from '@/features/project-center/components/modals/UpdateCostModal'
 import { INTERNAL_URLS } from '@/lib'
 import {
-    deleteJobOptions,
+    cancelJobOptions,
     markJobPaidOptions,
     workbenchDataOptions,
 } from '@/lib/queries'
@@ -48,7 +48,7 @@ export function WorkbenchTableQuickActions({
         [data]
     )
     const { mutateAsync: deleteJobMutation, isPending: isDeleting } =
-        useMutation(deleteJobOptions)
+        useMutation(cancelJobOptions)
 
     const {
         isOpen: isOpenAssignModal,

@@ -795,7 +795,7 @@ INSERT INTO
 	)
 VALUES
 	(
-		'c1b2a3d4-e5f6-7890-abcd-111111111111',
+		'dace5f12-1c3e-46bd-aa04-e942e22f5786',
 		'CL-AUTO-001',
 		'Tesla Motors',
 		'billing@tesla.com',
@@ -809,7 +809,7 @@ VALUES
 		NOW ()
 	),
 	(
-		'c2b3a4d5-e6f7-8901-bcde-222222222222',
+		'633815cd-3039-43c1-b92e-48df6082cf32',
 		'CL-TECH-002',
 		'Samsung Electronics',
 		'accounts@samsung.com',
@@ -823,7 +823,7 @@ VALUES
 		NOW ()
 	),
 	(
-		'c3b4a5d6-e7f8-9012-cdef-333333333333',
+		'37ad6f9b-d585-4dd9-af67-bda0bfbccbca',
 		'CL-VN-003',
 		'VinFast Vietnam',
 		'contact@vinfast.vn',
@@ -837,7 +837,7 @@ VALUES
 		NOW ()
 	),
 	(
-		'c4b5a6d7-e8f9-0123-defg-444444444444',
+		'c124991f-94b3-40e7-aaa3-efb76817a157',
 		'CL-EU-004',
 		'Siemens AG',
 		'finance@siemens.de',

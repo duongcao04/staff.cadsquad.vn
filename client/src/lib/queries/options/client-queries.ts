@@ -41,6 +41,10 @@ export const clientOptions = (identify: string) => {
     })
 }
 
+export const createClientOptions = mutationOptions({
+    mutationFn: (data: TEditClientFormValues) => clientApi.create(data),
+    onError: (err) => onErrorToast(err, 'Create failed'),
+})
 
 export const updateClientOptions = mutationOptions({
     mutationFn: ({

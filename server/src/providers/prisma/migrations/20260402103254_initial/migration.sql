@@ -335,7 +335,7 @@ CREATE TABLE "SharepointItem" (
     "itemId" TEXT NOT NULL,
     "displayName" TEXT,
     "isFolder" BOOLEAN NOT NULL DEFAULT false,
-    "size" TEXT,
+    "size" INTEGER,
     "webUrl" TEXT,
     "createdDateTime" TEXT,
     "createdBy" TEXT,
@@ -373,7 +373,7 @@ CREATE TABLE "Client" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "code" TEXT NOT NULL,
-    "type" "ClientType" NOT NULL DEFAULT 'COMPANY',
+    "type" "ClientType" NOT NULL DEFAULT 'INDIVIDUAL',
     "region" TEXT,
     "country" TEXT,
     "address" TEXT,
@@ -720,9 +720,6 @@ CREATE UNIQUE INDEX "Client_name_key" ON "Client"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Client_code_key" ON "Client"("code");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Client_email_key" ON "Client"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "JobStatus_code_key" ON "JobStatus"("code");

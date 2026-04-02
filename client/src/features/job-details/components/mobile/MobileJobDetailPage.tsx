@@ -1,7 +1,7 @@
 import {
     currencyFormatter,
     dateFormatter,
-    getJobPaymentStatusDisplay,
+    JobHelper,
     INTERNAL_URLS,
     useProfile,
 } from '@/lib'
@@ -509,12 +509,13 @@ const PaidChip = ({ status }: { status: EJobPaymentStatus }) => (
         <div
             className="size-1.5 rounded-full"
             style={{
-                backgroundColor: getJobPaymentStatusDisplay(status).hexColor,
+                backgroundColor:
+                    JobHelper.getJobPaymentStatusDisplay(status).hexColor,
             }}
         />
         <span
             style={{
-                color: getJobPaymentStatusDisplay(status).hexColor,
+                color: JobHelper.getJobPaymentStatusDisplay(status).hexColor,
             }}
         >
             {status.toUpperCase()}

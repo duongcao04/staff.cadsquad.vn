@@ -27,7 +27,7 @@ import {
     ModalHeader,
     Selection,
     Spinner,
-    useDisclosure
+    useDisclosure,
 } from '@heroui/react'
 import { APP_PERMISSIONS } from '@/lib'
 import { useSuspenseQuery } from '@tanstack/react-query'

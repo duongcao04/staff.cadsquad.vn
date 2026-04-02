@@ -1,6 +1,6 @@
 import { INTERNAL_URLS } from '@/lib'
 import {
-    deleteJobOptions,
+    cancelJobOptions,
     jobsListOptions,
     useProfile,
 } from '@/lib/queries'
@@ -41,7 +41,7 @@ export function ProjectCenterTableQuickActions({
     const { isAdmin, isAccounting } = useProfile()
 
     const { mutateAsync: deleteJobMutation, isPending: isDeleting } =
-        useMutation(deleteJobOptions)
+        useMutation(cancelJobOptions)
 
     // --- Modal Controllers ---
     const assignModal = useDisclosure()

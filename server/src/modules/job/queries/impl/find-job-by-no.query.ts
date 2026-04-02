@@ -31,7 +31,7 @@ export class FindJobByNoHandler implements IQueryHandler<FindJobByNoQuery> {
 				createdBy: true,
 				paymentChannel: true,
 				status: true,
-				client: { select: { name: true } },
+				client: { select: { id: true, name: true } },
 				assignments: {
 					include: { user: { include: { department: true } } },
 				},

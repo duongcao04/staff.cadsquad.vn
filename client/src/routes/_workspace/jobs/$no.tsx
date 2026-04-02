@@ -18,7 +18,7 @@ import {
 } from '@/lib/queries'
 import {
     APP_PERMISSIONS,
-    getJobPaymentStatusDisplay,
+    JobHelper,
     INTERNAL_URLS,
     RouteUtil,
 } from '@/lib/utils'
@@ -304,7 +304,9 @@ function JobDetailPage({ job }: { job: TJob }) {
         return jobStatuses[activeIndex] || job?.status
     }, [activeIndex, jobStatuses, job?.status])
 
-    const paymentDisplay = getJobPaymentStatusDisplay(job?.paymentStatus)
+    const paymentDisplay = JobHelper.getJobPaymentStatusDisplay(
+        job?.paymentStatus
+    )
 
     const sharepointDisplay = (() => {
         if (!job?.sharepointFolder && !job?.folderTemplate) {

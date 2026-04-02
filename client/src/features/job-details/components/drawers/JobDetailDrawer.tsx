@@ -11,7 +11,7 @@ import {
     APP_PERMISSIONS,
     currencyFormatter,
     EXTERNAL_URLS,
-    getJobPaymentStatusDisplay,
+    JobHelper,
 } from '@/lib/utils'
 import JobAttachmentsField from '@/shared/components/form-fields/JobAttachmentsField'
 import CountdownTimer from '@/shared/components/ui/countdown-timer'
@@ -125,7 +125,9 @@ export default function JobDetailDrawer({
         return jobStatuses[activeIndex] || job?.status
     }, [activeIndex, jobStatuses, job?.status])
 
-    const paymentDisplay = getJobPaymentStatusDisplay(job?.paymentStatus)
+    const paymentDisplay = JobHelper.getJobPaymentStatusDisplay(
+        job?.paymentStatus
+    )
     const {
         data: activityLogs,
         refetch: refetchLogs,

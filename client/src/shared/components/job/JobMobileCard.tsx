@@ -1,7 +1,7 @@
 import AddAttachmentsModal from '@/features/project-center/components/modals/AddAttachmentsModal'
 import AssignMemberModal from '@/features/project-center/components/modals/AssignMemberModal'
 import {
-    deleteJobOptions,
+    cancelJobOptions,
     handleCopy,
     INTERNAL_URLS,
     jobsListOptions,
@@ -48,7 +48,7 @@ type JobMobileCardProps = {
 }
 export function JobMobileCard({ job }: JobMobileCardProps) {
     const router = useRouter()
-    const deleteJobMutation = useMutation(deleteJobOptions)
+    const deleteJobMutation = useMutation(cancelJobOptions)
 
     const isPauseDueAt =
         job.status.systemType === 'TERMINATED' ||

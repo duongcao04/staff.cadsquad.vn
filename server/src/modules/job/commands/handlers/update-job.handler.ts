@@ -30,23 +30,6 @@ export class UpdateJobHandler implements ICommandHandler<UpdateJobCommand> {
 
 		return await this.prisma.$transaction(async (tx) => {
 			const updateTasks: Promise<any>[] = [];
-			let clientId: string | undefined = undefined;
-
-			// --- A. Logic Xử lý Client Name ---
-			if (dto.clientName && dto.clientName.trim() !== jobBefore.client?.name) {
-				const existingClient = await tx.client.findFirst({
-					where: { name: { equals: dto.clientName.trim(), mode: 'insensitive' } },
-				});
-				if (existingClient) {
-					clientId = existingClient.id;
-				} else {
-					const code = await this.helper.generateClientCode(dto.clientName, tx);
-					const newClient = await tx.client.create({
-						data: { name: dto.clientName.trim(), code },
-					});
-					clientId = newClient.id;
-				}
-			}
 
 			// --- B. Logic Xử lý Attachments (nếu có) ---
 			let finalAttachments = jobBefore.attachmentUrls as string[] || [];
@@ -66,7 +49,7 @@ export class UpdateJobHandler implements ICommandHandler<UpdateJobCommand> {
 				where: { id: jobId },
 				data: {
 					displayName: dto.displayName,
-					clientId: clientId,
+					clientId: dto.clientId,
 					startedAt: dto.startedAt,
 					dueAt: dto.dueAt,
 					description: dto.description,

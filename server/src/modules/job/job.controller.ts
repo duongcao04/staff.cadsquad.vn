@@ -164,7 +164,7 @@ export class JobController {
 	@Get('pending-deliver')
 	async getPendingDeliver(@Req() request: Request) {
 		const user: TokenPayload = request['user']
-		return this.commandBus.execute(
+		return this.queryBus.execute(
 			new FindJobsToDeliverQuery(user.sub, user.permissions)
 		)
 	}
@@ -346,7 +346,6 @@ export class JobController {
 		const updated = this.commandBus.execute(
 			new ForceChangeStatusCommand(id, user.sub, data)
 		)
-		// request['auditTargetDisplay'] =
 		return updated
 	}
 

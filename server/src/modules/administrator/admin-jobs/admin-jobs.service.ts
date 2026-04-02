@@ -32,15 +32,17 @@ export class AdminJobsService {
 			}),
 		}
 
+		const notDeleted: Prisma.JobWhereInput = {
+			deletedAt: null,
+		}
+
 		const [total, ongoing, delivered, late, finished] = await Promise.all([
 			// total quey
 			this.prisma.job.count({
 				where: {
 					AND: [
 						dateRangeCodition,
-						{
-							deletedAt: null,
-						}
+						notDeleted
 					]
 				},
 			}),
@@ -63,7 +65,7 @@ export class AdminJobsService {
 							dueAt: {
 								lt: today,
 							},
-						}
+						}, notDeleted
 					]
 				}
 			}),
@@ -76,7 +78,7 @@ export class AdminJobsService {
 							status: {
 								systemType: JobStatusSystemType.DELIVERED,
 							},
-						},
+						}, notDeleted
 					]
 				}
 			}),
@@ -98,9 +100,9 @@ export class AdminJobsService {
 						},
 						{
 							dueAt: {
-								gt: today,
+								lt: today,
 							},
-						}
+						}, notDeleted
 					]
 				}
 			}),
@@ -113,7 +115,7 @@ export class AdminJobsService {
 							status: {
 								systemType: JobStatusSystemType.TERMINATED,
 							},
-						},
+						}, notDeleted
 					]
 				}
 			}),

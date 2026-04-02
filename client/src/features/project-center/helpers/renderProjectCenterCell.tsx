@@ -2,7 +2,7 @@ import { optimizeCloudinary } from '@/lib'
 import { dateFormatter } from '@/lib/dayjs'
 import {
     currencyFormatter,
-    getJobPaymentStatusDisplay,
+    JobHelper,
     IMAGES,
     INTERNAL_URLS,
 } from '@/lib/utils'
@@ -213,13 +213,15 @@ export const renderProjectCenterCell = (
             )
 
         case 'paymentStatus':
-            const paymentDisplay = getJobPaymentStatusDisplay(
+            const paymentDisplay = JobHelper.getJobPaymentStatusDisplay(
                 data.paymentStatus
             )
 
             return (
-                <Chip color={paymentDisplay.colorName}>
-                    {paymentDisplay.title}
+                <Chip color={paymentDisplay.colorName} variant="flat">
+                    <span className="font-semibold">
+                        {paymentDisplay.title}
+                    </span>
                 </Chip>
             )
 

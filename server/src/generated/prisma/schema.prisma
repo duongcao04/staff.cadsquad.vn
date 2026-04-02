@@ -512,18 +512,18 @@ model JobFolderTemplate {
 
 model Client {
   id   String     @id @default(uuid())
-  name String     @unique // Company name
-  code String     @unique // e.g. "CUST-001"
-  type ClientType @default(COMPANY)
+  name String     @unique
+  code String     @unique
+  type ClientType @default(INDIVIDUAL)
 
   // Regional Info
-  region   String? // e.g. "North"
+  region   String?
   country  String?
   address  String?
   timezone String? @default("UTC")
 
   // Contact Info
-  email        String? @unique
+  email        String?
   phoneNumber  String?
   billingEmail String?
 

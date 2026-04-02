@@ -2,6 +2,8 @@ import { TJob } from '@/shared/types'
 import { Card, CardBody, CardHeader, Chip, Divider } from '@heroui/react'
 import { Calendar1Icon, CheckCircle2, ClockAlert, Flag } from 'lucide-react'
 import { useMemo } from 'react'
+import CountdownTimer from '../../../../shared/components/ui/countdown-timer'
+import { JobHelper } from '../../../../lib'
 
 export function JobTimelineCard({ job }: { job: TJob }) {
     const timelineData = useMemo(() => {
@@ -100,7 +102,17 @@ export function JobTimelineCard({ job }: { job: TJob }) {
                     </div>
 
                     {/* Visual Separator / Progress Line */}
-                    <div className="hidden sm:flex flex-col w-full justify-center px-4 relative mt-3">
+                    <div className="hidden sm:flex flex-col w-full justify-center px-4 relative mt-3 space-y-2">
+                        {(!JobHelper.isCompleted(job) ||
+                            !JobHelper.isFinished(job)) && (
+                            <div className="w-full flex items-center justify-center">
+                                <CountdownTimer
+                                    targetDate={job.dueAt}
+                                    hiddenUnits={['second']}
+                                    className="text-sm"
+                                />
+                            </div>
+                        )}
                         <div className="h-1.5 w-full bg-default-100 rounded-full overflow-hidden">
                             <div
                                 className={`h-full transition-all duration-500 rounded-full ${

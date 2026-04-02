@@ -1,1 +1,1 @@
-export * from './components/modals/EditClientModal'
+export * from './components/modals/ModifyClientModal'

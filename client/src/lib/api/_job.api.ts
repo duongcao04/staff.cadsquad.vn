@@ -206,13 +206,13 @@ export const jobApi = {
     // =========================================================================
     updateGeneralInfo: async (
         jobId: string,
-        data: Partial<any>
+        data: Partial<TUpdateJobInput>
     ) => {
         return axiosClient
             .patch<ApiResponse<JobUpdateResponse>>(
                 `/v1/jobs/${jobId}/general`,
                 {
-                    clientName: data.clientName,
+                    clientId: data.clientId,
                     displayName: data.displayName,
                     description: data.description,
                     dueAt: !lodash.isEmpty(data.dueAt)

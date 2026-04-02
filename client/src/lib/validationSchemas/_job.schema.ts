@@ -61,6 +61,7 @@ const BaseJobFormSchema = z.object({
     displayName: z.string("Display name is required").min(1, 'Display name is required'),
     description: z.string().optional(),
     attachmentUrls: z.array(z.string()).default([]),
+    clientId: z.string().optional(),
     clientName: z.string("Client name is required").min(1, 'Client name is required'),
     incomeCost: z.coerce.number({ message: 'Income cost must be a number' }).min(1, 'Income cost must be greater than 1'),
     totalStaffCost: z.coerce.number({ message: 'Total staff cost must be a number' }).optional().default(0),

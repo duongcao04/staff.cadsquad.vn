@@ -28,6 +28,11 @@ export const clientApi = {
             .get<ApiResponse<any>>(`/v1/clients/${id}`)
             .then((res) => res.data)
     },
+
+    create: (data: TEditClientFormValues) =>
+        axiosClient
+            .post<ApiResponse<UpdateClientResponse>>(`/v1/clients`, data)
+            .then((res) => res.data),
     updateClient: (id: string, data: TEditClientFormValues) =>
         axiosClient
             .patch<ApiResponse<UpdateClientResponse>>(`/v1/clients/${id}`, data)

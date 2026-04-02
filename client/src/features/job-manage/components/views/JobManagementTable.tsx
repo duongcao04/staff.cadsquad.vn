@@ -18,11 +18,11 @@ import {
     TableRow,
 } from '@heroui/react'
 import { useSuspenseQuery } from '@tanstack/react-query'
-import { useRouter } from '@tanstack/react-router'
+import { Link, useRouter } from '@tanstack/react-router'
 import { Avatar } from 'antd'
 import { debounce } from 'lodash'
 import {
-    CheckCircle2,
+    CloudIcon,
     Eye,
     MoreVertical,
     RefreshCw,
@@ -32,11 +32,10 @@ import {
     TruckElectricIcon,
 } from 'lucide-react'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-
 import dayjs from 'dayjs'
 import {
     currencyFormatter,
-    getJobPaymentStatusDisplay,
+    JobHelper,
     INTERNAL_URLS,
     optimizeCloudinary,
     RouteUtil,
@@ -190,6 +189,11 @@ export function JobManagementTable({
     // --- Render Cell ---
     const renderCell = useCallback(
         (data: TJob, columnKey: React.Key) => {
+            const sharepointUrl =
+                data?.sharepointFolder?.webUrl ||
+                data?.folderTemplate?.webUrl ||
+                null
+
             switch (columnKey) {
                 case 'no':
                     return (
@@ -284,13 +288,15 @@ export function JobManagementTable({
                         />
                     )
                 case 'isPaid': {
-                    const paymentDisplay = getJobPaymentStatusDisplay(
+                    const paymentDisplay = JobHelper.getJobPaymentStatusDisplay(
                         data.paymentStatus
                     )
 
                     return (
-                        <Chip color={paymentDisplay.colorName}>
-                            {paymentDisplay.title}
+                        <Chip color={paymentDisplay.colorName} variant="flat">
+                            <span className="font-semibold">
+                                {paymentDisplay.title}
+                            </span>
                         </Chip>
                     )
                 }
@@ -343,7 +349,7 @@ export function JobManagementTable({
                                     <Eye size={16} />
                                 </HeroButton>
                             </HeroTooltip>
-                            <HeroTooltip content="Deliver status">
+                            <HeroTooltip content="Deliveries">
                                 <HeroButton
                                     size="sm"
                                     isIconOnly
@@ -378,24 +384,19 @@ export function JobManagementTable({
                                         startContent={
                                             <SquareArrowOutUpRight size={16} />
                                         }
-                                        onPress={() => {
-                                            window.open(
-                                                INTERNAL_URLS.jobDetail(
-                                                    data.no
-                                                ),
-                                                '_blank'
-                                            )
-                                        }}
+                                        as={Link}
+                                        href={INTERNAL_URLS.jobDetail(data.no)}
                                     >
-                                        Open with Staff View
+                                        View public page
                                     </DropdownItem>
                                     <DropdownItem
-                                        key="mark-done"
-                                        startContent={
-                                            <CheckCircle2 size={16} />
-                                        }
+                                        key="open-directory"
+                                        startContent={<CloudIcon size={16} />}
+                                        as={'a'}
+                                        target="_blank"
+                                        href={sharepointUrl}
                                     >
-                                        Mark Done
+                                        Sharepoint directory
                                     </DropdownItem>
                                     <DropdownItem
                                         key="delete"

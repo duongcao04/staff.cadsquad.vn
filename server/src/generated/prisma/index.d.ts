@@ -50951,7 +50951,6 @@ export namespace Prisma {
     id?: string
     name?: string
     code?: string
-    email?: string
     AND?: ClientWhereInput | ClientWhereInput[]
     OR?: ClientWhereInput[]
     NOT?: ClientWhereInput | ClientWhereInput[]
@@ -50960,6 +50959,7 @@ export namespace Prisma {
     country?: StringNullableFilter<"Client"> | string | null
     address?: StringNullableFilter<"Client"> | string | null
     timezone?: StringNullableFilter<"Client"> | string | null
+    email?: StringNullableFilter<"Client"> | string | null
     phoneNumber?: StringNullableFilter<"Client"> | string | null
     billingEmail?: StringNullableFilter<"Client"> | string | null
     taxId?: StringNullableFilter<"Client"> | string | null
@@ -50968,7 +50968,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Client"> | Date | string
     updatedAt?: DateTimeFilter<"Client"> | Date | string
     jobs?: JobListRelationFilter
-  }, "id" | "name" | "code" | "email">
+  }, "id" | "name" | "code">
 
   export type ClientOrderByWithAggregationInput = {
     id?: SortOrder
