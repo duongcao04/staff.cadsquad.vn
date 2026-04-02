@@ -101,7 +101,7 @@ export function ProjectCenterTabs({ currentTab, onTabChange }: Props) {
                 }
             />
 
-            {hasPermission(APP_PERMISSIONS.JOB.READ_SENSITIVE) && (
+            {hasPermission(APP_PERMISSIONS.JOB.READ_CANCELLED) && (
                 <Tab
                     key={ProjectCenterTabEnum.CANCELLED}
                     title={

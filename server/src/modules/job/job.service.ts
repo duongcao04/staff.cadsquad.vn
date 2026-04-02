@@ -12,6 +12,10 @@ export class JobService {
 		private readonly prisma: PrismaService,
 	) { }
 
+	async findOne(id: string) {
+		return await this.prisma.job.findUnique({ where: { id } })
+	}
+
 	// -------------------------------------------------------------------------
 	// UTILS
 	// -------------------------------------------------------------------------

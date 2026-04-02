@@ -1,7 +1,6 @@
-import { cookie, COOKIES, INTERNAL_URLS } from '@/lib'
+import { AppPermission, cookie, COOKIES, INTERNAL_URLS } from '@/lib'
 import { usePermission } from '@/shared/hooks'
 import { addToast } from '@heroui/react'
-import { AppPermission } from '@staff-cadsquad/shared'
 import { useLocation, useRouter } from '@tanstack/react-router'
 import { useEffect, useMemo, useState } from 'react'
 

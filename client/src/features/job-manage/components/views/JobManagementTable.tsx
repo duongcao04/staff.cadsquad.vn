@@ -1,56 +1,60 @@
 import {
+    cancelJobOptions,
+    currencyFormatter,
+    INTERNAL_URLS,
+    JobHelper,
+    jobQueryKeys,
+    optimizeCloudinary,
+    restoreJobOptions,
+    RouteUtil,
+} from '@/lib'
+import {
+    EJobManagementTableTabs,
+    TManageJobsParams,
+} from '@/routes/_administrator/mgmt/jobs'
+import { HeroCopyButton } from '@/shared/components'
+import JobFinishChip from '@/shared/components/chips/JobFinishChip'
+import { JobStatusChip } from '@/shared/components/chips/JobStatusChip'
+import CountdownTimer from '@/shared/components/ui/countdown-timer'
+import { HeroButton } from '@/shared/components/ui/hero-button'
+import { HeroTable } from '@/shared/components/ui/hero-table'
+import { HeroTooltip } from '@/shared/components/ui/hero-tooltip'
+import { JobStatusSystemTypeEnum } from '@/shared/enums'
+import { TJob } from '@/shared/types'
+import { ArrowRotateLeft } from '@gravity-ui/icons'
+import {
+    addToast,
     Button,
     Chip,
-    Divider,
     Dropdown,
     DropdownItem,
     DropdownMenu,
     DropdownTrigger,
-    Input,
     Pagination,
-    Select,
     Selection,
-    SelectItem,
     TableBody,
     TableCell,
     TableColumn,
     TableHeader,
     TableRow,
+    useDisclosure,
 } from '@heroui/react'
-import { useSuspenseQuery } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { Link, useRouter } from '@tanstack/react-router'
 import { Avatar } from 'antd'
-import { debounce } from 'lodash'
+import dayjs from 'dayjs'
 import {
     CloudIcon,
     Eye,
     MoreVertical,
-    RefreshCw,
-    SearchIcon,
     SquareArrowOutUpRight,
     Trash2,
     TruckElectricIcon,
 } from 'lucide-react'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import dayjs from 'dayjs'
-import {
-    currencyFormatter,
-    JobHelper,
-    INTERNAL_URLS,
-    optimizeCloudinary,
-    RouteUtil,
-} from '../../../../lib'
-import { jobStatusesListOptions } from '../../../../lib/queries'
-import { TManageJobsParams } from '../../../../routes/_administrator/mgmt/jobs'
-import { HeroCopyButton } from '../../../../shared/components'
-import JobFinishChip from '../../../../shared/components/chips/JobFinishChip'
-import { JobStatusChip } from '../../../../shared/components/chips/JobStatusChip'
-import CountdownTimer from '../../../../shared/components/ui/countdown-timer'
-import { HeroButton } from '../../../../shared/components/ui/hero-button'
-import { HeroTable } from '../../../../shared/components/ui/hero-table'
-import { HeroTooltip } from '../../../../shared/components/ui/hero-tooltip'
-import { JobStatusSystemTypeEnum } from '../../../../shared/enums'
-import { TJob } from '../../../../shared/types'
+import React, { useCallback, useMemo, useState } from 'react'
+import { queryClient } from '../../../../main'
+import { ConfirmCancelJobModal } from '../modals/ConfirmCancelJobModal'
+import { ConfirmRestoreJob } from '../modals/ConfirmRestoreJobModal'
 
 const columns = [
     { name: 'Job no', uid: 'no', sortable: false },
@@ -117,7 +121,6 @@ type JobManagementTableProps = {
     selectedKeys: Selection
     sort: string
     pagination: Pagination
-    statusFilter: Selection
     onSelectionChange: (keys: Selection) => void
     onBulkAction: (type: 'DELETE' | 'STATUS') => void
     searchParams: TManageJobsParams
@@ -127,63 +130,72 @@ export function JobManagementTable({
     pagination,
     isLoadingData,
     selectedKeys,
-    statusFilter,
     sort,
     onSelectionChange,
     searchParams,
 }: JobManagementTableProps) {
     const router = useRouter()
-    const { search: searchValue } = searchParams
+    const cancelJobModalState = useDisclosure()
+    const restoreJobModalState = useDisclosure()
 
-    const inputRef = useRef<HTMLInputElement>(null)
+    const [selectedJob, setSelectedJob] = useState<TJob | null>(null)
 
-    const dueInPresets = getDueInPresets()
+    const cancelJobAction = useMutation(cancelJobOptions)
+    const restoreJobAction = useMutation(restoreJobOptions)
 
-    const {
-        data: { jobStatuses },
-    } = useSuspenseQuery({
-        ...jobStatusesListOptions(),
-    })
-
-    // 1. Thêm Local State để UI phản hồi chữ ngay lập tức khi user gõ
-    const [inputValue, setInputValue] = useState(searchValue || '')
-
-    // 2. Đồng bộ inputValue nếu `searchValue` từ URL thay đổi (VD: user click nút back/forward)
-    useEffect(() => {
-        setInputValue(searchValue || '')
-    }, [searchValue])
-
-    // 3. Khởi tạo hàm thực thi debounce update URL
-    const debounceSearch = useMemo(
-        () =>
-            debounce((value?: string) => {
-                RouteUtil.updateParams({
-                    search: value || undefined,
-                    page: 1,
-                })
-                setTimeout(() => {
-                    inputRef.current?.focus()
-                }, 50)
-            }, 500),
-        []
-    )
-
-    // 4. Dọn dẹp (cleanup) khi component unmount
-    useEffect(() => {
-        return () => debounceSearch.cancel()
-    }, [debounceSearch])
-
-    // 5. Hàm xử lý thay đổi text
-    const handleInputChange = (val: string) => {
-        setInputValue(val)
-        debounceSearch(val)
+    const handleCancelJob = () => {
+        if (selectedJob) {
+            cancelJobAction.mutateAsync(selectedJob.id, {
+                onSuccess() {
+                    cancelJobModalState.onClose()
+                    queryClient.refetchQueries({
+                        queryKey: jobQueryKeys.lists({
+                            tab:
+                                searchParams.tab === EJobManagementTableTabs.ALL
+                                    ? undefined
+                                    : searchParams.tab,
+                            status: searchParams.status,
+                            sort: searchParams.sort,
+                            page: searchParams.page,
+                            limit: searchParams.limit,
+                            search: searchParams.search,
+                        }),
+                    })
+                    addToast({
+                        title: 'Successfully',
+                        description: `${selectedJob.no}- ${selectedJob.displayName} has been successfully canceled.`,
+                        color: 'success',
+                    })
+                },
+            })
+        }
     }
-
-    // 6. Hàm xử lý clear text
-    const handleClear = () => {
-        setInputValue('')
-        debounceSearch.cancel()
-        RouteUtil.updateParams({ search: undefined, page: 1 })
+    const handleRestoreJob = () => {
+        if (selectedJob) {
+            restoreJobAction.mutateAsync(selectedJob.id, {
+                onSuccess() {
+                    restoreJobModalState.onClose()
+                    queryClient.refetchQueries({
+                        queryKey: jobQueryKeys.lists({
+                            tab:
+                                searchParams.tab === EJobManagementTableTabs.ALL
+                                    ? undefined
+                                    : searchParams.tab,
+                            status: searchParams.status,
+                            sort: searchParams.sort,
+                            page: searchParams.page,
+                            limit: searchParams.limit,
+                            search: searchParams.search,
+                        }),
+                    })
+                    addToast({
+                        title: 'Successfully',
+                        description: `${selectedJob.no}- ${selectedJob.displayName} has been restore successfully.`,
+                        color: 'success',
+                    })
+                },
+            })
+        }
     }
 
     // --- Render Cell ---
@@ -398,14 +410,38 @@ export function JobManagementTable({
                                     >
                                         Sharepoint directory
                                     </DropdownItem>
-                                    <DropdownItem
-                                        key="delete"
-                                        startContent={<Trash2 size={16} />}
-                                        className="text-danger"
-                                        color="danger"
-                                    >
-                                        Delete
-                                    </DropdownItem>
+                                    {searchParams.tab !==
+                                    EJobManagementTableTabs.CANCELED ? (
+                                        <DropdownItem
+                                            key="delete"
+                                            startContent={<Trash2 size={16} />}
+                                            className="text-danger"
+                                            color="danger"
+                                            onPress={() => {
+                                                setSelectedJob(data)
+                                                cancelJobModalState.onOpen()
+                                            }}
+                                        >
+                                            Delete
+                                        </DropdownItem>
+                                    ) : (
+                                        <DropdownItem
+                                            key="restore"
+                                            startContent={
+                                                <ArrowRotateLeft
+                                                    fontSize={16}
+                                                />
+                                            }
+                                            className="text-danger"
+                                            color="danger"
+                                            onPress={() => {
+                                                setSelectedJob(data)
+                                                restoreJobModalState.onOpen()
+                                            }}
+                                        >
+                                            Restore
+                                        </DropdownItem>
+                                    )}
                                 </DropdownMenu>
                             </Dropdown>
                         </div>
@@ -415,151 +451,10 @@ export function JobManagementTable({
                     return data[columnKey]
             }
         },
-        [router]
+        [router, searchParams]
     )
 
     // --- Top Content ---
-    const topContent = useMemo(() => {
-        return (
-            <div className="flex flex-col gap-4">
-                {/* Filters & Search */}
-                <div className="flex justify-between gap-3 items-end">
-                    <div className="flex gap-3 items-center">
-                        <Input
-                            isClearable
-                            ref={inputRef}
-                            classNames={{
-                                base: 'w-[450px]',
-                                mainWrapper: 'w-[450px]',
-                                inputWrapper:
-                                    'hover:shadow-SM bg-background border-border-default border',
-                            }}
-                            variant="bordered"
-                            size="sm"
-                            placeholder="Search by name..."
-                            startContent={
-                                <div className="w-4 flex items-center justify-center">
-                                    <SearchIcon
-                                        className="text-small text-text-6"
-                                        size={14}
-                                    />
-                                </div>
-                            }
-                            value={inputValue}
-                            onClear={handleClear}
-                            onValueChange={handleInputChange}
-                        />
-
-                        <Divider orientation="vertical" className="h-5" />
-
-                        <Button
-                            startContent={
-                                <RefreshCw
-                                    size={14}
-                                    className={`text-small ${isLoadingData ? 'animate-spin-smooth' : ''}`}
-                                />
-                            }
-                            className="border-1"
-                            variant="bordered"
-                            size="sm"
-                        >
-                            Refresh
-                        </Button>
-                    </div>
-
-                    <div className="flex gap-3 items-center">
-                        <Select
-                            selectionMode="multiple"
-                            className="min-w-34"
-                            size="sm"
-                            classNames={{
-                                trigger:
-                                    'hover:shadow-SM border-border-default border cursor-pointer',
-                                popoverContent: 'w-[200px]!',
-                            }}
-                            placeholder="Status"
-                            isClearable
-                            onClear={() =>
-                                RouteUtil.updateParams({
-                                    status: undefined,
-                                    page: 1,
-                                })
-                            }
-                            onSelectionChange={(value) =>
-                                RouteUtil.updateParams({
-                                    status: Array.from(value).join(','),
-                                    page: 1,
-                                })
-                            }
-                            renderValue={(items) => (
-                                <p className="text-text-7">
-                                    {items.length} status
-                                    {items.length > 1 ? 'es' : ''}
-                                </p>
-                            )}
-                        >
-                            {jobStatuses.map((js) => (
-                                <SelectItem key={js.code}>
-                                    <div className="flex items-center gap-2">
-                                        <div
-                                            className="size-2 rounded-full"
-                                            style={{
-                                                backgroundColor:
-                                                    js.hexColor || '#000',
-                                            }}
-                                        />
-                                        <p>{js.displayName}</p>
-                                    </div>
-                                </SelectItem>
-                            ))}
-                        </Select>
-
-                        {/* Due Date Filter */}
-                        <Select
-                            className="min-w-34"
-                            size="sm"
-                            classNames={{
-                                trigger:
-                                    'hover:shadow-SM border-border-default border cursor-pointer',
-                                popoverContent: 'w-[200px]!',
-                            }}
-                            placeholder="Due in"
-                            isClearable
-                            onSelectionChange={(value) => {
-                                if (!value.currentKey) {
-                                    RouteUtil.updateParams({
-                                        dueIn: undefined,
-                                        page: 1,
-                                    })
-                                } else {
-                                    RouteUtil.updateParams({
-                                        dueIn: value.currentKey,
-                                        page: 1,
-                                    })
-                                }
-                            }}
-                            renderValue={(items) => (
-                                <p className="text-text-7">
-                                    {items[0]?.textValue}
-                                </p>
-                            )}
-                        >
-                            {dueInPresets.map((d) => (
-                                <SelectItem key={d.key}>{d.label}</SelectItem>
-                            ))}
-                        </Select>
-                    </div>
-                </div>
-            </div>
-        )
-    }, [
-        inputValue,
-        statusFilter,
-        selectedKeys,
-        data.length,
-        jobStatuses,
-        isLoadingData,
-    ]) // Add inputValue & isLoadingData
 
     // --- Bottom Content ---
     const bottomContent = useMemo(() => {
@@ -616,51 +511,70 @@ export function JobManagementTable({
     }, [selectedKeys, data.length, pagination])
 
     return (
-        <HeroTable
-            aria-label="Jobs Table"
-            isHeaderSticky
-            bottomContent={bottomContent}
-            bottomContentPlacement="outside"
-            classNames={{
-                wrapper: 'max-h-[700px]',
-            }}
-            selectedKeys={selectedKeys}
-            selectionMode="multiple"
-            topContent={topContent}
-            topContentPlacement="outside"
-            onSelectionChange={onSelectionChange}
-            sortString={sort}
-            onSortStringChange={(value) =>
-                RouteUtil.updateParams({
-                    sort: value,
-                    page: 1,
-                })
-            }
-        >
-            <TableHeader columns={columns}>
-                {(column) => (
-                    <TableColumn
-                        key={column.uid}
-                        align={column.uid === 'actions' ? 'center' : 'start'}
-                        allowsSorting={column.sortable}
-                    >
-                        {column.name}
-                    </TableColumn>
-                )}
-            </TableHeader>
-            <TableBody
-                emptyContent={'No jobs found'}
-                items={data}
-                isLoading={isLoadingData}
+        <>
+            {cancelJobModalState.isOpen && (
+                <ConfirmCancelJobModal
+                    isOpen={cancelJobModalState.isOpen}
+                    onOpenChange={cancelJobModalState.onOpenChange}
+                    onConfirm={handleCancelJob}
+                />
+            )}
+            {restoreJobModalState.isOpen && (
+                <ConfirmRestoreJob
+                    isOpen={restoreJobModalState.isOpen}
+                    onOpenChange={restoreJobModalState.onOpenChange}
+                    onConfirm={handleRestoreJob}
+                />
+            )}
+            <HeroTable
+                aria-label="Jobs Table"
+                isHeaderSticky
+                bottomContent={bottomContent}
+                bottomContentPlacement="outside"
+                classNames={{
+                    wrapper: 'max-h-[700px]',
+                }}
+                selectedKeys={selectedKeys}
+                selectionMode="multiple"
+                topContentPlacement="outside"
+                onSelectionChange={onSelectionChange}
+                sortString={sort}
+                onSortStringChange={(value) =>
+                    RouteUtil.updateParams({
+                        sort: value,
+                        page: 1,
+                    })
+                }
             >
-                {(item: TJob) => (
-                    <TableRow key={item.id}>
-                        {(columnKey) => (
-                            <TableCell>{renderCell(item, columnKey)}</TableCell>
-                        )}
-                    </TableRow>
-                )}
-            </TableBody>
-        </HeroTable>
+                <TableHeader columns={columns}>
+                    {(column) => (
+                        <TableColumn
+                            key={column.uid}
+                            align={
+                                column.uid === 'actions' ? 'center' : 'start'
+                            }
+                            allowsSorting={column.sortable}
+                        >
+                            {column.name}
+                        </TableColumn>
+                    )}
+                </TableHeader>
+                <TableBody
+                    emptyContent={'No jobs found'}
+                    items={data}
+                    isLoading={isLoadingData}
+                >
+                    {(item: TJob) => (
+                        <TableRow key={item.id}>
+                            {(columnKey) => (
+                                <TableCell>
+                                    {renderCell(item, columnKey)}
+                                </TableCell>
+                            )}
+                        </TableRow>
+                    )}
+                </TableBody>
+            </HeroTable>
+        </>
     )
 }

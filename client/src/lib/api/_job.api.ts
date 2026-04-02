@@ -88,6 +88,14 @@ export const jobApi = {
             .then((res) => res.data)
     },
 
+    restore: async (jobId: string) => {
+        return axiosClient
+            .patch<
+                ApiResponse<{ id: string; message: string }>
+            >(`/v1/jobs/${jobId}/restore`)
+            .then((res) => res.data)
+    },
+
     // =========================================================================
     // WORKFLOW & STATUS (Status, Delivery, Payouts)
     // =========================================================================

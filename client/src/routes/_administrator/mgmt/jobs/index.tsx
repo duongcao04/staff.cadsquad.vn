@@ -5,7 +5,9 @@ import {
     JobManagementStats,
     JobManagementStatsSkeleton,
     JobManagementTable,
+    JobManagementTableToolbar,
 } from '@/features/job-manage'
+import { APP_PERMISSIONS } from '@/lib'
 import { adminJobStatsOptions, jobsListOptions } from '@/lib/queries'
 import {
     AdminPageHeading,
@@ -29,7 +31,6 @@ import {
     Spinner,
     useDisclosure,
 } from '@heroui/react'
-import { APP_PERMISSIONS } from '@/lib'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import {
@@ -42,17 +43,32 @@ import {
 } from 'lucide-react'
 import { Suspense, useMemo, useState } from 'react'
 import { z } from 'zod'
+import { ProjectCenterTabEnum } from '../../../../shared/enums'
 import { ProtectedRoute } from '../../../../shared/guards/protected-route'
+
+export enum EJobManagementTableTabs {
+    ALL = 'all',
+    PRIORITY = 'priority',
+    ACTIVE = 'active',
+    LATE = 'late',
+    DELIVERED = 'delivered',
+    COMPLETED = 'completed',
+    FINISHED = 'finished',
+    CANCELED = 'cancelled',
+}
 
 const DEFAULT_SORT = 'displayName:asc'
 export const manageJobsParamsSchema = z.object({
     sort: z.string().optional().catch(DEFAULT_SORT),
     search: z.string().trim().optional(),
     status: z.string().optional(),
-    dateRange: z.string().optional().catch('this_year'), // Added dateRange
+    dateRange: z.string().optional().catch('this_year'),
     limit: z.coerce.number().int().min(1).max(100).optional().catch(10),
     page: z.coerce.number().int().min(1).optional().catch(1),
     dueIn: z.string().optional(),
+    tab: z
+        .nativeEnum(EJobManagementTableTabs)
+        .catch(EJobManagementTableTabs.ALL),
 })
 export type TManageJobsParams = z.infer<typeof manageJobsParamsSchema>
 
@@ -166,7 +182,6 @@ function ManageJobsPageSkeleton() {
 
 function ManageJobsPage() {
     const searchParams = Route.useSearch()
-
     const { dateRange, ...params } = searchParams
 
     const dueInPresets = getDueInPresets()
@@ -181,6 +196,10 @@ function ManageJobsPage() {
             sort: [params.sort || DEFAULT_SORT],
             dueAtFrom: dueInRange?.from?.toISOString().split('T')[0],
             dueAtTo: dueInRange?.to?.toISOString()?.split('T')[0],
+            tab:
+                searchParams.tab === EJobManagementTableTabs.ALL
+                    ? undefined
+                    : (searchParams.tab as ProjectCenterTabEnum),
         })
     )
 
@@ -188,11 +207,6 @@ function ManageJobsPage() {
     const paginate = data.paginate
 
     const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]))
-
-    const statusFilter = useMemo(() => {
-        if (!searchParams.status) return new Set<string>([])
-        return new Set(searchParams.status.split(','))
-    }, [searchParams.status])
 
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure()
     const [bulkActionType, setBulkActionType] = useState<
@@ -230,6 +244,11 @@ function ManageJobsPage() {
 
     return (
         <>
+            <JobManagementTableToolbar
+                searchParams={searchParams}
+                isLoadingData={isFetching}
+            />
+
             <JobManagementTable
                 data={jobs}
                 isLoadingData={isFetching}
@@ -237,7 +256,6 @@ function ManageJobsPage() {
                 sort={searchParams.sort ?? DEFAULT_SORT}
                 selectedKeys={selectedKeys}
                 onSelectionChange={setSelectedKeys}
-                statusFilter={statusFilter}
                 onBulkAction={onBulkAction}
                 searchParams={searchParams}
             />

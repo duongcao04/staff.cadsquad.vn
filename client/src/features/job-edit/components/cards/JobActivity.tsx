@@ -1,5 +1,5 @@
 import { Avatar, Button, Divider, Textarea } from '@heroui/react'
-import { MessageSquare, Send } from 'lucide-react'
+import {  Send } from 'lucide-react'
 import { HeroTooltip } from '@/shared/components'
 import { optimizeCloudinary } from '@/lib'
 import { TUser } from '@/shared/types'
@@ -7,7 +7,7 @@ import { JobActivityHistory } from '@/features/job-details'
 
 type JobActivityProps = {
     profile: TUser
-    activityLogs: any[]
+    activityLogs: TJobActivityLog[]
     isLoadingActivityLogs: boolean
 }
 

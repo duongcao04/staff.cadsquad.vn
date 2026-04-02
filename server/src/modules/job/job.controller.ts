@@ -52,6 +52,7 @@ import { ForceChangeStatusCommand } from './commands/impl/force-change-status.co
 import { UpdateFinancialDetailsCommand } from './commands/impl/update-financial-details.command'
 import { RemoveMemberCommand } from './commands/impl/remove-member.command'
 import { UpdateAssignmentCostCommand } from './commands/impl/update-assignment-cost.command'
+import { RestoreJobCommand } from './commands/impl/restore-job.command'
 
 @ApiTags('Jobs')
 @Controller('jobs')
@@ -363,8 +364,24 @@ export class JobController {
 	@Delete(':id')
 	@UseGuards(PermissionsGuard)
 	@RequirePermissions(APP_PERMISSIONS.JOB.DELETE)
+	@AuditLog("Cancelled job", SystemModule.JOB)
 	async remove(@Req() request: Request, @Param('id') id: string) {
 		const user: TokenPayload = request['user']
+		request['auditTargetId'] = id
+		const jobDetails = await this.jobService.findOne(id)
+		request['auditTargetDisplay'] = `${jobDetails?.no}- ${jobDetails?.displayName}`
 		return this.commandBus.execute(new SoftDeleteJobCommand(id, user.sub))
+	}
+
+	@Patch(':id/restore')
+	@UseGuards(PermissionsGuard)
+	@RequirePermissions(APP_PERMISSIONS.JOB.DELETE)
+	@AuditLog("Restored job", SystemModule.JOB)
+	async restore(@Req() request: Request, @Param('id') id: string) {
+		const user: TokenPayload = request['user']
+		request['auditTargetId'] = id
+		const jobDetails = await this.jobService.findOne(id)
+		request['auditTargetDisplay'] = `${jobDetails?.no}- ${jobDetails?.displayName}`
+		return this.commandBus.execute(new RestoreJobCommand(id, user.sub))
 	}
 }

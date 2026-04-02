@@ -6,11 +6,13 @@ import {
     JobTeamAndFiles,
     JobTimelineCard,
 } from '@/features/job-edit'
+import { JobActivity } from '@/features/job-edit/components/cards/JobActivity'
 import { ConfirmCancelJobModal } from '@/features/job-manage/components/modals/ConfirmCancelJobModal'
 import { ConfirmRemoveAssigneeModal } from '@/features/job-manage/components/modals/ConfirmRemoveAssigneeModal'
 import AssignMemberModal from '@/features/project-center/components/modals/AssignMemberModal'
 import {
     ApiResponse,
+    APP_PERMISSIONS,
     dateFormatter,
     EXTERNAL_URLS,
     getPageTitle,
@@ -27,8 +29,13 @@ import {
     jobDeliveriesListOptions,
     unassignMemberToJobOptions,
 } from '@/lib/queries'
-import { AdminPageHeading, HeroTooltip } from '@/shared/components'
+import {
+    AdminPageHeading,
+    ErrorPageContent,
+    HeroTooltip,
+} from '@/shared/components'
 import AdminContentContainer from '@/shared/components/admin/AdminContentContainer'
+import { ProtectedRoute } from '@/shared/guards/protected-route'
 import { TJob, TUser } from '@/shared/types'
 import {
     addToast,
@@ -77,7 +84,7 @@ import {
 } from 'lucide-react'
 import { useState } from 'react'
 import { z } from 'zod'
-import { JobActivity } from '../../../../features/job-edit/components/cards/JobActivity'
+import { ApiErrorComponent } from '../../../../shared/components/ApiErrorComponent'
 
 export const manageJobDetailParamsSchema = z.object({
     tab: z
@@ -91,18 +98,31 @@ export const Route = createFileRoute('/_administrator/mgmt/jobs/$no')({
     head: (ctx) => {
         const loader = ctx.loaderData as unknown as ApiResponse<TJob>
         return {
-            meta: [
-                { title: getPageTitle(loader?.result?.displayName ?? 'Job') },
-            ],
+            meta: [{ title: loader?.result?.displayName ?? 'Job' }],
         }
     },
     validateSearch: (search) => manageJobDetailParamsSchema.parse(search),
     loaderDeps: ({ search }) => ({ search }),
     loader: ({ context, params }) => {
         const { no } = params
-        return context.queryClient.ensureQueryData(jobByNoOptions(no))
+        context.queryClient.ensureQueryData(jobByNoOptions(no))
     },
-    component: JobEditPage,
+    errorComponent: ApiErrorComponent,
+    component: () => {
+        return (
+            <ProtectedRoute
+                permissions={[
+                    APP_PERMISSIONS.JOB.MANAGE,
+                    APP_PERMISSIONS.JOB.UPDATE,
+                    APP_PERMISSIONS.JOB.READ_ALL,
+                    APP_PERMISSIONS.JOB.PAID,
+                ]}
+                requireAll
+            >
+                <JobEditPage />
+            </ProtectedRoute>
+        )
+    },
 })
 
 function JobEditPage() {

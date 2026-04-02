@@ -199,7 +199,6 @@ function SchedulePage() {
         <div
             className={`flex flex-col h-full ${isFetching ? 'opacity-70 pointer-events-none' : ''}`}
         >
-            {/* --- Content Views --- */}
             <div className="flex-1 overflow-hidden flex flex-col relative">
                 {searchParams.view === 'calendar' ? (
                     <ScheduleCalendarView

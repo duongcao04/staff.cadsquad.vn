@@ -265,6 +265,12 @@ export const cancelJobOptions = mutationOptions({
     onError: (err) => onErrorToast(err, 'Cancel job failed'),
 })
 
+
+export const restoreJobOptions = mutationOptions({
+    mutationFn: (jobId: string) => jobApi.restore(jobId),
+    onError: (err) => onErrorToast(err, 'Restore job failed'),
+})
+
 export const assignMemberToJobOptions = mutationOptions({
     mutationFn: ({ jobId, data }: { jobId: string; data: TAssignMember }) =>
         jobApi.assignMember(jobId, data),

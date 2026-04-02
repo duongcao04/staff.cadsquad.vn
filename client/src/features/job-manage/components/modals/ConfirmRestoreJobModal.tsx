@@ -1,6 +1,5 @@
 import {
     Button,
-    Chip,
     Modal,
     ModalBody,
     ModalContent,
@@ -8,7 +7,7 @@ import {
     ModalHeader,
 } from '@heroui/react'
 
-interface ConfirmCancelJobModalProps {
+interface ConfirmRestoreJobProps {
     isOpen: boolean
     onOpenChange: () => void
     onConfirm: () => Promise<void> | void
@@ -16,14 +15,13 @@ interface ConfirmCancelJobModalProps {
     jobTitle?: string
     notes?: React.ReactNode
 }
-
-export const ConfirmCancelJobModal = ({
+export const ConfirmRestoreJob = ({
     isOpen,
     onOpenChange,
     onConfirm,
     isLoading = false,
     jobTitle = 'this job',
-}: ConfirmCancelJobModalProps) => {
+}: ConfirmRestoreJobProps) => {
     return (
         <Modal
             isOpen={isOpen}
@@ -35,36 +33,16 @@ export const ConfirmCancelJobModal = ({
                 {(onClose) => (
                     <>
                         <ModalHeader className="flex flex-col gap-1 text-danger">
-                            Do you want cancel this job?
+                            Do you want restore this job?
                         </ModalHeader>
                         <ModalBody>
                             <p>
-                                Are you sure you want to cancel{' '}
+                                Would you like to bring this job{' '}
                                 <span className="font-semibold">
                                     {jobTitle}
-                                </span>
-                                ? Once canceled, you will not be able to modify
-                                the project's workflows.
+                                </span>{' '}
+                                from the archive back to the current workflow?
                             </p>
-
-                            {/* Information Block */}
-                            <div className="mt-2 p-3 bg-default-100 rounded-medium border-l-4 border-warning">
-                                <p className="text-small text-default-600">
-                                    <span className="font-bold text-warning">
-                                        Note:
-                                    </span>{' '}
-                                    You can still review or restore the project
-                                    in the{' '}
-                                    <Chip
-                                        size="sm"
-                                        variant="flat"
-                                        color="danger"
-                                    >
-                                        Cancelled Jobs
-                                    </Chip>{' '}
-                                    section.
-                                </p>
-                            </div>
                         </ModalBody>
                         <ModalFooter>
                             <Button
@@ -73,7 +51,7 @@ export const ConfirmCancelJobModal = ({
                                 onPress={onClose}
                                 isDisabled={isLoading}
                             >
-                                Keep Active
+                                Cancel
                             </Button>
                             <Button
                                 color="danger"
@@ -81,7 +59,7 @@ export const ConfirmCancelJobModal = ({
                                 isLoading={isLoading}
                                 variant="shadow"
                             >
-                                Confirm Cancel
+                                Confirm Restore
                             </Button>
                         </ModalFooter>
                     </>
