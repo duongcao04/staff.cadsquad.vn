@@ -72,6 +72,8 @@ export const INTERNAL_URLS = {
         clientDetail: (code: string) => ['', 'mgmt', 'clients', code].join('/'),
         departments: ['', 'mgmt', 'departments'].join('/'),
         departmentsDetail: (departmentCode: string) => ['', 'mgmt', 'departments', departmentCode].join('/'),
+        jobTitles: ['', 'mgmt', 'job-titles'].join('/'),
+        jobTitlesDetail: (jobTitleCode: string) => ['', 'mgmt', 'job-titles', jobTitleCode].join('/'),
         paymentChannels: ['', 'mgmt', 'payments'].join('/'),
         accessControl: ['', 'mgmt', 'access-control'].join('/'),
         accessControlUser: ['', 'mgmt', 'access-control', 'user'].join('/'),

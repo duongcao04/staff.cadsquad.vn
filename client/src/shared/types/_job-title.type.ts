@@ -42,4 +42,9 @@ export interface TJobTitle {
 	* @type {Date}
 	*/
 	updatedAt: Date;
+
+	// Cấu trúc nested cho _count
+	_count: {
+		users?: number
+	}
 }

@@ -18,6 +18,7 @@ import { Link, useRouter, useRouterState } from '@tanstack/react-router'
 import {
     BadgeDollarSignIcon,
     BanknoteArrowUpIcon,
+    BriefcaseBusiness,
     BriefcaseIcon,
     Building2Icon,
     CalendarRangeIcon,
@@ -153,7 +154,7 @@ export const AdminSidebar = ({
                         canRedirect={false}
                     />
                     {!isCollapsed && (
-                        <p className="font-quicksand text-xl text-text-default group-hover:underline">
+                        <p className="text-xl font-quicksand text-text-default group-hover:underline">
                             Admin
                         </p>
                     )}
@@ -180,10 +181,10 @@ export const AdminSidebar = ({
                             <Avatar src={profile?.avatar} />
                             {!isCollapsed && (
                                 <div className="flex-1 overflow-hidden">
-                                    <p className="font-medium text-text-default truncate leading-tight">
+                                    <p className="font-medium leading-tight truncate text-text-default">
                                         {profile?.displayName}
                                     </p>
-                                    <p className="text-xs text-text-subdued truncate tracking-wide">
+                                    <p className="text-xs tracking-wide truncate text-text-subdued">
                                         {profile?.department?.displayName}
                                     </p>
                                 </div>
@@ -209,7 +210,7 @@ export const AdminSidebar = ({
                                     }}
                                 />
                             </div>
-                            <Divider className="bg-border-muted my-1" />
+                            <Divider className="my-1 bg-border-muted" />
 
                             <Listbox>
                                 <ListboxSection showDivider>
@@ -408,7 +409,7 @@ export const AdminSidebar = ({
                                 ) && (
                                     <SidebarItem
                                         icon={HandshakeIcon}
-                                        label="Clients"
+                                        label="Client"
                                         url={INTERNAL_URLS.management.clients}
                                         isCollapsed={isCollapsed}
                                     />
@@ -422,6 +423,16 @@ export const AdminSidebar = ({
                                         url={
                                             INTERNAL_URLS.management.departments
                                         }
+                                        isCollapsed={isCollapsed}
+                                    />
+                                )}
+                                {hasPermission(
+                                    APP_PERMISSIONS.JOB_TITLE.MANAGE
+                                ) && (
+                                    <SidebarItem
+                                        icon={BriefcaseBusiness}
+                                        label="Job Title"
+                                        url={INTERNAL_URLS.management.jobTitles}
                                         isCollapsed={isCollapsed}
                                     />
                                 )}

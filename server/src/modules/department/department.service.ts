@@ -8,7 +8,7 @@ import { DepartmentResponseDto } from './dto/department-response.dto'
 
 @Injectable()
 export class DepartmentService {
-    constructor(private readonly prismaService: PrismaService) {}
+    constructor(private readonly prismaService: PrismaService) { }
 
     async create(data: CreateDepartmentDto): Promise<Department> {
         const department = await this.prismaService.department.create({ data })
@@ -20,6 +20,9 @@ export class DepartmentService {
     async findAll(): Promise<Department[]> {
         const departments = await this.prismaService.department.findMany({
             include: { _count: { select: { users: true } }, users: true },
+            orderBy: {
+                displayName: "asc"
+            }
         })
         return departments.map((d) =>
             plainToInstance(DepartmentResponseDto, d, {

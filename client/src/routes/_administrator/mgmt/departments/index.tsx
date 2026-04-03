@@ -1,9 +1,14 @@
-import { INTERNAL_URLS, TCreateDepartmentInput } from '@/lib'
+import {
+    ConfirmDeleteDeptModal,
+    ModifyDepartmentModal,
+} from '@/features/department-manage'
+import { deleteDepartmentOptions, INTERNAL_URLS } from '@/lib'
 import { departmentsListOptions } from '@/lib/queries'
-import { AdminPageHeading } from '@/shared/components'
+import { AdminPageHeading, AppLoading } from '@/shared/components'
 import AdminContentContainer from '@/shared/components/admin/AdminContentContainer'
 import { TDepartment } from '@/shared/types'
 import {
+    addToast,
     Badge,
     Button,
     Card,
@@ -17,7 +22,7 @@ import {
     TableRow,
     useDisclosure,
 } from '@heroui/react'
-import { useSuspenseQuery } from '@tanstack/react-query'
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import {
     Edit,
@@ -26,19 +31,19 @@ import {
     LayoutGrid,
     LayoutList,
     Palette,
-    Plus,
     PlusIcon,
     Search,
     Trash2,
     Users,
 } from 'lucide-react'
 import { useMemo, useState } from 'react'
-import { ModifyDepartmentModal } from '../../../../features/department-manage'
 
 export const Route = createFileRoute('/_administrator/mgmt/departments/')({
+    head: () => ({ meta: [{ title: "Department Management" }] }),
     loader: ({ context }) => {
         return context.queryClient.ensureQueryData(departmentsListOptions())
     },
+    pendingComponent: AppLoading,
     component: () => {
         const [selectedDept, setSeletectedDept] = useState<TDepartment | null>(
             null
@@ -46,6 +51,7 @@ export const Route = createFileRoute('/_administrator/mgmt/departments/')({
 
         const {
             data: { departments },
+            refetch,
         } = useSuspenseQuery({ ...departmentsListOptions() })
 
         const createDepartmentModalState = useDisclosure({
@@ -68,6 +74,7 @@ export const Route = createFileRoute('/_administrator/mgmt/departments/')({
                     isOpen={createDepartmentModalState.isOpen}
                     onClose={createDepartmentModalState.onClose}
                     deptId={selectedDept?.id}
+                    onRefresh={refetch}
                 />
 
                 <AdminPageHeading
@@ -96,6 +103,7 @@ export const Route = createFileRoute('/_administrator/mgmt/departments/')({
                 <DepartmentsSettingsPage
                     depts={departments}
                     onEdit={handleEdit}
+                    onRefresh={refetch}
                 />
             </>
         )
@@ -105,11 +113,19 @@ export const Route = createFileRoute('/_administrator/mgmt/departments/')({
 function DepartmentsSettingsPage({
     depts: departments,
     onEdit,
+    onRefresh,
 }: {
     depts: TDepartment[]
     onEdit: (dept: TDepartment) => void
+    onRefresh: () => void
 }) {
     const router = useRouter()
+
+    const [selectedDept, setSelectedDept] = useState<TDepartment | null>(null)
+
+    const deleteDeptAction = useMutation(deleteDepartmentOptions)
+
+    const confirmDeleteModalState = useDisclosure()
 
     // States
     const [searchQuery, setSearchQuery] = useState('')
@@ -139,7 +155,8 @@ function DepartmentsSettingsPage({
             },
             {
                 label: 'Active Teams',
-                value: departments.filter((d) => d._count.users > 0).length,
+                value: departments.filter((d) => (d?._count?.users || 0) > 0)
+                    .length,
                 icon: <Palette size={18} />,
                 color: 'text-orange-500',
                 bg: 'bg-orange-500/10',
@@ -158,8 +175,30 @@ function DepartmentsSettingsPage({
         )
     }, [departments, searchQuery])
 
+    const handleDelete = (dept: TDepartment) => {
+        deleteDeptAction.mutateAsync(dept.id, {
+            onSuccess() {
+                onRefresh()
+                setSelectedDept(null)
+                confirmDeleteModalState.onClose()
+                addToast({
+                    title: 'Delete successfully',
+                    color: 'success',
+                })
+            },
+        })
+    }
+
     return (
         <>
+            {confirmDeleteModalState.isOpen && (
+                <ConfirmDeleteDeptModal
+                    isOpen={confirmDeleteModalState.isOpen}
+                    onClose={confirmDeleteModalState.onClose}
+                    onConfirm={handleDelete}
+                    department={selectedDept}
+                />
+            )}
             <AdminContentContainer className="mt-2">
                 {/* --- Stats Row --- */}
                 <div className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-3">
@@ -240,12 +279,12 @@ function DepartmentsSettingsPage({
                                 className="min-w-full"
                             >
                                 <TableHeader>
-                                    <TableColumn>DEPARTMENT NAME</TableColumn>
-                                    <TableColumn>CODE</TableColumn>
-                                    <TableColumn>COLOR TAG</TableColumn>
-                                    <TableColumn>MEMBERS</TableColumn>
+                                    <TableColumn>Display name</TableColumn>
+                                    <TableColumn>Code</TableColumn>
+                                    <TableColumn>Color</TableColumn>
+                                    <TableColumn>Members</TableColumn>
                                     <TableColumn align="end">
-                                        ACTIONS
+                                        Actions
                                     </TableColumn>
                                 </TableHeader>
                                 <TableBody emptyContent="No departments found.">
@@ -259,10 +298,11 @@ function DepartmentsSettingsPage({
                                                     <p className="font-bold text-text-default">
                                                         {dept.displayName}
                                                     </p>
-                                                    <p className="text-xs truncate text-text-subdued max-w-50">
-                                                        {dept.notes ||
-                                                            'No description'}
-                                                    </p>
+                                                    {dept.notes && (
+                                                        <p className="text-xs truncate text-text-subdued max-w-50">
+                                                            {dept.notes}
+                                                        </p>
+                                                    )}
                                                 </div>
                                             </TableCell>
                                             <TableCell>
@@ -276,7 +316,8 @@ function DepartmentsSettingsPage({
                                                         className="w-5 h-5 border rounded-full border-white/20"
                                                         style={{
                                                             backgroundColor:
-                                                                dept.hexColor,
+                                                                dept.hexColor ||
+                                                                '',
                                                         }}
                                                     ></div>
                                                     <span className="font-mono text-xs uppercase text-text-subdued">
@@ -321,6 +362,12 @@ function DepartmentsSettingsPage({
                                                         size="sm"
                                                         variant="light"
                                                         color="danger"
+                                                        onPress={() => {
+                                                            setSelectedDept(
+                                                                dept
+                                                            )
+                                                            confirmDeleteModalState.onOpen()
+                                                        }}
                                                     >
                                                         <Trash2 size={16} />
                                                     </Button>
@@ -344,7 +391,8 @@ function DepartmentsSettingsPage({
                                         <div
                                             className="flex items-center justify-center w-12 h-12 text-lg font-black text-white shadow-lg rounded-2xl"
                                             style={{
-                                                backgroundColor: dept.hexColor,
+                                                backgroundColor:
+                                                    dept.hexColor || '',
                                                 boxShadow: `0 10px 20px -10px ${dept.hexColor}`,
                                             }}
                                         >
@@ -357,9 +405,7 @@ function DepartmentsSettingsPage({
                                                 isIconOnly
                                                 size="sm"
                                                 variant="flat"
-                                                onPress={() =>
-                                                    handleOpenEdit(dept)
-                                                }
+                                                onPress={() => onEdit(dept)}
                                             >
                                                 <Edit size={14} />
                                             </Button>

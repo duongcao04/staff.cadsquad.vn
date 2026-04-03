@@ -28,14 +28,14 @@ export function AdminPageHeading({
     ...props
 }: Props) {
     let titleComp = (
-        <h1
+        <div
             className={cn(
                 'text-2xl font-bold text-text-default',
                 classNames?.title
             )}
         >
             {title as React.ReactNode}
-        </h1>
+        </div>
     )
     if (showBadge) {
         titleComp = (
@@ -49,14 +49,14 @@ export function AdminPageHeading({
                     base: 'pr-2',
                 }}
             >
-                <h1
+                <div
                     className={cn(
                         'text-2xl font-bold text-text-default',
                         classNames?.title
                     )}
                 >
                     {title}
-                </h1>
+                </div>
             </Badge>
         )
     }

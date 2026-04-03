@@ -1,14 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer'
+import { Expose } from 'class-transformer';
+import { UserResponseDto } from '../../user/dto/user-response.dto';
 
 export class JobTitleResponseDto {
 	@ApiProperty({ description: 'Job Title ID' })
 	@Expose()
-	id: string
+	id!: string
 
 	@ApiProperty({ description: 'Display name of the job title' })
 	@Expose()
-	displayName: string
+	displayName!: string
 
 	@ApiProperty({ description: 'Optional notes for the job title', required: false })
 	@Expose()
@@ -16,13 +17,19 @@ export class JobTitleResponseDto {
 
 	@ApiProperty({ description: 'Unique code for the job title' })
 	@Expose()
-	code: string
+	code!: string
 
 	@ApiProperty({ description: 'Creation timestamp' })
 	@Expose()
-	createdAt: Date
+	createdAt!: Date
 
 	@ApiProperty({ description: 'Last update timestamp' })
 	@Expose()
-	updatedAt: Date
+	updatedAt!: Date
+
+	@Expose()
+	users!: UserResponseDto[]
+
+	@Expose()
+	_count: any
 }

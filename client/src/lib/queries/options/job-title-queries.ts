@@ -1,14 +1,14 @@
+import { jobTitleApi } from '@/lib/api'
+import { JobTitleSchema, TCreateJobTitleInput, TUpdateJobTitleInput } from '@/lib/validationSchemas'
+import { parseData, parseList } from '@/lib/zod'
 import { mutationOptions, queryOptions } from '@tanstack/react-query'
-import { jobTitleApi } from '../../api'
-import { JobTitleSchema, TCreateJobTitleInput, TUpdateJobTitleInput } from '../../validationSchemas'
-import { parseData, parseList } from '../../zod'
 import { onErrorToast } from '../helper'
 
 // 1. Keys Factory
 export const jobTitleQueryKeys = {
     resource: ['job-titles'] as const,
     lists: () => [...jobTitleQueryKeys.resource, 'lists'] as const,
-    detail: (id: string) => [...jobTitleQueryKeys.resource, 'identify', id] as const,
+    detail: (identify: string) => [...jobTitleQueryKeys.resource, 'identify', identify] as const,
 }
 
 // 2. Fetch Options
@@ -25,13 +25,15 @@ export const jobTitlesListOptions = () => {
     })
 }
 
-export const jobTitleOptions = (id: string) => {
+export const jobTitleOptions = (identify: string) => {
     return queryOptions({
-        queryKey: jobTitleQueryKeys.detail(id),
-        queryFn: () => jobTitleApi.findOne(id),
+        queryKey: jobTitleQueryKeys.detail(identify),
+        queryFn: () => jobTitleApi.findOne(identify),
         select: (res) => {
             const jobTitleData = res?.result
-            return parseData(JobTitleSchema, jobTitleData)
+            return {
+                jobTitle: parseData(JobTitleSchema, jobTitleData)
+            }
         },
     })
 }

@@ -29,7 +29,7 @@ export const CreateDepartmentSchema = z.object({
 
 	notes: z
 		.string()
-		.optional(),
+		.nullish(),
 
 	code: z
 		.string("Code is required")
@@ -37,7 +37,7 @@ export const CreateDepartmentSchema = z.object({
 
 	hexColor: z
 		.string()
-		.optional(),
+		.nullish(),
 })
 
 export type TCreateDepartmentInput = z.infer<typeof CreateDepartmentSchema>

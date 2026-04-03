@@ -24,6 +24,7 @@ import { UpdateJobTitleDto } from './dto/update-job-title.dto'
 import { JobTitleService } from './job-title.service'
 import { JwtGuard } from '../auth/jwt.guard'
 import { APP_PERMISSIONS } from '@/utils'
+import { isUUID } from 'class-validator'
 
 @ApiTags('Job Titles')
 @Controller('job-titles')
@@ -61,18 +62,21 @@ export class JobTitleController {
         return this.jobTitleService.findAll()
     }
 
-    @Get(':id')
+    @Get(':identify')
     @HttpCode(200)
-    @ResponseMessage('Get job title detail successfully')
+    @ResponseMessage('Get job title details successfully')
     @ApiBearerAuth()
-    @ApiOperation({ summary: 'Get a job title by its ID' })
+    @ApiOperation({ summary: 'Get a job title details' })
     @ApiResponse({
         status: 200,
         description: 'Return a single job title.',
         type: JobTitleResponseDto,
     })
-    async findOne(@Param('id') id: string) {
-        return this.jobTitleService.findById(id)
+    async findOne(@Param('identify') identify: string) {
+        if (isUUID(identify)) {
+            return this.jobTitleService.findById(identify)
+        }
+        return this.jobTitleService.findByCode(identify)
     }
 
     @Patch(':id')

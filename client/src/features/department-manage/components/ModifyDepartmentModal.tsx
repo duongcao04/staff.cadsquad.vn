@@ -1,29 +1,30 @@
 import {
+    COLORS,
+    createDepartmentOptions,
+    CreateDepartmentSchema,
+    departmentOptions,
+    TCreateDepartmentInput,
+    updateDepartmentOption,
+} from '@/lib'
+import {
+    addToast,
     Button,
+    cn,
     Input,
     Modal,
     ModalBody,
     ModalContent,
     ModalFooter,
     ModalHeader,
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
     Textarea,
     Tooltip,
 } from '@heroui/react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useFormik } from 'formik'
 import lodash from 'lodash'
-import { Hash, Palette, Wand2 } from 'lucide-react' // Added Wand2 icon
-import { toFormikValidationSchema } from 'zod-formik-adapter'
-import {
-    createDepartmentOptions,
-    departmentOptions,
-    TCreateDepartmentInput,
-} from '../../../lib'
-import { CreateDepartmentSchema } from '../../../lib/validationSchemas'
+import { Hash, Palette, Sparkles, X } from 'lucide-react'
 import slugify from 'slugify'
+import { toFormikValidationSchema } from 'zod-formik-adapter'
 
 const PRESET_COLORS = [
     '#3B82F6',
@@ -42,207 +43,283 @@ type ModifyDepartmentModalProps = {
     isOpen: boolean
     onClose: () => void
     deptId?: string
+    onRefresh: () => void
 }
 
 export function ModifyDepartmentModal({
     isOpen,
     onClose,
     deptId,
+    onRefresh,
 }: ModifyDepartmentModalProps) {
     const isEditing = !lodash.isEmpty(deptId)
 
-    const { data: department } = useQuery({
+    const { data: departmentData } = useQuery({
         ...departmentOptions(deptId || '-1'),
         enabled: !!deptId,
     })
+    const department = departmentData?.department
 
     const createAction = useMutation(createDepartmentOptions)
+    const updateAction = useMutation(updateDepartmentOption)
 
     const formik = useFormik<TCreateDepartmentInput>({
         initialValues: {
             code: '',
             displayName: '',
-            hexColor: '#3B82F6', // Default color
+            hexColor: '#3B82F6',
             notes: '',
             ...department,
         },
         enableReinitialize: true,
         validationSchema: toFormikValidationSchema(CreateDepartmentSchema),
         onSubmit: async (values) => {
-            console.log('Submit:', values)
+            if (!isEditing) {
+                createAction.mutateAsync(
+                    {
+                        displayName: values.displayName,
+                        code: values.code,
+                        hexColor: values.hexColor,
+                        notes: values.notes,
+                    },
+                    {
+                        onSuccess() {
+                            onRefresh()
+                            addToast({
+                                title: 'Successfully',
+                                description:
+                                    'Create new department successfully',
+                                color: 'success',
+                            })
+                        },
+                    }
+                )
+            } else {
+                if (!deptId) return
+                updateAction.mutateAsync(
+                    {
+                        id: deptId,
+                        data: {
+                            displayName: values.displayName,
+                            code: values.code,
+                            hexColor: values.hexColor,
+                            notes: values.notes,
+                        },
+                    },
+                    {
+                        onSuccess() {
+                            onRefresh()
+                            addToast({
+                                title: 'Update successfully',
+                                color: 'success',
+                            })
+                        },
+                    }
+                )
+            }
+            formik.resetForm()
             onClose()
         },
     })
 
-    // --- Logic to Generate Code ---
     const handleGenerateCode = () => {
         if (!formik.values.displayName) return
-
-        // Take first 3 letters of each word or just first 4 of first word, uppercase
-        const generated = slugify(formik.values.displayName).toUpperCase()
-
-        formik.setFieldValue('code', generated.slice(0, 5)) // Cap at 5 chars
+        const generated = slugify(formik.values.displayName, {
+            replacement: '_',
+            lower: false,
+        })
+            .toUpperCase()
+            .replace(/[^A-Z0-9_]/g, '')
+        formik.setFieldValue('code', generated)
     }
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} placement="center" size="lg">
+        <Modal
+            isOpen={isOpen}
+            onClose={onClose}
+            size="2xl"
+            classNames={{
+                base: 'backdrop-blur-md shadow-2xl',
+                header: 'border-b border-border-default pb-4',
+                footer: 'border-t border-border-default pt-4',
+            }}
+        >
             <ModalContent>
                 {(onClose) => (
                     <>
-                        <ModalHeader className="text-xl font-bold">
-                            {isEditing
-                                ? 'Edit Department'
-                                : 'Create new Department'}
+                        <ModalHeader className="flex items-center gap-3">
+                            <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                                <Hash size={20} />
+                            </div>
+                            <div className="flex flex-col">
+                                <span className="text-lg font-bold">
+                                    {isEditing
+                                        ? 'Modify Department'
+                                        : 'New Department'}
+                                </span>
+                                <span className="text-xs italic font-normal text-text-subdued">
+                                    Define workspace boundaries and team
+                                    identity
+                                </span>
+                            </div>
                         </ModalHeader>
-                        <ModalBody>
+                        <ModalBody className="flex flex-row gap-6 py-6">
+                            {/* Main Form Section */}
                             <form
                                 id="dept-form"
                                 onSubmit={formik.handleSubmit}
-                                className="space-y-5"
+                                className="space-y-6 flex-2"
                             >
-                                <div className="flex items-end gap-4">
-                                    <Input
-                                        name="displayName"
-                                        label="Display name"
-                                        placeholder="e.g. Design Team"
-                                        labelPlacement="outside"
-                                        variant="bordered"
-                                        className="flex-1"
-                                        value={formik.values.displayName}
-                                        onChange={formik.handleChange}
-                                    />
-                                    <div className="relative flex items-end">
+                                <Input
+                                    name="displayName"
+                                    label="Department Identity"
+                                    placeholder="e.g. Core Engineering"
+                                    labelPlacement="outside"
+                                    variant="faded"
+                                    size="lg"
+                                    classNames={{
+                                        label: 'font-semibold text-xs uppercase tracking-wider',
+                                    }}
+                                    value={formik.values.displayName}
+                                    onChange={formik.handleChange}
+                                />
+
+                                <div className="space-y-2">
+                                    <label className="text-xs font-semibold tracking-wider uppercase text-foreground">
+                                        System Reference Code
+                                    </label>
+                                    <div className="flex gap-2 group">
                                         <Input
                                             name="code"
-                                            label="Code"
-                                            placeholder="DES"
-                                            labelPlacement="outside"
+                                            placeholder="ENG_CORE"
                                             variant="bordered"
-                                            className="w-36"
+                                            className="flex-1"
                                             startContent={
                                                 <Hash
                                                     size={14}
-                                                    className="text-text-subdued"
+                                                    className="text-primary/60"
                                                 />
-                                            }
-                                            endContent={
-                                                <Tooltip content="Auto-generate from name">
-                                                    <Button
-                                                        isIconOnly
-                                                        size="sm"
-                                                        variant="light"
-                                                        className="w-6 h-6 min-w-6"
-                                                        onPress={
-                                                            handleGenerateCode
-                                                        }
-                                                        isDisabled={
-                                                            !formik.values
-                                                                .displayName
-                                                        }
-                                                    >
-                                                        <Wand2
-                                                            size={14}
-                                                            className="text-primary"
-                                                        />
-                                                    </Button>
-                                                </Tooltip>
                                             }
                                             value={formik.values.code}
                                             onChange={formik.handleChange}
                                         />
+                                        <Tooltip
+                                            content="Auto-generate from name"
+                                            showArrow
+                                        >
+                                            <Button
+                                                isIconOnly
+                                                variant="flat"
+                                                color="primary"
+                                                className="shadow-lg shadow-primary/10"
+                                                onPress={handleGenerateCode}
+                                                isDisabled={
+                                                    !formik.values.displayName
+                                                }
+                                            >
+                                                <Sparkles size={18} />
+                                            </Button>
+                                        </Tooltip>
                                     </div>
                                 </div>
 
                                 <Textarea
                                     name="notes"
-                                    label="Description"
-                                    placeholder="Briefly describe this team..."
+                                    label="Notes"
+                                    placeholder="Describe the department's scope..."
                                     labelPlacement="outside"
-                                    variant="bordered"
-                                    minRows={2}
-                                    value={formik.values.notes}
+                                    variant="faded"
+                                    minRows={3}
+                                    classNames={{
+                                        label: 'font-semibold text-xs uppercase tracking-wider',
+                                    }}
+                                    value={formik.values.notes || ''}
                                     onChange={formik.handleChange}
                                 />
-
-                                <div>
-                                    <label className="block mb-2 font-bold text-small">
-                                        Theme Color
-                                    </label>
-                                    <Popover placement="bottom" showArrow>
-                                        <PopoverTrigger>
-                                            <Button
-                                                variant="bordered"
-                                                className="justify-start w-full font-mono"
-                                                startContent={
-                                                    <div
-                                                        className="w-4 h-4 border rounded-full border-black/10"
-                                                        style={{
-                                                            backgroundColor:
-                                                                formik.values
-                                                                    .hexColor,
-                                                        }}
-                                                    />
-                                                }
-                                            >
-                                                {formik.values.hexColor ||
-                                                    'Select color'}
-                                            </Button>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="w-64 p-3">
-                                            <div className="grid w-full grid-cols-5 gap-2">
-                                                {PRESET_COLORS.map((color) => (
-                                                    <button
-                                                        key={color}
-                                                        type="button"
-                                                        className={`w-8 h-8 rounded-full border-2 transition-transform hover:scale-110 ${formik.values.hexColor === color ? 'border-primary shadow-sm' : 'border-transparent'}`}
-                                                        style={{
-                                                            backgroundColor:
-                                                                color,
-                                                        }}
-                                                        onClick={() =>
-                                                            formik.setFieldValue(
-                                                                'hexColor',
-                                                                color
-                                                            )
-                                                        }
-                                                    />
-                                                ))}
-                                            </div>
-                                            <div className="w-full pt-3 mt-3 border-t border-border-default">
-                                                <Input
-                                                    size="sm"
-                                                    variant="flat"
-                                                    value={
-                                                        formik.values.hexColor
-                                                    }
-                                                    onValueChange={(v) =>
-                                                        formik.setFieldValue(
-                                                            'hexColor',
-                                                            v
-                                                        )
-                                                    }
-                                                    startContent={
-                                                        <Palette size={14} />
-                                                    }
-                                                />
-                                            </div>
-                                        </PopoverContent>
-                                    </Popover>
-                                </div>
                             </form>
+
+                            {/* Aesthetics Sidebar */}
+                            <div className="flex-1 pl-6 space-y-4 border-l border-white/10">
+                                <label className="flex items-center gap-2 text-xs font-semibold tracking-wider uppercase">
+                                    <Palette size={14} /> Brand Theme
+                                </label>
+
+                                <div
+                                    className="relative flex items-center justify-center w-full h-24 overflow-hidden transition-all duration-500 border shadow-inner rounded-xl border-white/10"
+                                    style={{
+                                        backgroundColor: `${formik.values.hexColor}15`,
+                                        borderColor: `${formik.values.hexColor}40`,
+                                    }}
+                                >
+                                    <div
+                                        className="absolute inset-0 opacity-20 blur-2xl"
+                                        style={{
+                                            backgroundColor:
+                                                formik.values.hexColor ||
+                                                COLORS.white,
+                                        }}
+                                    />
+                                    <div
+                                        className="z-10 w-12 h-12 border-2 rounded-full shadow-2xl border-white/20 ring-4 ring-black/10"
+                                        style={{
+                                            backgroundColor:
+                                                formik.values.hexColor ||
+                                                COLORS.white,
+                                        }}
+                                    />
+                                </div>
+
+                                <div className="grid grid-cols-4 gap-2 mt-4">
+                                    {PRESET_COLORS.map((color) => (
+                                        <button
+                                            key={color}
+                                            type="button"
+                                            className={cn(
+                                                'w-full aspect-square rounded-md transition-all hover:scale-110',
+                                                formik.values.hexColor === color
+                                                    ? 'ring-2 ring-primary ring-offset-2 ring-offset-background'
+                                                    : 'opacity-80 hover:opacity-100'
+                                            )}
+                                            style={{ backgroundColor: color }}
+                                            onClick={() =>
+                                                formik.setFieldValue(
+                                                    'hexColor',
+                                                    color
+                                                )
+                                            }
+                                        />
+                                    ))}
+                                </div>
+
+                                <Input
+                                    size="sm"
+                                    variant="underlined"
+                                    label="Hex Override"
+                                    value={formik.values.hexColor || ''}
+                                    onValueChange={(v) =>
+                                        formik.setFieldValue('hexColor', v)
+                                    }
+                                    className="mt-2"
+                                />
+                            </div>
                         </ModalBody>
                         <ModalFooter>
-                            <Button variant="light" onPress={onClose}>
-                                Cancel
+                            <Button
+                                variant="light"
+                                onPress={onClose}
+                                className="font-medium"
+                                startContent={<X size={16} />}
+                            >
+                                Discard
                             </Button>
                             <Button
                                 color="primary"
                                 type="submit"
                                 form="dept-form"
-                                className="font-bold"
+                                className="px-8 font-bold shadow-lg shadow-primary/20"
                                 isLoading={createAction.isPending}
                             >
-                                {isEditing ? 'Update' : 'Create'} Department
+                                {isEditing ? 'Save Changes' : 'Create'}
                             </Button>
                         </ModalFooter>
                     </>

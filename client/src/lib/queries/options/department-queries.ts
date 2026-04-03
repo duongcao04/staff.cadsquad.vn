@@ -49,7 +49,7 @@ export const createDepartmentOptions = mutationOptions({
     onError: (err) => onErrorToast(err, 'Create failed'),
 })
 
-export const updateDepartmentMutation = mutationOptions({
+export const updateDepartmentOption = mutationOptions({
     mutationFn: ({
         id,
         data,
