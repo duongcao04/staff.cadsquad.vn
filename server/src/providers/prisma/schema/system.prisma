@@ -1,0 +1,8 @@
+model SystemSetting {
+    key       String   @id // e.g., "maintenanceMode"
+    value     String   @db.Text // Store everything as a stringified JSON
+    updatedAt DateTime @updatedAt
+
+    modifierBy   User?   @relation(fields: [modifierById], references: [id])
+    modifierById String?
+}

@@ -394,6 +394,7 @@ INSERT INTO
 		id,
 		"displayName",
 		"logoUrl",
+		"type",
 		"hexColor",
 		"createdAt",
 		"updatedAt"
@@ -403,6 +404,7 @@ VALUES
 		'2f8a5a4d-6c4e-4f90-8f64-94bde3acbd2d',
 		'FV.PTP',
 		'https://netolink.com/wp-content/uploads/2024/10/Fiverr.png',
+		'E_WALLET',
 		'#4A90E2',
 		NOW (),
 		NOW ()
@@ -411,6 +413,7 @@ VALUES
 		'c9f134a5-3a72-42e1-b9fa-4f2b3b2b85a9',
 		'FV.CSD',
 		'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpf1zBSVqPp4vBNY8zpzqNs7UH_4kd7SvdvQ&s',
+		'E_WALLET',
 		'#50E3C2',
 		NOW (),
 		NOW ()
@@ -419,6 +422,7 @@ VALUES
 		'4e6c64c7-08fb-46df-83aa-49c2bb91f9db',
 		'CSD.PAYPAL',
 		'https://cdn-1.webcatalog.io/catalog/paypal/paypal-icon-filled-256.png?v=1759711656953',
+		'CRYPTO',
 		'#003087',
 		NOW (),
 		NOW ()
@@ -427,6 +431,7 @@ VALUES
 		'7f2e2b76-16e0-4e0c-83b7-91a924f1ef62',
 		'CSD.PAYONEER',
 		'https://clemta.com/wp-content/uploads/2023/05/Payoneer.png',
+		'CRYPTO',
 		'#FF4800',
 		NOW (),
 		NOW ()
@@ -435,6 +440,7 @@ VALUES
 		'5b7d2d1f-2c9a-4f4b-a38d-7fbb3f0797d6',
 		'CSD.BINANCE',
 		'https://public.bnbstatic.com/20190405/eb2349c3-b2f8-4a93-a286-8f86a62ea9d8.png',
+		'CRYPTO',
 		'#F0B90B',
 		NOW (),
 		NOW ()
@@ -442,6 +448,7 @@ VALUES
 	(
 		'a18d5a9b-d067-493f-a7d7-2fb6b31d54de',
 		'CSD.ACB',
+		'BANK',
 		'https://cdn.tgdd.vn/2020/04/GameApp/unnamed-200x200-18.png',
 		'#00509B',
 		NOW (),

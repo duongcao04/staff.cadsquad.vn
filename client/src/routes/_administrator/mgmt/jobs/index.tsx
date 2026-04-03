@@ -263,11 +263,11 @@ function ManageJobsPage() {
             />
 
             {hasSelection && (
-                <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 animate-in slide-in-from-bottom-6 fade-in duration-200 shadow-2xl rounded-2xl">
-                    <Card className="border border-default-200 bg-background/90 backdrop-blur-md overflow-visible">
-                        <CardBody className="flex flex-row items-center gap-1 py-2 px-3">
+                <div className="fixed z-50 duration-200 transform -translate-x-1/2 shadow-2xl bottom-8 left-1/2 animate-in slide-in-from-bottom-6 fade-in rounded-2xl">
+                    <Card className="overflow-visible border border-default-200 bg-background/90 backdrop-blur-md">
+                        <CardBody className="flex flex-row items-center gap-1 px-3 py-2">
                             <div className="flex flex-col px-3">
-                                <span className="text-sm font-bold text-default-900 leading-none">
+                                <span className="text-sm font-bold leading-none text-default-900">
                                     {selectionCount}
                                 </span>
                                 <span className="text-[10px] text-default-500 uppercase tracking-wider font-semibold">
@@ -348,7 +348,7 @@ function ManageJobsPage() {
                                     selected jobs?
                                 </p>
                                 {bulkActionType === 'DELETE' && (
-                                    <p className="text-xs text-danger-600 mt-2 bg-danger-50 p-2 rounded-md">
+                                    <p className="p-2 mt-2 text-xs rounded-md text-danger-600 bg-danger-50">
                                         Warning: This action is permanent and
                                         cannot be undone.
                                     </p>

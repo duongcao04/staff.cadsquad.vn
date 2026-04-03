@@ -131,6 +131,8 @@ model User {
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
   systemAuditLogs SystemAuditLog[]
+
+  systemSettings SystemSetting[]
 }
 
 model UserSecurityLog {
@@ -564,16 +566,30 @@ enum JobPriority {
 }
 
 model PaymentChannel {
-  id          String   @id @default(uuid())
-  displayName String
-  hexColor    String?
-  logoUrl     String?
-  ownerName   String?
-  cardNumber  String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id             String             @id @default(uuid())
+  displayName    String
+  hexColor       String?
+  type           PaymentChannelType @default(BANK)
+  accountDetails String?
+  feeRate        Float?
+  fixedFee       Float?
+  totalVolume    Float?
+  totalFees      Float?
+  logoUrl        String?
+  ownerName      String?
+  cardNumber     String?
+  isActive       Boolean            @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   jobs Job[]
+}
+
+enum PaymentChannelType {
+  BANK
+  E_WALLET
+  CRYPTO
 }
 
 model JobType {
@@ -927,4 +943,13 @@ model PostEvent {
   // Quan hệ với Post
   postId String @unique
   post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model SystemSetting {
+  key       String   @id // e.g., "maintenanceMode"
+  value     String   @db.Text // Store everything as a stringified JSON
+  updatedAt DateTime @updatedAt
+
+  modifierBy   User?   @relation(fields: [modifierById], references: [id])
+  modifierById String?
 }

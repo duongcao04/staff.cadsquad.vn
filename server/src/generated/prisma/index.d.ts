@@ -198,6 +198,11 @@ export type Post = $Result.DefaultSelection<Prisma.$PostPayload>
  * 
  */
 export type PostEvent = $Result.DefaultSelection<Prisma.$PostEventPayload>
+/**
+ * Model SystemSetting
+ * 
+ */
+export type SystemSetting = $Result.DefaultSelection<Prisma.$SystemSettingPayload>
 
 /**
  * Enums
@@ -305,6 +310,15 @@ export const JobPriority: {
 };
 
 export type JobPriority = (typeof JobPriority)[keyof typeof JobPriority]
+
+
+export const PaymentChannelType: {
+  BANK: 'BANK',
+  E_WALLET: 'E_WALLET',
+  CRYPTO: 'CRYPTO'
+};
+
+export type PaymentChannelType = (typeof PaymentChannelType)[keyof typeof PaymentChannelType]
 
 
 export const JobStatusSystemType: {
@@ -434,6 +448,10 @@ export const ClientType: typeof $Enums.ClientType
 export type JobPriority = $Enums.JobPriority
 
 export const JobPriority: typeof $Enums.JobPriority
+
+export type PaymentChannelType = $Enums.PaymentChannelType
+
+export const PaymentChannelType: typeof $Enums.PaymentChannelType
 
 export type JobStatusSystemType = $Enums.JobStatusSystemType
 
@@ -953,6 +971,16 @@ export class PrismaClient<
     * ```
     */
   get postEvent(): Prisma.PostEventDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.systemSetting`: Exposes CRUD operations for the **SystemSetting** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SystemSettings
+    * const systemSettings = await prisma.systemSetting.findMany()
+    * ```
+    */
+  get systemSetting(): Prisma.SystemSettingDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1423,7 +1451,8 @@ export namespace Prisma {
     CommunityMember: 'CommunityMember',
     Topic: 'Topic',
     Post: 'Post',
-    PostEvent: 'PostEvent'
+    PostEvent: 'PostEvent',
+    SystemSetting: 'SystemSetting'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1439,7 +1468,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "systemAuditLog" | "browserSubscribes" | "userDevices" | "user" | "userSecurityLog" | "role" | "permission" | "userPermission" | "permissionGroup" | "session" | "account" | "verification" | "gallery" | "jobComment" | "jobTitle" | "department" | "userConfig" | "fileSystem" | "job" | "sharepointItem" | "jobAssignment" | "jobFolderTemplate" | "client" | "pinnedJob" | "paymentChannel" | "jobType" | "jobStatus" | "jobDeliverFile" | "jobDelivery" | "jobStatusHistory" | "jobActivityLog" | "notification" | "community" | "communityMember" | "topic" | "post" | "postEvent"
+      modelProps: "systemAuditLog" | "browserSubscribes" | "userDevices" | "user" | "userSecurityLog" | "role" | "permission" | "userPermission" | "permissionGroup" | "session" | "account" | "verification" | "gallery" | "jobComment" | "jobTitle" | "department" | "userConfig" | "fileSystem" | "job" | "sharepointItem" | "jobAssignment" | "jobFolderTemplate" | "client" | "pinnedJob" | "paymentChannel" | "jobType" | "jobStatus" | "jobDeliverFile" | "jobDelivery" | "jobStatusHistory" | "jobActivityLog" | "notification" | "community" | "communityMember" | "topic" | "post" | "postEvent" | "systemSetting"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -4181,6 +4210,80 @@ export namespace Prisma {
           }
         }
       }
+      SystemSetting: {
+        payload: Prisma.$SystemSettingPayload<ExtArgs>
+        fields: Prisma.SystemSettingFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SystemSettingFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSettingPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SystemSettingFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSettingPayload>
+          }
+          findFirst: {
+            args: Prisma.SystemSettingFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSettingPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SystemSettingFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSettingPayload>
+          }
+          findMany: {
+            args: Prisma.SystemSettingFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSettingPayload>[]
+          }
+          create: {
+            args: Prisma.SystemSettingCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSettingPayload>
+          }
+          createMany: {
+            args: Prisma.SystemSettingCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SystemSettingCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSettingPayload>[]
+          }
+          delete: {
+            args: Prisma.SystemSettingDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSettingPayload>
+          }
+          update: {
+            args: Prisma.SystemSettingUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSettingPayload>
+          }
+          deleteMany: {
+            args: Prisma.SystemSettingDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SystemSettingUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SystemSettingUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSettingPayload>[]
+          }
+          upsert: {
+            args: Prisma.SystemSettingUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSettingPayload>
+          }
+          aggregate: {
+            args: Prisma.SystemSettingAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSystemSetting>
+          }
+          groupBy: {
+            args: Prisma.SystemSettingGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SystemSettingGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SystemSettingCountArgs<ExtArgs>
+            result: $Utils.Optional<SystemSettingCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -4326,6 +4429,7 @@ export namespace Prisma {
     topic?: TopicOmit
     post?: PostOmit
     postEvent?: PostEventOmit
+    systemSetting?: SystemSettingOmit
   }
 
   /* Types for Logging */
@@ -4428,6 +4532,7 @@ export namespace Prisma {
     userPermissions: number
     securityLogs: number
     systemAuditLogs: number
+    systemSettings: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4453,6 +4558,7 @@ export namespace Prisma {
     userPermissions?: boolean | UserCountOutputTypeCountUserPermissionsArgs
     securityLogs?: boolean | UserCountOutputTypeCountSecurityLogsArgs
     systemAuditLogs?: boolean | UserCountOutputTypeCountSystemAuditLogsArgs
+    systemSettings?: boolean | UserCountOutputTypeCountSystemSettingsArgs
   }
 
   // Custom InputTypes
@@ -4618,6 +4724,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountSystemAuditLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SystemAuditLogWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountSystemSettingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SystemSettingWhereInput
   }
 
 
@@ -8768,6 +8881,7 @@ export namespace Prisma {
     userPermissions?: boolean | User$userPermissionsArgs<ExtArgs>
     securityLogs?: boolean | User$securityLogsArgs<ExtArgs>
     systemAuditLogs?: boolean | User$systemAuditLogsArgs<ExtArgs>
+    systemSettings?: boolean | User$systemSettingsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -8873,6 +8987,7 @@ export namespace Prisma {
     userPermissions?: boolean | User$userPermissionsArgs<ExtArgs>
     securityLogs?: boolean | User$securityLogsArgs<ExtArgs>
     systemAuditLogs?: boolean | User$systemAuditLogsArgs<ExtArgs>
+    systemSettings?: boolean | User$systemSettingsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8917,6 +9032,7 @@ export namespace Prisma {
       userPermissions: Prisma.$UserPermissionPayload<ExtArgs>[]
       securityLogs: Prisma.$UserSecurityLogPayload<ExtArgs>[]
       systemAuditLogs: Prisma.$SystemAuditLogPayload<ExtArgs>[]
+      systemSettings: Prisma.$SystemSettingPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -9358,6 +9474,7 @@ export namespace Prisma {
     userPermissions<T extends User$userPermissionsArgs<ExtArgs> = {}>(args?: Subset<T, User$userPermissionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPermissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     securityLogs<T extends User$securityLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$securityLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserSecurityLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     systemAuditLogs<T extends User$systemAuditLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$systemAuditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SystemAuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    systemSettings<T extends User$systemSettingsArgs<ExtArgs> = {}>(args?: Subset<T, User$systemSettingsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SystemSettingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10408,6 +10525,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: SystemAuditLogScalarFieldEnum | SystemAuditLogScalarFieldEnum[]
+  }
+
+  /**
+   * User.systemSettings
+   */
+  export type User$systemSettingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSetting
+     */
+    select?: SystemSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSetting
+     */
+    omit?: SystemSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSettingInclude<ExtArgs> | null
+    where?: SystemSettingWhereInput
+    orderBy?: SystemSettingOrderByWithRelationInput | SystemSettingOrderByWithRelationInput[]
+    cursor?: SystemSettingWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SystemSettingScalarFieldEnum | SystemSettingScalarFieldEnum[]
   }
 
   /**
@@ -33422,17 +33563,40 @@ export namespace Prisma {
 
   export type AggregatePaymentChannel = {
     _count: PaymentChannelCountAggregateOutputType | null
+    _avg: PaymentChannelAvgAggregateOutputType | null
+    _sum: PaymentChannelSumAggregateOutputType | null
     _min: PaymentChannelMinAggregateOutputType | null
     _max: PaymentChannelMaxAggregateOutputType | null
+  }
+
+  export type PaymentChannelAvgAggregateOutputType = {
+    feeRate: number | null
+    fixedFee: number | null
+    totalVolume: number | null
+    totalFees: number | null
+  }
+
+  export type PaymentChannelSumAggregateOutputType = {
+    feeRate: number | null
+    fixedFee: number | null
+    totalVolume: number | null
+    totalFees: number | null
   }
 
   export type PaymentChannelMinAggregateOutputType = {
     id: string | null
     displayName: string | null
     hexColor: string | null
+    type: $Enums.PaymentChannelType | null
+    accountDetails: string | null
+    feeRate: number | null
+    fixedFee: number | null
+    totalVolume: number | null
+    totalFees: number | null
     logoUrl: string | null
     ownerName: string | null
     cardNumber: string | null
+    isActive: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -33441,9 +33605,16 @@ export namespace Prisma {
     id: string | null
     displayName: string | null
     hexColor: string | null
+    type: $Enums.PaymentChannelType | null
+    accountDetails: string | null
+    feeRate: number | null
+    fixedFee: number | null
+    totalVolume: number | null
+    totalFees: number | null
     logoUrl: string | null
     ownerName: string | null
     cardNumber: string | null
+    isActive: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -33452,22 +33623,50 @@ export namespace Prisma {
     id: number
     displayName: number
     hexColor: number
+    type: number
+    accountDetails: number
+    feeRate: number
+    fixedFee: number
+    totalVolume: number
+    totalFees: number
     logoUrl: number
     ownerName: number
     cardNumber: number
+    isActive: number
     createdAt: number
     updatedAt: number
     _all: number
   }
 
 
+  export type PaymentChannelAvgAggregateInputType = {
+    feeRate?: true
+    fixedFee?: true
+    totalVolume?: true
+    totalFees?: true
+  }
+
+  export type PaymentChannelSumAggregateInputType = {
+    feeRate?: true
+    fixedFee?: true
+    totalVolume?: true
+    totalFees?: true
+  }
+
   export type PaymentChannelMinAggregateInputType = {
     id?: true
     displayName?: true
     hexColor?: true
+    type?: true
+    accountDetails?: true
+    feeRate?: true
+    fixedFee?: true
+    totalVolume?: true
+    totalFees?: true
     logoUrl?: true
     ownerName?: true
     cardNumber?: true
+    isActive?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -33476,9 +33675,16 @@ export namespace Prisma {
     id?: true
     displayName?: true
     hexColor?: true
+    type?: true
+    accountDetails?: true
+    feeRate?: true
+    fixedFee?: true
+    totalVolume?: true
+    totalFees?: true
     logoUrl?: true
     ownerName?: true
     cardNumber?: true
+    isActive?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -33487,9 +33693,16 @@ export namespace Prisma {
     id?: true
     displayName?: true
     hexColor?: true
+    type?: true
+    accountDetails?: true
+    feeRate?: true
+    fixedFee?: true
+    totalVolume?: true
+    totalFees?: true
     logoUrl?: true
     ownerName?: true
     cardNumber?: true
+    isActive?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -33533,6 +33746,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: PaymentChannelAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PaymentChannelSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: PaymentChannelMinAggregateInputType
@@ -33563,6 +33788,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: PaymentChannelCountAggregateInputType | true
+    _avg?: PaymentChannelAvgAggregateInputType
+    _sum?: PaymentChannelSumAggregateInputType
     _min?: PaymentChannelMinAggregateInputType
     _max?: PaymentChannelMaxAggregateInputType
   }
@@ -33571,12 +33798,21 @@ export namespace Prisma {
     id: string
     displayName: string
     hexColor: string | null
+    type: $Enums.PaymentChannelType
+    accountDetails: string | null
+    feeRate: number | null
+    fixedFee: number | null
+    totalVolume: number | null
+    totalFees: number | null
     logoUrl: string | null
     ownerName: string | null
     cardNumber: string | null
+    isActive: boolean
     createdAt: Date
     updatedAt: Date
     _count: PaymentChannelCountAggregateOutputType | null
+    _avg: PaymentChannelAvgAggregateOutputType | null
+    _sum: PaymentChannelSumAggregateOutputType | null
     _min: PaymentChannelMinAggregateOutputType | null
     _max: PaymentChannelMaxAggregateOutputType | null
   }
@@ -33599,9 +33835,16 @@ export namespace Prisma {
     id?: boolean
     displayName?: boolean
     hexColor?: boolean
+    type?: boolean
+    accountDetails?: boolean
+    feeRate?: boolean
+    fixedFee?: boolean
+    totalVolume?: boolean
+    totalFees?: boolean
     logoUrl?: boolean
     ownerName?: boolean
     cardNumber?: boolean
+    isActive?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     jobs?: boolean | PaymentChannel$jobsArgs<ExtArgs>
@@ -33612,9 +33855,16 @@ export namespace Prisma {
     id?: boolean
     displayName?: boolean
     hexColor?: boolean
+    type?: boolean
+    accountDetails?: boolean
+    feeRate?: boolean
+    fixedFee?: boolean
+    totalVolume?: boolean
+    totalFees?: boolean
     logoUrl?: boolean
     ownerName?: boolean
     cardNumber?: boolean
+    isActive?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["paymentChannel"]>
@@ -33623,9 +33873,16 @@ export namespace Prisma {
     id?: boolean
     displayName?: boolean
     hexColor?: boolean
+    type?: boolean
+    accountDetails?: boolean
+    feeRate?: boolean
+    fixedFee?: boolean
+    totalVolume?: boolean
+    totalFees?: boolean
     logoUrl?: boolean
     ownerName?: boolean
     cardNumber?: boolean
+    isActive?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["paymentChannel"]>
@@ -33634,14 +33891,21 @@ export namespace Prisma {
     id?: boolean
     displayName?: boolean
     hexColor?: boolean
+    type?: boolean
+    accountDetails?: boolean
+    feeRate?: boolean
+    fixedFee?: boolean
+    totalVolume?: boolean
+    totalFees?: boolean
     logoUrl?: boolean
     ownerName?: boolean
     cardNumber?: boolean
+    isActive?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type PaymentChannelOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "displayName" | "hexColor" | "logoUrl" | "ownerName" | "cardNumber" | "createdAt" | "updatedAt", ExtArgs["result"]["paymentChannel"]>
+  export type PaymentChannelOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "displayName" | "hexColor" | "type" | "accountDetails" | "feeRate" | "fixedFee" | "totalVolume" | "totalFees" | "logoUrl" | "ownerName" | "cardNumber" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["paymentChannel"]>
   export type PaymentChannelInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     jobs?: boolean | PaymentChannel$jobsArgs<ExtArgs>
     _count?: boolean | PaymentChannelCountOutputTypeDefaultArgs<ExtArgs>
@@ -33658,9 +33922,16 @@ export namespace Prisma {
       id: string
       displayName: string
       hexColor: string | null
+      type: $Enums.PaymentChannelType
+      accountDetails: string | null
+      feeRate: number | null
+      fixedFee: number | null
+      totalVolume: number | null
+      totalFees: number | null
       logoUrl: string | null
       ownerName: string | null
       cardNumber: string | null
+      isActive: boolean
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["paymentChannel"]>
@@ -34090,9 +34361,16 @@ export namespace Prisma {
     readonly id: FieldRef<"PaymentChannel", 'String'>
     readonly displayName: FieldRef<"PaymentChannel", 'String'>
     readonly hexColor: FieldRef<"PaymentChannel", 'String'>
+    readonly type: FieldRef<"PaymentChannel", 'PaymentChannelType'>
+    readonly accountDetails: FieldRef<"PaymentChannel", 'String'>
+    readonly feeRate: FieldRef<"PaymentChannel", 'Float'>
+    readonly fixedFee: FieldRef<"PaymentChannel", 'Float'>
+    readonly totalVolume: FieldRef<"PaymentChannel", 'Float'>
+    readonly totalFees: FieldRef<"PaymentChannel", 'Float'>
     readonly logoUrl: FieldRef<"PaymentChannel", 'String'>
     readonly ownerName: FieldRef<"PaymentChannel", 'String'>
     readonly cardNumber: FieldRef<"PaymentChannel", 'String'>
+    readonly isActive: FieldRef<"PaymentChannel", 'Boolean'>
     readonly createdAt: FieldRef<"PaymentChannel", 'DateTime'>
     readonly updatedAt: FieldRef<"PaymentChannel", 'DateTime'>
   }
@@ -48237,6 +48515,1075 @@ export namespace Prisma {
 
 
   /**
+   * Model SystemSetting
+   */
+
+  export type AggregateSystemSetting = {
+    _count: SystemSettingCountAggregateOutputType | null
+    _min: SystemSettingMinAggregateOutputType | null
+    _max: SystemSettingMaxAggregateOutputType | null
+  }
+
+  export type SystemSettingMinAggregateOutputType = {
+    key: string | null
+    value: string | null
+    updatedAt: Date | null
+    modifierById: string | null
+  }
+
+  export type SystemSettingMaxAggregateOutputType = {
+    key: string | null
+    value: string | null
+    updatedAt: Date | null
+    modifierById: string | null
+  }
+
+  export type SystemSettingCountAggregateOutputType = {
+    key: number
+    value: number
+    updatedAt: number
+    modifierById: number
+    _all: number
+  }
+
+
+  export type SystemSettingMinAggregateInputType = {
+    key?: true
+    value?: true
+    updatedAt?: true
+    modifierById?: true
+  }
+
+  export type SystemSettingMaxAggregateInputType = {
+    key?: true
+    value?: true
+    updatedAt?: true
+    modifierById?: true
+  }
+
+  export type SystemSettingCountAggregateInputType = {
+    key?: true
+    value?: true
+    updatedAt?: true
+    modifierById?: true
+    _all?: true
+  }
+
+  export type SystemSettingAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SystemSetting to aggregate.
+     */
+    where?: SystemSettingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SystemSettings to fetch.
+     */
+    orderBy?: SystemSettingOrderByWithRelationInput | SystemSettingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SystemSettingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SystemSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SystemSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SystemSettings
+    **/
+    _count?: true | SystemSettingCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SystemSettingMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SystemSettingMaxAggregateInputType
+  }
+
+  export type GetSystemSettingAggregateType<T extends SystemSettingAggregateArgs> = {
+        [P in keyof T & keyof AggregateSystemSetting]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSystemSetting[P]>
+      : GetScalarType<T[P], AggregateSystemSetting[P]>
+  }
+
+
+
+
+  export type SystemSettingGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SystemSettingWhereInput
+    orderBy?: SystemSettingOrderByWithAggregationInput | SystemSettingOrderByWithAggregationInput[]
+    by: SystemSettingScalarFieldEnum[] | SystemSettingScalarFieldEnum
+    having?: SystemSettingScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SystemSettingCountAggregateInputType | true
+    _min?: SystemSettingMinAggregateInputType
+    _max?: SystemSettingMaxAggregateInputType
+  }
+
+  export type SystemSettingGroupByOutputType = {
+    key: string
+    value: string
+    updatedAt: Date
+    modifierById: string | null
+    _count: SystemSettingCountAggregateOutputType | null
+    _min: SystemSettingMinAggregateOutputType | null
+    _max: SystemSettingMaxAggregateOutputType | null
+  }
+
+  type GetSystemSettingGroupByPayload<T extends SystemSettingGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SystemSettingGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SystemSettingGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SystemSettingGroupByOutputType[P]>
+            : GetScalarType<T[P], SystemSettingGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SystemSettingSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    key?: boolean
+    value?: boolean
+    updatedAt?: boolean
+    modifierById?: boolean
+    modifierBy?: boolean | SystemSetting$modifierByArgs<ExtArgs>
+  }, ExtArgs["result"]["systemSetting"]>
+
+  export type SystemSettingSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    key?: boolean
+    value?: boolean
+    updatedAt?: boolean
+    modifierById?: boolean
+    modifierBy?: boolean | SystemSetting$modifierByArgs<ExtArgs>
+  }, ExtArgs["result"]["systemSetting"]>
+
+  export type SystemSettingSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    key?: boolean
+    value?: boolean
+    updatedAt?: boolean
+    modifierById?: boolean
+    modifierBy?: boolean | SystemSetting$modifierByArgs<ExtArgs>
+  }, ExtArgs["result"]["systemSetting"]>
+
+  export type SystemSettingSelectScalar = {
+    key?: boolean
+    value?: boolean
+    updatedAt?: boolean
+    modifierById?: boolean
+  }
+
+  export type SystemSettingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"key" | "value" | "updatedAt" | "modifierById", ExtArgs["result"]["systemSetting"]>
+  export type SystemSettingInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    modifierBy?: boolean | SystemSetting$modifierByArgs<ExtArgs>
+  }
+  export type SystemSettingIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    modifierBy?: boolean | SystemSetting$modifierByArgs<ExtArgs>
+  }
+  export type SystemSettingIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    modifierBy?: boolean | SystemSetting$modifierByArgs<ExtArgs>
+  }
+
+  export type $SystemSettingPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SystemSetting"
+    objects: {
+      modifierBy: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      key: string
+      value: string
+      updatedAt: Date
+      modifierById: string | null
+    }, ExtArgs["result"]["systemSetting"]>
+    composites: {}
+  }
+
+  type SystemSettingGetPayload<S extends boolean | null | undefined | SystemSettingDefaultArgs> = $Result.GetResult<Prisma.$SystemSettingPayload, S>
+
+  type SystemSettingCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SystemSettingFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SystemSettingCountAggregateInputType | true
+    }
+
+  export interface SystemSettingDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SystemSetting'], meta: { name: 'SystemSetting' } }
+    /**
+     * Find zero or one SystemSetting that matches the filter.
+     * @param {SystemSettingFindUniqueArgs} args - Arguments to find a SystemSetting
+     * @example
+     * // Get one SystemSetting
+     * const systemSetting = await prisma.systemSetting.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SystemSettingFindUniqueArgs>(args: SelectSubset<T, SystemSettingFindUniqueArgs<ExtArgs>>): Prisma__SystemSettingClient<$Result.GetResult<Prisma.$SystemSettingPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SystemSetting that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SystemSettingFindUniqueOrThrowArgs} args - Arguments to find a SystemSetting
+     * @example
+     * // Get one SystemSetting
+     * const systemSetting = await prisma.systemSetting.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SystemSettingFindUniqueOrThrowArgs>(args: SelectSubset<T, SystemSettingFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SystemSettingClient<$Result.GetResult<Prisma.$SystemSettingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SystemSetting that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemSettingFindFirstArgs} args - Arguments to find a SystemSetting
+     * @example
+     * // Get one SystemSetting
+     * const systemSetting = await prisma.systemSetting.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SystemSettingFindFirstArgs>(args?: SelectSubset<T, SystemSettingFindFirstArgs<ExtArgs>>): Prisma__SystemSettingClient<$Result.GetResult<Prisma.$SystemSettingPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SystemSetting that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemSettingFindFirstOrThrowArgs} args - Arguments to find a SystemSetting
+     * @example
+     * // Get one SystemSetting
+     * const systemSetting = await prisma.systemSetting.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SystemSettingFindFirstOrThrowArgs>(args?: SelectSubset<T, SystemSettingFindFirstOrThrowArgs<ExtArgs>>): Prisma__SystemSettingClient<$Result.GetResult<Prisma.$SystemSettingPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SystemSettings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemSettingFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SystemSettings
+     * const systemSettings = await prisma.systemSetting.findMany()
+     * 
+     * // Get first 10 SystemSettings
+     * const systemSettings = await prisma.systemSetting.findMany({ take: 10 })
+     * 
+     * // Only select the `key`
+     * const systemSettingWithKeyOnly = await prisma.systemSetting.findMany({ select: { key: true } })
+     * 
+     */
+    findMany<T extends SystemSettingFindManyArgs>(args?: SelectSubset<T, SystemSettingFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SystemSettingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SystemSetting.
+     * @param {SystemSettingCreateArgs} args - Arguments to create a SystemSetting.
+     * @example
+     * // Create one SystemSetting
+     * const SystemSetting = await prisma.systemSetting.create({
+     *   data: {
+     *     // ... data to create a SystemSetting
+     *   }
+     * })
+     * 
+     */
+    create<T extends SystemSettingCreateArgs>(args: SelectSubset<T, SystemSettingCreateArgs<ExtArgs>>): Prisma__SystemSettingClient<$Result.GetResult<Prisma.$SystemSettingPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SystemSettings.
+     * @param {SystemSettingCreateManyArgs} args - Arguments to create many SystemSettings.
+     * @example
+     * // Create many SystemSettings
+     * const systemSetting = await prisma.systemSetting.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SystemSettingCreateManyArgs>(args?: SelectSubset<T, SystemSettingCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SystemSettings and returns the data saved in the database.
+     * @param {SystemSettingCreateManyAndReturnArgs} args - Arguments to create many SystemSettings.
+     * @example
+     * // Create many SystemSettings
+     * const systemSetting = await prisma.systemSetting.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SystemSettings and only return the `key`
+     * const systemSettingWithKeyOnly = await prisma.systemSetting.createManyAndReturn({
+     *   select: { key: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SystemSettingCreateManyAndReturnArgs>(args?: SelectSubset<T, SystemSettingCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SystemSettingPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SystemSetting.
+     * @param {SystemSettingDeleteArgs} args - Arguments to delete one SystemSetting.
+     * @example
+     * // Delete one SystemSetting
+     * const SystemSetting = await prisma.systemSetting.delete({
+     *   where: {
+     *     // ... filter to delete one SystemSetting
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SystemSettingDeleteArgs>(args: SelectSubset<T, SystemSettingDeleteArgs<ExtArgs>>): Prisma__SystemSettingClient<$Result.GetResult<Prisma.$SystemSettingPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SystemSetting.
+     * @param {SystemSettingUpdateArgs} args - Arguments to update one SystemSetting.
+     * @example
+     * // Update one SystemSetting
+     * const systemSetting = await prisma.systemSetting.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SystemSettingUpdateArgs>(args: SelectSubset<T, SystemSettingUpdateArgs<ExtArgs>>): Prisma__SystemSettingClient<$Result.GetResult<Prisma.$SystemSettingPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SystemSettings.
+     * @param {SystemSettingDeleteManyArgs} args - Arguments to filter SystemSettings to delete.
+     * @example
+     * // Delete a few SystemSettings
+     * const { count } = await prisma.systemSetting.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SystemSettingDeleteManyArgs>(args?: SelectSubset<T, SystemSettingDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SystemSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemSettingUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SystemSettings
+     * const systemSetting = await prisma.systemSetting.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SystemSettingUpdateManyArgs>(args: SelectSubset<T, SystemSettingUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SystemSettings and returns the data updated in the database.
+     * @param {SystemSettingUpdateManyAndReturnArgs} args - Arguments to update many SystemSettings.
+     * @example
+     * // Update many SystemSettings
+     * const systemSetting = await prisma.systemSetting.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SystemSettings and only return the `key`
+     * const systemSettingWithKeyOnly = await prisma.systemSetting.updateManyAndReturn({
+     *   select: { key: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SystemSettingUpdateManyAndReturnArgs>(args: SelectSubset<T, SystemSettingUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SystemSettingPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SystemSetting.
+     * @param {SystemSettingUpsertArgs} args - Arguments to update or create a SystemSetting.
+     * @example
+     * // Update or create a SystemSetting
+     * const systemSetting = await prisma.systemSetting.upsert({
+     *   create: {
+     *     // ... data to create a SystemSetting
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SystemSetting we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SystemSettingUpsertArgs>(args: SelectSubset<T, SystemSettingUpsertArgs<ExtArgs>>): Prisma__SystemSettingClient<$Result.GetResult<Prisma.$SystemSettingPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SystemSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemSettingCountArgs} args - Arguments to filter SystemSettings to count.
+     * @example
+     * // Count the number of SystemSettings
+     * const count = await prisma.systemSetting.count({
+     *   where: {
+     *     // ... the filter for the SystemSettings we want to count
+     *   }
+     * })
+    **/
+    count<T extends SystemSettingCountArgs>(
+      args?: Subset<T, SystemSettingCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SystemSettingCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SystemSetting.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemSettingAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SystemSettingAggregateArgs>(args: Subset<T, SystemSettingAggregateArgs>): Prisma.PrismaPromise<GetSystemSettingAggregateType<T>>
+
+    /**
+     * Group by SystemSetting.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemSettingGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SystemSettingGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SystemSettingGroupByArgs['orderBy'] }
+        : { orderBy?: SystemSettingGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SystemSettingGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSystemSettingGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SystemSetting model
+   */
+  readonly fields: SystemSettingFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SystemSetting.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SystemSettingClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    modifierBy<T extends SystemSetting$modifierByArgs<ExtArgs> = {}>(args?: Subset<T, SystemSetting$modifierByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SystemSetting model
+   */
+  interface SystemSettingFieldRefs {
+    readonly key: FieldRef<"SystemSetting", 'String'>
+    readonly value: FieldRef<"SystemSetting", 'String'>
+    readonly updatedAt: FieldRef<"SystemSetting", 'DateTime'>
+    readonly modifierById: FieldRef<"SystemSetting", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SystemSetting findUnique
+   */
+  export type SystemSettingFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSetting
+     */
+    select?: SystemSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSetting
+     */
+    omit?: SystemSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSettingInclude<ExtArgs> | null
+    /**
+     * Filter, which SystemSetting to fetch.
+     */
+    where: SystemSettingWhereUniqueInput
+  }
+
+  /**
+   * SystemSetting findUniqueOrThrow
+   */
+  export type SystemSettingFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSetting
+     */
+    select?: SystemSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSetting
+     */
+    omit?: SystemSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSettingInclude<ExtArgs> | null
+    /**
+     * Filter, which SystemSetting to fetch.
+     */
+    where: SystemSettingWhereUniqueInput
+  }
+
+  /**
+   * SystemSetting findFirst
+   */
+  export type SystemSettingFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSetting
+     */
+    select?: SystemSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSetting
+     */
+    omit?: SystemSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSettingInclude<ExtArgs> | null
+    /**
+     * Filter, which SystemSetting to fetch.
+     */
+    where?: SystemSettingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SystemSettings to fetch.
+     */
+    orderBy?: SystemSettingOrderByWithRelationInput | SystemSettingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SystemSettings.
+     */
+    cursor?: SystemSettingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SystemSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SystemSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SystemSettings.
+     */
+    distinct?: SystemSettingScalarFieldEnum | SystemSettingScalarFieldEnum[]
+  }
+
+  /**
+   * SystemSetting findFirstOrThrow
+   */
+  export type SystemSettingFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSetting
+     */
+    select?: SystemSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSetting
+     */
+    omit?: SystemSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSettingInclude<ExtArgs> | null
+    /**
+     * Filter, which SystemSetting to fetch.
+     */
+    where?: SystemSettingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SystemSettings to fetch.
+     */
+    orderBy?: SystemSettingOrderByWithRelationInput | SystemSettingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SystemSettings.
+     */
+    cursor?: SystemSettingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SystemSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SystemSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SystemSettings.
+     */
+    distinct?: SystemSettingScalarFieldEnum | SystemSettingScalarFieldEnum[]
+  }
+
+  /**
+   * SystemSetting findMany
+   */
+  export type SystemSettingFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSetting
+     */
+    select?: SystemSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSetting
+     */
+    omit?: SystemSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSettingInclude<ExtArgs> | null
+    /**
+     * Filter, which SystemSettings to fetch.
+     */
+    where?: SystemSettingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SystemSettings to fetch.
+     */
+    orderBy?: SystemSettingOrderByWithRelationInput | SystemSettingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SystemSettings.
+     */
+    cursor?: SystemSettingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SystemSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SystemSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SystemSettings.
+     */
+    distinct?: SystemSettingScalarFieldEnum | SystemSettingScalarFieldEnum[]
+  }
+
+  /**
+   * SystemSetting create
+   */
+  export type SystemSettingCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSetting
+     */
+    select?: SystemSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSetting
+     */
+    omit?: SystemSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSettingInclude<ExtArgs> | null
+    /**
+     * The data needed to create a SystemSetting.
+     */
+    data: XOR<SystemSettingCreateInput, SystemSettingUncheckedCreateInput>
+  }
+
+  /**
+   * SystemSetting createMany
+   */
+  export type SystemSettingCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SystemSettings.
+     */
+    data: SystemSettingCreateManyInput | SystemSettingCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SystemSetting createManyAndReturn
+   */
+  export type SystemSettingCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSetting
+     */
+    select?: SystemSettingSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSetting
+     */
+    omit?: SystemSettingOmit<ExtArgs> | null
+    /**
+     * The data used to create many SystemSettings.
+     */
+    data: SystemSettingCreateManyInput | SystemSettingCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSettingIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SystemSetting update
+   */
+  export type SystemSettingUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSetting
+     */
+    select?: SystemSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSetting
+     */
+    omit?: SystemSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSettingInclude<ExtArgs> | null
+    /**
+     * The data needed to update a SystemSetting.
+     */
+    data: XOR<SystemSettingUpdateInput, SystemSettingUncheckedUpdateInput>
+    /**
+     * Choose, which SystemSetting to update.
+     */
+    where: SystemSettingWhereUniqueInput
+  }
+
+  /**
+   * SystemSetting updateMany
+   */
+  export type SystemSettingUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SystemSettings.
+     */
+    data: XOR<SystemSettingUpdateManyMutationInput, SystemSettingUncheckedUpdateManyInput>
+    /**
+     * Filter which SystemSettings to update
+     */
+    where?: SystemSettingWhereInput
+    /**
+     * Limit how many SystemSettings to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SystemSetting updateManyAndReturn
+   */
+  export type SystemSettingUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSetting
+     */
+    select?: SystemSettingSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSetting
+     */
+    omit?: SystemSettingOmit<ExtArgs> | null
+    /**
+     * The data used to update SystemSettings.
+     */
+    data: XOR<SystemSettingUpdateManyMutationInput, SystemSettingUncheckedUpdateManyInput>
+    /**
+     * Filter which SystemSettings to update
+     */
+    where?: SystemSettingWhereInput
+    /**
+     * Limit how many SystemSettings to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSettingIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SystemSetting upsert
+   */
+  export type SystemSettingUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSetting
+     */
+    select?: SystemSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSetting
+     */
+    omit?: SystemSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSettingInclude<ExtArgs> | null
+    /**
+     * The filter to search for the SystemSetting to update in case it exists.
+     */
+    where: SystemSettingWhereUniqueInput
+    /**
+     * In case the SystemSetting found by the `where` argument doesn't exist, create a new SystemSetting with this data.
+     */
+    create: XOR<SystemSettingCreateInput, SystemSettingUncheckedCreateInput>
+    /**
+     * In case the SystemSetting was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SystemSettingUpdateInput, SystemSettingUncheckedUpdateInput>
+  }
+
+  /**
+   * SystemSetting delete
+   */
+  export type SystemSettingDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSetting
+     */
+    select?: SystemSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSetting
+     */
+    omit?: SystemSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSettingInclude<ExtArgs> | null
+    /**
+     * Filter which SystemSetting to delete.
+     */
+    where: SystemSettingWhereUniqueInput
+  }
+
+  /**
+   * SystemSetting deleteMany
+   */
+  export type SystemSettingDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SystemSettings to delete
+     */
+    where?: SystemSettingWhereInput
+    /**
+     * Limit how many SystemSettings to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SystemSetting.modifierBy
+   */
+  export type SystemSetting$modifierByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * SystemSetting without action
+   */
+  export type SystemSettingDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSetting
+     */
+    select?: SystemSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSetting
+     */
+    omit?: SystemSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSettingInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -48607,9 +49954,16 @@ export namespace Prisma {
     id: 'id',
     displayName: 'displayName',
     hexColor: 'hexColor',
+    type: 'type',
+    accountDetails: 'accountDetails',
+    feeRate: 'feeRate',
+    fixedFee: 'fixedFee',
+    totalVolume: 'totalVolume',
+    totalFees: 'totalFees',
     logoUrl: 'logoUrl',
     ownerName: 'ownerName',
     cardNumber: 'cardNumber',
+    isActive: 'isActive',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -48793,6 +50147,16 @@ export namespace Prisma {
   };
 
   export type PostEventScalarFieldEnum = (typeof PostEventScalarFieldEnum)[keyof typeof PostEventScalarFieldEnum]
+
+
+  export const SystemSettingScalarFieldEnum: {
+    key: 'key',
+    value: 'value',
+    updatedAt: 'updatedAt',
+    modifierById: 'modifierById'
+  };
+
+  export type SystemSettingScalarFieldEnum = (typeof SystemSettingScalarFieldEnum)[keyof typeof SystemSettingScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -49020,6 +50384,20 @@ export namespace Prisma {
    * Reference to a field of type 'ClientType[]'
    */
   export type ListEnumClientTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClientType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'PaymentChannelType'
+   */
+  export type EnumPaymentChannelTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentChannelType'>
+    
+
+
+  /**
+   * Reference to a field of type 'PaymentChannelType[]'
+   */
+  export type ListEnumPaymentChannelTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentChannelType[]'>
     
 
 
@@ -49385,6 +50763,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionListRelationFilter
     securityLogs?: UserSecurityLogListRelationFilter
     systemAuditLogs?: SystemAuditLogListRelationFilter
+    systemSettings?: SystemSettingListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -49433,6 +50812,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionOrderByRelationAggregateInput
     securityLogs?: UserSecurityLogOrderByRelationAggregateInput
     systemAuditLogs?: SystemAuditLogOrderByRelationAggregateInput
+    systemSettings?: SystemSettingOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -49484,6 +50864,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionListRelationFilter
     securityLogs?: UserSecurityLogListRelationFilter
     systemAuditLogs?: SystemAuditLogListRelationFilter
+    systemSettings?: SystemSettingListRelationFilter
   }, "id" | "code" | "email" | "username">
 
   export type UserOrderByWithAggregationInput = {
@@ -51072,9 +52453,16 @@ export namespace Prisma {
     id?: StringFilter<"PaymentChannel"> | string
     displayName?: StringFilter<"PaymentChannel"> | string
     hexColor?: StringNullableFilter<"PaymentChannel"> | string | null
+    type?: EnumPaymentChannelTypeFilter<"PaymentChannel"> | $Enums.PaymentChannelType
+    accountDetails?: StringNullableFilter<"PaymentChannel"> | string | null
+    feeRate?: FloatNullableFilter<"PaymentChannel"> | number | null
+    fixedFee?: FloatNullableFilter<"PaymentChannel"> | number | null
+    totalVolume?: FloatNullableFilter<"PaymentChannel"> | number | null
+    totalFees?: FloatNullableFilter<"PaymentChannel"> | number | null
     logoUrl?: StringNullableFilter<"PaymentChannel"> | string | null
     ownerName?: StringNullableFilter<"PaymentChannel"> | string | null
     cardNumber?: StringNullableFilter<"PaymentChannel"> | string | null
+    isActive?: BoolFilter<"PaymentChannel"> | boolean
     createdAt?: DateTimeFilter<"PaymentChannel"> | Date | string
     updatedAt?: DateTimeFilter<"PaymentChannel"> | Date | string
     jobs?: JobListRelationFilter
@@ -51084,9 +52472,16 @@ export namespace Prisma {
     id?: SortOrder
     displayName?: SortOrder
     hexColor?: SortOrderInput | SortOrder
+    type?: SortOrder
+    accountDetails?: SortOrderInput | SortOrder
+    feeRate?: SortOrderInput | SortOrder
+    fixedFee?: SortOrderInput | SortOrder
+    totalVolume?: SortOrderInput | SortOrder
+    totalFees?: SortOrderInput | SortOrder
     logoUrl?: SortOrderInput | SortOrder
     ownerName?: SortOrderInput | SortOrder
     cardNumber?: SortOrderInput | SortOrder
+    isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     jobs?: JobOrderByRelationAggregateInput
@@ -51099,9 +52494,16 @@ export namespace Prisma {
     NOT?: PaymentChannelWhereInput | PaymentChannelWhereInput[]
     displayName?: StringFilter<"PaymentChannel"> | string
     hexColor?: StringNullableFilter<"PaymentChannel"> | string | null
+    type?: EnumPaymentChannelTypeFilter<"PaymentChannel"> | $Enums.PaymentChannelType
+    accountDetails?: StringNullableFilter<"PaymentChannel"> | string | null
+    feeRate?: FloatNullableFilter<"PaymentChannel"> | number | null
+    fixedFee?: FloatNullableFilter<"PaymentChannel"> | number | null
+    totalVolume?: FloatNullableFilter<"PaymentChannel"> | number | null
+    totalFees?: FloatNullableFilter<"PaymentChannel"> | number | null
     logoUrl?: StringNullableFilter<"PaymentChannel"> | string | null
     ownerName?: StringNullableFilter<"PaymentChannel"> | string | null
     cardNumber?: StringNullableFilter<"PaymentChannel"> | string | null
+    isActive?: BoolFilter<"PaymentChannel"> | boolean
     createdAt?: DateTimeFilter<"PaymentChannel"> | Date | string
     updatedAt?: DateTimeFilter<"PaymentChannel"> | Date | string
     jobs?: JobListRelationFilter
@@ -51111,14 +52513,23 @@ export namespace Prisma {
     id?: SortOrder
     displayName?: SortOrder
     hexColor?: SortOrderInput | SortOrder
+    type?: SortOrder
+    accountDetails?: SortOrderInput | SortOrder
+    feeRate?: SortOrderInput | SortOrder
+    fixedFee?: SortOrderInput | SortOrder
+    totalVolume?: SortOrderInput | SortOrder
+    totalFees?: SortOrderInput | SortOrder
     logoUrl?: SortOrderInput | SortOrder
     ownerName?: SortOrderInput | SortOrder
     cardNumber?: SortOrderInput | SortOrder
+    isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: PaymentChannelCountOrderByAggregateInput
+    _avg?: PaymentChannelAvgOrderByAggregateInput
     _max?: PaymentChannelMaxOrderByAggregateInput
     _min?: PaymentChannelMinOrderByAggregateInput
+    _sum?: PaymentChannelSumOrderByAggregateInput
   }
 
   export type PaymentChannelScalarWhereWithAggregatesInput = {
@@ -51128,9 +52539,16 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"PaymentChannel"> | string
     displayName?: StringWithAggregatesFilter<"PaymentChannel"> | string
     hexColor?: StringNullableWithAggregatesFilter<"PaymentChannel"> | string | null
+    type?: EnumPaymentChannelTypeWithAggregatesFilter<"PaymentChannel"> | $Enums.PaymentChannelType
+    accountDetails?: StringNullableWithAggregatesFilter<"PaymentChannel"> | string | null
+    feeRate?: FloatNullableWithAggregatesFilter<"PaymentChannel"> | number | null
+    fixedFee?: FloatNullableWithAggregatesFilter<"PaymentChannel"> | number | null
+    totalVolume?: FloatNullableWithAggregatesFilter<"PaymentChannel"> | number | null
+    totalFees?: FloatNullableWithAggregatesFilter<"PaymentChannel"> | number | null
     logoUrl?: StringNullableWithAggregatesFilter<"PaymentChannel"> | string | null
     ownerName?: StringNullableWithAggregatesFilter<"PaymentChannel"> | string | null
     cardNumber?: StringNullableWithAggregatesFilter<"PaymentChannel"> | string | null
+    isActive?: BoolWithAggregatesFilter<"PaymentChannel"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"PaymentChannel"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"PaymentChannel"> | Date | string
   }
@@ -52068,6 +53486,56 @@ export namespace Prisma {
     postId?: StringWithAggregatesFilter<"PostEvent"> | string
   }
 
+  export type SystemSettingWhereInput = {
+    AND?: SystemSettingWhereInput | SystemSettingWhereInput[]
+    OR?: SystemSettingWhereInput[]
+    NOT?: SystemSettingWhereInput | SystemSettingWhereInput[]
+    key?: StringFilter<"SystemSetting"> | string
+    value?: StringFilter<"SystemSetting"> | string
+    updatedAt?: DateTimeFilter<"SystemSetting"> | Date | string
+    modifierById?: StringNullableFilter<"SystemSetting"> | string | null
+    modifierBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type SystemSettingOrderByWithRelationInput = {
+    key?: SortOrder
+    value?: SortOrder
+    updatedAt?: SortOrder
+    modifierById?: SortOrderInput | SortOrder
+    modifierBy?: UserOrderByWithRelationInput
+  }
+
+  export type SystemSettingWhereUniqueInput = Prisma.AtLeast<{
+    key?: string
+    AND?: SystemSettingWhereInput | SystemSettingWhereInput[]
+    OR?: SystemSettingWhereInput[]
+    NOT?: SystemSettingWhereInput | SystemSettingWhereInput[]
+    value?: StringFilter<"SystemSetting"> | string
+    updatedAt?: DateTimeFilter<"SystemSetting"> | Date | string
+    modifierById?: StringNullableFilter<"SystemSetting"> | string | null
+    modifierBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "key">
+
+  export type SystemSettingOrderByWithAggregationInput = {
+    key?: SortOrder
+    value?: SortOrder
+    updatedAt?: SortOrder
+    modifierById?: SortOrderInput | SortOrder
+    _count?: SystemSettingCountOrderByAggregateInput
+    _max?: SystemSettingMaxOrderByAggregateInput
+    _min?: SystemSettingMinOrderByAggregateInput
+  }
+
+  export type SystemSettingScalarWhereWithAggregatesInput = {
+    AND?: SystemSettingScalarWhereWithAggregatesInput | SystemSettingScalarWhereWithAggregatesInput[]
+    OR?: SystemSettingScalarWhereWithAggregatesInput[]
+    NOT?: SystemSettingScalarWhereWithAggregatesInput | SystemSettingScalarWhereWithAggregatesInput[]
+    key?: StringWithAggregatesFilter<"SystemSetting"> | string
+    value?: StringWithAggregatesFilter<"SystemSetting"> | string
+    updatedAt?: DateTimeWithAggregatesFilter<"SystemSetting"> | Date | string
+    modifierById?: StringNullableWithAggregatesFilter<"SystemSetting"> | string | null
+  }
+
   export type SystemAuditLogCreateInput = {
     id?: string
     action: string
@@ -52325,6 +53793,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -52369,6 +53838,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
   }
 
   export type UserUpdateInput = {
@@ -52413,6 +53883,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -52457,6 +53928,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -54173,9 +55645,16 @@ export namespace Prisma {
     id?: string
     displayName: string
     hexColor?: string | null
+    type?: $Enums.PaymentChannelType
+    accountDetails?: string | null
+    feeRate?: number | null
+    fixedFee?: number | null
+    totalVolume?: number | null
+    totalFees?: number | null
     logoUrl?: string | null
     ownerName?: string | null
     cardNumber?: string | null
+    isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     jobs?: JobCreateNestedManyWithoutPaymentChannelInput
@@ -54185,9 +55664,16 @@ export namespace Prisma {
     id?: string
     displayName: string
     hexColor?: string | null
+    type?: $Enums.PaymentChannelType
+    accountDetails?: string | null
+    feeRate?: number | null
+    fixedFee?: number | null
+    totalVolume?: number | null
+    totalFees?: number | null
     logoUrl?: string | null
     ownerName?: string | null
     cardNumber?: string | null
+    isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     jobs?: JobUncheckedCreateNestedManyWithoutPaymentChannelInput
@@ -54197,9 +55683,16 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     displayName?: StringFieldUpdateOperationsInput | string
     hexColor?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumPaymentChannelTypeFieldUpdateOperationsInput | $Enums.PaymentChannelType
+    accountDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    feeRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    fixedFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalVolume?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalFees?: NullableFloatFieldUpdateOperationsInput | number | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     ownerName?: NullableStringFieldUpdateOperationsInput | string | null
     cardNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     jobs?: JobUpdateManyWithoutPaymentChannelNestedInput
@@ -54209,9 +55702,16 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     displayName?: StringFieldUpdateOperationsInput | string
     hexColor?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumPaymentChannelTypeFieldUpdateOperationsInput | $Enums.PaymentChannelType
+    accountDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    feeRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    fixedFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalVolume?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalFees?: NullableFloatFieldUpdateOperationsInput | number | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     ownerName?: NullableStringFieldUpdateOperationsInput | string | null
     cardNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     jobs?: JobUncheckedUpdateManyWithoutPaymentChannelNestedInput
@@ -54221,9 +55721,16 @@ export namespace Prisma {
     id?: string
     displayName: string
     hexColor?: string | null
+    type?: $Enums.PaymentChannelType
+    accountDetails?: string | null
+    feeRate?: number | null
+    fixedFee?: number | null
+    totalVolume?: number | null
+    totalFees?: number | null
     logoUrl?: string | null
     ownerName?: string | null
     cardNumber?: string | null
+    isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -54232,9 +55739,16 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     displayName?: StringFieldUpdateOperationsInput | string
     hexColor?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumPaymentChannelTypeFieldUpdateOperationsInput | $Enums.PaymentChannelType
+    accountDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    feeRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    fixedFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalVolume?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalFees?: NullableFloatFieldUpdateOperationsInput | number | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     ownerName?: NullableStringFieldUpdateOperationsInput | string | null
     cardNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -54243,9 +55757,16 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     displayName?: StringFieldUpdateOperationsInput | string
     hexColor?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumPaymentChannelTypeFieldUpdateOperationsInput | $Enums.PaymentChannelType
+    accountDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    feeRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    fixedFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalVolume?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalFees?: NullableFloatFieldUpdateOperationsInput | number | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     ownerName?: NullableStringFieldUpdateOperationsInput | string | null
     cardNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -55260,6 +56781,54 @@ export namespace Prisma {
     postId?: StringFieldUpdateOperationsInput | string
   }
 
+  export type SystemSettingCreateInput = {
+    key: string
+    value: string
+    updatedAt?: Date | string
+    modifierBy?: UserCreateNestedOneWithoutSystemSettingsInput
+  }
+
+  export type SystemSettingUncheckedCreateInput = {
+    key: string
+    value: string
+    updatedAt?: Date | string
+    modifierById?: string | null
+  }
+
+  export type SystemSettingUpdateInput = {
+    key?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    modifierBy?: UserUpdateOneWithoutSystemSettingsNestedInput
+  }
+
+  export type SystemSettingUncheckedUpdateInput = {
+    key?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    modifierById?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type SystemSettingCreateManyInput = {
+    key: string
+    value: string
+    updatedAt?: Date | string
+    modifierById?: string | null
+  }
+
+  export type SystemSettingUpdateManyMutationInput = {
+    key?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SystemSettingUncheckedUpdateManyInput = {
+    key?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    modifierById?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -55683,6 +57252,12 @@ export namespace Prisma {
     none?: SystemAuditLogWhereInput
   }
 
+  export type SystemSettingListRelationFilter = {
+    every?: SystemSettingWhereInput
+    some?: SystemSettingWhereInput
+    none?: SystemSettingWhereInput
+  }
+
   export type NotificationOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -55760,6 +57335,10 @@ export namespace Prisma {
   }
 
   export type SystemAuditLogOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SystemSettingOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -56924,24 +58503,63 @@ export namespace Prisma {
     pinnedAt?: SortOrder
   }
 
+  export type EnumPaymentChannelTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentChannelType | EnumPaymentChannelTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentChannelType[] | ListEnumPaymentChannelTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentChannelType[] | ListEnumPaymentChannelTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentChannelTypeFilter<$PrismaModel> | $Enums.PaymentChannelType
+  }
+
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type PaymentChannelCountOrderByAggregateInput = {
     id?: SortOrder
     displayName?: SortOrder
     hexColor?: SortOrder
+    type?: SortOrder
+    accountDetails?: SortOrder
+    feeRate?: SortOrder
+    fixedFee?: SortOrder
+    totalVolume?: SortOrder
+    totalFees?: SortOrder
     logoUrl?: SortOrder
     ownerName?: SortOrder
     cardNumber?: SortOrder
+    isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type PaymentChannelAvgOrderByAggregateInput = {
+    feeRate?: SortOrder
+    fixedFee?: SortOrder
+    totalVolume?: SortOrder
+    totalFees?: SortOrder
   }
 
   export type PaymentChannelMaxOrderByAggregateInput = {
     id?: SortOrder
     displayName?: SortOrder
     hexColor?: SortOrder
+    type?: SortOrder
+    accountDetails?: SortOrder
+    feeRate?: SortOrder
+    fixedFee?: SortOrder
+    totalVolume?: SortOrder
+    totalFees?: SortOrder
     logoUrl?: SortOrder
     ownerName?: SortOrder
     cardNumber?: SortOrder
+    isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -56950,11 +58568,51 @@ export namespace Prisma {
     id?: SortOrder
     displayName?: SortOrder
     hexColor?: SortOrder
+    type?: SortOrder
+    accountDetails?: SortOrder
+    feeRate?: SortOrder
+    fixedFee?: SortOrder
+    totalVolume?: SortOrder
+    totalFees?: SortOrder
     logoUrl?: SortOrder
     ownerName?: SortOrder
     cardNumber?: SortOrder
+    isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type PaymentChannelSumOrderByAggregateInput = {
+    feeRate?: SortOrder
+    fixedFee?: SortOrder
+    totalVolume?: SortOrder
+    totalFees?: SortOrder
+  }
+
+  export type EnumPaymentChannelTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentChannelType | EnumPaymentChannelTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentChannelType[] | ListEnumPaymentChannelTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentChannelType[] | ListEnumPaymentChannelTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentChannelTypeWithAggregatesFilter<$PrismaModel> | $Enums.PaymentChannelType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPaymentChannelTypeFilter<$PrismaModel>
+    _max?: NestedEnumPaymentChannelTypeFilter<$PrismaModel>
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type JobTypeCountOrderByAggregateInput = {
@@ -57582,6 +59240,27 @@ export namespace Prisma {
     postId?: SortOrder
   }
 
+  export type SystemSettingCountOrderByAggregateInput = {
+    key?: SortOrder
+    value?: SortOrder
+    updatedAt?: SortOrder
+    modifierById?: SortOrder
+  }
+
+  export type SystemSettingMaxOrderByAggregateInput = {
+    key?: SortOrder
+    value?: SortOrder
+    updatedAt?: SortOrder
+    modifierById?: SortOrder
+  }
+
+  export type SystemSettingMinOrderByAggregateInput = {
+    key?: SortOrder
+    value?: SortOrder
+    updatedAt?: SortOrder
+    modifierById?: SortOrder
+  }
+
   export type UserCreateNestedOneWithoutSystemAuditLogsInput = {
     create?: XOR<UserCreateWithoutSystemAuditLogsInput, UserUncheckedCreateWithoutSystemAuditLogsInput>
     connectOrCreate?: UserCreateOrConnectWithoutSystemAuditLogsInput
@@ -57809,6 +59488,13 @@ export namespace Prisma {
     connect?: SystemAuditLogWhereUniqueInput | SystemAuditLogWhereUniqueInput[]
   }
 
+  export type SystemSettingCreateNestedManyWithoutModifierByInput = {
+    create?: XOR<SystemSettingCreateWithoutModifierByInput, SystemSettingUncheckedCreateWithoutModifierByInput> | SystemSettingCreateWithoutModifierByInput[] | SystemSettingUncheckedCreateWithoutModifierByInput[]
+    connectOrCreate?: SystemSettingCreateOrConnectWithoutModifierByInput | SystemSettingCreateOrConnectWithoutModifierByInput[]
+    createMany?: SystemSettingCreateManyModifierByInputEnvelope
+    connect?: SystemSettingWhereUniqueInput | SystemSettingWhereUniqueInput[]
+  }
+
   export type NotificationUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
     connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
@@ -57960,6 +59646,13 @@ export namespace Prisma {
     connectOrCreate?: SystemAuditLogCreateOrConnectWithoutActorInput | SystemAuditLogCreateOrConnectWithoutActorInput[]
     createMany?: SystemAuditLogCreateManyActorInputEnvelope
     connect?: SystemAuditLogWhereUniqueInput | SystemAuditLogWhereUniqueInput[]
+  }
+
+  export type SystemSettingUncheckedCreateNestedManyWithoutModifierByInput = {
+    create?: XOR<SystemSettingCreateWithoutModifierByInput, SystemSettingUncheckedCreateWithoutModifierByInput> | SystemSettingCreateWithoutModifierByInput[] | SystemSettingUncheckedCreateWithoutModifierByInput[]
+    connectOrCreate?: SystemSettingCreateOrConnectWithoutModifierByInput | SystemSettingCreateOrConnectWithoutModifierByInput[]
+    createMany?: SystemSettingCreateManyModifierByInputEnvelope
+    connect?: SystemSettingWhereUniqueInput | SystemSettingWhereUniqueInput[]
   }
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -58313,6 +60006,20 @@ export namespace Prisma {
     deleteMany?: SystemAuditLogScalarWhereInput | SystemAuditLogScalarWhereInput[]
   }
 
+  export type SystemSettingUpdateManyWithoutModifierByNestedInput = {
+    create?: XOR<SystemSettingCreateWithoutModifierByInput, SystemSettingUncheckedCreateWithoutModifierByInput> | SystemSettingCreateWithoutModifierByInput[] | SystemSettingUncheckedCreateWithoutModifierByInput[]
+    connectOrCreate?: SystemSettingCreateOrConnectWithoutModifierByInput | SystemSettingCreateOrConnectWithoutModifierByInput[]
+    upsert?: SystemSettingUpsertWithWhereUniqueWithoutModifierByInput | SystemSettingUpsertWithWhereUniqueWithoutModifierByInput[]
+    createMany?: SystemSettingCreateManyModifierByInputEnvelope
+    set?: SystemSettingWhereUniqueInput | SystemSettingWhereUniqueInput[]
+    disconnect?: SystemSettingWhereUniqueInput | SystemSettingWhereUniqueInput[]
+    delete?: SystemSettingWhereUniqueInput | SystemSettingWhereUniqueInput[]
+    connect?: SystemSettingWhereUniqueInput | SystemSettingWhereUniqueInput[]
+    update?: SystemSettingUpdateWithWhereUniqueWithoutModifierByInput | SystemSettingUpdateWithWhereUniqueWithoutModifierByInput[]
+    updateMany?: SystemSettingUpdateManyWithWhereWithoutModifierByInput | SystemSettingUpdateManyWithWhereWithoutModifierByInput[]
+    deleteMany?: SystemSettingScalarWhereInput | SystemSettingScalarWhereInput[]
+  }
+
   export type NotificationUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
     connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
@@ -58618,6 +60325,20 @@ export namespace Prisma {
     update?: SystemAuditLogUpdateWithWhereUniqueWithoutActorInput | SystemAuditLogUpdateWithWhereUniqueWithoutActorInput[]
     updateMany?: SystemAuditLogUpdateManyWithWhereWithoutActorInput | SystemAuditLogUpdateManyWithWhereWithoutActorInput[]
     deleteMany?: SystemAuditLogScalarWhereInput | SystemAuditLogScalarWhereInput[]
+  }
+
+  export type SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput = {
+    create?: XOR<SystemSettingCreateWithoutModifierByInput, SystemSettingUncheckedCreateWithoutModifierByInput> | SystemSettingCreateWithoutModifierByInput[] | SystemSettingUncheckedCreateWithoutModifierByInput[]
+    connectOrCreate?: SystemSettingCreateOrConnectWithoutModifierByInput | SystemSettingCreateOrConnectWithoutModifierByInput[]
+    upsert?: SystemSettingUpsertWithWhereUniqueWithoutModifierByInput | SystemSettingUpsertWithWhereUniqueWithoutModifierByInput[]
+    createMany?: SystemSettingCreateManyModifierByInputEnvelope
+    set?: SystemSettingWhereUniqueInput | SystemSettingWhereUniqueInput[]
+    disconnect?: SystemSettingWhereUniqueInput | SystemSettingWhereUniqueInput[]
+    delete?: SystemSettingWhereUniqueInput | SystemSettingWhereUniqueInput[]
+    connect?: SystemSettingWhereUniqueInput | SystemSettingWhereUniqueInput[]
+    update?: SystemSettingUpdateWithWhereUniqueWithoutModifierByInput | SystemSettingUpdateWithWhereUniqueWithoutModifierByInput[]
+    updateMany?: SystemSettingUpdateManyWithWhereWithoutModifierByInput | SystemSettingUpdateManyWithWhereWithoutModifierByInput[]
+    deleteMany?: SystemSettingScalarWhereInput | SystemSettingScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutSecurityLogsInput = {
@@ -59838,6 +61559,18 @@ export namespace Prisma {
     connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
   }
 
+  export type EnumPaymentChannelTypeFieldUpdateOperationsInput = {
+    set?: $Enums.PaymentChannelType
+  }
+
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type JobUpdateManyWithoutPaymentChannelNestedInput = {
     create?: XOR<JobCreateWithoutPaymentChannelInput, JobUncheckedCreateWithoutPaymentChannelInput> | JobCreateWithoutPaymentChannelInput[] | JobUncheckedCreateWithoutPaymentChannelInput[]
     connectOrCreate?: JobCreateOrConnectWithoutPaymentChannelInput | JobCreateOrConnectWithoutPaymentChannelInput[]
@@ -60464,6 +62197,22 @@ export namespace Prisma {
     update?: XOR<XOR<PostUpdateToOneWithWhereWithoutEventInput, PostUpdateWithoutEventInput>, PostUncheckedUpdateWithoutEventInput>
   }
 
+  export type UserCreateNestedOneWithoutSystemSettingsInput = {
+    create?: XOR<UserCreateWithoutSystemSettingsInput, UserUncheckedCreateWithoutSystemSettingsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSystemSettingsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneWithoutSystemSettingsNestedInput = {
+    create?: XOR<UserCreateWithoutSystemSettingsInput, UserUncheckedCreateWithoutSystemSettingsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSystemSettingsInput
+    upsert?: UserUpsertWithoutSystemSettingsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSystemSettingsInput, UserUpdateWithoutSystemSettingsInput>, UserUncheckedUpdateWithoutSystemSettingsInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -60846,6 +62595,39 @@ export namespace Prisma {
     _max?: NestedEnumClientTypeFilter<$PrismaModel>
   }
 
+  export type NestedEnumPaymentChannelTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentChannelType | EnumPaymentChannelTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentChannelType[] | ListEnumPaymentChannelTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentChannelType[] | ListEnumPaymentChannelTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentChannelTypeFilter<$PrismaModel> | $Enums.PaymentChannelType
+  }
+
+  export type NestedEnumPaymentChannelTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentChannelType | EnumPaymentChannelTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentChannelType[] | ListEnumPaymentChannelTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentChannelType[] | ListEnumPaymentChannelTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentChannelTypeWithAggregatesFilter<$PrismaModel> | $Enums.PaymentChannelType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPaymentChannelTypeFilter<$PrismaModel>
+    _max?: NestedEnumPaymentChannelTypeFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
   export type NestedEnumJobStatusSystemTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.JobStatusSystemType | EnumJobStatusSystemTypeFieldRefInput<$PrismaModel>
     in?: $Enums.JobStatusSystemType[] | ListEnumJobStatusSystemTypeFieldRefInput<$PrismaModel>
@@ -61006,6 +62788,7 @@ export namespace Prisma {
     role?: RoleCreateNestedOneWithoutUsersInput
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
   }
 
   export type UserUncheckedCreateWithoutSystemAuditLogsInput = {
@@ -61049,6 +62832,7 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
   }
 
   export type UserCreateOrConnectWithoutSystemAuditLogsInput = {
@@ -61108,6 +62892,7 @@ export namespace Prisma {
     role?: RoleUpdateOneWithoutUsersNestedInput
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSystemAuditLogsInput = {
@@ -61151,6 +62936,7 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserCreateWithoutUserDevicesInput = {
@@ -61194,6 +62980,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
   }
 
   export type UserUncheckedCreateWithoutUserDevicesInput = {
@@ -61237,6 +63024,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
   }
 
   export type UserCreateOrConnectWithoutUserDevicesInput = {
@@ -61296,6 +63084,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUserDevicesInput = {
@@ -61339,6 +63128,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
   }
 
   export type JobTitleCreateWithoutUsersInput = {
@@ -61853,6 +63643,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
   }
 
   export type UserUncheckedCreateWithoutReportsInput = {
@@ -61896,6 +63687,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
   }
 
   export type UserCreateOrConnectWithoutReportsInput = {
@@ -61944,6 +63736,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
   }
 
   export type UserUncheckedCreateWithoutManagerInput = {
@@ -61987,6 +63780,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
   }
 
   export type UserCreateOrConnectWithoutManagerInput = {
@@ -62291,6 +64085,28 @@ export namespace Prisma {
 
   export type SystemAuditLogCreateManyActorInputEnvelope = {
     data: SystemAuditLogCreateManyActorInput | SystemAuditLogCreateManyActorInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SystemSettingCreateWithoutModifierByInput = {
+    key: string
+    value: string
+    updatedAt?: Date | string
+  }
+
+  export type SystemSettingUncheckedCreateWithoutModifierByInput = {
+    key: string
+    value: string
+    updatedAt?: Date | string
+  }
+
+  export type SystemSettingCreateOrConnectWithoutModifierByInput = {
+    where: SystemSettingWhereUniqueInput
+    create: XOR<SystemSettingCreateWithoutModifierByInput, SystemSettingUncheckedCreateWithoutModifierByInput>
+  }
+
+  export type SystemSettingCreateManyModifierByInputEnvelope = {
+    data: SystemSettingCreateManyModifierByInput | SystemSettingCreateManyModifierByInput[]
     skipDuplicates?: boolean
   }
 
@@ -62756,6 +64572,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReportsInput = {
@@ -62799,6 +64616,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUpsertWithWhereUniqueWithoutManagerInput = {
@@ -63139,6 +64957,32 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"SystemAuditLog"> | Date | string
   }
 
+  export type SystemSettingUpsertWithWhereUniqueWithoutModifierByInput = {
+    where: SystemSettingWhereUniqueInput
+    update: XOR<SystemSettingUpdateWithoutModifierByInput, SystemSettingUncheckedUpdateWithoutModifierByInput>
+    create: XOR<SystemSettingCreateWithoutModifierByInput, SystemSettingUncheckedCreateWithoutModifierByInput>
+  }
+
+  export type SystemSettingUpdateWithWhereUniqueWithoutModifierByInput = {
+    where: SystemSettingWhereUniqueInput
+    data: XOR<SystemSettingUpdateWithoutModifierByInput, SystemSettingUncheckedUpdateWithoutModifierByInput>
+  }
+
+  export type SystemSettingUpdateManyWithWhereWithoutModifierByInput = {
+    where: SystemSettingScalarWhereInput
+    data: XOR<SystemSettingUpdateManyMutationInput, SystemSettingUncheckedUpdateManyWithoutModifierByInput>
+  }
+
+  export type SystemSettingScalarWhereInput = {
+    AND?: SystemSettingScalarWhereInput | SystemSettingScalarWhereInput[]
+    OR?: SystemSettingScalarWhereInput[]
+    NOT?: SystemSettingScalarWhereInput | SystemSettingScalarWhereInput[]
+    key?: StringFilter<"SystemSetting"> | string
+    value?: StringFilter<"SystemSetting"> | string
+    updatedAt?: DateTimeFilter<"SystemSetting"> | Date | string
+    modifierById?: StringNullableFilter<"SystemSetting"> | string | null
+  }
+
   export type UserCreateWithoutSecurityLogsInput = {
     id?: string
     code: string
@@ -63180,6 +65024,7 @@ export namespace Prisma {
     role?: RoleCreateNestedOneWithoutUsersInput
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
   }
 
   export type UserUncheckedCreateWithoutSecurityLogsInput = {
@@ -63223,6 +65068,7 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
   }
 
   export type UserCreateOrConnectWithoutSecurityLogsInput = {
@@ -63282,6 +65128,7 @@ export namespace Prisma {
     role?: RoleUpdateOneWithoutUsersNestedInput
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSecurityLogsInput = {
@@ -63325,6 +65172,7 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
   }
 
   export type PermissionCreateWithoutRolesInput = {
@@ -63397,6 +65245,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
   }
 
   export type UserUncheckedCreateWithoutRoleInput = {
@@ -63440,6 +65289,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
   }
 
   export type UserCreateOrConnectWithoutRoleInput = {
@@ -63680,6 +65530,7 @@ export namespace Prisma {
     role?: RoleCreateNestedOneWithoutUsersInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
   }
 
   export type UserUncheckedCreateWithoutUserPermissionsInput = {
@@ -63723,6 +65574,7 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
   }
 
   export type UserCreateOrConnectWithoutUserPermissionsInput = {
@@ -63811,6 +65663,7 @@ export namespace Prisma {
     role?: RoleUpdateOneWithoutUsersNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUserPermissionsInput = {
@@ -63854,6 +65707,7 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
   }
 
   export type PermissionUpsertWithoutUserPermissionsInput = {
@@ -63982,6 +65836,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -64025,6 +65880,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -64084,6 +65940,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -64127,6 +65984,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -64170,6 +66028,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -64213,6 +66072,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -64272,6 +66132,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -64315,6 +66176,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserCreateWithoutGalleryInput = {
@@ -64358,6 +66220,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
   }
 
   export type UserUncheckedCreateWithoutGalleryInput = {
@@ -64401,6 +66264,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
   }
 
   export type UserCreateOrConnectWithoutGalleryInput = {
@@ -64460,6 +66324,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutGalleryInput = {
@@ -64503,6 +66368,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
   }
 
   export type JobCreateWithoutCommentsInput = {
@@ -64621,6 +66487,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
   }
 
   export type UserUncheckedCreateWithoutJobCommentsInput = {
@@ -64664,6 +66531,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
   }
 
   export type UserCreateOrConnectWithoutJobCommentsInput = {
@@ -64859,6 +66727,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJobCommentsInput = {
@@ -64902,6 +66771,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
   }
 
   export type JobCommentUpsertWithoutRepliesInput = {
@@ -64992,6 +66862,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
   }
 
   export type UserUncheckedCreateWithoutJobTitleInput = {
@@ -65035,6 +66906,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
   }
 
   export type UserCreateOrConnectWithoutJobTitleInput = {
@@ -65104,6 +66976,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
   }
 
   export type UserUncheckedCreateWithoutDepartmentInput = {
@@ -65147,6 +67020,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
   }
 
   export type UserCreateOrConnectWithoutDepartmentInput = {
@@ -65216,6 +67090,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
   }
 
   export type UserUncheckedCreateWithoutConfigsInput = {
@@ -65259,6 +67134,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
   }
 
   export type UserCreateOrConnectWithoutConfigsInput = {
@@ -65318,6 +67194,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutConfigsInput = {
@@ -65361,6 +67238,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserCreateWithoutFilesCreatedInput = {
@@ -65404,6 +67282,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
   }
 
   export type UserUncheckedCreateWithoutFilesCreatedInput = {
@@ -65447,6 +67326,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
   }
 
   export type UserCreateOrConnectWithoutFilesCreatedInput = {
@@ -65495,6 +67375,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
   }
 
   export type UserUncheckedCreateWithoutFilesInput = {
@@ -65538,6 +67419,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
   }
 
   export type UserCreateOrConnectWithoutFilesInput = {
@@ -65672,6 +67554,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFilesCreatedInput = {
@@ -65715,6 +67598,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUpsertWithWhereUniqueWithoutFilesInput = {
@@ -65974,6 +67858,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
   }
 
   export type UserUncheckedCreateWithoutJobsCreatedInput = {
@@ -66017,6 +67902,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
   }
 
   export type UserCreateOrConnectWithoutJobsCreatedInput = {
@@ -66028,9 +67914,16 @@ export namespace Prisma {
     id?: string
     displayName: string
     hexColor?: string | null
+    type?: $Enums.PaymentChannelType
+    accountDetails?: string | null
+    feeRate?: number | null
+    fixedFee?: number | null
+    totalVolume?: number | null
+    totalFees?: number | null
     logoUrl?: string | null
     ownerName?: string | null
     cardNumber?: string | null
+    isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -66039,9 +67932,16 @@ export namespace Prisma {
     id?: string
     displayName: string
     hexColor?: string | null
+    type?: $Enums.PaymentChannelType
+    accountDetails?: string | null
+    feeRate?: number | null
+    fixedFee?: number | null
+    totalVolume?: number | null
+    totalFees?: number | null
     logoUrl?: string | null
     ownerName?: string | null
     cardNumber?: string | null
+    isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -66486,6 +68386,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJobsCreatedInput = {
@@ -66529,6 +68430,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
   }
 
   export type PaymentChannelUpsertWithoutJobsInput = {
@@ -66546,9 +68448,16 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     displayName?: StringFieldUpdateOperationsInput | string
     hexColor?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumPaymentChannelTypeFieldUpdateOperationsInput | $Enums.PaymentChannelType
+    accountDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    feeRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    fixedFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalVolume?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalFees?: NullableFloatFieldUpdateOperationsInput | number | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     ownerName?: NullableStringFieldUpdateOperationsInput | string | null
     cardNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -66557,9 +68466,16 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     displayName?: StringFieldUpdateOperationsInput | string
     hexColor?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumPaymentChannelTypeFieldUpdateOperationsInput | $Enums.PaymentChannelType
+    accountDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    feeRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    fixedFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalVolume?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalFees?: NullableFloatFieldUpdateOperationsInput | number | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     ownerName?: NullableStringFieldUpdateOperationsInput | string | null
     cardNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -66950,6 +68866,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
   }
 
   export type UserUncheckedCreateWithoutJobAssignmentsInput = {
@@ -66993,6 +68910,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
   }
 
   export type UserCreateOrConnectWithoutJobAssignmentsInput = {
@@ -67133,6 +69051,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJobAssignmentsInput = {
@@ -67176,6 +69095,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
   }
 
   export type JobCreateWithoutFolderTemplateInput = {
@@ -67411,6 +69331,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
   }
 
   export type UserUncheckedCreateWithoutPinnedJobsInput = {
@@ -67454,6 +69375,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
   }
 
   export type UserCreateOrConnectWithoutPinnedJobsInput = {
@@ -67588,6 +69510,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPinnedJobsInput = {
@@ -67631,6 +69554,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
   }
 
   export type JobUpsertWithoutPinnedByUsersInput = {
@@ -68230,6 +70154,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
   }
 
   export type UserUncheckedCreateWithoutJobDeliveriesInput = {
@@ -68273,6 +70198,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
   }
 
   export type UserCreateOrConnectWithoutJobDeliveriesInput = {
@@ -68441,6 +70367,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJobDeliveriesInput = {
@@ -68484,6 +70411,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
   }
 
   export type JobDeliverFileUpsertWithWhereUniqueWithoutJobDeliveryInput = {
@@ -68670,6 +70598,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
   }
 
   export type UserUncheckedCreateWithoutStatusChangesInput = {
@@ -68713,6 +70642,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
   }
 
   export type UserCreateOrConnectWithoutStatusChangesInput = {
@@ -68898,6 +70828,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutStatusChangesInput = {
@@ -68941,6 +70872,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
   }
 
   export type JobCreateWithoutActivityLogInput = {
@@ -69059,6 +70991,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
   }
 
   export type UserUncheckedCreateWithoutJobActivityLogInput = {
@@ -69102,6 +71035,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
   }
 
   export type UserCreateOrConnectWithoutJobActivityLogInput = {
@@ -69242,6 +71176,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJobActivityLogInput = {
@@ -69285,6 +71220,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserCreateWithoutNotificationsInput = {
@@ -69328,6 +71264,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
   }
 
   export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -69371,6 +71308,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
   }
 
   export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -69419,6 +71357,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
   }
 
   export type UserUncheckedCreateWithoutSendedNotificationsInput = {
@@ -69462,6 +71401,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
   }
 
   export type UserCreateOrConnectWithoutSendedNotificationsInput = {
@@ -69521,6 +71461,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -69564,6 +71505,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUpsertWithoutSendedNotificationsInput = {
@@ -69618,6 +71560,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSendedNotificationsInput = {
@@ -69661,6 +71604,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
   }
 
   export type TopicCreateWithoutCommunityInput = {
@@ -69809,6 +71753,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
   }
 
   export type UserUncheckedCreateWithoutCommunitiesInput = {
@@ -69852,6 +71797,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
   }
 
   export type UserCreateOrConnectWithoutCommunitiesInput = {
@@ -69942,6 +71888,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCommunitiesInput = {
@@ -69985,6 +71932,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
   }
 
   export type CommunityUpsertWithoutMembersInput = {
@@ -70185,6 +72133,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
   }
 
   export type UserUncheckedCreateWithoutPostsInput = {
@@ -70228,6 +72177,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
   }
 
   export type UserCreateOrConnectWithoutPostsInput = {
@@ -70339,6 +72289,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPostsInput = {
@@ -70382,6 +72333,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
   }
 
   export type TopicUpsertWithoutPostsInput = {
@@ -70514,6 +72466,198 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     eventId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type UserCreateWithoutSystemSettingsInput = {
+    id?: string
+    code: string
+    email: string
+    personalEmail?: string | null
+    username: string
+    displayName: string
+    avatar: string
+    password: string
+    emailVerified?: boolean
+    phoneNumber?: string | null
+    isActive?: boolean
+    deletedAt?: Date | string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    jobTitle?: JobTitleCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    jobsCreated?: JobCreateNestedManyWithoutCreatedByInput
+    filesCreated?: FileSystemCreateNestedManyWithoutCreatedByInput
+    files?: FileSystemCreateNestedManyWithoutVisibleToUsersInput
+    sendedNotifications?: NotificationCreateNestedManyWithoutSenderInput
+    jobActivityLog?: JobActivityLogCreateNestedManyWithoutModifiedByInput
+    configs?: UserConfigCreateNestedManyWithoutUserInput
+    jobComments?: JobCommentCreateNestedManyWithoutUserInput
+    gallery?: GalleryCreateNestedManyWithoutUserInput
+    userDevices?: UserDevicesCreateNestedManyWithoutUserInput
+    statusChanges?: JobStatusHistoryCreateNestedManyWithoutChangedByInput
+    pinnedJobs?: PinnedJobCreateNestedManyWithoutUserInput
+    manager?: UserCreateNestedOneWithoutReportsInput
+    reports?: UserCreateNestedManyWithoutManagerInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    jobDeliveries?: JobDeliveryCreateNestedManyWithoutUserInput
+    communities?: CommunityMemberCreateNestedManyWithoutUserInput
+    posts?: PostCreateNestedManyWithoutAuthorInput
+    jobAssignments?: JobAssignmentCreateNestedManyWithoutUserInput
+    role?: RoleCreateNestedOneWithoutUsersInput
+    userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
+    securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+  }
+
+  export type UserUncheckedCreateWithoutSystemSettingsInput = {
+    id?: string
+    code: string
+    email: string
+    personalEmail?: string | null
+    username: string
+    displayName: string
+    avatar: string
+    jobTitleId?: string | null
+    password: string
+    emailVerified?: boolean
+    departmentId?: string | null
+    phoneNumber?: string | null
+    isActive?: boolean
+    managerId?: string | null
+    roleId?: string | null
+    deletedAt?: Date | string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    jobsCreated?: JobUncheckedCreateNestedManyWithoutCreatedByInput
+    filesCreated?: FileSystemUncheckedCreateNestedManyWithoutCreatedByInput
+    files?: FileSystemUncheckedCreateNestedManyWithoutVisibleToUsersInput
+    sendedNotifications?: NotificationUncheckedCreateNestedManyWithoutSenderInput
+    jobActivityLog?: JobActivityLogUncheckedCreateNestedManyWithoutModifiedByInput
+    configs?: UserConfigUncheckedCreateNestedManyWithoutUserInput
+    jobComments?: JobCommentUncheckedCreateNestedManyWithoutUserInput
+    gallery?: GalleryUncheckedCreateNestedManyWithoutUserInput
+    userDevices?: UserDevicesUncheckedCreateNestedManyWithoutUserInput
+    statusChanges?: JobStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
+    pinnedJobs?: PinnedJobUncheckedCreateNestedManyWithoutUserInput
+    reports?: UserUncheckedCreateNestedManyWithoutManagerInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutUserInput
+    communities?: CommunityMemberUncheckedCreateNestedManyWithoutUserInput
+    posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
+    userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
+    securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+  }
+
+  export type UserCreateOrConnectWithoutSystemSettingsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutSystemSettingsInput, UserUncheckedCreateWithoutSystemSettingsInput>
+  }
+
+  export type UserUpsertWithoutSystemSettingsInput = {
+    update: XOR<UserUpdateWithoutSystemSettingsInput, UserUncheckedUpdateWithoutSystemSettingsInput>
+    create: XOR<UserCreateWithoutSystemSettingsInput, UserUncheckedCreateWithoutSystemSettingsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutSystemSettingsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutSystemSettingsInput, UserUncheckedUpdateWithoutSystemSettingsInput>
+  }
+
+  export type UserUpdateWithoutSystemSettingsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    jobTitle?: JobTitleUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    jobsCreated?: JobUpdateManyWithoutCreatedByNestedInput
+    filesCreated?: FileSystemUpdateManyWithoutCreatedByNestedInput
+    files?: FileSystemUpdateManyWithoutVisibleToUsersNestedInput
+    sendedNotifications?: NotificationUpdateManyWithoutSenderNestedInput
+    jobActivityLog?: JobActivityLogUpdateManyWithoutModifiedByNestedInput
+    configs?: UserConfigUpdateManyWithoutUserNestedInput
+    jobComments?: JobCommentUpdateManyWithoutUserNestedInput
+    gallery?: GalleryUpdateManyWithoutUserNestedInput
+    userDevices?: UserDevicesUpdateManyWithoutUserNestedInput
+    statusChanges?: JobStatusHistoryUpdateManyWithoutChangedByNestedInput
+    pinnedJobs?: PinnedJobUpdateManyWithoutUserNestedInput
+    manager?: UserUpdateOneWithoutReportsNestedInput
+    reports?: UserUpdateManyWithoutManagerNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    jobDeliveries?: JobDeliveryUpdateManyWithoutUserNestedInput
+    communities?: CommunityMemberUpdateManyWithoutUserNestedInput
+    posts?: PostUpdateManyWithoutAuthorNestedInput
+    jobAssignments?: JobAssignmentUpdateManyWithoutUserNestedInput
+    role?: RoleUpdateOneWithoutUsersNestedInput
+    userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
+    securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutSystemSettingsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
+    jobTitleId?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    managerId?: NullableStringFieldUpdateOperationsInput | string | null
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    jobsCreated?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
+    filesCreated?: FileSystemUncheckedUpdateManyWithoutCreatedByNestedInput
+    files?: FileSystemUncheckedUpdateManyWithoutVisibleToUsersNestedInput
+    sendedNotifications?: NotificationUncheckedUpdateManyWithoutSenderNestedInput
+    jobActivityLog?: JobActivityLogUncheckedUpdateManyWithoutModifiedByNestedInput
+    configs?: UserConfigUncheckedUpdateManyWithoutUserNestedInput
+    jobComments?: JobCommentUncheckedUpdateManyWithoutUserNestedInput
+    gallery?: GalleryUncheckedUpdateManyWithoutUserNestedInput
+    userDevices?: UserDevicesUncheckedUpdateManyWithoutUserNestedInput
+    statusChanges?: JobStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+    pinnedJobs?: PinnedJobUncheckedUpdateManyWithoutUserNestedInput
+    reports?: UserUncheckedUpdateManyWithoutManagerNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutUserNestedInput
+    communities?: CommunityMemberUncheckedUpdateManyWithoutUserNestedInput
+    posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
+    userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
+    securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
   }
 
   export type NotificationCreateManyUserInput = {
@@ -70756,6 +72900,12 @@ export namespace Prisma {
     ipAddress?: string | null
     userAgent?: string | null
     createdAt?: Date | string
+  }
+
+  export type SystemSettingCreateManyModifierByInput = {
+    key: string
+    value: string
+    updatedAt?: Date | string
   }
 
   export type NotificationUpdateWithoutUserInput = {
@@ -71252,6 +73402,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutManagerInput = {
@@ -71295,6 +73446,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutManagerInput = {
@@ -71592,6 +73744,24 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type SystemSettingUpdateWithoutModifierByInput = {
+    key?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SystemSettingUncheckedUpdateWithoutModifierByInput = {
+    key?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SystemSettingUncheckedUpdateManyWithoutModifierByInput = {
+    key?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserCreateManyRoleInput = {
     id?: string
     code: string
@@ -71689,6 +73859,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRoleInput = {
@@ -71732,6 +73903,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutRoleInput = {
@@ -71954,6 +74126,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJobTitleInput = {
@@ -71997,6 +74170,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutJobTitleInput = {
@@ -72082,6 +74256,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDepartmentInput = {
@@ -72125,6 +74300,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutDepartmentInput = {
@@ -72189,6 +74365,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFilesInput = {
@@ -72232,6 +74409,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutFilesInput = {

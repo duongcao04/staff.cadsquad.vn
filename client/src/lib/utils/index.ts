@@ -10,6 +10,7 @@ export * from './_job-helper';
 export * from './_job';
 export * from './_mapper';
 export * from './_number';
+export * from './_payment-channel.helper';
 export * from './_string';
 export * from './_styles';
 export * from './_system-routes';

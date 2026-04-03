@@ -116,22 +116,22 @@ export function JobManagementStatsSkeleton() {
     return (
         <div className="space-y-4">
             <div className="flex items-center gap-3">
-                <Skeleton className="h-5 w-48 rounded-md" />
-                <Skeleton className="h-8 w-32 rounded-lg" />
+                <Skeleton className="w-48 h-5 rounded-md" />
+                <Skeleton className="w-32 h-8 rounded-lg" />
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
                 {[...Array(5)].map((_, idx) => (
                     <Card
                         key={idx}
                         shadow="none"
-                        className="border border-border-default bg-white"
+                        className="bg-white border border-border-default"
                     >
-                        <CardBody className="p-4 flex flex-col gap-3">
+                        <CardBody className="flex flex-col gap-3 p-4">
                             <div className="flex items-center gap-2">
                                 <Skeleton className="w-2.5 h-2.5 rounded-full" />
-                                <Skeleton className="h-3 w-20 rounded" />
+                                <Skeleton className="w-20 h-3 rounded" />
                             </div>
-                            <Skeleton className="h-8 w-16 rounded" />
+                            <Skeleton className="w-16 h-8 rounded" />
                         </CardBody>
                     </Card>
                 ))}
@@ -221,6 +221,7 @@ export function JobManagementStats() {
                                     className="text-text-subdued"
                                 />
                             }
+                            className='border-1 bg-background'
                         >
                             <p className="font-medium">{currentLabel}</p>
                         </Button>
@@ -280,19 +281,19 @@ export function JobManagementStats() {
                 </Dropdown>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
                 {STATS_DATA.map((stat, idx) => (
                     <Card
                         key={idx}
                         shadow="none"
-                        className="border border-border-default bg-white"
+                        className="bg-white border border-border-default"
                     >
-                        <CardBody className="p-4 flex flex-col gap-2">
+                        <CardBody className="flex flex-col gap-2 p-4">
                             <div className="flex items-center gap-2">
                                 <span
                                     className={`w-2.5 h-2.5 rounded-full ${stat.color}`}
                                 />
-                                <span className="text-xs font-medium text-text-subdued truncate tracking-wider">
+                                <span className="text-xs font-medium tracking-wider truncate text-text-subdued">
                                     {stat.title}
                                 </span>
                             </div>

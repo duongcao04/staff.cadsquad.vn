@@ -52,6 +52,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter'
 import { APP_INTERCEPTOR } from '@nestjs/core'
 import { AuditLogInterceptor } from './common/interceptors/audit-log.interceptor'
+import { SystemSettingsModule } from './modules/system-settings/system-settings.module'
 
 @Module({
 	imports: [
@@ -103,6 +104,7 @@ import { AuditLogInterceptor } from './common/interceptors/audit-log.interceptor
 		JobModule,
 		JobTypeModule,
 		JobStatusModule,
+		SystemSettingsModule,
 		PaymentChannelModule,
 		NotificationModule,
 		DepartmentModule,

@@ -86,6 +86,8 @@ model User {
     createdAt       DateTime         @default(now())
     updatedAt       DateTime         @updatedAt
     systemAuditLogs SystemAuditLog[]
+
+    systemSettings SystemSetting[]
 }
 
 model UserSecurityLog {
@@ -519,16 +521,30 @@ enum JobPriority {
 }
 
 model PaymentChannel {
-    id          String   @id @default(uuid())
-    displayName String
-    hexColor    String?
-    logoUrl     String?
-    ownerName   String?
-    cardNumber  String?
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
+    id             String             @id @default(uuid())
+    displayName    String
+    hexColor       String?
+    type           PaymentChannelType @default(BANK)
+    accountDetails String?
+    feeRate        Float?
+    fixedFee       Float?
+    totalVolume    Float?
+    totalFees      Float?
+    logoUrl        String?
+    ownerName      String?
+    cardNumber     String?
+    isActive       Boolean            @default(true)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
     jobs Job[]
+}
+
+enum PaymentChannelType {
+    BANK
+    E_WALLET
+    CRYPTO
 }
 
 model JobType {

@@ -35,7 +35,7 @@ export function CreateJobModal({ isOpen, onClose }: Props) {
         string | null
     >(null)
 
-    const createJobMutation = useMutation(createJobOptions)
+    const createJobAction = useMutation(createJobOptions)
     const cancelModalDisclosure = useDisclosure()
 
     const copySharepointMutation = useMutation(copySharepointItemOptions)
@@ -61,7 +61,7 @@ export function CreateJobModal({ isOpen, onClose }: Props) {
             >
                 <ModalContent>
                     <ModalHeader>
-                        <div className="w-full flex justify-between items-center pr-6">
+                        <div className="flex items-center justify-between w-full pr-6">
                             <p className="text-xl font-medium">
                                 Create new job
                             </p>
@@ -82,7 +82,7 @@ export function CreateJobModal({ isOpen, onClose }: Props) {
                     <ModalBody className="px-0 pt-0">
                         <CreateJobForm
                             setDirtyForm={setDirtyForm}
-                            isSubmitting={createJobMutation.isPending}
+                            isSubmitting={createJobAction.isPending}
                             rootSharepointFolderId={rootSharepointFolderId}
                             setRootSharepointFolderId={
                                 setRootSharepointFolderId
@@ -126,7 +126,7 @@ export function CreateJobModal({ isOpen, onClose }: Props) {
                                         newSharepointFolderId as string
                                 }
 
-                                await createJobMutation.mutateAsync(
+                                await createJobAction.mutateAsync(
                                     createData,
                                     {
                                         onSuccess() {

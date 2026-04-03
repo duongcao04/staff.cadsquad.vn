@@ -405,9 +405,16 @@ exports.Prisma.PaymentChannelScalarFieldEnum = {
   id: 'id',
   displayName: 'displayName',
   hexColor: 'hexColor',
+  type: 'type',
+  accountDetails: 'accountDetails',
+  feeRate: 'feeRate',
+  fixedFee: 'fixedFee',
+  totalVolume: 'totalVolume',
+  totalFees: 'totalFees',
   logoUrl: 'logoUrl',
   ownerName: 'ownerName',
   cardNumber: 'cardNumber',
+  isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -554,6 +561,13 @@ exports.Prisma.PostEventScalarFieldEnum = {
   postId: 'postId'
 };
 
+exports.Prisma.SystemSettingScalarFieldEnum = {
+  key: 'key',
+  value: 'value',
+  updatedAt: 'updatedAt',
+  modifierById: 'modifierById'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -644,6 +658,12 @@ exports.JOB_PAYMENT_STATUS = exports.$Enums.JOB_PAYMENT_STATUS = {
 exports.ClientType = exports.$Enums.ClientType = {
   INDIVIDUAL: 'INDIVIDUAL',
   COMPANY: 'COMPANY'
+};
+
+exports.PaymentChannelType = exports.$Enums.PaymentChannelType = {
+  BANK: 'BANK',
+  E_WALLET: 'E_WALLET',
+  CRYPTO: 'CRYPTO'
 };
 
 exports.JobStatusSystemType = exports.$Enums.JobStatusSystemType = {
@@ -759,7 +779,8 @@ exports.Prisma.ModelName = {
   CommunityMember: 'CommunityMember',
   Topic: 'Topic',
   Post: 'Post',
-  PostEvent: 'PostEvent'
+  PostEvent: 'PostEvent',
+  SystemSetting: 'SystemSetting'
 };
 
 /**

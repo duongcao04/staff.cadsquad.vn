@@ -8,6 +8,7 @@ export * from './_job-status-system-type.enum';
 export * from './_job_payment_status.enum';
 export * from './_notification-status.enum';
 export * from './_notification-type.enum';
+export * from './_payment-channel-type.enum';
 export * from './_project-center-tab.enum';
 export * from './_role.enum';
 export * from './_topic-type.enum';

@@ -22,6 +22,8 @@ export * from './_notification.schema';
 export * from './_payment-channel.schema';
 export * from './_permission.schema';
 export * from './_role.schema';
+export * from './_sharepoint-item.schema';
+export * from './_system-setting.schema';
 export * from './_topic.schema';
 export * from './_upload.schema';
 export * from './_user.schema';

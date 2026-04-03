@@ -1,3 +1,4 @@
+import { EPaymentChannelType } from '../enums'
 import type { TJob } from '../types'
 
 /**
@@ -22,6 +23,17 @@ export type TPaymentChannel = {
 	 * @type {string | undefined}
 	 */
 	hexColor?: string
+
+	type: EPaymentChannelType
+
+	accountDetails?: string
+
+	feeRate?: number
+	fixedFee?: number
+	totalVolume?: number
+	totalFees?: number
+
+	isActive: boolean
 
 	/**
 	 * An optional URL for the logo of the payment channel.

@@ -1,3 +1,4 @@
+import { AdminPageHeading } from '@/shared/components'
 import {
     Button,
     Card,
@@ -14,205 +15,495 @@ import {
     Select,
     SelectItem,
     Switch,
+    Tab,
+    Table,
+    TableBody,
+    TableCell,
+    TableColumn,
+    TableHeader,
+    TableRow,
+    Tabs,
     Textarea,
     useDisclosure,
 } from '@heroui/react'
+import { Icon } from '@iconify/react'
+import { useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { useFormik } from 'formik'
-import { Building2, CreditCard, Landmark, Plus, Settings2 } from 'lucide-react'
-import { useState } from 'react'
+import {
+    Building2,
+    CreditCard,
+    Landmark,
+    LayoutGrid,
+    List,
+    Plus,
+    Receipt,
+    TrendingUp
+} from 'lucide-react'
+import { useMemo, useState } from 'react'
+import {
+    currencyFormatter,
+    PaymentChannelHelper,
+    paymentChannelsListOptions,
+} from '../../../lib'
+import AdminContentContainer from '../../../shared/components/admin/AdminContentContainer'
+import { TPaymentChannel } from '../../../shared/types'
 
 export const Route = createFileRoute(
     '/_administrator/financial/payment-channels'
 )({
-    component: PaymentChannelsPage,
+    component: () => {
+        const { isOpen, onOpen, onClose } = useDisclosure()
+        const [selectedChannel, setSelectedChannel] = useState<TPaymentChannel | null>(null)
+
+        const handleAdd = () => {
+            setSelectedChannel(null)
+            onOpen()
+        }
+
+        const handleEdit = (channel: any) => {
+            setSelectedChannel(channel)
+            onOpen()
+        }
+
+        return (
+            <div>
+                <AdminPageHeading
+                    title="Payment Channels"
+                    description="Manage bank accounts, wallets, and standard transaction fees."
+                    actions={
+                        <Button
+                            color="primary"
+                            startContent={<Plus size={16} />}
+                            onPress={handleAdd}
+                            className="font-bold shadow-sm"
+                        >
+                            Add New Channel
+                        </Button>
+                    }
+                />
+                <AdminContentContainer>
+                    <PaymentChannelsPage onEdit={handleEdit} />
+                </AdminContentContainer>
+
+                {/* Create/Edit Modal */}
+                <ChannelModal
+                    isOpen={isOpen}
+                    onClose={onClose}
+                    channel={selectedChannel}
+                />
+            </div>
+        )
+    },
 })
 
-// --- Mock Data ---
-const MOCK_CHANNELS = [
-    {
-        id: '1',
-        name: 'Vietcombank (VCB)',
-        type: 'BANK',
-        accountDetails:
-            'Acc: 0987654321\nName: CAD SQUAD CO., LTD\nBranch: Ho Chi Minh City',
-        feeRate: 0,
-        fixedFee: 0,
-        isActive: true,
-    },
-    {
-        id: '2',
-        name: 'Stripe International',
-        type: 'E_WALLET',
-        accountDetails: 'Main Stripe Account connected to CAD SQUAD website.',
-        feeRate: 2.9,
-        fixedFee: 0.3,
-        isActive: true,
-    },
-    {
-        id: '3',
-        name: 'Wise (TransferWise)',
-        type: 'BANK',
-        accountDetails: 'USD Routing: 122105155\nAcc: 100200300',
-        feeRate: 0,
-        fixedFee: 4.14,
-        isActive: false, // Inactive example
-    },
-]
+interface PaymentChannelsPageProps {
+    onEdit: (channel: TPaymentChannel) => void
+}
+export default function PaymentChannelsPage({
+    onEdit,
+}: PaymentChannelsPageProps) {
+    const {
+        data: { paymentChannels },
+    } = useSuspenseQuery(paymentChannelsListOptions())
+    const [viewMode, setViewMode] = useState<string>('table')
+    const [dateRange, setDateRange] = useState<string>('this_month')
 
-export default function PaymentChannelsPage() {
-    const { isOpen, onOpen, onClose } = useDisclosure()
-    const [selectedChannel, setSelectedChannel] = useState<any>(null)
+    // --- Derived Stats ---
+    const stats = useMemo(() => {
+        const activeCount = paymentChannels.filter((c) => c.isActive).length
+        const totalVol = paymentChannels.reduce(
+            (acc, c) => acc + (c.totalVolume || 0),
+            0
+        )
+        const totalFee = paymentChannels.reduce(
+            (acc, c) => acc + (c.totalFees || 0),
+            0
+        )
+        return { activeCount, totalVol, totalFee }
+    }, [])
 
-    const handleAdd = () => {
-        setSelectedChannel(null)
-        onOpen()
-    }
-
-    const handleEdit = (channel: any) => {
-        setSelectedChannel(channel)
-        onOpen()
-    }
-
-    // Helper to pick the right icon
-    const getIcon = (type: string) => {
-        switch (type) {
-            case 'BANK':
-                return <Building2 size={24} className="text-primary" />
-            case 'E_WALLET':
-                return <CreditCard size={24} className="text-success" />
-            case 'CRYPTO':
-                return <Landmark size={24} className="text-warning" />
-            default:
-                return <Landmark size={24} className="text-default-500" />
-        }
-    }
+    const formatCurrency = (val: number) =>
+        new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            maximumFractionDigits: 0,
+        }).format(val)
 
     return (
-        <div className="p-6 max-w-7xl mx-auto space-y-6">
-            {/* Page Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-2xl font-bold text-default-900 flex items-center gap-2">
-                        <Settings2 className="text-primary" /> Payment Channels
-                    </h1>
-                    <p className="text-sm text-default-500">
-                        Manage bank accounts, wallets, and standard transaction
-                        fees.
-                    </p>
-                </div>
-                <Button
-                    color="primary"
-                    startContent={<Plus size={16} />}
-                    onPress={handleAdd}
-                >
-                    Add New Channel
-                </Button>
-            </div>
-
-            {/* Channels Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {MOCK_CHANNELS.map((channel) => (
-                    <Card
-                        key={channel.id}
-                        shadow="sm"
-                        className={`border transition-all ${channel?.isActive ? 'border-default-200' : 'border-default-100 opacity-70 bg-default-50'}`}
+        <div>
+            <div className="flex flex-col gap-4">
+                <div className="flex items-center justify-start gap-2">
+                    <p>The stats are displayed for</p>
+                    <Select
+                        size="sm"
+                        variant="bordered"
+                        selectedKeys={[dateRange]}
+                        onChange={(e) => setDateRange(e.target.value)}
+                        className="w-40"
+                        classNames={{
+                            trigger: 'border-1 bg-background cursor-pointer',
+                        }}
                     >
-                        <CardHeader className="flex justify-between items-start p-5 pb-0">
-                            <div className="flex items-center gap-3">
-                                <div
-                                    className={`p-3 rounded-xl ${channel?.isActive ? 'bg-primary-50' : 'bg-default-100'}`}
-                                >
-                                    {getIcon(channel.type)}
-                                </div>
-                                <div>
-                                    <h3 className="font-bold text-default-900">
-                                        {channel.name}
-                                    </h3>
-                                    <Chip
-                                        size="sm"
-                                        variant="flat"
-                                        color={
-                                            channel?.isActive
-                                                ? 'success'
-                                                : 'default'
-                                        }
-                                        className="mt-1"
-                                    >
-                                        {channel?.isActive
-                                            ? 'Active'
-                                            : 'Inactive'}
-                                    </Chip>
-                                </div>
-                            </div>
-                        </CardHeader>
-                        <CardBody className="p-5 space-y-4">
-                            {/* Account Details Block */}
-                            <div className="bg-default-100 p-3 rounded-lg">
-                                <p className="text-xs font-bold text-default-500 uppercase mb-1">
-                                    Account Info
-                                </p>
-                                <p className="text-sm text-default-700 whitespace-pre-wrap font-mono">
-                                    {channel.accountDetails}
-                                </p>
-                            </div>
+                        <SelectItem key="this_month">This Month</SelectItem>
+                        <SelectItem key="last_month">Last Month</SelectItem>
+                        <SelectItem key="this_year">This Year</SelectItem>
+                        <SelectItem key="all_time">All Time</SelectItem>
+                    </Select>
+                </div>
 
-                            {/* Fees Block */}
-                            <div className="flex justify-between items-center text-sm">
-                                <span className="text-default-500">
-                                    Standard Fee:
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+                    {/* 1. Total Volume */}
+                    <Card
+                        shadow="none"
+                        className="bg-white border border-border-default"
+                    >
+                        <CardBody className="flex flex-row items-center justify-between p-5">
+                            <div className="flex flex-col gap-1">
+                                <span className="text-xs font-bold tracking-wider uppercase text-default-500">
+                                    Total Volume
                                 </span>
-                                <span className="font-semibold text-default-800">
-                                    {channel.feeRate > 0
-                                        ? `${channel.feeRate}% `
-                                        : ''}
-                                    {channel.feeRate > 0 && channel.fixedFee > 0
-                                        ? '+ '
-                                        : ''}
-                                    {channel.fixedFee > 0
-                                        ? `$${channel.fixedFee}`
-                                        : ''}
-                                    {channel.feeRate === 0 &&
-                                    channel.fixedFee === 0
-                                        ? 'None'
-                                        : ''}
+                                <span className="text-2xl font-black text-default-900">
+                                    {formatCurrency(stats.totalVol)}
                                 </span>
                             </div>
-
-                            <Divider />
-
-                            {/* Actions */}
-                            <div className="flex justify-between items-center pt-2">
-                                <Switch
-                                    size="sm"
-                                    color="success"
-                                    isSelected={channel?.isActive}
-                                    aria-label="Toggle active status"
-                                >
-                                    <span className="text-xs text-default-500">
-                                        Active
-                                    </span>
-                                </Switch>
-                                <Button
-                                    size="sm"
-                                    variant="light"
-                                    color="primary"
-                                    onPress={() => handleEdit(channel)}
-                                >
-                                    Edit Details
-                                </Button>
+                            <div className="p-3 bg-primary-50 rounded-xl text-primary">
+                                <TrendingUp size={24} />
                             </div>
                         </CardBody>
                     </Card>
-                ))}
-            </div>
 
-            {/* Modal Form */}
-            <ChannelModal
-                isOpen={isOpen}
-                onClose={onClose}
-                channel={selectedChannel}
-            />
+                    {/* 2. Total Fees Paid */}
+                    <Card
+                        shadow="none"
+                        className="bg-white border border-border-default"
+                    >
+                        <CardBody className="flex flex-row items-center justify-between p-5">
+                            <div className="flex flex-col gap-1">
+                                <span className="text-xs font-bold tracking-wider uppercase text-default-500">
+                                    Total Fees Paid
+                                </span>
+                                <span className="text-2xl font-black">
+                                    {formatCurrency(stats.totalFee)}
+                                </span>
+                            </div>
+                            <div className="p-3 bg-danger-50 rounded-xl text-danger-500">
+                                <CreditCard size={24} />
+                            </div>
+                        </CardBody>
+                    </Card>
+
+                    {/* 3. Total Transactions */}
+                    <Card
+                        shadow="none"
+                        className="bg-white border border-border-default"
+                    >
+                        <CardBody className="flex flex-row items-center justify-between p-5">
+                            <div className="flex flex-col gap-1">
+                                <span className="text-xs font-bold tracking-wider uppercase text-default-500">
+                                    Total Transactions
+                                </span>
+                                <span className="text-2xl font-black text-default-900">
+                                    {142}
+                                </span>
+                            </div>
+                            <div className="p-3 bg-warning-50 rounded-xl text-warning-500">
+                                <Receipt size={24} />
+                            </div>
+                        </CardBody>
+                    </Card>
+
+                    {/* 4. Active Channels */}
+                    <Card
+                        shadow="none"
+                        className="bg-white border border-border-default"
+                    >
+                        <CardBody className="flex flex-row items-center justify-between p-5">
+                            <div className="flex flex-col gap-1">
+                                <span className="text-xs font-bold tracking-wider uppercase text-default-500">
+                                    Active Channels
+                                </span>
+                                <span className="text-2xl font-black text-default-900">
+                                    {stats.activeCount}{' '}
+                                    <span className="text-sm font-medium text-default-400">
+                                        / {paymentChannels.length}
+                                    </span>
+                                </span>
+                            </div>
+                            <div className="p-3 bg-success-50 rounded-xl text-success-500">
+                                <Building2 size={24} />
+                            </div>
+                        </CardBody>
+                    </Card>
+                </div>
+            </div>
+            <div className="p-6 mx-auto space-y-6 max-w-7xl animate-in fade-in">
+                {/* --- CHANNEL LISTING CONTROLS --- */}
+                <div className="flex items-center justify-end">
+                    <Tabs
+                        selectedKey={viewMode}
+                        onSelectionChange={(key) => setViewMode(key.toString())}
+                        color="primary"
+                        variant="solid"
+                        size="sm"
+                        classNames={{ cursor: 'bg-white shadow-sm' }}
+                        className="p-1 rounded-lg bg-default-100"
+                    >
+                        <Tab
+                            key="table"
+                            title={
+                                <div className="flex items-center gap-2">
+                                    <List size={16} />{' '}
+                                    <span className="hidden sm:inline">
+                                        Table
+                                    </span>
+                                </div>
+                            }
+                        />
+                        <Tab
+                            key="grid"
+                            title={
+                                <div className="flex items-center gap-2">
+                                    <LayoutGrid size={16} />{' '}
+                                    <span className="hidden sm:inline">
+                                        Grid
+                                    </span>
+                                </div>
+                            }
+                        />
+                    </Tabs>
+                </div>
+
+                {/* --- GRID VIEW --- */}
+                {viewMode === 'grid' && (
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                        {paymentChannels.map((channel) => (
+                            <Card
+                                key={channel.id}
+                                shadow="sm"
+                                className={`border transition-all ${channel.isActive ? 'border-default-200 bg-white' : 'border-default-100 opacity-75 bg-default-50'}`}
+                            >
+                                <CardHeader className="flex items-start justify-between p-5 pb-0">
+                                    <div className="flex items-center gap-3">
+                                        <div
+                                            className={`p-3 rounded-xl ${channel.isActive ? 'bg-primary-50' : 'bg-default-200'}`}
+                                        >
+                                            <Icon
+                                                icon={
+                                                    PaymentChannelHelper.getIcon(
+                                                        channel.type
+                                                    ).icon
+                                                }
+                                                width={16}
+                                                height={16}
+                                            />
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <h3
+                                                className="font-bold text-default-900 line-clamp-1"
+                                                title={channel.displayName}
+                                            >
+                                                {channel.displayName}
+                                            </h3>
+                                            <div className="flex items-center gap-2 mt-0.5">
+                                                <Chip
+                                                    size="sm"
+                                                    variant="flat"
+                                                    color={
+                                                        channel.isActive
+                                                            ? 'success'
+                                                            : 'default'
+                                                    }
+                                                    className="h-5 text-[10px] font-bold"
+                                                >
+                                                    {channel.isActive
+                                                        ? 'ACTIVE'
+                                                        : 'INACTIVE'}
+                                                </Chip>
+                                                <span className="text-xs font-medium text-default-500">
+                                                    {channel.type}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </CardHeader>
+                                <CardBody className="p-5 space-y-4">
+                                    <div className="p-3 border rounded-lg bg-default-50 border-default-100">
+                                        <p className="mb-1 text-[10px] font-bold uppercase tracking-wider text-default-500">
+                                            Account Details
+                                        </p>
+                                        <p className="font-mono text-xs leading-relaxed whitespace-pre-wrap text-default-700 line-clamp-3">
+                                            {channel.accountDetails}
+                                        </p>
+                                    </div>
+
+                                    <div className="flex items-center justify-between p-3 border rounded-lg bg-default-50 border-default-100">
+                                        <div className="flex flex-col gap-0.5">
+                                            <span className="text-[10px] font-bold uppercase tracking-wider text-default-500">
+                                                Volume
+                                            </span>
+                                            <span className="text-sm font-bold text-default-900">
+                                                {currencyFormatter(
+                                                    channel.totalVolume || 0
+                                                )}
+                                            </span>
+                                        </div>
+                                        <Divider
+                                            orientation="vertical"
+                                            className="h-6"
+                                        />
+                                        <div className="flex flex-col gap-0.5 text-right">
+                                            <span className="text-[10px] font-bold uppercase tracking-wider text-default-500">
+                                                Fee Rule
+                                            </span>
+                                            <span className="text-sm font-bold text-default-900">
+                                                {channel.feeRate > 0
+                                                    ? `${channel.feeRate}% `
+                                                    : ''}
+                                                {channel.feeRate > 0 &&
+                                                channel.fixedFee > 0
+                                                    ? '+ '
+                                                    : ''}
+                                                {channel.fixedFee > 0
+                                                    ? `$${channel.fixedFee}`
+                                                    : ''}
+                                                {channel.feeRate === 0 &&
+                                                channel.fixedFee === 0
+                                                    ? 'None'
+                                                    : ''}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <Button
+                                        size="sm"
+                                        color="primary"
+                                        variant={
+                                            channel.isActive
+                                                ? 'flat'
+                                                : 'bordered'
+                                        }
+                                        className="w-full mt-2 font-bold"
+                                        onPress={() => onEdit(channel)}
+                                    >
+                                        Edit Details
+                                    </Button>
+                                </CardBody>
+                            </Card>
+                        ))}
+                    </div>
+                )}
+
+                {/* --- TABLE VIEW --- */}
+                {viewMode === 'table' && (
+                    <Card shadow="sm" className="border border-default-200">
+                        <Table
+                            aria-label="Payment Channels Table"
+                            shadow="none"
+                            classNames={{
+                                wrapper: 'p-0 rounded-none border-none',
+                            }}
+                        >
+                            <TableHeader>
+                                <TableColumn>Display name</TableColumn>
+                                <TableColumn>Status</TableColumn>
+                                <TableColumn>Fee Structure</TableColumn>
+                                <TableColumn>Vol. Processed</TableColumn>
+                                <TableColumn align="end">Actions</TableColumn>
+                            </TableHeader>
+                            <TableBody>
+                                {paymentChannels.map((channel) => (
+                                    <TableRow key={channel.id}>
+                                        <TableCell>
+                                            <div className="flex items-center gap-3">
+                                                <div className="p-2 rounded-lg bg-default-100">
+                                                    <Icon
+                                                        icon={
+                                                            PaymentChannelHelper.getIcon(
+                                                                channel.type
+                                                            ).icon
+                                                        }
+                                                        width={18}
+                                                        height={18}
+                                                    />
+                                                </div>
+                                                <div className="flex flex-col">
+                                                    <span className="font-bold text-default-900">
+                                                        {channel.displayName}
+                                                    </span>
+                                                    <span className="text-xs text-default-500">
+                                                        {channel.type}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Chip
+                                                size="sm"
+                                                variant="flat"
+                                                color={
+                                                    channel.isActive
+                                                        ? 'success'
+                                                        : 'default'
+                                                }
+                                                className="font-bold text-[10px]"
+                                            >
+                                                {channel.isActive
+                                                    ? 'ACTIVE'
+                                                    : 'INACTIVE'}
+                                            </Chip>
+                                        </TableCell>
+                                        <TableCell>
+                                            <span className="text-sm font-medium">
+                                                {channel.feeRate > 0
+                                                    ? `${channel.feeRate}% `
+                                                    : ''}
+                                                {channel.feeRate > 0 &&
+                                                channel.fixedFee > 0
+                                                    ? '+ '
+                                                    : ''}
+                                                {channel.fixedFee > 0
+                                                    ? `$${channel.fixedFee}`
+                                                    : ''}
+                                                {channel.feeRate === 0 &&
+                                                channel.fixedFee === 0
+                                                    ? 'None'
+                                                    : ''}
+                                            </span>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="flex flex-col">
+                                                <span className="font-bold text-default-900">
+                                                    {formatCurrency(
+                                                        channel.totalVolume
+                                                    )}
+                                                </span>
+                                                <span className="text-xs text-default-400">
+                                                    Fees:{' '}
+                                                    {currencyFormatter(
+                                                        channel.totalFees || 0
+                                                    )}
+                                                </span>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Button
+                                                size="sm"
+                                                variant="light"
+                                                color="primary"
+                                                onPress={() => onEdit(channel)}
+                                                className="font-medium"
+                                            >
+                                                Edit
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </Card>
+                )}
+            </div>
         </div>
     )
 }
@@ -241,7 +532,7 @@ const ChannelModal = ({
         enableReinitialize: true,
         onSubmit: async (values) => {
             console.log(isEditing ? 'Updating:' : 'Creating:', values)
-            // 1. Call API to Create/Update PaymentChannel
+            // Call API to Create/Update PaymentChannel here
             onClose()
             formik.resetForm()
         },
@@ -251,19 +542,19 @@ const ChannelModal = ({
         <Modal isOpen={isOpen} onClose={onClose} size="2xl">
             <ModalContent>
                 <form onSubmit={formik.handleSubmit}>
-                    <ModalHeader className="flex flex-col gap-1 border-b border-divider">
+                    <ModalHeader className="flex flex-col gap-1 px-6 pt-6 pb-4 border-b border-divider">
                         <span className="text-xl font-bold">
                             {isEditing
                                 ? 'Edit Payment Channel'
                                 : 'Add New Payment Channel'}
                         </span>
-                        <p className="text-sm text-default-500">
+                        <p className="text-sm font-normal text-default-500">
                             Configure bank accounts or digital wallets for
                             invoices and payouts.
                         </p>
                     </ModalHeader>
 
-                    <ModalBody className="py-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <ModalBody className="grid grid-cols-1 gap-6 px-6 py-6 md:grid-cols-2">
                         <Input
                             isRequired
                             name="name"
@@ -271,6 +562,9 @@ const ChannelModal = ({
                             placeholder="e.g., Vietcombank, PayPal"
                             variant="bordered"
                             labelPlacement="outside"
+                            classNames={{
+                                label: 'font-semibold text-default-700',
+                            }}
                             value={formik.values.name}
                             onChange={formik.handleChange}
                         />
@@ -281,27 +575,45 @@ const ChannelModal = ({
                             label="Channel Type"
                             variant="bordered"
                             labelPlacement="outside"
+                            classNames={{
+                                label: 'font-semibold text-default-700',
+                            }}
                             selectedKeys={[formik.values.type]}
                             onChange={formik.handleChange}
                         >
                             <SelectItem
                                 key="BANK"
                                 textValue="Bank Account"
-                                startContent={<Building2 size={16} />}
+                                startContent={
+                                    <Building2
+                                        size={16}
+                                        className="text-default-400"
+                                    />
+                                }
                             >
                                 Bank Account
                             </SelectItem>
                             <SelectItem
                                 key="E_WALLET"
-                                textValue="E-Wallet (Stripe, PayPal)"
-                                startContent={<CreditCard size={16} />}
+                                textValue="E-Wallet"
+                                startContent={
+                                    <CreditCard
+                                        size={16}
+                                        className="text-default-400"
+                                    />
+                                }
                             >
                                 E-Wallet
                             </SelectItem>
                             <SelectItem
                                 key="CRYPTO"
                                 textValue="Cryptocurrency"
-                                startContent={<Landmark size={16} />}
+                                startContent={
+                                    <Landmark
+                                        size={16}
+                                        className="text-default-400"
+                                    />
+                                }
                             >
                                 Cryptocurrency
                             </SelectItem>
@@ -311,14 +623,19 @@ const ChannelModal = ({
                             <Textarea
                                 name="accountDetails"
                                 label="Account Details / Instructions"
-                                placeholder="Enter routing numbers, account numbers, or payment links. This can be shared with clients."
+                                placeholder="Enter routing numbers, account numbers, or payment links. This will be shown to clients."
                                 variant="bordered"
                                 labelPlacement="outside"
+                                classNames={{
+                                    label: 'font-semibold text-default-700',
+                                }}
                                 minRows={3}
                                 value={formik.values.accountDetails}
                                 onChange={formik.handleChange}
                             />
                         </div>
+
+                        <Divider className="md:col-span-2" />
 
                         <Input
                             name="feeRate"
@@ -327,9 +644,14 @@ const ChannelModal = ({
                             step="0.01"
                             variant="bordered"
                             labelPlacement="outside"
+                            classNames={{
+                                label: 'font-semibold text-default-700',
+                            }}
                             description="e.g., 2.9 for Stripe"
                             endContent={
-                                <span className="text-default-400">%</span>
+                                <span className="text-sm text-default-400">
+                                    %
+                                </span>
                             }
                             value={formik.values.feeRate.toString()}
                             onChange={formik.handleChange}
@@ -342,22 +664,27 @@ const ChannelModal = ({
                             step="0.01"
                             variant="bordered"
                             labelPlacement="outside"
+                            classNames={{
+                                label: 'font-semibold text-default-700',
+                            }}
                             description="e.g., 0.30 cents or $15 wire fee"
                             startContent={
-                                <span className="text-default-400">$</span>
+                                <span className="text-sm text-default-400">
+                                    $
+                                </span>
                             }
                             value={formik.values.fixedFee.toString()}
                             onChange={formik.handleChange}
                         />
 
-                        <div className="md:col-span-2 flex items-center justify-between p-4 bg-default-50 rounded-xl border border-default-200 mt-2">
-                            <div>
+                        <div className="flex items-center justify-between p-4 mt-2 border md:col-span-2 bg-default-50 rounded-xl border-default-200">
+                            <div className="flex flex-col gap-0.5">
                                 <p className="text-sm font-bold text-default-900">
                                     Active Status
                                 </p>
                                 <p className="text-xs text-default-500">
                                     Allow this channel to be selected for
-                                    payouts and invoices.
+                                    transactions.
                                 </p>
                             </div>
                             <Switch
@@ -371,14 +698,18 @@ const ChannelModal = ({
                         </div>
                     </ModalBody>
 
-                    <ModalFooter className="border-t border-divider">
-                        <Button variant="flat" onPress={onClose}>
+                    <ModalFooter className="px-6 py-4 border-t border-divider">
+                        <Button
+                            variant="flat"
+                            onPress={onClose}
+                            className="font-medium"
+                        >
                             Cancel
                         </Button>
                         <Button
                             color="primary"
                             type="submit"
-                            className="font-bold"
+                            className="font-bold shadow-sm"
                         >
                             {isEditing ? 'Save Changes' : 'Create Channel'}
                         </Button>
