@@ -1,8 +1,7 @@
-import * as yup from "yup";
 import { z, ZodType } from 'zod';
+import { TDepartment } from "../../shared/types";
 import { COLORS } from "../utils";
 import { UserSchema } from "./_user.schema";
-import { TDepartment } from "../../shared/types";
 
 export const DepartmentSchema: ZodType<TDepartment> = z.lazy(() => z.object({
 	id: z.string().default('N/A'),
@@ -23,27 +22,26 @@ export const DepartmentSchema: ZodType<TDepartment> = z.lazy(() => z.object({
 	updatedAt: z.coerce.date().catch(new Date()),
 }));
 
-export const CreateDepartmentSchema = yup.object({
-	displayName: yup
-		.string()
-		.required("Display name is required"),
+export const CreateDepartmentSchema = z.object({
+	displayName: z
+		.string("Display name is required")
+		.min(1, "Display name is required"),
 
-	notes: yup
+	notes: z
 		.string()
 		.optional(),
 
-	code: yup
-		.string()
-		.required("Code is required"),
+	code: z
+		.string("Code is required")
+		.min(1, "Code is required"),
 
-	hexColor: yup
+	hexColor: z
 		.string()
-		.matches(/^#([0-9A-Fa-f]{6})$/, "hexColor must be a valid hex color code (e.g. #FFFFFF)")
 		.optional(),
 })
 
-export type TCreateDepartmentInput = yup.InferType<typeof CreateDepartmentSchema>
+export type TCreateDepartmentInput = z.infer<typeof CreateDepartmentSchema>
 
 export const UpdateDepartmentSchema = CreateDepartmentSchema.partial()
 
-export type TUpdateDepartmentInput = yup.InferType<typeof UpdateDepartmentSchema>
+export type TUpdateDepartmentInput = z.infer<typeof UpdateDepartmentSchema>

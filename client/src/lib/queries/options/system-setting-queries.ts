@@ -16,11 +16,10 @@ export const systemSettingsListOptions = () => {
 	return queryOptions({
 		queryKey: systemSettingQueryKeys.lists(),
 		queryFn: async () => {
-			const res = await systemSettingApi.findAll();
-			return parseList(SystemSettingSchema, res);
+			return await systemSettingApi.findAll();
 		},
-		select: (data) => ({
-			settings: data,
+		select: (res) => ({
+			settings: parseList(SystemSettingSchema, res.result),
 		}),
 	});
 };
@@ -30,7 +29,7 @@ export const systemSettingOptions = (key: string) => {
 		queryKey: systemSettingQueryKeys.detail(key),
 		queryFn: async () => {
 			const res = await systemSettingApi.findOne(key);
-			return parseData(SystemSettingSchema, res);
+			return parseData(SystemSettingSchema, res.result);
 		},
 		select: (setting) => {
 			// Helper: Try to parse the JSON value for easy UI consumption

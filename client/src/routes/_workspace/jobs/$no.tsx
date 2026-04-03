@@ -7,6 +7,7 @@ import {
     dateFormatter,
     EXTERNAL_URLS,
     getPageTitle,
+    JobHelper,
     optimizeCloudinary,
 } from '@/lib'
 import {
@@ -18,7 +19,6 @@ import {
 } from '@/lib/queries'
 import {
     APP_PERMISSIONS,
-    JobHelper,
     INTERNAL_URLS,
     RouteUtil,
 } from '@/lib/utils'
@@ -136,7 +136,7 @@ function PageHeading({ job }: { job: TJob }) {
 
     return (
         <div
-            className="flex flex-col pb-5 pt-6 px-6 space-y-3"
+            className="flex flex-col px-6 pt-6 pb-5 space-y-3"
             style={{
                 backgroundColor: job.status?.hexColor
                     ? `${job.status.hexColor}15`
@@ -155,7 +155,7 @@ function PageHeading({ job }: { job: TJob }) {
                     >
                         <ChevronLeft />
                     </Button>
-                    <h2 className="text-2xl font-bold text-text-default leading-tight tracking-wider">
+                    <h2 className="text-2xl font-bold leading-tight tracking-wider text-text-default">
                         {job.no}- {job.client?.name.toUpperCase()}_
                         {job.displayName.toUpperCase()}
                     </h2>
@@ -165,7 +165,7 @@ function PageHeading({ job }: { job: TJob }) {
                     <Button
                         size="sm"
                         variant="bordered"
-                        className="border-1 font-medium bg-background"
+                        className="font-medium border-1 bg-background"
                         startContent={<PencilToLine fontSize={14} />}
                         onPress={() =>
                             router.navigate({
@@ -189,7 +189,7 @@ function PageHeading({ job }: { job: TJob }) {
                             <Button
                                 size="sm"
                                 variant="bordered"
-                                className="border-1 font-medium bg-background"
+                                className="font-medium border-1 bg-background"
                                 endContent={
                                     <ChevronRight
                                         size={14}
@@ -373,12 +373,12 @@ function JobDetailPage({ job }: { job: TJob }) {
     }
 
     return (
-        <div className="p-4 bg-background-muted space-y-6 max-w-7xl mx-auto">
+        <div className="p-4 mx-auto space-y-6 bg-background-muted max-w-7xl">
             <div>
                 <JobTimelineCard job={job} />
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                 {/* --- MAIN TABS AREA (2/3) --- */}
                 <div className="lg:col-span-2">
                     <Tabs
@@ -399,13 +399,13 @@ function JobDetailPage({ job }: { job: TJob }) {
                                 </div>
                             }
                         >
-                            <div className="space-y-6 mt-4">
+                            <div className="mt-4 space-y-6">
                                 <Card
                                     shadow="none"
-                                    className="border border-border-default rounded-xl overflow-hidden mb-6"
+                                    className="mb-6 overflow-hidden border border-border-default rounded-xl"
                                 >
                                     <CardBody className="p-4">
-                                        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                                        <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
                                             {/* 1. Status Info & Date Info */}
                                             <div className="flex flex-col gap-1 min-w-50 shrink-0">
                                                 <div className="flex items-center gap-2">
@@ -455,7 +455,7 @@ function JobDetailPage({ job }: { job: TJob }) {
                                                             return (
                                                                 <div
                                                                     key={opt.id}
-                                                                    className="flex items-center justify-center px-3 py-1 rounded-full text-white font-bold text-xs whitespace-nowrap z-10 shadow-sm"
+                                                                    className="z-10 flex items-center justify-center px-3 py-1 text-xs font-bold text-white rounded-full shadow-sm whitespace-nowrap"
                                                                     style={{
                                                                         backgroundColor:
                                                                             opt.hexColor,
@@ -474,7 +474,7 @@ function JobDetailPage({ job }: { job: TJob }) {
                                                                 placement="top"
                                                                 content={
                                                                     <div className="px-1 py-1.5 flex flex-col gap-1">
-                                                                        <div className="text-small font-bold flex items-center gap-2">
+                                                                        <div className="flex items-center gap-2 font-bold text-small">
                                                                             <span
                                                                                 className="w-2 h-2 rounded-full"
                                                                                 style={{
@@ -486,7 +486,7 @@ function JobDetailPage({ job }: { job: TJob }) {
                                                                                 opt.displayName
                                                                             }
                                                                         </div>
-                                                                        <div className="text-tiny text-default-500 font-medium">
+                                                                        <div className="font-medium text-tiny text-default-500">
                                                                             {isCompleted
                                                                                 ? '✓ Stage Completed'
                                                                                 : '⏳ Pending Stage'}
@@ -516,7 +516,7 @@ function JobDetailPage({ job }: { job: TJob }) {
                                             </div>
 
                                             {/* 3. Deliver Action Button */}
-                                            <div className="shrink-0 flex items-center gap-3">
+                                            <div className="flex items-center gap-3 shrink-0">
                                                 {isPaused ? (
                                                     <JobFinishChip
                                                         status={
@@ -536,7 +536,7 @@ function JobDetailPage({ job }: { job: TJob }) {
                                                             placement="top-end"
                                                             content={
                                                                 <div className="px-1 py-1.5 max-w-50">
-                                                                    <p className="text-small font-bold mb-1">
+                                                                    <p className="mb-1 font-bold text-small">
                                                                         Ready to
                                                                         Deliver?
                                                                     </p>
@@ -627,20 +627,20 @@ function JobDetailPage({ job }: { job: TJob }) {
                                     shadow="none"
                                     className="border border-border-default rounded-xl"
                                 >
-                                    <CardHeader className="text-sm px-3 py-3 bg-background-muted flex items-center gap-2">
+                                    <CardHeader className="flex items-center gap-2 px-3 py-3 text-sm bg-background-muted">
                                         Description
                                     </CardHeader>
 
                                     <Divider className="bg-border-muted" />
 
                                     <CardBody className="p-3">
-                                        <div className="p-4 text-sm text-default-700 leading-relaxed min-h-25">
+                                        <div className="p-4 text-sm leading-relaxed text-default-700 min-h-25">
                                             {job.description ? (
                                                 <HtmlReactParser
                                                     htmlString={job.description}
                                                 />
                                             ) : (
-                                                <p className="text-default-400 italic text-center py-6">
+                                                <p className="py-6 italic text-center text-default-400">
                                                     No description provided.
                                                 </p>
                                             )}
@@ -649,9 +649,9 @@ function JobDetailPage({ job }: { job: TJob }) {
                                 </Card>
 
                                 {/* ACTIVITY LOGS */}
-                                <div className="bg-white border border-default-200 rounded-xl overflow-hidden shadow-sm">
-                                    <div className="flex justify-between items-center bg-default-50 border-b border-default-200 px-4 py-3">
-                                        <span className="font-semibold text-sm text-default-900 tracking-wide">
+                                <div className="overflow-hidden bg-white border shadow-sm border-default-200 rounded-xl">
+                                    <div className="flex items-center justify-between px-4 py-3 border-b bg-default-50 border-default-200">
+                                        <span className="text-sm font-semibold tracking-wide text-default-900">
                                             Activity History
                                         </span>
                                         <Button
@@ -685,7 +685,7 @@ function JobDetailPage({ job }: { job: TJob }) {
                                 </div>
                             }
                         >
-                            <div className="space-y-6 mt-4">
+                            <div className="mt-4 space-y-6">
                                 <div className="flex items-center justify-between p-4 border border-border-default rounded-xl">
                                     <div>
                                         <h4 className="font-bold text-text-default">
@@ -702,16 +702,16 @@ function JobDetailPage({ job }: { job: TJob }) {
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start mt-2">
+                                <div className="grid items-start grid-cols-1 gap-6 mt-2 lg:grid-cols-2">
                                     {/* --- Total Income Card --- */}
                                     <Card
-                                        className="bg-emerald-50 dark:bg-emerald-50/10 border border-emerald-100 dark:border-emerald-100/50"
+                                        className="border bg-emerald-50 dark:bg-emerald-50/10 border-emerald-100 dark:border-emerald-100/50"
                                         shadow="none"
                                     >
-                                        <CardBody className="p-5 flex flex-col gap-4">
-                                            <div className="flex justify-between items-center">
+                                        <CardBody className="flex flex-col gap-4 p-5">
+                                            <div className="flex items-center justify-between">
                                                 <div>
-                                                    <label className="text-xs font-bold text-emerald-700 uppercase">
+                                                    <label className="text-xs font-bold uppercase text-emerald-700">
                                                         Total Income
                                                     </label>
                                                     <p className="text-xs text-emerald-600/80 mt-0.5">
@@ -722,7 +722,7 @@ function JobDetailPage({ job }: { job: TJob }) {
                                             </div>
 
                                             <div className="flex items-center justify-start gap-2">
-                                                <div className="p-2 bg-emerald-100/50 dark:bg-emerald-500/20 rounded-lg">
+                                                <div className="p-2 rounded-lg bg-emerald-100/50 dark:bg-emerald-500/20">
                                                     <DollarSignIcon
                                                         size={18}
                                                         className="text-emerald-600"
@@ -735,9 +735,9 @@ function JobDetailPage({ job }: { job: TJob }) {
                                         </CardBody>
                                     </Card>
 
-                                    <Card className="bg-orange-50 dark:bg-orange-50/10 border border-orange-100 dark:border-orange-100/50 shadow-none">
-                                        <CardBody className="p-5 flex flex-col gap-4">
-                                            <div className="flex justify-between items-center">
+                                    <Card className="border border-orange-100 shadow-none bg-orange-50 dark:bg-orange-50/10 dark:border-orange-100/50">
+                                        <CardBody className="flex flex-col gap-4 p-5">
+                                            <div className="flex items-center justify-between">
                                                 <div>
                                                     <label className="text-xs font-bold text-orange-700 uppercase">
                                                         Total staff cost
@@ -750,7 +750,7 @@ function JobDetailPage({ job }: { job: TJob }) {
                                             </div>
 
                                             <div className="flex items-center justify-start gap-2">
-                                                <div className="p-2 bg-orange-100/50 dark:bg-orange-500/20 rounded-lg">
+                                                <div className="p-2 rounded-lg bg-orange-100/50 dark:bg-orange-500/20">
                                                     <DollarSignIcon
                                                         size={18}
                                                         className="text-orange-600"
@@ -771,22 +771,22 @@ function JobDetailPage({ job }: { job: TJob }) {
 
                                 {/* --- Staff Cost Table Card --- */}
                                 <Card className="h-full" shadow="none">
-                                    <CardBody className="p-0 flex flex-col overflow-hidden">
-                                        <div className="p-5 pb-3 flex items-center gap-2 border-b border-border-default">
+                                    <CardBody className="flex flex-col p-0 overflow-hidden">
+                                        <div className="flex items-center gap-2 p-5 pb-3 border-b border-border-default">
                                             <UsersIcon size={16} />
-                                            <label className="text-xs font-bold uppercase tracking-wide">
+                                            <label className="text-xs font-bold tracking-wide uppercase">
                                                 Cost per member
                                             </label>
                                         </div>
 
-                                        <div className="p-5 flex-1 overflow-x-auto">
+                                        <div className="flex-1 p-5 overflow-x-auto">
                                             <table className="w-full text-left border-collapse min-w-75">
                                                 <thead>
                                                     <tr className="border-b border-border-muted">
-                                                        <th className="pb-3 text-xs font-bold uppercase tracking-wider">
+                                                        <th className="pb-3 text-xs font-bold tracking-wider uppercase">
                                                             Assignee
                                                         </th>
-                                                        <th className="pb-3 text-xs font-bold uppercase tracking-wider text-right w-35">
+                                                        <th className="pb-3 text-xs font-bold tracking-wider text-right uppercase w-35">
                                                             Payout ($)
                                                         </th>
                                                     </tr>
@@ -817,11 +817,11 @@ function JobDetailPage({ job }: { job: TJob }) {
                                                                                             .avatar
                                                                                     }
                                                                                     size="sm"
-                                                                                    className="shrink-0 border border-orange-200/50"
+                                                                                    className="border shrink-0 border-orange-200/50"
                                                                                 />
                                                                                 <div className="flex flex-col truncate">
                                                                                     <div className="flex items-center gap-2">
-                                                                                        <span className="text-sm font-semibold text-default-800 truncate">
+                                                                                        <span className="text-sm font-semibold truncate text-default-800">
                                                                                             {
                                                                                                 ass
                                                                                                     .user
@@ -855,7 +855,7 @@ function JobDetailPage({ job }: { job: TJob }) {
                                                                                 </div>
                                                                             </div>
                                                                         </td>
-                                                                        <td className="py-3 pl-2 align-middle font-semibold text-right text-text-default">
+                                                                        <td className="py-3 pl-2 font-semibold text-right align-middle text-text-default">
                                                                             $
                                                                             {/* {
                                                                                                     formik.getFieldProps(
@@ -874,7 +874,7 @@ function JobDetailPage({ job }: { job: TJob }) {
                                                                 colSpan={2}
                                                                 className="py-6 text-center"
                                                             >
-                                                                <p className="text-sm text-orange-600/60 italic">
+                                                                <p className="text-sm italic text-orange-600/60">
                                                                     No staff
                                                                     assigned to
                                                                     this job
@@ -907,7 +907,7 @@ function JobDetailPage({ job }: { job: TJob }) {
                                 </div>
                             }
                         >
-                            <div className="space-y-6 px-2">
+                            <div className="px-2 space-y-6">
                                 <div className="flex flex-col gap-1 pb-4 border-b border-border-default">
                                     <div className="flex items-center gap-2">
                                         <h1 className="text-lg font-bold text-text-default">
@@ -919,21 +919,21 @@ function JobDetailPage({ job }: { job: TJob }) {
                                         project.
                                     </p>
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                     {job?.assignments?.map((ass) => (
                                         <div
                                             key={ass.id}
-                                            className="flex items-center justify-between p-3 border border-border-default rounded-xl hover:border-primary transition-colors cursor-pointer group bg-background"
+                                            className="flex items-center justify-between p-3 transition-colors border cursor-pointer border-border-default rounded-xl hover:border-primary group bg-background"
                                         >
                                             <div className="flex items-center gap-3">
                                                 <Avatar
                                                     src={optimizeCloudinary(
                                                         ass.user.avatar
                                                     )}
-                                                    className="border border-border-default shadow-sm"
+                                                    className="border shadow-sm border-border-default"
                                                 />
                                                 <div>
-                                                    <p className="font-bold text-sm text-text-default leading-tight">
+                                                    <p className="text-sm font-bold leading-tight text-text-default">
                                                         {ass.user.displayName}
                                                     </p>
                                                     <p className="text-xs text-text-subdued">
@@ -964,7 +964,7 @@ function JobDetailPage({ job }: { job: TJob }) {
                                 </div>
                             }
                         >
-                            <div className="mt-4 p-4 bg-white border border-default-200 rounded-xl shadow-sm">
+                            <div className="p-4 mt-4 bg-white border shadow-sm border-default-200 rounded-xl">
                                 <JobAttachmentsField
                                     defaultAttachments={job.attachmentUrls}
                                     onAdd={handleAddAttachment}
@@ -990,7 +990,7 @@ function JobDetailPage({ job }: { job: TJob }) {
                                 </div>
                             }
                         >
-                            <div className="mt-4 p-4 bg-white border border-default-200 rounded-xl shadow-sm">
+                            <div className="p-4 mt-4 bg-white border shadow-sm border-default-200 rounded-xl">
                                 <JobCommentsView job={job} />
                             </div>
                         </Tab>
@@ -1004,7 +1004,7 @@ function JobDetailPage({ job }: { job: TJob }) {
                         shadow="none"
                         className="border border-border-default rounded-xl"
                     >
-                        <CardHeader className="text-sm px-3 py-3 bg-background-muted flex items-center gap-2">
+                        <CardHeader className="flex items-center gap-2 px-3 py-3 text-sm bg-background-muted">
                             <Cloud size={14} />
                             SharePoint Directory
                         </CardHeader>
@@ -1014,7 +1014,7 @@ function JobDetailPage({ job }: { job: TJob }) {
                         <CardBody className="p-3">
                             <div className="flex flex-col gap-4">
                                 {/* Main Folder Identity */}
-                                <div className="flex items-start gap-3 bg-default-50/50 p-3 rounded-xl border border-default-100">
+                                <div className="flex items-start gap-3 p-3 border bg-default-50/50 rounded-xl border-default-100">
                                     <div className="p-2 bg-primary/10 rounded-lg text-primary mt-0.5">
                                         <Folder
                                             fontSize={18}
@@ -1022,9 +1022,9 @@ function JobDetailPage({ job }: { job: TJob }) {
                                             className="opacity-80"
                                         />
                                     </div>
-                                    <div className="flex flex-col min-w-0 flex-1">
+                                    <div className="flex flex-col flex-1 min-w-0">
                                         <span
-                                            className="text-sm font-bold text-default-900 truncate"
+                                            className="text-sm font-bold truncate text-default-900"
                                             title={sharepointDisplay}
                                         >
                                             {sharepointDisplay}
@@ -1095,7 +1095,7 @@ function JobDetailPage({ job }: { job: TJob }) {
                                                     Created By
                                                 </p>
                                                 <p
-                                                    className="text-xs font-medium text-default-700 truncate"
+                                                    className="text-xs font-medium truncate text-default-700"
                                                     title={
                                                         job.sharepointFolder
                                                             ?.createdBy || ''
@@ -1139,7 +1139,7 @@ function JobDetailPage({ job }: { job: TJob }) {
                                     color="primary"
                                     variant="flat"
                                     size="sm"
-                                    className="w-full font-bold shadow-sm mt-1"
+                                    className="w-full mt-1 font-bold shadow-sm"
                                     endContent={<ExternalLink size={14} />}
                                 >
                                     Open Directory
@@ -1152,7 +1152,7 @@ function JobDetailPage({ job }: { job: TJob }) {
                         shadow="none"
                         className="border border-border-default rounded-xl"
                     >
-                        <CardHeader className="text-sm px-3 py-3 bg-background-muted flex items-center gap-2">
+                        <CardHeader className="flex items-center gap-2 px-3 py-3 text-sm bg-background-muted">
                             <CirclePlus size={16} />
                             Created By
                         </CardHeader>
@@ -1180,7 +1180,7 @@ function JobDetailPage({ job }: { job: TJob }) {
                         shadow="none"
                         className="border border-border-default rounded-xl"
                     >
-                        <CardHeader className="text-sm px-3 py-3 bg-background-muted flex items-center gap-2">
+                        <CardHeader className="flex items-center gap-2 px-3 py-3 text-sm bg-background-muted">
                             <LinkIcon size={14} />
                             Public Link
                         </CardHeader>
@@ -1192,7 +1192,7 @@ function JobDetailPage({ job }: { job: TJob }) {
                                 symbol=""
                                 size="sm"
                                 variant="flat"
-                                className="bg-default-50 text-default-900 w-full border border-default-200"
+                                className="w-full border bg-default-50 text-default-900 border-default-200"
                             >
                                 {EXTERNAL_URLS.getJobDetailUrl(job.no)}
                             </Snippet>

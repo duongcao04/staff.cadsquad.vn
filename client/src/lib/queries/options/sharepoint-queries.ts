@@ -1,6 +1,7 @@
 import { mutationOptions, queryOptions } from "@tanstack/react-query"
 import { sharepointApi } from "../../api/_sharepoint.api"
 import { onErrorToast } from "../helper"
+import { SharePointHelper } from "../../helpers"
 
 // 1. Key Factory (Quản lý Key tập trung)
 export const sharepointQueryKeys = {
@@ -33,9 +34,9 @@ export const sharepointFolderDetailOptions = (
 		queryFn: () => {
 			return sharepointApi.folderDetail(folderId)
 		},
-		select: (res) => ({
-			items: res.result
-		}),
+		select: (res) => {
+			return SharePointHelper.flattenFolderData(res.result)
+		},
 	})
 }
 

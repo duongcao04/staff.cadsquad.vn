@@ -1,4 +1,4 @@
-import { dateFormatter, INTERNAL_URLS, optimizeCloudinary } from '@/lib'
+import { dateFormatter, INTERNAL_URLS, JobHelper, optimizeCloudinary } from '@/lib'
 import {
     jobActivityLogsOptions,
     jobByNoOptions,
@@ -11,7 +11,6 @@ import {
     APP_PERMISSIONS,
     currencyFormatter,
     EXTERNAL_URLS,
-    JobHelper,
 } from '@/lib/utils'
 import JobAttachmentsField from '@/shared/components/form-fields/JobAttachmentsField'
 import CountdownTimer from '@/shared/components/ui/countdown-timer'
@@ -253,7 +252,7 @@ export default function JobDetailDrawer({
                         <>
                             {/* --- HEADER --- */}
                             <DrawerHeader
-                                className="flex flex-col pb-5 pt-6 px-6 space-y-3"
+                                className="flex flex-col px-6 pt-6 pb-5 space-y-3"
                                 style={{
                                     backgroundColor: job.status?.hexColor
                                         ? `${job.status.hexColor}15`
@@ -281,7 +280,7 @@ export default function JobDetailDrawer({
                                         >
                                             {job.no}
                                         </span>
-                                        <h2 className="text-2xl font-bold text-default-900 leading-tight">
+                                        <h2 className="text-2xl font-bold leading-tight text-default-900">
                                             {job.displayName}
                                         </h2>
                                     </div>
@@ -290,7 +289,7 @@ export default function JobDetailDrawer({
                                         <Button
                                             size="sm"
                                             variant="bordered"
-                                            className="border-1 font-medium bg-background"
+                                            className="font-medium border-1 bg-background"
                                             startContent={
                                                 <ExpandIcon size={14} />
                                             }
@@ -316,7 +315,7 @@ export default function JobDetailDrawer({
                                                 <Button
                                                     size="sm"
                                                     variant="bordered"
-                                                    className="border-1 font-medium bg-background"
+                                                    className="font-medium border-1 bg-background"
                                                     endContent={
                                                         <ChevronRight
                                                             size={14}
@@ -445,7 +444,7 @@ export default function JobDetailDrawer({
                                     <JobTimelineCard job={job} />
                                 </div>
 
-                                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                                     {/* --- MAIN TABS AREA (2/3) --- */}
                                     <div className="lg:col-span-2">
                                         <Tabs
@@ -463,13 +462,13 @@ export default function JobDetailDrawer({
                                                     </div>
                                                 }
                                             >
-                                                <div className="space-y-6 mt-4">
+                                                <div className="mt-4 space-y-6">
                                                     <Card
                                                         shadow="none"
-                                                        className="border border-border-default rounded-xl overflow-hidden mb-6"
+                                                        className="mb-6 overflow-hidden border border-border-default rounded-xl"
                                                     >
                                                         <CardBody className="p-4">
-                                                            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                                                            <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
                                                                 {/* 1. Status Info & Date Info */}
                                                                 <div className="flex flex-col gap-1 min-w-50 shrink-0">
                                                                     <div className="flex items-center gap-2">
@@ -532,7 +531,7 @@ export default function JobDetailDrawer({
                                                                                         key={
                                                                                             opt.id
                                                                                         }
-                                                                                        className="flex items-center justify-center px-3 py-1 rounded-full text-white font-bold text-xs whitespace-nowrap z-10 shadow-sm"
+                                                                                        className="z-10 flex items-center justify-center px-3 py-1 text-xs font-bold text-white rounded-full shadow-sm whitespace-nowrap"
                                                                                         style={{
                                                                                             backgroundColor:
                                                                                                 opt.hexColor,
@@ -553,7 +552,7 @@ export default function JobDetailDrawer({
                                                                                     placement="top"
                                                                                     content={
                                                                                         <div className="px-1 py-1.5 flex flex-col gap-1">
-                                                                                            <div className="text-small font-bold flex items-center gap-2">
+                                                                                            <div className="flex items-center gap-2 font-bold text-small">
                                                                                                 <span
                                                                                                     className="w-2 h-2 rounded-full"
                                                                                                     style={{
@@ -565,7 +564,7 @@ export default function JobDetailDrawer({
                                                                                                     opt.displayName
                                                                                                 }
                                                                                             </div>
-                                                                                            <div className="text-tiny text-default-500 font-medium">
+                                                                                            <div className="font-medium text-tiny text-default-500">
                                                                                                 {isCompleted
                                                                                                     ? '✓ Stage Completed'
                                                                                                     : '⏳ Pending Stage'}
@@ -595,7 +594,7 @@ export default function JobDetailDrawer({
                                                                 </div>
 
                                                                 {/* 3. Deliver Action Button */}
-                                                                <div className="shrink-0 flex items-center gap-3">
+                                                                <div className="flex items-center gap-3 shrink-0">
                                                                     {isPaused ? (
                                                                         <JobFinishChip
                                                                             status={
@@ -616,7 +615,7 @@ export default function JobDetailDrawer({
                                                                                 placement="top-end"
                                                                                 content={
                                                                                     <div className="px-1 py-1.5 max-w-50">
-                                                                                        <p className="text-small font-bold mb-1">
+                                                                                        <p className="mb-1 font-bold text-small">
                                                                                             Ready
                                                                                             to
                                                                                             Deliver?
@@ -731,14 +730,14 @@ export default function JobDetailDrawer({
                                                         shadow="none"
                                                         className="border border-border-default rounded-xl"
                                                     >
-                                                        <CardHeader className="text-sm px-3 py-3 bg-background-muted flex items-center gap-2">
+                                                        <CardHeader className="flex items-center gap-2 px-3 py-3 text-sm bg-background-muted">
                                                             Description
                                                         </CardHeader>
 
                                                         <Divider className="bg-border-muted" />
 
                                                         <CardBody className="p-3">
-                                                            <div className="p-4 text-sm text-default-700 leading-relaxed min-h-25">
+                                                            <div className="p-4 text-sm leading-relaxed text-default-700 min-h-25">
                                                                 {job.description ? (
                                                                     <HtmlReactParser
                                                                         htmlString={
@@ -746,7 +745,7 @@ export default function JobDetailDrawer({
                                                                         }
                                                                     />
                                                                 ) : (
-                                                                    <p className="text-default-400 italic text-center py-6">
+                                                                    <p className="py-6 italic text-center text-default-400">
                                                                         No
                                                                         description
                                                                         provided.
@@ -757,9 +756,9 @@ export default function JobDetailDrawer({
                                                     </Card>
 
                                                     {/* ACTIVITY LOGS */}
-                                                    <div className="bg-white border border-default-200 rounded-xl overflow-hidden shadow-sm">
-                                                        <div className="flex justify-between items-center bg-default-50 border-b border-default-200 px-4 py-3">
-                                                            <span className="font-semibold text-sm text-default-900 tracking-wide">
+                                                    <div className="overflow-hidden bg-white border shadow-sm border-default-200 rounded-xl">
+                                                        <div className="flex items-center justify-between px-4 py-3 border-b bg-default-50 border-default-200">
+                                                            <span className="text-sm font-semibold tracking-wide text-default-900">
                                                                 Activity History
                                                             </span>
                                                             <Button
@@ -799,7 +798,7 @@ export default function JobDetailDrawer({
                                                     </div>
                                                 }
                                             >
-                                                <div className="space-y-6 mt-4">
+                                                <div className="mt-4 space-y-6">
                                                     <div className="flex items-center justify-between p-4 border border-border-default rounded-xl">
                                                         <div>
                                                             <h4 className="font-bold text-text-default">
@@ -824,16 +823,16 @@ export default function JobDetailDrawer({
                                                         </div>
                                                     </div>
 
-                                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start mt-2">
+                                                    <div className="grid items-start grid-cols-1 gap-6 mt-2 lg:grid-cols-2">
                                                         {/* --- Total Income Card --- */}
                                                         <Card
-                                                            className="bg-emerald-50 dark:bg-emerald-50/10 border border-emerald-100 dark:border-emerald-100/50"
+                                                            className="border bg-emerald-50 dark:bg-emerald-50/10 border-emerald-100 dark:border-emerald-100/50"
                                                             shadow="none"
                                                         >
-                                                            <CardBody className="p-5 flex flex-col gap-4">
-                                                                <div className="flex justify-between items-center">
+                                                            <CardBody className="flex flex-col gap-4 p-5">
+                                                                <div className="flex items-center justify-between">
                                                                     <div>
-                                                                        <label className="text-xs font-bold text-emerald-700 uppercase">
+                                                                        <label className="text-xs font-bold uppercase text-emerald-700">
                                                                             Total
                                                                             Income
                                                                         </label>
@@ -847,7 +846,7 @@ export default function JobDetailDrawer({
                                                                 </div>
 
                                                                 <div className="flex items-center justify-start gap-2">
-                                                                    <div className="p-2 bg-emerald-100/50 dark:bg-emerald-500/20 rounded-lg">
+                                                                    <div className="p-2 rounded-lg bg-emerald-100/50 dark:bg-emerald-500/20">
                                                                         <DollarSignIcon
                                                                             size={
                                                                                 18
@@ -862,9 +861,9 @@ export default function JobDetailDrawer({
                                                             </CardBody>
                                                         </Card>
 
-                                                        <Card className="bg-orange-50 dark:bg-orange-50/10 border border-orange-100 dark:border-orange-100/50 shadow-none">
-                                                            <CardBody className="p-5 flex flex-col gap-4">
-                                                                <div className="flex justify-between items-center">
+                                                        <Card className="border border-orange-100 shadow-none bg-orange-50 dark:bg-orange-50/10 dark:border-orange-100/50">
+                                                            <CardBody className="flex flex-col gap-4 p-5">
+                                                                <div className="flex items-center justify-between">
                                                                     <div>
                                                                         <label className="text-xs font-bold text-orange-700 uppercase">
                                                                             Total
@@ -881,7 +880,7 @@ export default function JobDetailDrawer({
                                                                 </div>
 
                                                                 <div className="flex items-center justify-start gap-2">
-                                                                    <div className="p-2 bg-orange-100/50 dark:bg-orange-500/20 rounded-lg">
+                                                                    <div className="p-2 rounded-lg bg-orange-100/50 dark:bg-orange-500/20">
                                                                         <DollarSignIcon
                                                                             size={
                                                                                 18
@@ -907,25 +906,25 @@ export default function JobDetailDrawer({
                                                         className="h-full"
                                                         shadow="none"
                                                     >
-                                                        <CardBody className="p-0 flex flex-col overflow-hidden">
-                                                            <div className="p-5 pb-3 flex items-center gap-2 border-b border-border-default">
+                                                        <CardBody className="flex flex-col p-0 overflow-hidden">
+                                                            <div className="flex items-center gap-2 p-5 pb-3 border-b border-border-default">
                                                                 <UsersIcon
                                                                     size={16}
                                                                 />
-                                                                <label className="text-xs font-bold uppercase tracking-wide">
+                                                                <label className="text-xs font-bold tracking-wide uppercase">
                                                                     Cost per
                                                                     member
                                                                 </label>
                                                             </div>
 
-                                                            <div className="p-5 flex-1 overflow-x-auto">
+                                                            <div className="flex-1 p-5 overflow-x-auto">
                                                                 <table className="w-full text-left border-collapse min-w-75">
                                                                     <thead>
                                                                         <tr className="border-b border-border-muted">
-                                                                            <th className="pb-3 text-xs font-bold uppercase tracking-wider">
+                                                                            <th className="pb-3 text-xs font-bold tracking-wider uppercase">
                                                                                 Assignee
                                                                             </th>
-                                                                            <th className="pb-3 text-xs font-bold uppercase tracking-wider text-right w-35">
+                                                                            <th className="pb-3 text-xs font-bold tracking-wider text-right uppercase w-35">
                                                                                 Payout
                                                                                 ($)
                                                                             </th>
@@ -962,11 +961,11 @@ export default function JobDetailDrawer({
                                                                                                                 .avatar
                                                                                                         }
                                                                                                         size="sm"
-                                                                                                        className="shrink-0 border border-orange-200/50"
+                                                                                                        className="border shrink-0 border-orange-200/50"
                                                                                                     />
                                                                                                     <div className="flex flex-col truncate">
                                                                                                         <div className="flex items-center gap-2">
-                                                                                                            <span className="text-sm font-semibold text-default-800 truncate">
+                                                                                                            <span className="text-sm font-semibold truncate text-default-800">
                                                                                                                 {
                                                                                                                     ass
                                                                                                                         .user
@@ -1000,7 +999,7 @@ export default function JobDetailDrawer({
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </td>
-                                                                                            <td className="py-3 pl-2 align-middle font-semibold text-right text-text-default">
+                                                                                            <td className="py-3 pl-2 font-semibold text-right align-middle text-text-default">
                                                                                                 $
                                                                                                 {/* {
                                                                                                     formik.getFieldProps(
@@ -1021,7 +1020,7 @@ export default function JobDetailDrawer({
                                                                                     }
                                                                                     className="py-6 text-center"
                                                                                 >
-                                                                                    <p className="text-sm text-orange-600/60 italic">
+                                                                                    <p className="text-sm italic text-orange-600/60">
                                                                                         No
                                                                                         staff
                                                                                         assigned
@@ -1058,7 +1057,7 @@ export default function JobDetailDrawer({
                                                     </div>
                                                 }
                                             >
-                                                <div className="space-y-6 px-2">
+                                                <div className="px-2 space-y-6">
                                                     <div className="flex flex-col gap-1 pb-4 border-b border-border-default">
                                                         <div className="flex items-center gap-2">
                                                             <h1 className="text-lg font-bold text-text-default">
@@ -1071,12 +1070,12 @@ export default function JobDetailDrawer({
                                                             project.
                                                         </p>
                                                     </div>
-                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                                         {job?.assignments?.map(
                                                             (ass) => (
                                                                 <div
                                                                     key={ass.id}
-                                                                    className="flex items-center justify-between p-3 border border-border-default rounded-xl hover:border-primary transition-colors cursor-pointer group bg-background"
+                                                                    className="flex items-center justify-between p-3 transition-colors border cursor-pointer border-border-default rounded-xl hover:border-primary group bg-background"
                                                                 >
                                                                     <div className="flex items-center gap-3">
                                                                         <Avatar
@@ -1085,10 +1084,10 @@ export default function JobDetailDrawer({
                                                                                     .user
                                                                                     .avatar
                                                                             )}
-                                                                            className="border border-border-default shadow-sm"
+                                                                            className="border shadow-sm border-border-default"
                                                                         />
                                                                         <div>
-                                                                            <p className="font-bold text-sm text-text-default leading-tight">
+                                                                            <p className="text-sm font-bold leading-tight text-text-default">
                                                                                 {
                                                                                     ass
                                                                                         .user
@@ -1130,7 +1129,7 @@ export default function JobDetailDrawer({
                                                     </div>
                                                 }
                                             >
-                                                <div className="mt-4 p-4 bg-white border border-default-200 rounded-xl shadow-sm">
+                                                <div className="p-4 mt-4 bg-white border shadow-sm border-default-200 rounded-xl">
                                                     <JobAttachmentsField
                                                         defaultAttachments={
                                                             job.attachmentUrls
@@ -1165,7 +1164,7 @@ export default function JobDetailDrawer({
                                                     </div>
                                                 }
                                             >
-                                                <div className="mt-4 p-4 bg-white border border-default-200 rounded-xl shadow-sm">
+                                                <div className="p-4 mt-4 bg-white border shadow-sm border-default-200 rounded-xl">
                                                     <JobCommentsView
                                                         job={job}
                                                     />
@@ -1181,7 +1180,7 @@ export default function JobDetailDrawer({
                                             shadow="none"
                                             className="border border-border-default rounded-xl"
                                         >
-                                            <CardHeader className="text-sm px-3 py-3 bg-background-muted flex items-center gap-2">
+                                            <CardHeader className="flex items-center gap-2 px-3 py-3 text-sm bg-background-muted">
                                                 <Cloud size={14} />
                                                 SharePoint Directory
                                             </CardHeader>
@@ -1191,7 +1190,7 @@ export default function JobDetailDrawer({
                                             <CardBody className="p-3">
                                                 <div className="flex flex-col gap-4">
                                                     {/* Main Folder Identity */}
-                                                    <div className="flex items-start gap-3 bg-default-50/50 p-3 rounded-xl border border-default-100">
+                                                    <div className="flex items-start gap-3 p-3 border bg-default-50/50 rounded-xl border-default-100">
                                                         <div className="p-2 bg-primary/10 rounded-lg text-primary mt-0.5">
                                                             <Folder
                                                                 fontSize={18}
@@ -1199,9 +1198,9 @@ export default function JobDetailDrawer({
                                                                 className="opacity-80"
                                                             />
                                                         </div>
-                                                        <div className="flex flex-col min-w-0 flex-1">
+                                                        <div className="flex flex-col flex-1 min-w-0">
                                                             <span
-                                                                className="text-sm font-bold text-default-900 truncate"
+                                                                className="text-sm font-bold truncate text-default-900"
                                                                 title={
                                                                     sharepointDisplay
                                                                 }
@@ -1299,7 +1298,7 @@ export default function JobDetailDrawer({
                                                                         By
                                                                     </p>
                                                                     <p
-                                                                        className="text-xs font-medium text-default-700 truncate"
+                                                                        className="text-xs font-medium truncate text-default-700"
                                                                         title={
                                                                             job
                                                                                 .sharepointFolder
@@ -1353,7 +1352,7 @@ export default function JobDetailDrawer({
                                                         color="primary"
                                                         variant="flat"
                                                         size="sm"
-                                                        className="w-full font-bold shadow-sm mt-1"
+                                                        className="w-full mt-1 font-bold shadow-sm"
                                                         endContent={
                                                             <ExternalLink
                                                                 size={14}
@@ -1370,7 +1369,7 @@ export default function JobDetailDrawer({
                                             shadow="none"
                                             className="border border-border-default rounded-xl"
                                         >
-                                            <CardHeader className="text-sm px-3 py-3 bg-background-muted flex items-center gap-2">
+                                            <CardHeader className="flex items-center gap-2 px-3 py-3 text-sm bg-background-muted">
                                                 <CirclePlus size={16} />
                                                 Created By
                                             </CardHeader>
@@ -1409,7 +1408,7 @@ export default function JobDetailDrawer({
                                             shadow="none"
                                             className="border border-border-default rounded-xl"
                                         >
-                                            <CardHeader className="text-sm px-3 py-3 bg-background-muted flex items-center gap-2">
+                                            <CardHeader className="flex items-center gap-2 px-3 py-3 text-sm bg-background-muted">
                                                 <LinkIcon size={14} />
                                                 Public Link
                                             </CardHeader>
@@ -1421,7 +1420,7 @@ export default function JobDetailDrawer({
                                                     symbol=""
                                                     size="sm"
                                                     variant="flat"
-                                                    className="bg-default-50 text-default-900 w-full border border-default-200"
+                                                    className="w-full border bg-default-50 text-default-900 border-default-200"
                                                 >
                                                     {EXTERNAL_URLS.getJobDetailUrl(
                                                         job.no

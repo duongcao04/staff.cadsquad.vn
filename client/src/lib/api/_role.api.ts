@@ -3,7 +3,7 @@ import {
     TGroupPermission,
     TPermission,
     TRole,
-} from '../../shared/types/_role.type'
+} from '@/shared/types'
 import { TCreateRoleInput } from '../validationSchemas/_role.schema'
 
 export const roleApi = {

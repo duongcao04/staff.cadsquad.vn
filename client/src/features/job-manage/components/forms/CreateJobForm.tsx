@@ -5,6 +5,8 @@ import {
     optimizeCloudinary,
     paymentChannelsListOptions,
     sharepointFolderItemsOptions,
+    SystemSettingHelper,
+    systemSettingsListOptions,
     usersListOptions,
 } from '@/lib'
 import {
@@ -29,7 +31,11 @@ import {
     Switch,
     User,
 } from '@heroui/react'
-import { useQuery, useSuspenseQueries } from '@tanstack/react-query'
+import {
+    useQuery,
+    useSuspenseQueries,
+    useSuspenseQuery,
+} from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { useFormik } from 'formik'
 import HTMLReactParser from 'html-react-parser/lib/index'
@@ -105,6 +111,20 @@ export default function CreateJobForm({
         ['jobAssignments'], // Fixed field name
     ]
 
+    const {
+        data: { settings },
+    } = useSuspenseQuery(systemSettingsListOptions())
+    const defaultAssignment = useMemo(() => {
+        const defaultAssignees = SystemSettingHelper.getSettingByKey(
+            settings,
+            'defaultAssigneeIds'
+        )
+        return defaultAssignees.map((it) => ({
+            userId: it,
+            staffCost: 0,
+        }))
+    }, [settings])
+
     const formik = useFormik<TCreateJobFormValues & { totalStaffCost: number }>(
         {
             initialValues: {
@@ -115,12 +135,7 @@ export default function CreateJobForm({
                 attachmentUrls: [],
                 startedAt: dayjs().toISOString(),
                 dueAt: dayjs().add(7, 'days').toISOString(),
-                jobAssignments: [
-                    {
-                        userId: 'c4d35f1b-9b37-4a3f-804b-373f7b0e1a24',
-                        staffCost: 0,
-                    },
-                ],
+                jobAssignments: defaultAssignment,
                 totalStaffCost: 0, // Initialize with 0
                 incomeCost: 0,
                 folderTemplateId: null,
@@ -231,7 +246,7 @@ export default function CreateJobForm({
 
             <form
                 onSubmit={formik.handleSubmit}
-                className="size-full flex flex-col justify-between"
+                className="flex flex-col justify-between size-full"
             >
                 <ScrollArea className="size-full h-[60vh]">
                     <ScrollBar orientation="horizontal" />
@@ -239,7 +254,7 @@ export default function CreateJobForm({
                     <div className="space-y-6">
                         {/* STEP 0: JOB DETAILS */}
                         {currentStep === 0 && (
-                            <div className="space-y-5 animate-in fade-in slide-in-from-right-4 duration-300 pl-7 pr-6 py-5">
+                            <div className="py-5 pr-6 space-y-5 duration-300 animate-in fade-in slide-in-from-right-4 pl-7">
                                 <JobNoField
                                     jobTypes={jobTypes}
                                     defaultSelectedKey={jobTypes[0]?.id}
@@ -370,7 +385,7 @@ export default function CreateJobForm({
                                                 )
                                             }
                                             startContent={
-                                                <div className="pointer-events-none flex items-center">
+                                                <div className="flex items-center pointer-events-none">
                                                     <span className="text-default-400 text-small px-0.5">
                                                         $
                                                     </span>
@@ -420,7 +435,7 @@ export default function CreateJobForm({
 
                         {/* STEP 1: DOCUMENTS */}
                         {currentStep === 1 && (
-                            <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+                            <div className="duration-300 animate-in fade-in slide-in-from-right-4">
                                 <JobAttachmentsField
                                     defaultAttachments={
                                         formik.values.attachmentUrls
@@ -441,9 +456,9 @@ export default function CreateJobForm({
 
                         {/* STEP 2: ASSIGNEES & COSTS */}
                         {currentStep === 2 && (
-                            <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+                            <div className="duration-300 animate-in fade-in slide-in-from-right-4">
                                 <div className="px-5 py-3">
-                                    <p className="font-medium text-sm pb-1 pl-1">
+                                    <p className="pb-1 pl-1 text-sm font-medium">
                                         Search member
                                     </p>
                                     <AssignMemberField
@@ -475,8 +490,8 @@ export default function CreateJobForm({
                                 <Divider className="w-[calc(100%-32px)] mx-auto bg-text-muted" />
 
                                 <div className="relative mt-4">
-                                    <div className="pl-7 pr-6 space-y-3">
-                                        <p className="font-medium text-sm">
+                                    <div className="pr-6 space-y-3 pl-7">
+                                        <p className="text-sm font-medium">
                                             Cost Distribution
                                         </p>
                                         {formik.values.jobAssignments?.map(
@@ -489,7 +504,7 @@ export default function CreateJobForm({
                                                 return (
                                                     <div
                                                         key={assignment.userId}
-                                                        className="flex items-center gap-4 p-3 bg-default-50 rounded-xl border border-divider group"
+                                                        className="flex items-center gap-4 p-3 border bg-default-50 rounded-xl border-divider group"
                                                     >
                                                         <div className="flex-1">
                                                             <User
@@ -575,7 +590,7 @@ export default function CreateJobForm({
                                                                 size="sm"
                                                                 variant="flat"
                                                                 color="danger"
-                                                                className="opacity-0 group-hover:opacity-100 transition-opacity" // Show on hover
+                                                                className="transition-opacity opacity-0 group-hover:opacity-100" // Show on hover
                                                                 onPress={() => {
                                                                     if (
                                                                         formik
@@ -618,8 +633,8 @@ export default function CreateJobForm({
                                         )}
                                     </div>
 
-                                    <div className="sticky bottom-0 px-3 z-10">
-                                        <div className="bottom-0 mt-6 p-4 bg-primary-50 rounded-xl border border-primary-100 flex justify-between items-center">
+                                    <div className="sticky bottom-0 z-10 px-3">
+                                        <div className="bottom-0 flex items-center justify-between p-4 mt-6 border bg-primary-50 rounded-xl border-primary-100">
                                             <p className="text-sm font-bold text-primary-700">
                                                 Total Staff Cost
                                             </p>
@@ -639,12 +654,12 @@ export default function CreateJobForm({
                         {/* STEP 2: ASSIGNEES & COSTS */}
                         {/* STEP 3: FOLDER OPTIONS */}
                         {currentStep === 3 && (
-                            <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-                                <p className="text-sm font-medium px-6 py-3">
+                            <div className="duration-300 animate-in fade-in slide-in-from-right-4">
+                                <p className="px-6 py-3 text-sm font-medium">
                                     SharePoint Integration
                                 </p>
                                 <div className="px-5">
-                                    <div className="flex flex-col gap-6 p-5 bg-default-50 rounded-xl border border-divider">
+                                    <div className="flex flex-col gap-6 p-5 border bg-default-50 rounded-xl border-divider">
                                         {/* 1. Toggle for SharePoint Folder Creation */}
                                         <Switch
                                             isSelected={
@@ -676,7 +691,7 @@ export default function CreateJobForm({
                                             }}
                                             color="primary"
                                         >
-                                            <div className="flex flex-col gap-1 ml-2 mt-1">
+                                            <div className="flex flex-col gap-1 mt-1 ml-2">
                                                 <p className="text-sm font-bold text-default-800">
                                                     Create folder in SharePoint
                                                 </p>
@@ -716,7 +731,7 @@ export default function CreateJobForm({
                                             }}
                                             color="primary"
                                         >
-                                            <div className="flex flex-col gap-1 ml-2 mt-1">
+                                            <div className="flex flex-col gap-1 mt-1 ml-2">
                                                 <p className="text-sm font-bold text-default-800">
                                                     Choose Existing SharePoint
                                                     Folder
@@ -732,7 +747,7 @@ export default function CreateJobForm({
                                         {/* 2. Folder Template Select (Conditional) */}
                                         {formik.values
                                             .isCreateSharepointFolder && (
-                                            <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+                                            <div className="duration-300 animate-in fade-in slide-in-from-top-2">
                                                 <Select
                                                     label="Folder Template"
                                                     labelPlacement="outside"
@@ -816,10 +831,10 @@ export default function CreateJobForm({
                                         {/* existing-folder picker (conditional) - hierarchical navigation */}
                                         {formik.values
                                             .useExistingSharepointFolder && (
-                                            <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+                                            <div className="duration-300 animate-in fade-in slide-in-from-top-2">
                                                 {/* Breadcrumb navigation */}
                                                 {folderPath.length > 1 && (
-                                                    <div className="mb-3 flex items-center gap-1 text-sm">
+                                                    <div className="flex items-center gap-1 mb-3 text-sm">
                                                         <p className="text-primary">
                                                             Project Center
                                                         </p>
@@ -854,7 +869,7 @@ export default function CreateJobForm({
                                                                                     ''
                                                                                 )
                                                                             }}
-                                                                            className="text-primary hover:underline cursor-pointer"
+                                                                            className="cursor-pointer text-primary hover:underline"
                                                                         >
                                                                             {
                                                                                 item.name
@@ -966,7 +981,7 @@ export default function CreateJobForm({
                                                                                     item.name
                                                                                 }
                                                                             </span>
-                                                                            <span className="text-xs text-default-400 ml-1">
+                                                                            <span className="ml-1 text-xs text-default-400">
                                                                                 (click
                                                                                 to
                                                                                 enter)
@@ -992,7 +1007,7 @@ export default function CreateJobForm({
 
                                                 {formik.values
                                                     .sharepointFolderId && (
-                                                    <div className="mt-3 p-2 bg-success-50 rounded border border-success-200 text-sm text-success-700">
+                                                    <div className="p-2 mt-3 text-sm border rounded bg-success-50 border-success-200 text-success-700">
                                                         <p className="font-medium">
                                                             ✓ Selected folder
                                                         </p>
@@ -1015,7 +1030,7 @@ export default function CreateJobForm({
                     </div>
                 </ScrollArea>
 
-                <div className="bg-background flex items-center justify-between px-7 pt-4 pb-2">
+                <div className="flex items-center justify-between pt-4 pb-2 bg-background px-7">
                     <HeroButton
                         variant="light"
                         color="default"
@@ -1081,7 +1096,7 @@ function DeliveryField({
     return (
         <HeroDateRangePicker
             label={
-                <div className="flex items-center justify-start w-fit gap-2">
+                <div className="flex items-center justify-start gap-2 w-fit">
                     <div className="relative pr-2.5">
                         <p className="absolute top-0 right-0 text-danger">*</p>
                         <p>Project Timeline (Start to Deadline)</p>

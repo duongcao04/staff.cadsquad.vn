@@ -43,7 +43,7 @@ export const departmentOptions = (identify: string) => {
 };
 
 // 3. Mutation options
-export const createDepartmentMutation = mutationOptions({
+export const createDepartmentOptions = mutationOptions({
     mutationFn: (data: TCreateDepartmentInput) =>
         departmentApi.create(data),
     onError: (err) => onErrorToast(err, 'Create failed'),

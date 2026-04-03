@@ -13,7 +13,7 @@ export const sharepointApi = {
 	folderDetail: async (folderId: string) => {
 		return axiosClient
 			.get<
-				ApiResponse<any[]>
+				ApiResponse<any>
 			>(`/v1/sharepoint/folder/${folderId}`)
 			.then((res) => res.data)
 	},

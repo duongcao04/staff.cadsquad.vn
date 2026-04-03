@@ -1,8 +1,7 @@
-import { dateFormatter } from '@/lib'
+import { dateFormatter, JobHelper } from '@/lib'
 import { optimizeCloudinary } from '@/lib/cloudinary'
 import {
     currencyFormatter,
-    JobHelper,
     IMAGES,
     INTERNAL_URLS,
 } from '@/lib/utils'
@@ -101,14 +100,14 @@ export const renderWorkbenchCell = (
                     {currencyFormatter(data.staffCost, 'Vietnamese')}
                 </p>
             ) : (
-                <p className="text-xs italic text-text-subdued text-right">
+                <p className="text-xs italic text-right text-text-subdued">
                     Not assigned
                 </p>
             )
 
         case 'status':
             return (
-                <div className="flex items-center justify-center z-0">
+                <div className="z-0 flex items-center justify-center">
                     <JobStatusDropdown
                         jobData={data}
                         statusData={data.status as TJobStatus}
@@ -144,7 +143,7 @@ export const renderWorkbenchCell = (
 
         case 'attachmentUrls':
             return !data.attachmentUrls?.length ? (
-                <div className="size-full flex items-center justify-center">
+                <div className="flex items-center justify-center size-full">
                     <HeroTooltip content={'Add attachment'}>
                         <HeroButton
                             isIconOnly
@@ -159,14 +158,14 @@ export const renderWorkbenchCell = (
                     </HeroTooltip>
                 </div>
             ) : (
-                <p className="w-full text-center font-medium tracking-wide">
+                <p className="w-full font-medium tracking-wide text-center">
                     x{data.attachmentUrls.length}
                 </p>
             )
 
         case 'assignments':
             return !data.assignments.length ? (
-                <div className="size-full flex items-center justify-center">
+                <div className="flex items-center justify-center size-full">
                     <HeroTooltip content="Assign members">
                         <Button
                             isIconOnly
