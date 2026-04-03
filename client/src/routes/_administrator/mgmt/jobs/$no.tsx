@@ -8,14 +8,12 @@ import {
 } from '@/features/job-edit'
 import { JobActivity } from '@/features/job-edit/components/cards/JobActivity'
 import { ConfirmCancelJobModal } from '@/features/job-manage/components/modals/ConfirmCancelJobModal'
-import { ConfirmRemoveAssigneeModal } from '@/features/job-manage/components/modals/ConfirmRemoveAssigneeModal'
 import AssignMemberModal from '@/features/project-center/components/modals/AssignMemberModal'
 import {
     ApiResponse,
     APP_PERMISSIONS,
     dateFormatter,
     EXTERNAL_URLS,
-    getPageTitle,
     INTERNAL_URLS,
     JobHelper,
     optimizeCloudinary,
@@ -27,16 +25,11 @@ import {
     jobActivityLogsOptions,
     jobByNoOptions,
     jobDeliveriesListOptions,
-    unassignMemberToJobOptions,
 } from '@/lib/queries'
-import {
-    AdminPageHeading,
-    ErrorPageContent,
-    HeroTooltip,
-} from '@/shared/components'
+import { AdminPageHeading, HeroTooltip } from '@/shared/components'
 import AdminContentContainer from '@/shared/components/admin/AdminContentContainer'
 import { ProtectedRoute } from '@/shared/guards/protected-route'
-import { TJob, TUser } from '@/shared/types'
+import { TJob } from '@/shared/types'
 import {
     addToast,
     Avatar,
@@ -136,15 +129,9 @@ function JobEditPage() {
     const adminDeliverJobAction = useMutation(adminReviewJobDeliverOptions)
     const cancelJobAction = useMutation(cancelJobOptions)
 
-    const [selectedMember, setSelectedMember] = useState<TUser | null>(null)
-
-    const [{ data: job }] = useSuspenseQueries({
+    const [{ data: job, refetch }] = useSuspenseQueries({
         queries: [jobByNoOptions(no)],
     })
-
-    const paymentDisplay = JobHelper.getJobPaymentStatusDisplay(
-        job.paymentStatus
-    )
 
     const { data } = useQuery({
         ...jobDeliveriesListOptions(job?.id as string),
@@ -157,20 +144,12 @@ function JobEditPage() {
         enabled: !!job?.id && tab === 'activity',
     })
 
-    const removeMemberMutation = useMutation(unassignMemberToJobOptions)
-
     const {
         isOpen: isAssignOpen,
         onOpen: onOpenAssignModal,
         onClose: onCloseAssignModal,
     } = useDisclosure({ id: 'AssigneeMembersModal' })
     const cancelJobModalState = useDisclosure({ id: 'ConfirmCancelJobModal' })
-    const {
-        isOpen: isOpenConfirmRemoveAssigneeModal,
-        onOpen: onOpenConfirmRemoveAssigneeModal,
-        onOpenChange: onConfirmRemoveAssigneeModalChange,
-        onClose: onCloseConfirmRemoveAssigneeModal,
-    } = useDisclosure({ id: 'ConfirmRemoveAssigneeModal' })
 
     // Default to 'deliveries' if status is REVIEW for better UX
     const [activeTab, setActiveTab] = useState(tab)
@@ -210,23 +189,6 @@ function JobEditPage() {
         })
     }
 
-    const handleRemoveMember = () => {
-        if (job?.id && selectedMember) {
-            removeMemberMutation.mutateAsync(
-                {
-                    jobId: job.id,
-                    memberId: selectedMember.id,
-                },
-                {
-                    onSuccess() {
-                        onCloseConfirmRemoveAssigneeModal()
-                        setSelectedMember(null)
-                    },
-                }
-            )
-        }
-    }
-
     const handleCancelJob = () => {
         if (job.id) {
             cancelJobAction.mutateAsync(job.id, {
@@ -261,16 +223,6 @@ function JobEditPage() {
                 />
             )}
 
-            {isOpenConfirmRemoveAssigneeModal && (
-                <ConfirmRemoveAssigneeModal
-                    isOpen={isOpenConfirmRemoveAssigneeModal}
-                    onOpenChange={onConfirmRemoveAssigneeModalChange}
-                    onConfirm={handleRemoveMember}
-                    isLoading={removeMemberMutation.isPending}
-                    assignee={selectedMember ?? undefined}
-                />
-            )}
-
             <AdminPageHeading
                 title={
                     <div className="flex items-center gap-3">
@@ -287,9 +239,12 @@ function JobEditPage() {
                             <h1 className="text-2xl font-medium text-text-default">
                                 {job.displayName}
                             </h1>
-                            <Chip color={paymentDisplay.colorName}>
-                                {paymentDisplay.title}
-                            </Chip>
+
+                            {JobHelper.isCancelled(job) && (
+                                <Chip color="danger" variant="solid">
+                                    Cancelled
+                                </Chip>
+                            )}
                         </div>
                     </div>
                 }
@@ -374,9 +329,9 @@ function JobEditPage() {
                     <BreadcrumbItem>{job.no}</BreadcrumbItem>
                 </Breadcrumbs>
 
-                <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
                     {/* --- LEFT COLUMN: MAIN CONTENT --- */}
-                    <div className="xl:col-span-2 space-y-6">
+                    <div className="space-y-6 xl:col-span-2">
                         <JobStatusProgressCard job={job} />
 
                         <JobTimelineCard job={job} />
@@ -384,7 +339,7 @@ function JobEditPage() {
                             shadow="none"
                             className="border border-border-default rounded-xl"
                         >
-                            <CardHeader className="py-0 px-4 border-b border-border-default">
+                            <CardHeader className="px-4 py-0 border-b border-border-default">
                                 <Tabs
                                     aria-label="Job Edit Sections"
                                     variant="underlined"
@@ -471,10 +426,7 @@ function JobEditPage() {
 
                                 {/* --- TAB: TEAM & FILES --- */}
                                 {activeTab === 'team' && (
-                                    <JobTeamAndFiles
-                                        job={job}
-                                        onRemoveMember={() => {}}
-                                    />
+                                    <JobTeamAndFiles job={job} onRefresh={refetch}/>
                                 )}
 
                                 {/* --- TAB: ACTIVITY --- */}
@@ -497,7 +449,7 @@ function JobEditPage() {
                             shadow="none"
                             className="border border-border-default rounded-xl"
                         >
-                            <CardHeader className="px-3 py-3 bg-background-muted flex items-center gap-2">
+                            <CardHeader className="flex items-center gap-2 px-3 py-3 bg-background-muted">
                                 <Cloud size={16} />
                                 <span className="text-sm font-bold text-text-subdued">
                                     SharePoint Directory
@@ -509,7 +461,7 @@ function JobEditPage() {
                             <CardBody className="p-3">
                                 <div className="flex flex-col gap-4">
                                     {/* Main Folder Identity */}
-                                    <div className="flex items-start gap-3 bg-default-50/50 p-3 rounded-xl border border-default-100">
+                                    <div className="flex items-start gap-3 p-3 border bg-default-50/50 rounded-xl border-default-100">
                                         <div className="p-2 bg-primary/10 rounded-lg text-primary mt-0.5">
                                             <Folder
                                                 fontSize={18}
@@ -517,9 +469,9 @@ function JobEditPage() {
                                                 className="opacity-80"
                                             />
                                         </div>
-                                        <div className="flex flex-col min-w-0 flex-1">
+                                        <div className="flex flex-col flex-1 min-w-0">
                                             <span
-                                                className="text-sm font-bold text-default-900 truncate"
+                                                className="text-sm font-bold truncate text-default-900"
                                                 title={
                                                     JobHelper.getSharepointDisplay(
                                                         job
@@ -627,7 +579,7 @@ function JobEditPage() {
                                                         Created By
                                                     </p>
                                                     <p
-                                                        className="text-xs font-medium text-default-700 truncate"
+                                                        className="text-xs font-medium truncate text-default-700"
                                                         title={
                                                             job.sharepointFolder
                                                                 ?.createdBy ||
@@ -668,15 +620,15 @@ function JobEditPage() {
                         </Card>
 
                         {/* Metadata Grid (Creator & Modifier) */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             {/* Created By Card */}
                             <Card
                                 shadow="none"
-                                className="border border-default-200 rounded-xl bg-white relative overflow-hidden"
+                                className="relative overflow-hidden bg-white border border-default-200 rounded-xl"
                             >
-                                <CardBody className="p-4 z-10 flex flex-col gap-4">
+                                <CardBody className="z-10 flex flex-col gap-4 p-4">
                                     {/* Header Row */}
-                                    <div className="flex justify-between items-center w-full">
+                                    <div className="flex items-center justify-between w-full">
                                         <div className="flex items-center gap-1.5 text-default-500">
                                             <CircleUserRound size={14} />
                                             <span className="text-[11px] font-bold uppercase tracking-widest mt-0.5">
@@ -700,10 +652,10 @@ function JobEditPage() {
                                                 job.createdBy?.avatar
                                             )}
                                             icon={<CircleUserRound size={20} />}
-                                            className="w-10 h-10 border border-default-200 shadow-sm"
+                                            className="w-10 h-10 border shadow-sm border-default-200"
                                         />
                                         <div className="flex flex-col">
-                                            <span className="text-sm font-bold text-default-900 leading-tight">
+                                            <span className="text-sm font-bold leading-tight text-default-900">
                                                 {job.createdBy?.displayName ||
                                                     'System'}
                                             </span>
@@ -717,7 +669,7 @@ function JobEditPage() {
                                 <CircleUserRound
                                     size={100}
                                     strokeWidth={1}
-                                    className="absolute -right-6 -bottom-6 text-default-100 z-0 pointer-events-none"
+                                    className="absolute z-0 pointer-events-none -right-6 -bottom-6 text-default-100"
                                 />
                             </Card>
 
@@ -725,11 +677,11 @@ function JobEditPage() {
                             {job.updatedAt && (
                                 <Card
                                     shadow="none"
-                                    className="border border-default-200 rounded-xl bg-white relative overflow-hidden"
+                                    className="relative overflow-hidden bg-white border border-default-200 rounded-xl"
                                 >
-                                    <CardBody className="p-4 z-10 flex flex-col gap-4">
+                                    <CardBody className="z-10 flex flex-col gap-4 p-4">
                                         {/* Header Row */}
-                                        <div className="flex justify-between items-center w-full">
+                                        <div className="flex items-center justify-between w-full">
                                             <div className="flex items-center gap-1.5 text-default-500">
                                                 <Pencil size={14} />
                                                 <span className="text-[11px] font-bold uppercase tracking-widest mt-0.5">
@@ -758,10 +710,10 @@ function JobEditPage() {
                                                         className="text-default-400"
                                                     />
                                                 }
-                                                className="w-10 h-10 border border-default-200 shadow-sm bg-default-100"
+                                                className="w-10 h-10 border shadow-sm border-default-200 bg-default-100"
                                             />
                                             <div className="flex flex-col">
-                                                <span className="text-sm font-bold text-default-900 leading-tight">
+                                                <span className="text-sm font-bold leading-tight text-default-900">
                                                     {/* Thay bằng job.updatedBy?.displayName nếu có */}
                                                     System / User
                                                 </span>
@@ -775,7 +727,7 @@ function JobEditPage() {
                                     <Pencil
                                         size={85}
                                         strokeWidth={1}
-                                        className="absolute -right-4 -bottom-6 text-default-100 z-0 pointer-events-none"
+                                        className="absolute z-0 pointer-events-none -right-4 -bottom-6 text-default-100"
                                     />
                                 </Card>
                             )}
@@ -787,10 +739,10 @@ function JobEditPage() {
                             shadow="none"
                         >
                             <CardBody className="p-4">
-                                <h4 className="font-bold text-primary mb-2 text-sm">
+                                <h4 className="mb-2 text-sm font-bold text-primary">
                                     Need help?
                                 </h4>
-                                <p className="text-xs text-primary-700 mb-3">
+                                <p className="mb-3 text-xs text-primary-700">
                                     Assign more team members to speed up this
                                     job.
                                 </p>
@@ -831,9 +783,9 @@ function JobEditPage() {
                         </Card>
 
                         {/* Danger Zone */}
-                        <Card className="w-full shadow-none border border-danger/10 bg-danger/10">
-                            <CardBody className="py-4 px-0">
-                                <h4 className="font-bold text-danger mb-2 text-sm px-5">
+                        <Card className="w-full border shadow-none border-danger/10 bg-danger/10">
+                            <CardBody className="px-0 py-4">
+                                <h4 className="px-5 mb-2 text-sm font-bold text-danger">
                                     Danger Zone
                                 </h4>
                                 <div className="px-1.5">
@@ -841,7 +793,7 @@ function JobEditPage() {
                                         size="sm"
                                         variant="light"
                                         color="danger"
-                                        className="w-full justify-start font-medium"
+                                        className="justify-start w-full font-medium"
                                         startContent={<Trash2 size={16} />}
                                         onPress={cancelJobModalState.onOpen}
                                     >

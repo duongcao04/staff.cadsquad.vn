@@ -32,7 +32,7 @@ export const ConfirmRestoreJob = ({
             <ModalContent>
                 {(onClose) => (
                     <>
-                        <ModalHeader className="flex flex-col gap-1 text-danger">
+                        <ModalHeader className="flex flex-col gap-1 text-primary">
                             Do you want restore this job?
                         </ModalHeader>
                         <ModalBody>
@@ -54,7 +54,7 @@ export const ConfirmRestoreJob = ({
                                 Cancel
                             </Button>
                             <Button
-                                color="danger"
+                                color="primary"
                                 onPress={onConfirm}
                                 isLoading={isLoading}
                                 variant="shadow"

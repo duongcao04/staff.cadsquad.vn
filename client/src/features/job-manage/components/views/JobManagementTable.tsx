@@ -3,10 +3,9 @@ import {
     currencyFormatter,
     INTERNAL_URLS,
     JobHelper,
-    jobQueryKeys,
     optimizeCloudinary,
     restoreJobOptions,
-    RouteUtil,
+    RouteUtil
 } from '@/lib'
 import {
     EJobManagementTableTabs,
@@ -52,7 +51,6 @@ import {
     TruckElectricIcon,
 } from 'lucide-react'
 import React, { useCallback, useMemo, useState } from 'react'
-import { queryClient } from '../../../../main'
 import { ConfirmCancelJobModal } from '../modals/ConfirmCancelJobModal'
 import { ConfirmRestoreJob } from '../modals/ConfirmRestoreJobModal'
 
@@ -124,6 +122,7 @@ type JobManagementTableProps = {
     onSelectionChange: (keys: Selection) => void
     onBulkAction: (type: 'DELETE' | 'STATUS') => void
     searchParams: TManageJobsParams
+    onRefetch: () => void
 }
 export function JobManagementTable({
     data,
@@ -133,6 +132,7 @@ export function JobManagementTable({
     sort,
     onSelectionChange,
     searchParams,
+    onRefetch,
 }: JobManagementTableProps) {
     const router = useRouter()
     const cancelJobModalState = useDisclosure()
@@ -148,19 +148,7 @@ export function JobManagementTable({
             cancelJobAction.mutateAsync(selectedJob.id, {
                 onSuccess() {
                     cancelJobModalState.onClose()
-                    queryClient.refetchQueries({
-                        queryKey: jobQueryKeys.lists({
-                            tab:
-                                searchParams.tab === EJobManagementTableTabs.ALL
-                                    ? undefined
-                                    : searchParams.tab,
-                            status: searchParams.status,
-                            sort: searchParams.sort,
-                            page: searchParams.page,
-                            limit: searchParams.limit,
-                            search: searchParams.search,
-                        }),
-                    })
+                    onRefetch()
                     addToast({
                         title: 'Successfully',
                         description: `${selectedJob.no}- ${selectedJob.displayName} has been successfully canceled.`,
@@ -175,19 +163,7 @@ export function JobManagementTable({
             restoreJobAction.mutateAsync(selectedJob.id, {
                 onSuccess() {
                     restoreJobModalState.onClose()
-                    queryClient.refetchQueries({
-                        queryKey: jobQueryKeys.lists({
-                            tab:
-                                searchParams.tab === EJobManagementTableTabs.ALL
-                                    ? undefined
-                                    : searchParams.tab,
-                            status: searchParams.status,
-                            sort: searchParams.sort,
-                            page: searchParams.page,
-                            limit: searchParams.limit,
-                            search: searchParams.search,
-                        }),
-                    })
+                    onRefetch()
                     addToast({
                         title: 'Successfully',
                         description: `${selectedJob.no}- ${selectedJob.displayName} has been restore successfully.`,

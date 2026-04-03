@@ -17,11 +17,15 @@ interface IJobPaymentStatusDisplayResult {
 }
 export class JobHelper {
 	static isFinished(data: TJob) {
-		return !lodash.isEmpty(data.finishedAt) || data.status.systemType === 'TERMINATED'
+		return !lodash.isNil(data.finishedAt) || data.status.systemType === 'TERMINATED'
 	}
 
 	static isCompleted(data: TJob) {
-		return !lodash.isEmpty(data.completedAt) || data.status.systemType === 'COMPLETED'
+		return !lodash.isNil(data.completedAt) || data.status.systemType === 'COMPLETED'
+	}
+
+	static isCancelled(data: TJob) {
+		return !lodash.isNil(data.deletedAt)
 	}
 
 	static getSharepointDisplay(data: TJob) {

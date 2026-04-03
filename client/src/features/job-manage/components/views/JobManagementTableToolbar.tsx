@@ -9,10 +9,12 @@ import { getDueInPresets } from './JobManagementTable'
 import { JobManagementTabs } from './JobManagementTabs'
 
 interface JobManagementTableToolbarProps {
+    onRefetch: () => void
     searchParams: TManageJobsParams
     isLoadingData: boolean
 }
 export function JobManagementTableToolbar({
+    onRefetch,
     searchParams,
     isLoadingData,
 }: JobManagementTableToolbarProps) {
@@ -110,6 +112,7 @@ export function JobManagementTableToolbar({
                             className="border-1"
                             variant="bordered"
                             size="sm"
+                            onPress={onRefetch}
                         >
                             Refresh
                         </Button>

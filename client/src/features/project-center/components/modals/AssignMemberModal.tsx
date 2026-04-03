@@ -196,10 +196,10 @@ function AssignMemberContent({
                     Project #{job.no}
                 </span>
             </HeroModalHeader>
-            <HeroModalBody className="pt-4 pb-6 px-0">
+            <HeroModalBody className="px-0 pt-4 pb-6">
                 <div className="flex flex-col gap-6">
                     {/* 1. Selection with filter logic */}
-                    <div className="space-y-2 px-6">
+                    <div className="px-6 space-y-2">
                         <Autocomplete
                             placeholder="Search by name..."
                             variant="bordered"
@@ -249,7 +249,7 @@ function AssignMemberContent({
                     {/* 2. Assigned List */}
                     <div className="space-y-3">
                         <div className="px-7 grid grid-cols-[1fr_180px]">
-                            <p className="text-xs font-bold text-text-subdued uppercase tracking-wider">
+                            <p className="text-xs font-bold tracking-wider uppercase text-text-subdued">
                                 Assigned List ({assignedMembers.length})
                             </p>
                             <p className="text-xs font-medium text-text-subdued">
@@ -257,12 +257,12 @@ function AssignMemberContent({
                             </p>
                         </div>
 
-                        <ScrollArea className="h-70 pl-6 pr-6">
+                        <ScrollArea className="pl-6 pr-6 h-70">
                             <ScrollBar orientation="vertical" />
                             <ScrollBar orientation="horizontal" />
                             <div className="flex flex-col gap-2">
                                 {assignedMembers.length === 0 ? (
-                                    <div className="py-8 text-center border-2 border-dashed border-divider rounded-2xl text-text-subdued text-sm">
+                                    <div className="py-8 text-sm text-center border-2 border-dashed border-divider rounded-2xl text-text-subdued">
                                         Use the search above to add members.
                                     </div>
                                 ) : (
@@ -285,8 +285,8 @@ function AssignMemberContent({
 
             {/* 3. Footer with Summary */}
             <HeroModalFooter className="flex-col items-stretch gap-4 border-t border-divider">
-                <div className="flex justify-between items-center bg-primary-50 p-4 rounded-2xl border border-primary-100">
-                    <div className="flex items-center gap-2 text-primary font-bold">
+                <div className="flex items-center justify-between p-4 border bg-primary-50 rounded-2xl border-primary-100">
+                    <div className="flex items-center gap-2 font-bold text-primary">
                         <Wallet size={20} />
                         <span>Total Staff Cost</span>
                     </div>
@@ -306,7 +306,7 @@ function AssignMemberContent({
                     </Button>
                     <Button
                         color="primary"
-                        className="font-bold px-10"
+                        className="px-10 font-bold"
                         onPress={handleAssignMember}
                         isDisabled={!assigningMember}
                     >
@@ -337,7 +337,7 @@ export function AssignMemberSkeleton() {
 
                     {/* 2. Assigned List Skeleton */}
                     <div className="space-y-3">
-                        <Skeleton className="w-32 h-3 rounded-lg ml-1" />
+                        <Skeleton className="w-32 h-3 ml-1 rounded-lg" />
 
                         <div className="flex flex-col gap-2">
                             {/* Mô phỏng 3 dòng item đã assign */}
@@ -346,8 +346,8 @@ export function AssignMemberSkeleton() {
                                     key={i}
                                     className="flex items-center gap-4 p-3 border border-default-100 rounded-2xl"
                                 >
-                                    <div className="flex items-center gap-3 flex-1">
-                                        <Skeleton className="flex rounded-full w-8 h-8" />
+                                    <div className="flex items-center flex-1 gap-3">
+                                        <Skeleton className="flex w-8 h-8 rounded-full" />
                                         <Skeleton className="w-24 h-4 rounded-lg" />
                                     </div>
                                     <div className="flex items-center gap-2">
@@ -364,12 +364,12 @@ export function AssignMemberSkeleton() {
             {/* Footer Skeleton */}
             <HeroModalFooter className="flex-col items-stretch gap-4 border-t border-divider">
                 {/* Total Cost Box Skeleton */}
-                <div className="flex justify-between items-center p-4 rounded-2xl border border-default-100">
+                <div className="flex items-center justify-between p-4 border rounded-2xl border-default-100">
                     <div className="flex items-center gap-2">
                         <Skeleton className="w-5 h-5 rounded-full" />
-                        <Skeleton className="w-28 h-5 rounded-lg" />
+                        <Skeleton className="h-5 rounded-lg w-28" />
                     </div>
-                    <Skeleton className="w-32 h-7 rounded-lg" />
+                    <Skeleton className="w-32 rounded-lg h-7" />
                 </div>
 
                 <div className="flex justify-end gap-2">
@@ -400,8 +400,8 @@ function AssigningMemberCard({
         onAssignedMembersChange(null)
     }
     return (
-        <div className="group flex items-center gap-4 p-3 bg-default-50 rounded-2xl border border-default-100 transition-all hover:border-primary-300">
-            <div className="flex items-center gap-3 flex-1">
+        <div className="flex items-center gap-4 p-3 transition-all border group bg-default-50 rounded-2xl border-default-100 hover:border-primary-300">
+            <div className="flex items-center flex-1 gap-3">
                 <Avatar
                     src={optimizeCloudinary(member.avatar)}
                     size="sm"
@@ -500,8 +500,8 @@ function AssignedMemberCard({
     }
 
     return (
-        <div className="group flex items-center gap-4 p-3 bg-default-50 rounded-2xl border border-default-100 transition-all hover:border-primary-300">
-            <div className="flex items-center gap-3 flex-1">
+        <div className="flex items-center gap-4 p-3 transition-all border group bg-default-50 rounded-2xl border-default-100 hover:border-primary-300">
+            <div className="flex items-center flex-1 gap-3">
                 <Avatar
                     src={optimizeCloudinary(member.avatar)}
                     size="sm"
@@ -613,8 +613,8 @@ export function UnassignConfirmPopover({
         <Popover placement="bottom-end" showArrow backdrop="opaque">
             <PopoverTrigger>{children}</PopoverTrigger>
             <PopoverContent className="p-4 w-70">
-                <div className="flex flex-col gap-3 w-full">
-                    <div className="flex items-center gap-2 text-danger font-bold">
+                <div className="flex flex-col w-full gap-3">
+                    <div className="flex items-center gap-2 font-bold text-danger">
                         <AlertTriangle size={18} />
                         <span className="text-small">Remove Member?</span>
                     </div>

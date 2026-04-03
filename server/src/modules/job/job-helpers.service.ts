@@ -46,6 +46,7 @@ export class JobHelpersService {
 							username: asm.user.username,
 							avatar: asm.user.avatar,
 							department: asm.user.department,
+							code: asm.user.code
 						}
 						: undefined,
 				})),

@@ -190,7 +190,7 @@ function ManageJobsPage() {
         [searchParams.dueIn]
     )
 
-    const { data, isFetching } = useSuspenseQuery(
+    const { data, isFetching,refetch } = useSuspenseQuery(
         jobsListOptions({
             ...params,
             sort: [params.sort || DEFAULT_SORT],
@@ -247,6 +247,7 @@ function ManageJobsPage() {
             <JobManagementTableToolbar
                 searchParams={searchParams}
                 isLoadingData={isFetching}
+                onRefetch={refetch}
             />
 
             <JobManagementTable
@@ -258,6 +259,7 @@ function ManageJobsPage() {
                 onSelectionChange={setSelectedKeys}
                 onBulkAction={onBulkAction}
                 searchParams={searchParams}
+                onRefetch={refetch}
             />
 
             {hasSelection && (

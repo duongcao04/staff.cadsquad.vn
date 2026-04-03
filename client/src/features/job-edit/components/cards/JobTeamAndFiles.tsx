@@ -1,15 +1,50 @@
 import AssignMemberModal from '@/features/project-center/components/modals/AssignMemberModal'
-import { optimizeCloudinary } from '@/lib'
-import { TJob } from '@/shared/types'
-import { Avatar, Button, useDisclosure, Tooltip } from '@heroui/react'
+import { optimizeCloudinary, unassignMemberToJobOptions } from '@/lib'
+import { TJob, TUser } from '@/shared/types'
+import { Xmark } from '@gravity-ui/icons'
+import { addToast, Avatar, Button, Tooltip, useDisclosure } from '@heroui/react'
+import { useMutation } from '@tanstack/react-query'
 import { Download, FileText, Paperclip, Plus, Trash2 } from 'lucide-react'
+import { useState } from 'react'
+import { HeroTooltip } from '../../../../shared/components'
+import { ConfirmRemoveAssigneeModal } from '../../../job-manage'
 
 type JobTeamAndFilesProps = {
     job: TJob
-    onRemoveMember: (member: any) => void
+    onRefresh: ()=>void
 }
 
-export function JobTeamAndFiles({ job, onRemoveMember }: JobTeamAndFilesProps) {
+export function JobTeamAndFiles({ job,onRefresh }: JobTeamAndFilesProps) {
+    const [selectedMember, setSelectedMember] = useState<TUser | null>(null)
+    const removeMemberAction = useMutation(unassignMemberToJobOptions)
+
+    console.log(selectedMember);
+    
+
+    const confirmRemoveAssigneeState = useDisclosure()
+
+    const handleRemoveMember = () => {
+        if (job?.id && selectedMember) {
+            removeMemberAction.mutateAsync(
+                {
+                    jobId: job.id,
+                    memberId: selectedMember.id,
+                },
+                {
+                    onSuccess() {
+                        confirmRemoveAssigneeState.onClose()
+                        onRefresh()
+                        setSelectedMember(null)
+                        addToast({
+                            title: 'Successfully',
+                            description: `Unassign @${selectedMember.displayName} from this job successfully`,
+                            color: 'success',
+                        })
+                    },
+                }
+            )
+        }
+    }
     const {
         isOpen: isAssignOpen,
         onOpen: onOpenAssignModal,
@@ -18,6 +53,16 @@ export function JobTeamAndFiles({ job, onRemoveMember }: JobTeamAndFilesProps) {
 
     return (
         <div className="space-y-10 animate-in fade-in">
+            {confirmRemoveAssigneeState.isOpen && selectedMember && (
+                <ConfirmRemoveAssigneeModal
+                    isOpen={confirmRemoveAssigneeState.isOpen}
+                    onOpenChange={confirmRemoveAssigneeState.onOpenChange}
+                    onConfirm={handleRemoveMember}
+                    isLoading={removeMemberAction.isPending}
+                    assignee={selectedMember}
+                />
+            )}
+
             {isAssignOpen && (
                 <AssignMemberModal
                     isOpen={isAssignOpen}
@@ -36,7 +81,7 @@ export function JobTeamAndFiles({ job, onRemoveMember }: JobTeamAndFilesProps) {
                         <Tooltip
                             placement="right"
                             content={
-                                <div className="px-1 py-1 max-w-[250px] text-tiny text-default-600">
+                                <div className="px-1 py-1 max-w-62.5 text-tiny text-default-600">
                                     Members assigned here can view job details,
                                     submit deliverables, and communicate in the
                                     activity feed.
@@ -54,11 +99,11 @@ export function JobTeamAndFiles({ job, onRemoveMember }: JobTeamAndFilesProps) {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     {job?.assignments?.map((ass) => (
                         <div
                             key={ass.id}
-                            className="flex items-center justify-between p-3 border border-border-default rounded-xl hover:border-primary transition-colors cursor-pointer group bg-background"
+                            className="flex items-center justify-between p-3 transition-colors border cursor-pointer border-border-default rounded-xl hover:border-primary group bg-background"
                         >
                             <div className="flex items-center gap-3">
                                 <Avatar
@@ -66,10 +111,10 @@ export function JobTeamAndFiles({ job, onRemoveMember }: JobTeamAndFilesProps) {
                                         width: 120,
                                         height: 120,
                                     })}
-                                    className="border border-border-default shadow-sm"
+                                    className="border shadow-sm border-border-default"
                                 />
                                 <div>
-                                    <p className="font-bold text-sm text-text-default leading-tight">
+                                    <p className="text-sm font-bold leading-tight text-text-default">
                                         {ass.user.displayName}
                                     </p>
                                     <p className="text-xs text-text-subdued">
@@ -77,31 +122,34 @@ export function JobTeamAndFiles({ job, onRemoveMember }: JobTeamAndFilesProps) {
                                     </p>
                                 </div>
                             </div>
-                            <Tooltip content={`Remove @${ass.user.username}`}>
+                            <HeroTooltip content={`Unassign member from job`}>
                                 <Button
-                                    isIconOnly
                                     size="sm"
                                     variant="light"
                                     color="danger"
-                                    className="opacity-0 group-hover:opacity-100 transition-opacity"
-                                    onPress={() => onRemoveMember(ass.user)}
+                                    className="transition-opacity opacity-0 group-hover:opacity-100"
+                                    onPress={()=>{
+                                        setSelectedMember(ass.user)
+                                        confirmRemoveAssigneeState.onOpen()
+                                    }}
+                                    startContent={<Xmark fontSize={16} />}
                                 >
-                                    <Trash2 size={16} />
+                                    Remove
                                 </Button>
-                            </Tooltip>
+                            </HeroTooltip>
                         </div>
                     ))}
 
                     <button
                         type="button"
                         onClick={onOpenAssignModal}
-                        className="border border-dashed border-default-300 rounded-xl flex items-center justify-center gap-2 h-[66px] text-text-subdued hover:text-primary hover:border-primary hover:bg-primary-50 dark:hover:bg-primary-500/10 transition-all group"
+                        className="border border-dashed border-default-300 rounded-xl flex items-center justify-center gap-2 h-16.5 text-text-subdued hover:text-primary hover:border-primary hover:bg-primary-50 dark:hover:bg-primary-500/10 transition-all group cursor-pointer"
                     >
                         <Plus
                             size={18}
-                            className="group-hover:scale-110 transition-transform"
+                            className="transition-transform group-hover:scale-110"
                         />
-                        <span className="font-medium text-sm">
+                        <span className="text-sm font-medium">
                             Add Team Member
                         </span>
                     </button>
@@ -111,7 +159,7 @@ export function JobTeamAndFiles({ job, onRemoveMember }: JobTeamAndFilesProps) {
             {/* --- FILES SECTION --- */}
             <section className="space-y-6">
                 <div className="flex flex-col gap-1 pb-4 border-b border-border-default">
-                    <div className="flex justify-between items-center">
+                    <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <h1 className="text-lg font-bold text-text-default">
                                 Project Files
@@ -119,7 +167,7 @@ export function JobTeamAndFiles({ job, onRemoveMember }: JobTeamAndFilesProps) {
                             <Tooltip
                                 placement="right"
                                 content={
-                                    <div className="px-1 py-1 max-w-[250px] text-tiny text-default-600">
+                                    <div className="px-1 py-1 max-w-62.5 text-tiny text-default-600">
                                         Centralized repository for requirements,
                                         design assets, and relevant
                                         documentation.
@@ -152,14 +200,14 @@ export function JobTeamAndFiles({ job, onRemoveMember }: JobTeamAndFilesProps) {
                         job.files.map((file: any) => (
                             <div
                                 key={file.id}
-                                className="flex items-center justify-between p-3 bg-default-50 border border-border-default rounded-xl hover:bg-default-100 transition-colors group"
+                                className="flex items-center justify-between p-3 transition-colors border bg-default-50 border-border-default rounded-xl hover:bg-default-100 group"
                             >
                                 <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-white dark:bg-default-200 rounded-lg border border-border-default text-danger-500 shadow-sm">
+                                    <div className="p-2 bg-white border rounded-lg shadow-sm dark:bg-default-200 border-border-default text-danger-500">
                                         <FileText size={20} />
                                     </div>
                                     <div>
-                                        <p className="text-sm font-bold text-text-default hover:text-primary cursor-pointer transition-colors line-clamp-1">
+                                        <p className="text-sm font-bold transition-colors cursor-pointer text-text-default hover:text-primary line-clamp-1">
                                             {file.name}
                                         </p>
                                         <p className="text-[10px] text-text-subdued uppercase tracking-tighter font-semibold">
@@ -186,7 +234,7 @@ export function JobTeamAndFiles({ job, onRemoveMember }: JobTeamAndFilesProps) {
                                         size="sm"
                                         variant="light"
                                         color="danger"
-                                        className="opacity-0 group-hover:opacity-100 transition-opacity"
+                                        className="transition-opacity opacity-0 group-hover:opacity-100"
                                     >
                                         <Trash2 size={16} />
                                     </Button>
@@ -194,10 +242,10 @@ export function JobTeamAndFiles({ job, onRemoveMember }: JobTeamAndFilesProps) {
                             </div>
                         ))
                     ) : (
-                        <div className="flex flex-col items-center justify-center py-12 px-4 border-2 border-dashed border-default-200 rounded-2xl bg-default-50/50">
+                        <div className="flex flex-col items-center justify-center px-4 py-12 border-2 border-dashed border-default-200 rounded-2xl bg-default-50/50">
                             <Paperclip
                                 size={32}
-                                className="text-default-300 mb-2"
+                                className="mb-2 text-default-300"
                             />
                             <p className="text-sm font-medium text-default-400">
                                 No attachments found
