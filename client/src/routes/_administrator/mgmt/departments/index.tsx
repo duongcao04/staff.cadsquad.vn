@@ -2,24 +2,27 @@ import {
     ConfirmDeleteDeptModal,
     ModifyDepartmentModal,
 } from '@/features/department-manage'
-import { deleteDepartmentOptions, INTERNAL_URLS } from '@/lib'
+import { deleteDepartmentOptions, INTERNAL_URLS, RouteUtil } from '@/lib'
 import { departmentsListOptions } from '@/lib/queries'
 import { AdminPageHeading, AppLoading } from '@/shared/components'
 import AdminContentContainer from '@/shared/components/admin/AdminContentContainer'
 import { TDepartment } from '@/shared/types'
 import {
     addToast,
-    Badge,
     Button,
     Card,
     CardBody,
+    CardHeader,
+    Divider,
     Input,
+    Tab,
     Table,
     TableBody,
     TableCell,
     TableColumn,
     TableHeader,
     TableRow,
+    Tabs,
     useDisclosure,
 } from '@heroui/react'
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query'
@@ -27,9 +30,9 @@ import { createFileRoute, useRouter } from '@tanstack/react-router'
 import {
     Edit,
     Eye,
+    GridIcon,
     Hash,
-    LayoutGrid,
-    LayoutList,
+    ListIcon,
     Palette,
     PlusIcon,
     Search,
@@ -37,9 +40,20 @@ import {
     Users,
 } from 'lucide-react'
 import { useMemo, useState } from 'react'
+import { z } from 'zod'
 
+enum ViewOptions {
+    TABLE = 'table',
+    GRID = 'grid',
+}
+export const departmentManageSchema = z.object({
+    tab: z.nativeEnum(ViewOptions).default(ViewOptions.TABLE),
+})
+export type TDepartmentManageSchema = z.infer<typeof departmentManageSchema>
 export const Route = createFileRoute('/_administrator/mgmt/departments/')({
-    head: () => ({ meta: [{ title: "Department Management" }] }),
+    validateSearch: (search) => departmentManageSchema.parse(search),
+    loaderDeps: ({ search }) => ({ search }),
+    head: () => ({ meta: [{ title: 'Department Management' }] }),
     loader: ({ context }) => {
         return context.queryClient.ensureQueryData(departmentsListOptions())
     },
@@ -78,18 +92,9 @@ export const Route = createFileRoute('/_administrator/mgmt/departments/')({
                 />
 
                 <AdminPageHeading
-                    title={
-                        <Badge
-                            content={departments.length}
-                            color="danger"
-                            variant="solid"
-                            classNames={{
-                                badge: '-right-1 top-1 text-[10px]! font-bold!',
-                            }}
-                        >
-                            Departments
-                        </Badge>
-                    }
+                    title="Departments"
+                    showBadge
+                    badgeCount={departments.length}
                     actions={
                         <Button
                             startContent={<PlusIcon size={16} />}
@@ -100,7 +105,7 @@ export const Route = createFileRoute('/_administrator/mgmt/departments/')({
                         </Button>
                     }
                 />
-                <DepartmentsSettingsPage
+                <DepartmentsManagePage
                     depts={departments}
                     onEdit={handleEdit}
                     onRefresh={refetch}
@@ -110,7 +115,7 @@ export const Route = createFileRoute('/_administrator/mgmt/departments/')({
     },
 })
 
-function DepartmentsSettingsPage({
+function DepartmentsManagePage({
     depts: departments,
     onEdit,
     onRefresh,
@@ -119,6 +124,7 @@ function DepartmentsSettingsPage({
     onEdit: (dept: TDepartment) => void
     onRefresh: () => void
 }) {
+    const searchParams = Route.useSearch()
     const router = useRouter()
 
     const [selectedDept, setSelectedDept] = useState<TDepartment | null>(null)
@@ -129,7 +135,6 @@ function DepartmentsSettingsPage({
 
     // States
     const [searchQuery, setSearchQuery] = useState('')
-    const [viewMode, setViewMode] = useState<'table' | 'grid'>('table')
 
     // --- Statistics Logic ---
     const stats = useMemo(() => {
@@ -226,52 +231,51 @@ function DepartmentsSettingsPage({
                     ))}
                 </div>
 
-                {/* --- Toolbar --- */}
-                <div className="flex flex-col items-center justify-between gap-4 mb-5 md:flex-row">
-                    <div className="flex items-center w-full gap-3 md:w-auto">
-                        <Input
-                            placeholder="Search..."
-                            startContent={
-                                <Search
-                                    size={16}
-                                    className="text-text-subdued"
+                <Card shadow="none" className="border border-border-default">
+                    {/* Toolbar */}
+                    <CardHeader>
+                        <div className="flex items-center justify-between w-full">
+                            <Input
+                                placeholder="Search by name..."
+                                startContent={
+                                    <Search
+                                        size={16}
+                                        className="text-text-subdued"
+                                    />
+                                }
+                                className="max-w-lg"
+                                size="sm"
+                                variant="bordered"
+                                value={searchQuery}
+                                onValueChange={setSearchQuery}
+                                classNames={{
+                                    inputWrapper: 'border-1',
+                                }}
+                            />
+                            <Tabs
+                                aria-label="View options"
+                                selectedKey={searchParams.tab}
+                                onSelectionChange={(key) =>
+                                    RouteUtil.updateParams({ tab: key })
+                                }
+                            >
+                                <Tab
+                                    key="table"
+                                    title={<ListIcon size={16} />}
                                 />
-                            }
-                            className="max-w-xs"
-                            size="sm"
-                            variant="bordered"
-                            value={searchQuery}
-                            onValueChange={setSearchQuery}
-                            isClearable
-                        />
-                    </div>
+                                <Tab
+                                    key="grid"
+                                    title={<GridIcon size={16} />}
+                                />
+                            </Tabs>
+                        </div>
+                    </CardHeader>
 
-                    <div className="flex items-center gap-1 p-1 border rounded-lg bg-background-hovered border-border-default">
-                        <Button
-                            isIconOnly
-                            size="sm"
-                            variant={viewMode === 'table' ? 'solid' : 'light'}
-                            color={viewMode === 'table' ? 'primary' : 'default'}
-                            onPress={() => setViewMode('table')}
-                        >
-                            <LayoutList size={16} />
-                        </Button>
-                        <Button
-                            isIconOnly
-                            size="sm"
-                            variant={viewMode === 'grid' ? 'solid' : 'light'}
-                            color={viewMode === 'grid' ? 'primary' : 'default'}
-                            onPress={() => setViewMode('grid')}
-                        >
-                            <LayoutGrid size={16} />
-                        </Button>
-                    </div>
-                </div>
+                    <Divider className="bg-border-default" />
 
-                {/* --- Main Content --- */}
-                {viewMode === 'table' ? (
-                    <Card className="border shadow-sm border-border-default">
-                        <CardBody className="p-0">
+                    <CardBody>
+                        {/* --- Main Content --- */}
+                        {searchParams.tab === 'table' ? (
                             <Table
                                 aria-label="Departments List"
                                 shadow="none"
@@ -377,76 +381,80 @@ function DepartmentsSettingsPage({
                                     ))}
                                 </TableBody>
                             </Table>
-                        </CardBody>
-                    </Card>
-                ) : (
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        {filteredDepts.map((dept) => (
-                            <Card
-                                key={dept.id}
-                                className="transition-all border border-border-default hover:border-primary/40 bg-background/40 backdrop-blur-sm group"
-                            >
-                                <CardBody className="flex flex-col gap-4 p-4">
-                                    <div className="flex items-start justify-between">
-                                        <div
-                                            className="flex items-center justify-center w-12 h-12 text-lg font-black text-white shadow-lg rounded-2xl"
-                                            style={{
-                                                backgroundColor:
-                                                    dept.hexColor || '',
-                                                boxShadow: `0 10px 20px -10px ${dept.hexColor}`,
-                                            }}
-                                        >
-                                            {dept.code
-                                                .substring(0, 2)
-                                                .toUpperCase()}
-                                        </div>
-                                        <div className="flex gap-1 transition-opacity opacity-0 group-hover:opacity-100">
-                                            <Button
-                                                isIconOnly
-                                                size="sm"
-                                                variant="flat"
-                                                onPress={() => onEdit(dept)}
-                                            >
-                                                <Edit size={14} />
-                                            </Button>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <h4 className="text-base font-bold leading-tight">
-                                            {dept.displayName}
-                                        </h4>
-                                        <p className="text-[10px] font-mono text-text-subdued uppercase tracking-widest mt-1">
-                                            {dept.code}
-                                        </p>
-                                    </div>
-                                    <p className="h-8 text-xs text-text-subdued line-clamp-2">
-                                        {dept.notes ||
-                                            'No description provided.'}
-                                    </p>
-                                    <div className="flex items-center justify-between pt-3 mt-auto border-t border-border-default">
-                                        <div className="flex items-center gap-1.5 text-text-subdued text-xs font-bold">
-                                            <Users size={14} />{' '}
-                                            {dept._count.users} members
-                                        </div>
-                                        <Button
-                                            size="sm"
-                                            variant="light"
-                                            onPress={() =>
-                                                router.navigate({
-                                                    href: INTERNAL_URLS.management.departmentsDetail(
-                                                        dept.code
-                                                    ),
-                                                })
-                                            }
-                                        >
-                                            Details
-                                        </Button>
-                                    </div>
-                                </CardBody>
-                            </Card>
-                        ))}
-                    </div>
-                )}
+                        ) : (
+                            <div className="p-2 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                                {filteredDepts.map((dept) => (
+                                    <Card
+                                        shadow="none"
+                                        key={dept.id}
+                                        className="transition-all border border-border-default hover:border-primary/40 group"
+                                    >
+                                        <CardBody className="flex flex-col gap-4 p-4">
+                                            <div className="flex items-start justify-between">
+                                                <div
+                                                    className="flex items-center justify-center w-12 h-12 text-lg font-black text-white shadow-lg rounded-2xl"
+                                                    style={{
+                                                        backgroundColor:
+                                                            dept.hexColor || '',
+                                                        boxShadow: `0 10px 20px -10px ${dept.hexColor}`,
+                                                    }}
+                                                >
+                                                    {dept.code
+                                                        .substring(0, 2)
+                                                        .toUpperCase()}
+                                                </div>
+                                                <div className="flex gap-1 transition-opacity opacity-0 group-hover:opacity-100">
+                                                    <Button
+                                                        isIconOnly
+                                                        size="sm"
+                                                        variant="flat"
+                                                        onPress={() =>
+                                                            onEdit(dept)
+                                                        }
+                                                    >
+                                                        <Edit size={14} />
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <h4 className="text-base font-bold leading-tight">
+                                                    {dept.displayName}
+                                                </h4>
+                                                <p className="px-2 py-1 font-mono text-xs font-semibold rounded bg-background-hovered text-text-subdued w-fit">
+                                                    {dept.code}
+                                                </p>
+                                            </div>
+                                            {dept.notes && (
+                                                <p className="h-8 text-xs text-text-subdued line-clamp-2">
+                                                    {dept.notes}
+                                                </p>
+                                            )}
+                                            <div className="flex items-center justify-between pt-3 mt-auto border-t border-border-default">
+                                                <div className="flex items-center gap-1.5 text-text-subdued text-xs font-bold">
+                                                    <Users size={14} />{' '}
+                                                    {dept._count.users} members
+                                                </div>
+                                                <Button
+                                                    size="sm"
+                                                    variant="light"
+                                                    onPress={() =>
+                                                        router.navigate({
+                                                            href: INTERNAL_URLS.management.departmentsDetail(
+                                                                dept.code
+                                                            ),
+                                                        })
+                                                    }
+                                                >
+                                                    Details
+                                                </Button>
+                                            </div>
+                                        </CardBody>
+                                    </Card>
+                                ))}
+                            </div>
+                        )}
+                    </CardBody>
+                </Card>
             </AdminContentContainer>
         </>
     )

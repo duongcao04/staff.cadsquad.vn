@@ -42,11 +42,10 @@ export function AdminPageHeading({
             <Badge
                 content={badgeCount > 99 ? '99+' : badgeCount}
                 size="lg"
-                color="danger"
-                variant="solid"
+                color="primary"
+                variant="flat"
                 classNames={{
                     badge: 'right-0 top-0 text-[10px]! font-bold!',
-                    base: 'pr-2',
                 }}
             >
                 <div

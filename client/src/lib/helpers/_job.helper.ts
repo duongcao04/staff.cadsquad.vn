@@ -28,6 +28,10 @@ export class JobHelper {
 		return !lodash.isNil(data.deletedAt)
 	}
 
+	static isPayout(data: TJob) {
+		return data.paymentStatus === 'PAID'
+	}
+
 	static getSharepointDisplay(data: TJob) {
 		const result = {
 			folderName: 'Unlinked',
