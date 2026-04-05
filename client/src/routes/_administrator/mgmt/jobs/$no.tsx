@@ -126,14 +126,14 @@ function JobEditPage() {
 
     const { data: profile } = useProfile()
 
-    const adminDeliverJobAction = useMutation(adminReviewJobDeliverOptions)
+    const adminDeliverAction = useMutation(adminReviewJobDeliverOptions)
     const cancelJobAction = useMutation(cancelJobOptions)
 
     const [{ data: job, refetch }] = useSuspenseQueries({
         queries: [jobByNoOptions(no)],
     })
 
-    const { data } = useQuery({
+    const { data, refetch: refreshDeliveres } = useQuery({
         ...jobDeliveriesListOptions(job?.id as string),
         enabled: !!job?.id && tab === 'deliveries',
     })
@@ -175,18 +175,46 @@ function JobEditPage() {
     }
 
     const handleApprove = (deliveryId: string) => {
-        adminDeliverJobAction.mutateAsync({
-            deliveryId: deliveryId,
-            action: 'approve',
-        })
+        adminDeliverAction.mutateAsync(
+            {
+                deliveryId: deliveryId,
+                action: 'approve',
+            },
+            {
+                onSuccess() {
+                    refreshDeliveres()
+                    refetch()
+                    addToast({
+                        title: 'Delivery Approved',
+                        description:
+                            'The delivery has been successfully approved.',
+                        color: 'success',
+                    })
+                },
+            }
+        )
     }
 
     const handleReject = (deliveryId: string, feedback: string) => {
-        adminDeliverJobAction.mutateAsync({
-            deliveryId: deliveryId,
-            action: 'reject',
-            feedback,
-        })
+        adminDeliverAction.mutateAsync(
+            {
+                deliveryId: deliveryId,
+                action: 'reject',
+                feedback,
+            },
+            {
+                onSuccess() {
+                    refreshDeliveres()
+                    refetch()
+                    addToast({
+                        title: 'Delivery Rejected',
+                        description:
+                            'The delivery has been rejected and feedback was sent.',
+                        color: 'success',
+                    })
+                },
+            }
+        )
     }
 
     const handleCancelJob = () => {
@@ -413,9 +441,7 @@ function JobEditPage() {
                                         jobDeliveries={jobDeliveries}
                                         onApprove={handleApprove}
                                         onReject={handleReject}
-                                        isLoading={
-                                            adminDeliverJobAction.isPending
-                                        }
+                                        isLoading={adminDeliverAction.isPending}
                                     />
                                 )}
 
@@ -426,7 +452,10 @@ function JobEditPage() {
 
                                 {/* --- TAB: TEAM & FILES --- */}
                                 {activeTab === 'team' && (
-                                    <JobTeamAndFiles job={job} onRefresh={refetch}/>
+                                    <JobTeamAndFiles
+                                        job={job}
+                                        onRefresh={refetch}
+                                    />
                                 )}
 
                                 {/* --- TAB: ACTIVITY --- */}

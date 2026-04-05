@@ -1,4 +1,4 @@
-import { Prisma, SecurityLogStatus, User } from '@/generated/prisma'
+import { SecurityLogStatus, User } from '@/generated/prisma'
 import { UserResponseDto } from '@/modules/user/dto/user-response.dto'
 import { UserSecurityService } from '@/modules/user/user-security.service'
 import { MailService } from '@/providers/mail/mail.service'
@@ -6,20 +6,17 @@ import { PrismaService } from '@/providers/prisma/prisma.service'
 import { REDIS_CLIENT } from '@/providers/redis/redis.provider'
 import {
 	BadRequestException,
-	ConflictException,
 	forwardRef,
 	Inject,
 	Injectable,
-	InternalServerErrorException,
 	NotFoundException,
-	UnauthorizedException,
+	UnauthorizedException
 } from '@nestjs/common'
 import { plainToInstance } from 'class-transformer'
 import Redis from 'ioredis'
 import { randomBytes } from 'node:crypto'
 import { BcryptService } from './bcrypt.service'
 import { LoginUserDto } from './dto/login-user.dto'
-import { RegisterUserDto } from './dto/register-user.dto'
 import { UpdateProfileDto } from './dto/update-profile.dto'
 import { SessionService } from './session.service'
 import { TokenService } from './token.service'

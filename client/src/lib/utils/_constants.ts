@@ -21,10 +21,7 @@ export const INTERNAL_URLS = {
     workbench: [''].join('/'),
     projectCenter: ['', 'project-center'].join('/'),
     userSchedule: ['', 'schedule'].join('/'),
-    jobDetail: (jobNo: string, locale?: string) => {
-        if (!locale) return '/' + 'jobs' + '/' + jobNo
-        return '/' + locale + '/' + 'jobs' + '/' + jobNo
-    },
+    jobDetail: (jobNo: string) => ['', 'jobs', jobNo].join('/'),
     profile: ['', 'profile'].join('/'),
     notifications: ['', 'notifications'].join('/'),
     overview: ['', 'overview'].join('/'),

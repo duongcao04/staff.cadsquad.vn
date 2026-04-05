@@ -1,6 +1,7 @@
 import { jobApi } from '@/lib/api'
 import {
     JobActivityLogSchema,
+    JobPayoutSchema,
     JobSchema,
     TAssignMember,
     TBulkChangeStatusInput,
@@ -142,6 +143,15 @@ export const jobsPendingPayoutsOptions = () =>
             return {
                 pendingPayouts: parseList(JobSchema, res.result),
             }
+        },
+    })
+
+export const jobPayoutDetailsOptions = (jobNo: string) =>
+    queryOptions({
+        queryKey: ['jobs', 'payouts', jobNo],
+        queryFn: () => jobApi.payoutDetails(jobNo),
+        select: (res) => {
+            return parseData(JobPayoutSchema, res.result)
         },
     })
 
@@ -308,7 +318,7 @@ export const updateJobOptions = mutationOptions({
     onError: (err) => onErrorToast(err, 'Update job failed'),
 })
 
-export const updateJobRevenueMutationOptions = mutationOptions({
+export const updateJobRevenueOptions = mutationOptions({
     mutationFn: ({ jobId, data }: { jobId: string; data: TUpdateJobRevenue }) =>
         jobApi.updateRevenue(jobId, data),
     onError: (err) => onErrorToast(err, 'Update revenue failed'),

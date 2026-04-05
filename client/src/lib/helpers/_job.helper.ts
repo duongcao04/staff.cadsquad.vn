@@ -1,6 +1,6 @@
 import { EJobPaymentStatus } from '@/shared/enums'
-import { TJob } from '../../shared/types'
 import lodash from 'lodash'
+import { TJob } from '../../shared/types'
 
 
 interface IJobPaymentStatusDisplayResult {
@@ -24,12 +24,24 @@ export class JobHelper {
 		return !lodash.isNil(data.completedAt) || data.status.systemType === 'COMPLETED'
 	}
 
+	static isDelivered(data: TJob) {
+		return data.status.systemType === 'DELIVERED'
+	}
+
 	static isCancelled(data: TJob) {
 		return !lodash.isNil(data.deletedAt)
 	}
 
 	static isPayout(data: TJob) {
 		return data.paymentStatus === 'PAID'
+	}
+
+	static canPayout(data: TJob, withPermission?: boolean) {
+		return withPermission && (!this.isCompleted(data) && !this.isFinished(data) && !this.isPayout(data))
+	}
+
+	static canDelivery(data: TJob, withPermission?: boolean) {
+		return withPermission && (!this.isCompleted(data) && !this.isFinished(data) && !this.isDelivered(data))
 	}
 
 	static getSharepointDisplay(data: TJob) {

@@ -83,10 +83,10 @@ export default function PendingPayoutsPage() {
     }, 0)
 
     return (
-        <div className="p-6 max-w-7xl mx-auto space-y-6">
+        <div className="p-6 mx-auto space-y-6 max-w-7xl">
             {/* KPI Widgets */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Card className="border border-warning-200 bg-warning-50 shadow-none">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                <Card className="border shadow-none border-warning-200 bg-warning-50">
                     <CardBody className="flex flex-row items-center gap-4 p-5">
                         <div className="p-3 bg-warning-100 rounded-xl text-warning-600">
                             <Wallet size={24} />
@@ -98,13 +98,13 @@ export default function PendingPayoutsPage() {
                             <p className="text-2xl font-bold text-warning-900">
                                 {currencyFormatter(totalPayouts, 'Vietnamese')}
                             </p>
-                            <p className="text-xs text-warning-600 mt-1">
+                            <p className="mt-1 text-xs text-warning-600">
                                 Across {pendingPayouts.length} jobs
                             </p>
                         </div>
                     </CardBody>
                 </Card>
-                <Card className="border border-success-200 bg-success-50 shadow-none">
+                <Card className="border shadow-none border-success-200 bg-success-50">
                     <CardBody className="flex flex-row items-center gap-4 p-5">
                         <div className="p-3 bg-success-100 rounded-xl text-success-600">
                             <DollarSign size={24} />
@@ -114,15 +114,15 @@ export default function PendingPayoutsPage() {
                                 Pending Receivables
                             </p>
                             <p className="text-2xl font-bold text-success-900">
-                                $1,700.00
+                                $0
                             </p>
-                            <p className="text-xs text-success-600 mt-1">
+                            <p className="mt-1 text-xs text-success-600">
                                 Waiting for client payment
                             </p>
                         </div>
                     </CardBody>
                 </Card>
-                <Card className="border border-default-200 shadow-none">
+                <Card className="border shadow-none border-default-200">
                     <CardBody className="flex flex-row items-center gap-4 p-5">
                         <div className="p-3 bg-default-100 rounded-xl text-default-600">
                             <ArrowUpRight size={24} />
@@ -134,7 +134,7 @@ export default function PendingPayoutsPage() {
                             <p className="text-2xl font-bold text-default-900">
                                 {currencyFormatter(totalMargin, 'Vietnamese')}
                             </p>
-                            <p className="text-xs text-default-500 mt-1">
+                            <p className="mt-1 text-xs text-default-500">
                                 From pending jobs
                             </p>
                         </div>
@@ -170,18 +170,19 @@ export default function PendingPayoutsPage() {
                     className="border border-divider rounded-xl"
                 >
                     <TableHeader>
-                        <TableColumn>JOB NO</TableColumn>
-                        <TableColumn>PROJECT & CLIENT</TableColumn>
-                        <TableColumn>COMPLETED AT</TableColumn>
+                        <TableColumn>No</TableColumn>
+                        <TableColumn>Display name</TableColumn>
+                        <TableColumn>Client</TableColumn>
+                        <TableColumn>Completed At</TableColumn>
                         <TableColumn>
-                            <p className="text-right">INCOME</p>
+                            <p className="text-right">Income</p>
                         </TableColumn>
                         <TableColumn>
-                            <p className="text-right">TOTAL STAFF COST</p>
+                            <p className="text-right">Total Staff Cost</p>
                         </TableColumn>
                         <TableColumn>
                             <div className="flex items-center gap-2">
-                                MARGIN
+                                Profit
                                 <HeroTooltip
                                     placement="right"
                                     content={
@@ -199,8 +200,8 @@ export default function PendingPayoutsPage() {
                                 </HeroTooltip>
                             </div>
                         </TableColumn>
-                        <TableColumn>STATUS</TableColumn>
-                        <TableColumn align="end">ACTIONS</TableColumn>
+                        <TableColumn>Status</TableColumn>
+                        <TableColumn align="end">Actions</TableColumn>
                     </TableHeader>
                     <TableBody>
                         {pendingPayouts.map((job) => {
@@ -226,14 +227,16 @@ export default function PendingPayoutsPage() {
                             return (
                                 <TableRow key={job.id}>
                                     <TableCell>
-                                        <span className="font-bold text-sm">
+                                        <span className="text-sm font-bold">
                                             #{job.no}
                                         </span>
                                     </TableCell>
                                     <TableCell>
-                                        <p className="font-semibold text-sm">
+                                        <p className="text-sm font-semibold">
                                             {job.displayName}
                                         </p>
+                                    </TableCell>
+                                    <TableCell>
                                         <p className="text-xs text-default-500">
                                             {job.client?.name}
                                         </p>
@@ -246,12 +249,12 @@ export default function PendingPayoutsPage() {
                                         )}
                                     </TableCell>
                                     <TableCell>
-                                        <p className="text-sm font-semibold text-success-600 text-right">
+                                        <p className="text-sm font-semibold text-right text-success-600">
                                             {formatCurrency(job.incomeCost)}
                                         </p>
                                     </TableCell>
                                     <TableCell>
-                                        <p className="text-sm font-bold text-danger-600 text-right">
+                                        <p className="text-sm font-bold text-right text-danger-600">
                                             {currencyFormatter(
                                                 job.totalStaffCost,
                                                 'Vietnamese'
@@ -278,19 +281,19 @@ export default function PendingPayoutsPage() {
                                         />
                                     </TableCell>
                                     <TableCell>
-                                        <Link
-                                            to={INTERNAL_URLS.financial.payoutsDetail(
+                                        <Button
+                                            size="sm"
+                                            color="warning"
+                                            variant="light"
+                                            as={Link}
+                                            href={INTERNAL_URLS.financial.payoutsDetail(
                                                 job.no
                                             )}
                                         >
-                                            <Button
-                                                size="sm"
-                                                color="primary"
-                                                variant="flat"
-                                            >
+                                            <span className="font-semibold text-warning-600">
                                                 Process Payout
-                                            </Button>
-                                        </Link>
+                                            </span>
+                                        </Button>
                                     </TableCell>
                                 </TableRow>
                             )

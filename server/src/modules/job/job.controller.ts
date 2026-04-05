@@ -53,6 +53,7 @@ import { UpdateFinancialDetailsCommand } from './commands/impl/update-financial-
 import { RemoveMemberCommand } from './commands/impl/remove-member.command'
 import { UpdateAssignmentCostCommand } from './commands/impl/update-assignment-cost.command'
 import { RestoreJobCommand } from './commands/impl/restore-job.command'
+import { GetPayoutDetailsHandler, GetPayoutDetailsQuery } from './queries/impl/get-payout-details'
 
 @ApiTags('Jobs')
 @Controller('jobs')
@@ -177,6 +178,16 @@ export class JobController {
 		return this.queryBus.execute(new FindJobsPendingPayoutsQuery())
 	}
 
+	@Get('payouts/:no')
+	@UseGuards(PermissionsGuard)
+	@RequirePermissions(APP_PERMISSIONS.JOB.PAID)
+	async getPayoutDetails(
+		@Req() request: Request,
+		@Param('no') jobNo: string) {
+		const user: TokenPayload = request['user']
+		return this.queryBus.execute(new GetPayoutDetailsQuery(user.sub, user.permissions, jobNo))
+	}
+
 	// -------------------------------------------------------------------------
 	// CREATE / ACTION OPERATIONS
 	// -------------------------------------------------------------------------
@@ -270,7 +281,7 @@ export class JobController {
 
 	@Patch(':id/assign')
 	@UseGuards(PermissionsGuard)
-	@RequirePermissions(APP_PERMISSIONS.JOB.ASSIGN_MEMBER)
+	@RequirePermissions(APP_PERMISSIONS.JOB.ASSIGNMENT)
 	@ResponseMessage('Member assigned successfully')
 	@AuditLog('Assign new member for job', SystemModule.JOB)
 	async assignMember(
@@ -286,7 +297,7 @@ export class JobController {
 
 	@Patch(':id/assignments/:memberId')
 	@UseGuards(PermissionsGuard)
-	@RequirePermissions(APP_PERMISSIONS.JOB.ASSIGN_MEMBER)
+	@RequirePermissions(APP_PERMISSIONS.JOB.ASSIGNMENT)
 	@ResponseMessage('Assignment cost updated')
 	async updateAssignment(
 		@Req() request: Request,
@@ -306,7 +317,7 @@ export class JobController {
 
 	@Delete(':id/assignments/:memberId')
 	@UseGuards(PermissionsGuard)
-	@RequirePermissions(APP_PERMISSIONS.JOB.ASSIGN_MEMBER)
+	@RequirePermissions(APP_PERMISSIONS.JOB.ASSIGNMENT)
 	@AuditLog('Remove assignment member from job', SystemModule.JOB)
 	async unassignMember(
 		@Req() request: Request,

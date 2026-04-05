@@ -225,3 +225,42 @@ export const DeliverJobInputSchema = z.object({
 
 // Type inference (Tương đương InferType của Yup)
 export type TDeliverJobInput = z.infer<typeof DeliverJobInputSchema>;
+
+
+export const JobPayoutSchema = z.lazy(() => z.object({
+    id: z.string().catch('N/A'),
+    no: z.string().catch('UNKNOWN'),
+    displayName: z.string().catch('Untitled Job'),
+    assignments: z.array(z.any()).default([]),
+    attachmentUrls: z.array(z.string()).default([]),
+    createdBy: z.lazy(() => UserSchema).optional(),
+    client: z.lazy(() => ClientSchema.partial()).nullable().catch(null),
+    jobDeliveries: z.array(z.any()).default([]),
+    sharepointFolderId: z.string().nullish(),
+    sharepointFolder: z.lazy(() => SharepointItemSchema).nullish(),
+    // Tự động ép kiểu số cho các trường tiền tệ
+    incomeCost: z.coerce.number().catch(0),
+    staffCost: z.coerce.number().catch(0),
+    folderTemplate: z.lazy(() => JobFolderTemplateSchema).nullable().catch(null),
+    folderTemplateId: z.string().nullable().catch(null),
+    totalStaffCost: z.coerce.number().catch(0),
+    paymentStatus: z
+        .nativeEnum(EJobPaymentStatus)
+        .optional()
+        .default(EJobPaymentStatus.FAILED),
+    paymentChannel: z.lazy(() => PaymentChannelSchema).nullable().catch(null),
+    status: z.lazy(() => JobStatusSchema).optional(),
+    description: z.string().nullable().catch(null),
+    type: z.lazy(() => JobTypeSchema).optional(),
+    // Dates
+    payoutDate: z.coerce.date().nullable().catch(null),
+    finishedAt: z.coerce.date().nullable().catch(null),
+    createdAt: z.coerce.date().catch(new Date()),
+    dueAt: z.coerce.date().catch(new Date()),
+    completedAt: z.coerce.date().nullable().catch(null),
+    deletedAt: z.coerce.date().nullable().catch(null),
+    startedAt: z.coerce.date().catch(new Date()),
+    updatedAt: z.coerce.date().catch(new Date()),
+}));
+
+export type TJobPayoutDetail = z.infer<typeof JobPayoutSchema>

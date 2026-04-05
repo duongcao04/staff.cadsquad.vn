@@ -1,10 +1,6 @@
 import { dateFormatter, JobHelper } from '@/lib'
 import { optimizeCloudinary } from '@/lib/cloudinary'
-import {
-    currencyFormatter,
-    IMAGES,
-    INTERNAL_URLS,
-} from '@/lib/utils'
+import { currencyFormatter, IMAGES, INTERNAL_URLS } from '@/lib/utils'
 import { HeroButton, HeroCopyButton, HeroTooltip } from '@/shared/components'
 import JobFinishChip from '@/shared/components/chips/JobFinishChip'
 import JobStatusDropdown from '@/shared/components/dropdowns/JobStatusDropdown'
@@ -267,7 +263,10 @@ export const renderWorkbenchCell = (
                             textValue={INTERNAL_URLS.jobDetail(data.no)}
                         />
                     </HeroTooltip>
-                    <WorkbenchTableQuickActions data={data} />
+                    <WorkbenchTableQuickActions
+                        data={data}
+                        onRefresh={actions.onRefresh}
+                    />
                 </div>
             )
 

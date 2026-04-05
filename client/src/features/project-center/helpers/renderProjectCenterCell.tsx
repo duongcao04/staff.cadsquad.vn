@@ -1,10 +1,6 @@
 import { JobHelper, optimizeCloudinary } from '@/lib'
 import { dateFormatter } from '@/lib/dayjs'
-import {
-    currencyFormatter,
-    IMAGES,
-    INTERNAL_URLS,
-} from '@/lib/utils'
+import { currencyFormatter, IMAGES, INTERNAL_URLS } from '@/lib/utils'
 import { HeroButton, HeroCopyButton, HeroTooltip } from '@/shared/components'
 import JobFinishChip from '@/shared/components/chips/JobFinishChip'
 import JobStatusDropdown from '@/shared/components/dropdowns/JobStatusDropdown'
@@ -276,7 +272,10 @@ export const renderProjectCenterCell = (
                             textValue={INTERNAL_URLS.jobDetail(data.no)}
                         />
                     </HeroTooltip>
-                    <ProjectCenterTableQuickActions data={data} />
+                    <ProjectCenterTableQuickActions
+                        data={data}
+                        onRefresh={actions.onRefresh}
+                    />
                 </div>
             )
 

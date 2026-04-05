@@ -13,6 +13,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express'
 import { CopyItemDto } from './dtos/copy-item.dto'
 import { SharePointService } from './sharepoint.service'
+import { ResponseMessage } from '../../common/decorators/responseMessage.decorator'
 
 @Controller('sharepoint')
 // @UseGuards(JwtGuard) // Bảo vệ toàn bộ API bằng Token Local
@@ -23,7 +24,8 @@ export class SharePointController {
 	// GET /api/v1/sharepoint/items?folderId=xxx
 	// Nếu không truyền folderId -> Lấy Root
 	@Get('items')
-	async listItems(@Query('folderId') folderId?: string) {
+	@ResponseMessage("Get folder items successfully")
+	async listItems(@Query('folder') folderId?: string) {
 		return this.service.getItems(folderId)
 	}
 

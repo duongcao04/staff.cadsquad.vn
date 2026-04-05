@@ -1,4 +1,9 @@
-import { dateFormatter, INTERNAL_URLS, JobHelper, optimizeCloudinary } from '@/lib'
+import {
+    dateFormatter,
+    INTERNAL_URLS,
+    JobHelper,
+    optimizeCloudinary,
+} from '@/lib'
 import {
     jobActivityLogsOptions,
     jobByNoOptions,
@@ -7,16 +12,11 @@ import {
     updateJobGeneralInfoOptions,
     useProfile,
 } from '@/lib/queries'
-import {
-    APP_PERMISSIONS,
-    currencyFormatter,
-    EXTERNAL_URLS,
-} from '@/lib/utils'
+import { APP_PERMISSIONS, currencyFormatter, EXTERNAL_URLS } from '@/lib/utils'
 import JobAttachmentsField from '@/shared/components/form-fields/JobAttachmentsField'
 import CountdownTimer from '@/shared/components/ui/countdown-timer'
 import HtmlReactParser from '@/shared/components/ui/html-react-parser'
 import { JobStatusSystemTypeEnum } from '@/shared/enums'
-import { PermissionGuard } from '@/shared/guards/permission'
 import { Folder } from '@gravity-ui/icons'
 import {
     Avatar,
@@ -68,6 +68,7 @@ import {
 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import JobFinishChip from '../../../../shared/components/chips/JobFinishChip'
+import { usePermission } from '../../../../shared/hooks'
 import { JobTimelineCard } from '../../../job-edit'
 import { DeliverJobModal } from '../../../job-manage/components/modals/DeliverJobModal'
 import UpdateCostModal from '../../../project-center/components/modals/UpdateCostModal'
@@ -88,6 +89,8 @@ export default function JobDetailDrawer({
 }: JobDetailDrawerProps) {
     const router = useRouter()
     const { profile } = useProfile()
+
+    const { hasPermission } = usePermission()
 
     // --- Mutations ---
     const updateJobGeneralInfoMutation = useMutation(
@@ -301,7 +304,7 @@ export default function JobDetailDrawer({
                                                 })
                                             }
                                         >
-                                            Open Full View
+                                            Expand
                                         </Button>
 
                                         <Dropdown
@@ -603,62 +606,61 @@ export default function JobDetailDrawer({
                                                                                     : 'finish'
                                                                             }
                                                                         />
-                                                                    ) : (
-                                                                        <PermissionGuard
-                                                                            permission={
-                                                                                APP_PERMISSIONS
-                                                                                    .JOB
-                                                                                    .DELIVER
+                                                                    ) : JobHelper.canDelivery(
+                                                                          job,
+                                                                          hasPermission(
+                                                                              APP_PERMISSIONS
+                                                                                  .JOB
+                                                                                  .DELIVER
+                                                                          )
+                                                                      ) ? (
+                                                                        <Tooltip
+                                                                            placement="top-end"
+                                                                            content={
+                                                                                <div className="px-1 py-1.5 max-w-50">
+                                                                                    <p className="mb-1 font-bold text-small">
+                                                                                        Ready
+                                                                                        to
+                                                                                        Deliver?
+                                                                                    </p>
+                                                                                    <p className="text-tiny text-default-500">
+                                                                                        Ensure
+                                                                                        all
+                                                                                        required
+                                                                                        assets
+                                                                                        and
+                                                                                        documents
+                                                                                        are
+                                                                                        uploaded
+                                                                                        to
+                                                                                        SharePoint
+                                                                                        before
+                                                                                        submitting.
+                                                                                    </p>
+                                                                                </div>
                                                                             }
                                                                         >
-                                                                            <Tooltip
-                                                                                placement="top-end"
-                                                                                content={
-                                                                                    <div className="px-1 py-1.5 max-w-50">
-                                                                                        <p className="mb-1 font-bold text-small">
-                                                                                            Ready
-                                                                                            to
-                                                                                            Deliver?
-                                                                                        </p>
-                                                                                        <p className="text-tiny text-default-500">
-                                                                                            Ensure
-                                                                                            all
-                                                                                            required
-                                                                                            assets
-                                                                                            and
-                                                                                            documents
-                                                                                            are
-                                                                                            uploaded
-                                                                                            to
-                                                                                            SharePoint
-                                                                                            before
-                                                                                            submitting.
-                                                                                        </p>
-                                                                                    </div>
+                                                                            <Button
+                                                                                size="sm"
+                                                                                color="primary"
+                                                                                variant="solid"
+                                                                                startContent={
+                                                                                    <CheckCircle2
+                                                                                        size={
+                                                                                            16
+                                                                                        }
+                                                                                    />
                                                                                 }
+                                                                                onPress={
+                                                                                    deliverJobDisclosure.onOpen
+                                                                                }
+                                                                                className="font-bold shadow-sm"
                                                                             >
-                                                                                <Button
-                                                                                    size="sm"
-                                                                                    color="primary"
-                                                                                    variant="solid"
-                                                                                    startContent={
-                                                                                        <CheckCircle2
-                                                                                            size={
-                                                                                                16
-                                                                                            }
-                                                                                        />
-                                                                                    }
-                                                                                    onPress={
-                                                                                        deliverJobDisclosure.onOpen
-                                                                                    }
-                                                                                    className="font-bold shadow-sm"
-                                                                                >
-                                                                                    Deliver
-                                                                                    Job
-                                                                                </Button>
-                                                                            </Tooltip>
-                                                                        </PermissionGuard>
-                                                                    )}
+                                                                                Deliver
+                                                                                Job
+                                                                            </Button>
+                                                                        </Tooltip>
+                                                                    ) : null}
                                                                 </div>
                                                             </div>
                                                         </CardBody>

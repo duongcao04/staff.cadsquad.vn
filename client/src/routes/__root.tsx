@@ -16,7 +16,6 @@ import {
 import { AblyProvider } from 'ably/react'
 import { ConfigProvider } from 'antd'
 import { ThemeProvider } from 'antd-style'
-import { AlertCircle, CheckCircle2, Info, Loader2, XCircle } from 'lucide-react'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 
 // 1. Định nghĩa Interface cho Context
@@ -47,7 +46,7 @@ export const Route = createRootRouteWithContext<AppRouterContext>()({
                                             toastOffset={20}
                                             toastProps={{
                                                 radius: 'sm',
-                                                timeout: 2200,
+                                                timeout: 4000,
                                                 variant: 'bordered',
                                                 classNames: {
                                                     closeButton:

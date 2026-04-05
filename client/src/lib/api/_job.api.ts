@@ -293,6 +293,12 @@ export const jobApi = {
             .then((res) => res.data)
     },
 
+    payoutDetails: async (jobNo: string) => {
+        return axiosClient
+            .get<ApiResponse<any[]>>(`/v1/jobs/payouts/${jobNo}`)
+            .then((res) => res.data)
+    },
+
     jobsDueInMonth: async (month: number, year: number) => {
         return axiosClient
             .get<

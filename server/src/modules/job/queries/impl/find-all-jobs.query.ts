@@ -72,11 +72,13 @@ export class FindAllJobsHandler implements IQueryHandler<FindAllJobsQuery> {
 		])
 
 		const mappedData = await this.jobHelpers.mapRoleBasedData(rawData, userId)
+		const result = plainToInstance(JobResponseDto, mappedData, {
+			excludeExtraneousValues: true,
+			groups: userPermissions,
+		}) as unknown as Job[]
+
 		return {
-			data: plainToInstance(JobResponseDto, mappedData, {
-				excludeExtraneousValues: true,
-				groups: userPermissions,
-			}) as unknown as Job[],
+			data: result,
 			paginate: {
 				limit: Number(limit),
 				page: Number(page),

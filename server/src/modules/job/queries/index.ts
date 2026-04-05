@@ -4,6 +4,7 @@ import { FindJobsByDeadlineHandler } from './impl/find-jobs-by-deadline.query'
 import { FindJobsPendingPayoutsHandler } from './impl/find-jobs-pending-payouts'
 import { FindJobsToDeliverHandler } from './impl/find-jobs-to-deliver'
 import { GetMonthlyDeadlinesHandler } from './impl/get-monthly-deadlines.query'
+import { GetPayoutDetailsHandler } from './impl/get-payout-details'
 
 export const QueryHandlers = [
     FindAllJobsHandler,
@@ -12,4 +13,5 @@ export const QueryHandlers = [
     FindJobsPendingPayoutsHandler,
     FindJobsToDeliverHandler,
     GetMonthlyDeadlinesHandler,
+    GetPayoutDetailsHandler
 ]
