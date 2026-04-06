@@ -12,9 +12,7 @@ import {
     TUpdateJobRevenue,
 } from '@/lib/validationSchemas'
 import { ProjectCenterTabEnum } from '@/shared/enums'
-import type {
-    IPaginate,
-} from '@/shared/interfaces'
+import type { IPaginate } from '@/shared/interfaces'
 import type {
     JobColumnKey,
     JobUpdateResponse,
@@ -27,12 +25,14 @@ export const jobApi = {
     // =========================================================================
     // CORE CRUD (Create, Read, Update, Delete)
     // =========================================================================
-    create: async (data: Omit<
-        TCreateJobFormValues,
-        | 'useExistingSharepointFolder'
-        | 'sharepointTemplateId'
-        | 'isCreateSharepointFolder'
-    >) => {
+    create: async (
+        data: Omit<
+            TCreateJobFormValues,
+            | 'useExistingSharepointFolder'
+            | 'sharepointTemplateId'
+            | 'isCreateSharepointFolder'
+        >
+    ) => {
         return axiosClient
             .post<ApiResponse<any>>('/v1/jobs', {
                 ...data,
@@ -62,6 +62,12 @@ export const jobApi = {
     findOne: async (id: string) => {
         return axiosClient
             .get<ApiResponse<any>>(`/v1/jobs/${id}`)
+            .then((res) => res.data)
+    },
+
+    jobFinancialDetail: async (id: string) => {
+        return axiosClient
+            .get<ApiResponse<any>>(`/v1/jobs/${id}/financials`)
             .then((res) => res.data)
     },
 
@@ -316,9 +322,7 @@ export const jobApi = {
     getJobActivityLog: async (id: string) => {
         // You might want to type the response here if you have TJobActivityLog
         return axiosClient
-            .get<
-                ApiResponse<any[]>
-            >(`/v1/jobs/${id}/activity-logs`)
+            .get<ApiResponse<any[]>>(`/v1/jobs/${id}/activity-logs`)
             .then((res) => res.data)
     },
 

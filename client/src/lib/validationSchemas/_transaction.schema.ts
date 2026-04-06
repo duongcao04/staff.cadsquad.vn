@@ -35,7 +35,7 @@ export type TTransaction = z.infer<typeof TransactionSchema>
 
 // Schema cho form tạo giao dịch (Income/Payout)
 export const CreateTransactionInputSchema = z.object({
-    amount: z.coerce.number().min(1000, 'Amount must be at least 1,000 VND'),
+    amount: z.coerce.number().min(1, 'Amount must be at least 1'),
     type: z.nativeEnum(ETransactionType),
     jobId: z.string().min(1, 'Job is required'),
     clientId: z.string().optional(), // Bắt buộc nếu là INCOME (validate ở level logic hoặc refine)

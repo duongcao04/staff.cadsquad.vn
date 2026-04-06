@@ -37,8 +37,11 @@ export const jobQueryKeys = {
             `filters=${queryString.stringify(filters)}`,
         ] as const
     },
-    search: (keyword?: string) => [...jobQueryKeys.resource, 'search', keyword] as const,
+    search: (keyword?: string) =>
+        [...jobQueryKeys.resource, 'search', keyword] as const,
     detail: (id: string) => [...jobQueryKeys.resource, 'identify', id] as const,
+    jobFinancialDetails: (id: string) =>
+        [...jobQueryKeys.resource, 'financial-details', id] as const,
     detailByNo: (no: string) =>
         [...jobQueryKeys.resource, 'detail', no] as const,
 }
@@ -185,6 +188,16 @@ export const jobByNoOptions = (jobNo: string) =>
         },
     })
 
+export const jobFinancialDetailOptions = (id: string) =>
+    queryOptions({
+        queryKey: jobQueryKeys.jobFinancialDetails(id),
+        queryFn: () => jobApi.jobFinancialDetail(id),
+        enabled: !!id,
+        select: (res) => {
+            return res?.result
+        },
+    })
+
 // 8. Job Assignees
 export const jobAssigneesOptions = (jobId: string) =>
     queryOptions({
@@ -274,7 +287,6 @@ export const cancelJobOptions = mutationOptions({
     mutationFn: (jobId: string) => jobApi.remove(jobId),
     onError: (err) => onErrorToast(err, 'Cancel job failed'),
 })
-
 
 export const restoreJobOptions = mutationOptions({
     mutationFn: (jobId: string) => jobApi.restore(jobId),

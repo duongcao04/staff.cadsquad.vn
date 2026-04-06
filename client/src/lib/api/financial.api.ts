@@ -46,6 +46,12 @@ export const financialApi = {
             .then((res) => res.data)
     },
 
+    jobPayoutDetail: async (jobNo: string) => {
+        return axiosClient
+            .get<ApiResponse<any>>(`/v1/financials/payouts/job/${jobNo}`)
+            .then((res) => res.data)
+    },
+
     // Lấy thống kê tổng quan
     getStats: async () => {
         return axiosClient

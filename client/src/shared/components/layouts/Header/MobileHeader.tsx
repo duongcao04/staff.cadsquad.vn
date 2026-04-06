@@ -30,12 +30,10 @@ import { TUser } from '../../../types'
 import CadsquadLogo from '../../CadsquadLogo'
 import { FluentColorApprovalsApp20 } from '../../icons/FluentColorApprovalsApp20'
 import { FluentColorBriefcase20 } from '../../icons/FluentColorBriefcase20'
-import { FluentColorErrorCircle20 } from '../../icons/FluentColorErrorCircle20'
 import { IconPeopleColorful } from '../../icons/IconPeopleColorful'
 import { CreateJobModal } from '../../../../features/job-manage/components/modals/CreateJobModal'
 import CreateUserModal from '../../../../features/staff-directory/components/modals/CreateUserModal'
 import { DeliverJobModal } from '../../../../features/job-manage/components/modals/DeliverJobModal'
-import { IssueReportModal } from '../../modals/IssueReportModal'
 import { HeroButton } from '../../ui/hero-button'
 import {
     HeroDrawer,
@@ -63,9 +61,6 @@ export default function MobileHeader() {
     const deliverJobModalDisclosure = useDisclosure({
         id: 'DeliverJobModal',
     })
-    const issueReportModalDisclosure = useDisclosure({
-        id: 'IssueReportModal',
-    })
 
     return (
         <>
@@ -83,7 +78,6 @@ export default function MobileHeader() {
                     onCreateUserModalOpen={createUserModalDisclosure.onOpen}
                     onCreateJobModalOpen={createJobModalDisclosure.onOpen}
                     onDeliverJobModalOpen={deliverJobModalDisclosure.onOpen}
-                    onIssueReportModalOpen={issueReportModalDisclosure.onOpen}
                 />
             )}
             {isAdmin && createJobModalDisclosure.isOpen && (
@@ -102,12 +96,6 @@ export default function MobileHeader() {
                 <DeliverJobModal
                     isOpen={deliverJobModalDisclosure.isOpen}
                     onClose={deliverJobModalDisclosure.onClose}
-                />
-            )}
-            {issueReportModalDisclosure.isOpen && (
-                <IssueReportModal
-                    isOpen={issueReportModalDisclosure.isOpen}
-                    onClose={issueReportModalDisclosure.onClose}
                 />
             )}
             <div className="w-full h-11 container fixed top-0 border-b border-border-muted z-50 grid grid-cols-[44px_1fr_32px] items-center bg-background">
@@ -147,7 +135,6 @@ interface UserDrawerProps {
     onCreateJobModalOpen: () => void
     onDeliverJobModalOpen: () => void
     onCreateUserModalOpen: () => void
-    onIssueReportModalOpen: () => void
 }
 export const UserDrawer = ({
     isOpen,
@@ -155,7 +142,6 @@ export const UserDrawer = ({
     user,
     onCreateJobModalOpen,
     onDeliverJobModalOpen,
-    onIssueReportModalOpen,
     onCreateUserModalOpen,
 }: UserDrawerProps) => {
     const router = useRouter()
@@ -215,12 +201,6 @@ export const UserDrawer = ({
             icon: <FluentColorApprovalsApp20 />,
             color: 'bg-purple-50 text-purple-600',
             action: onDeliverJobModalOpen,
-        },
-        {
-            label: 'Issue Report',
-            icon: <FluentColorErrorCircle20 />,
-            color: 'bg-green-50 text-green-600',
-            action: onIssueReportModalOpen,
         },
         {
             label: 'New Member',

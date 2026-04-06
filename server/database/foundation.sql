@@ -448,8 +448,8 @@ VALUES
 	(
 		'a18d5a9b-d067-493f-a7d7-2fb6b31d54de',
 		'CSD.ACB',
-		'BANK',
 		'https://cdn.tgdd.vn/2020/04/GameApp/unnamed-200x200-18.png',
+		'BANK',
 		'#00509B',
 		NOW (),
 		NOW ()

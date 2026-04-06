@@ -53,7 +53,11 @@ import { UpdateFinancialDetailsCommand } from './commands/impl/update-financial-
 import { RemoveMemberCommand } from './commands/impl/remove-member.command'
 import { UpdateAssignmentCostCommand } from './commands/impl/update-assignment-cost.command'
 import { RestoreJobCommand } from './commands/impl/restore-job.command'
-import { GetPayoutDetailsHandler, GetPayoutDetailsQuery } from './queries/impl/get-payout-details'
+import {
+	GetPayoutDetailsHandler,
+	GetPayoutDetailsQuery,
+} from './queries/impl/get-payout-details'
+import { GetJobFinancialDetailsQuery } from './queries/impl/get-job-financial-details.query'
 
 @ApiTags('Jobs')
 @Controller('jobs')
@@ -70,7 +74,7 @@ export class JobController {
 		private readonly sharepointService: SharePointService,
 		private readonly commandBus: CommandBus,
 		private readonly queryBus: QueryBus
-	) { }
+	) {}
 
 	// -------------------------------------------------------------------------
 	// READ OPERATIONS
@@ -119,6 +123,12 @@ export class JobController {
 			dto
 		)
 		return comment
+	}
+
+	@Get(':id/financials')
+	@ApiOperation({ summary: 'Get job financial details' })
+	async getJobFinancials(@Param('id') id: string) {
+		return this.queryBus.execute(new GetJobFinancialDetailsQuery(id))
 	}
 
 	@Get()
@@ -183,9 +193,12 @@ export class JobController {
 	@RequirePermissions(APP_PERMISSIONS.JOB.PAID)
 	async getPayoutDetails(
 		@Req() request: Request,
-		@Param('no') jobNo: string) {
+		@Param('no') jobNo: string
+	) {
 		const user: TokenPayload = request['user']
-		return this.queryBus.execute(new GetPayoutDetailsQuery(user.sub, user.permissions, jobNo))
+		return this.queryBus.execute(
+			new GetPayoutDetailsQuery(user.sub, user.permissions, jobNo)
+		)
 	}
 
 	// -------------------------------------------------------------------------
@@ -307,11 +320,7 @@ export class JobController {
 	) {
 		const user: TokenPayload = request['user']
 		return this.commandBus.execute(
-			new UpdateAssignmentCostCommand(
-				user.sub,
-				jobId,
-				memberId,
-				dto)
+			new UpdateAssignmentCostCommand(user.sub, jobId, memberId, dto)
 		)
 	}
 
@@ -375,24 +384,26 @@ export class JobController {
 	@Delete(':id')
 	@UseGuards(PermissionsGuard)
 	@RequirePermissions(APP_PERMISSIONS.JOB.DELETE)
-	@AuditLog("Cancelled job", SystemModule.JOB)
+	@AuditLog('Cancelled job', SystemModule.JOB)
 	async remove(@Req() request: Request, @Param('id') id: string) {
 		const user: TokenPayload = request['user']
 		request['auditTargetId'] = id
 		const jobDetails = await this.jobService.findOne(id)
-		request['auditTargetDisplay'] = `${jobDetails?.no}- ${jobDetails?.displayName}`
+		request['auditTargetDisplay'] =
+			`${jobDetails?.no}- ${jobDetails?.displayName}`
 		return this.commandBus.execute(new SoftDeleteJobCommand(id, user.sub))
 	}
 
 	@Patch(':id/restore')
 	@UseGuards(PermissionsGuard)
 	@RequirePermissions(APP_PERMISSIONS.JOB.DELETE)
-	@AuditLog("Restored job", SystemModule.JOB)
+	@AuditLog('Restored job', SystemModule.JOB)
 	async restore(@Req() request: Request, @Param('id') id: string) {
 		const user: TokenPayload = request['user']
 		request['auditTargetId'] = id
 		const jobDetails = await this.jobService.findOne(id)
-		request['auditTargetDisplay'] = `${jobDetails?.no}- ${jobDetails?.displayName}`
+		request['auditTargetDisplay'] =
+			`${jobDetails?.no}- ${jobDetails?.displayName}`
 		return this.commandBus.execute(new RestoreJobCommand(id, user.sub))
 	}
 }

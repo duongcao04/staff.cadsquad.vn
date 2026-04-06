@@ -26,6 +26,8 @@ export const financialQueryKeys = {
         [...financialQueryKeys.all, 'receivable', params] as const,
     payable: (params: any) =>
         [...financialQueryKeys.all, 'payable', params] as const,
+    jobPayoutDetail: (jobNo: string) =>
+        [...financialQueryKeys.all, 'payable', 'identify', jobNo] as const,
 }
 
 // 1. Hook lấy thống kê tổng quan (Dashboard)
@@ -76,7 +78,15 @@ export const payableJobsOptions = (params: any = {}) =>
     queryOptions({
         queryKey: financialQueryKeys.payable(params),
         queryFn: () => financialApi.getPayable(params),
-        select: (res) => res.result, // Map theo cấu trúc summary từ backend
+        select: (res) => res.result,
+    })
+
+// 3. Hook lấy danh sách nợ Staff (Payable Assignments)
+export const jobPayoutDetailOptions = (jobNo: string) =>
+    queryOptions({
+        queryKey: financialQueryKeys.jobPayoutDetail(jobNo),
+        queryFn: () => financialApi.jobPayoutDetail(jobNo),
+        select: (res) => res.result,
     })
 
 // --- Mutations ---

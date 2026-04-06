@@ -20,6 +20,7 @@ import { GetFinancialStatsQuery } from './queries/impl/get-financial-stats.query
 import { GetPayableJobsQuery } from './queries/impl/get-payable-jobs.query'
 import { GetReceivableJobsQuery } from './queries/impl/get-receivable-jobs.query'
 import { GetTransactionDetailQuery } from './queries/impl/get-transaction-detail.query'
+import { GetJobPayoutDetailQuery } from './queries/impl/get-job-payout-detail.query'
 
 @ApiTags('Financials')
 @ApiBearerAuth()
@@ -100,5 +101,10 @@ export class FinancialController {
 			new BulkPayoutCommand(user.sub, dto.jobIds, dto.paymentChannelId)
 		)
 	}
-}
 
+	@Get('payouts/job/:no')
+	@ApiOperation({ summary: 'Chi tiết đối soát Payout của một Job cụ thể' })
+	async getJobPayoutDetail(@Param('no') no: string) {
+		return this.queryBus.execute(new GetJobPayoutDetailQuery(no))
+	}
+}

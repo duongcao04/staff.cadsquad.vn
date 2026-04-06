@@ -1,348 +1,346 @@
-import { optimizeCloudinary, useProfile } from '@/lib'
+import {
+    jobFinancialDetailOptions,
+    optimizeCloudinary,
+    useProfile,
+} from '@/lib'
 import {
     HeroDropdown,
     HeroDropdownItem,
     HeroDropdownMenu,
     HeroDropdownTrigger,
     HeroTooltip,
-} from '@/shared/components' // Assuming HeroTooltip is exported from here
+} from '@/shared/components'
 import { HeroCard, HeroCardBody } from '@/shared/components/ui/hero-card'
 import { TJob } from '@/shared/types'
 import {
-    addToast,
     Avatar,
     Button,
+    CardHeader,
     Chip,
     Divider,
-    Input,
-    Switch,
+    Progress,
+    Skeleton,
 } from '@heroui/react'
-import { useFormik } from 'formik'
+import { useQuery } from '@tanstack/react-query'
 import {
-    DollarSign,
+    AlertCircle,
+    Banknote,
+    CheckCircle2,
     Download,
     FileText,
+    HandCoins,
     MoreVertical,
-    PencilIcon,
-    Save,
-    SquarePenIcon,
+    Timer,
+    TrendingUp,
     Users,
+    Wallet,
 } from 'lucide-react'
-import { z } from 'zod'
-import { toFormikValidationSchema } from 'zod-formik-adapter'
 
-// --- Validation Schema (Zod) ---
-const jobFinancialsSchema = z.object({
-    incomeCost: z.coerce
-        .number({
-            message: 'Must be a number',
-        })
-        .min(0, 'Cannot be negative'),
-    assignments: z.array(
-        z.object({
-            id: z.string(),
-            userId: z.string(),
-            staffCost: z.coerce
-                .number({
-                    message: 'Must be a number',
-                })
-                .min(0, 'Cannot be negative'),
-        })
-    ),
-    isPaid: z.boolean(),
-})
-
-export type TJobFinancialsForm = z.infer<typeof jobFinancialsSchema>
-
-// --- Component ---
-export function JobFinancialForm({ job }: { job: TJob }) {
-    const { data: profile } = useProfile()
-    // const updateFinancialsMutation = useUpdateJobFinancialsMutation()
-
-    const formik = useFormik<TJobFinancialsForm>({
-        initialValues: {
-            incomeCost: job?.incomeCost || 0,
-            assignments:
-                job?.assignments?.map((ass) => ({
-                    id: ass.id,
-                    userId: ass.user.id,
-                    staffCost: ass.staffCost || 0,
-                })) || [],
-            isPaid: job?.isPaid || false,
-        },
-        enableReinitialize: true,
-        validationSchema: toFormikValidationSchema(jobFinancialsSchema),
-        onSubmit: async (values) => {
-            try {
-                const totalStaffCost = values.assignments.reduce(
-                    (sum, a) => sum + Number(a.staffCost),
-                    0
-                )
-
-                // await updateFinancialsMutation.mutateAsync({
-                //     jobId: job.id,
-                //     data: {
-                //         incomeCost: values.incomeCost,
-                //         totalStaffCost: totalStaffCost,
-                //         assignments: values.assignments,
-                //         isPaid: values.isPaid,
-                //     },
-                // })
-                addToast({
-                    title: 'Financials updated successfully',
-                    color: 'success',
-                })
-            } catch (error) {
-                addToast({
-                    title: 'Failed to update financials',
-                    color: 'danger',
-                })
-            }
-        },
-    })
-
-    const totalCalculatedStaffCost = formik.values.assignments.reduce(
-        (sum, current) => sum + (Number(current.staffCost) || 0),
-        0
+// --- Component 1: Badge trạng thái thu tiền từ Khách hàng ---
+export function JobClientPaymentBadge({
+    isPaid,
+    remaining,
+}: {
+    isPaid: boolean
+    remaining: number
+}) {
+    return (
+        <div className="flex flex-col items-end gap-1">
+            <Chip
+                variant="flat"
+                color={
+                    isPaid ? 'success' : remaining > 0 ? 'warning' : 'default'
+                }
+                startContent={
+                    isPaid ? (
+                        <CheckCircle2 size={14} />
+                    ) : (
+                        <HandCoins size={14} />
+                    )
+                }
+                className="font-bold border-none px-3"
+            >
+                {isPaid
+                    ? 'CLIENT: FULLY PAID'
+                    : remaining > 0
+                      ? 'CLIENT: PARTIAL'
+                      : 'CLIENT: UNPAID'}
+            </Chip>
+            <p className="text-[9px] text-default-400 font-medium">
+                {isPaid
+                    ? 'Collection completed'
+                    : `Remaining: $${remaining.toLocaleString()}`}
+            </p>
+        </div>
     )
+}
+
+// --- Component 2: Badge trạng thái trả lương Staff ---
+export function JobPayoutStatusBadge({ status }: { status: string }) {
+    const config = {
+        PAID: {
+            color: 'success' as const,
+            label: 'FULLY PAID TO STAFF',
+            icon: <CheckCircle2 size={14} />,
+            description: 'All team members have received their full quota.',
+        },
+        PENDING: {
+            color: 'warning' as const,
+            label: 'PAYMENT IN PROGRESS',
+            icon: <Timer size={14} />,
+            description: 'Some members are paid, some are still waiting.',
+        },
+        UNPAID: {
+            color: 'default' as const,
+            label: 'AWAITING PAYOUT',
+            icon: <AlertCircle size={14} />,
+            description: 'No payments have been recorded for this job yet.',
+        },
+        FAILED: {
+            color: 'danger' as const,
+            label: 'PAYMENT FAILED',
+            icon: <AlertCircle size={14} />,
+            description: 'There was an error in the last transaction.',
+        },
+    }
+
+    const current = config[status as keyof typeof config] || config.UNPAID
 
     return (
-        <form
-            onSubmit={formik.handleSubmit}
-            className="space-y-6 animate-in fade-in"
-        >
-            {/* --- FORM HEADER & TOOLTIP --- */}
-            <div className="flex items-center justify-between pb-4 border-b border-border-default">
+        <div className="flex flex-col items-end gap-1">
+            <Chip
+                variant="shadow"
+                color={current.color}
+                startContent={current.icon}
+                className="font-black text-white border-none px-3"
+            >
+                {current.label}
+            </Chip>
+            <p className="text-[10px] text-default-400 italic">
+                {current.description}
+            </p>
+        </div>
+    )
+}
+
+export function JobFinancialForm({ job }: { job: TJob | any }) {
+    const { data: profile } = useProfile()
+
+    const { data: financials, isLoading } = useQuery({
+        ...jobFinancialDetailOptions(job.id),
+        enabled: !!job.id,
+    })
+
+    const summary = financials?.summary
+    const isLoss = (summary?.potentialProfit || 0) < 0
+
+    if (isLoading) return <Skeleton className="h-60 rounded-xl" />
+
+    return (
+        <div className="space-y-6 animate-in fade-in duration-400">
+            {/* --- HEADER --- */}
+            <div className="flex items-center justify-between pb-4 border-b border-divider">
                 <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-2">
-                        <h1 className="text-lg font-bold text-text-default">
-                            Financial Management
+                        <h1 className="text-lg font-bold text-default-900">
+                            Financial Insights
                         </h1>
-                        <HeroTooltip
-                            placement="right"
-                            content={
-                                <div className="px-1 py-1 max-w-[250px] text-tiny text-default-600">
-                                    Financial data is restricted. Team members
-                                    can only see their own individual payout
-                                    amounts, not the total income or other
-                                    members' costs.
-                                </div>
-                            }
-                        >
-                            <div className="flex items-center justify-center w-4 h-4 rounded-full bg-default-200 hover:bg-default-300 text-[10px] font-bold text-default-600 cursor-help transition-colors">
+                        <HeroTooltip content="Overview of collection from client and payouts to staff.">
+                            <div className="flex items-center justify-center w-4 h-4 rounded-full bg-default-100 text-[10px] font-bold text-default-400 cursor-help">
                                 !
                             </div>
                         </HeroTooltip>
                     </div>
-                    <p className="text-sm text-text-subdued">
-                        Manage the project's revenue, allocate staff payouts,
-                        and track the client's payment status.
+                    <p className="text-sm text-default-500 font-medium">
+                        Job #{financials?.jobNo || job.no}
                     </p>
                 </div>
 
-                {/* --- Payment Status Row --- */}
-                <div>
-                    {/* --- Action Buttons --- */}
-                    <div className="flex justify-end items-center gap-2">
-                        <Button
-                            type="button"
-                            color="primary"
-                            startContent={<SquarePenIcon size={16} />}
-                            // isLoading={updateFinancialsMutation.isPending}
-                            // isDisabled={
-                            //     !formik.dirty || updateFinancialsMutation.isPending
-                            // }
-                        >
-                            Update
-                        </Button>
-                        <HeroDropdown placement="bottom-end">
-                            <HeroDropdownTrigger>
-                                <Button
-                                    type="button"
-                                    isIconOnly
-                                    color="default"
-                                    variant="flat"
-                                    aria-label="More financial actions"
-                                >
-                                    <MoreVertical
-                                        size={18}
-                                        className="text-default-600"
-                                    />
-                                </Button>
-                            </HeroDropdownTrigger>
-                            <HeroDropdownMenu
-                                aria-label="Financial Actions"
-                                variant="flat"
-                            >
-                                <HeroDropdownItem
-                                    key="invoice"
-                                    startContent={
-                                        <FileText
-                                            size={16}
-                                            className="text-primary"
-                                        />
-                                    }
-                                    description="Generate or view the PDF invoice"
-                                >
-                                    Create/View Invoice
-                                </HeroDropdownItem>
-                                <HeroDropdownItem
-                                    key="export"
-                                    startContent={
-                                        <Download
-                                            size={16}
-                                            className="text-default-500"
-                                        />
-                                    }
-                                    description="Download cost breakdown as CSV"
-                                >
-                                    Export Data
-                                </HeroDropdownItem>
-                            </HeroDropdownMenu>
-                        </HeroDropdown>
-                    </div>
-                </div>
-            </div>
-
-            <div className="flex items-center justify-between p-4 border border-border-default rounded-xl">
-                <div>
-                    <h4 className="font-bold text-text-default">
-                        Payment Status
-                    </h4>
-                    <p className="text-sm text-text-subdued">
-                        Has the client paid for this job?
-                    </p>
-                </div>
-                <div className="flex items-center gap-3">
-                    <span
-                        className={`text-sm font-bold ${
-                            formik.values.isPaid
-                                ? 'text-emerald-600'
-                                : 'text-text-subdued'
-                        }`}
-                    >
-                        {formik.values.isPaid ? 'PAID' : 'UNPAID'}
-                    </span>
-                    <Switch
-                        isSelected={formik.values.isPaid}
-                        onValueChange={(val) =>
-                            formik.setFieldValue('isPaid', val)
-                        }
-                        color="success"
+                <div className="flex items-center gap-4">
+                    {/* Badge 1: Thu tiền khách */}
+                    <JobClientPaymentBadge
+                        isPaid={summary?.isClientFullyPaid}
+                        remaining={summary?.remainingReceivable || 0}
                     />
+                    <HeroDropdown placement="bottom-end">
+                        <HeroDropdownTrigger>
+                            <Button isIconOnly variant="light" radius="full">
+                                <MoreVertical size={18} />
+                            </Button>
+                        </HeroDropdownTrigger>
+                        <HeroDropdownMenu aria-label="Financial Actions">
+                            <HeroDropdownItem
+                                key="ledger"
+                                startContent={
+                                    <FileText
+                                        size={16}
+                                        className="text-primary"
+                                    />
+                                }
+                            >
+                                View Ledger
+                            </HeroDropdownItem>
+                            <HeroDropdownItem
+                                key="export"
+                                startContent={<Download size={16} />}
+                            >
+                                Export CSV
+                            </HeroDropdownItem>
+                        </HeroDropdownMenu>
+                    </HeroDropdown>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start mt-2">
-                {/* --- Total Income Card --- */}
+            {/* --- KPI CARDS --- */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <HeroCard
-                    className="bg-emerald-50 dark:bg-emerald-50/10 border border-emerald-100 dark:border-emerald-100/50"
+                    className="bg-blue-50/50 border-blue-100"
                     shadow="none"
                 >
-                    <HeroCardBody className="p-5 flex flex-col gap-4">
-                        <div className="flex justify-between items-center">
-                            <div>
-                                <label className="text-xs font-bold text-emerald-700 uppercase">
-                                    Total Income
-                                </label>
-                                <p className="text-xs text-emerald-600/80 mt-0.5">
-                                    Amount billable to client
-                                </p>
-                            </div>
+                    <HeroCardBody className="p-4 flex flex-col gap-3">
+                        <div className="flex items-center gap-2 text-blue-600 font-bold text-xs uppercase tracking-wider">
+                            <Banknote size={16} /> Collected
                         </div>
-
-                        <div className="flex items-center justify-start gap-2">
-                            <div className="p-2 bg-emerald-100/50 dark:bg-emerald-500/20 rounded-lg">
-                                <DollarSign
-                                    size={18}
-                                    className="text-emerald-600"
-                                />
-                            </div>
-                            <p className="text-2xl font-black text-emerald-700 dark:text-emerald-400text-right">
-                                {job.incomeCost?.toLocaleString()}
-                            </p>
-                        </div>
+                        <p className="text-2xl font-black text-blue-700">
+                            ${summary?.totalCollected.toLocaleString()}
+                        </p>
                     </HeroCardBody>
                 </HeroCard>
 
-                <HeroCard className="bg-orange-50 dark:bg-orange-50/10 border border-orange-100 dark:border-orange-100/50 shadow-none">
-                    <HeroCardBody className="p-5 flex flex-col gap-4">
-                        <div className="flex justify-between items-center">
-                            <div>
-                                <label className="text-xs font-bold text-orange-700 uppercase">
-                                    Total staff cost
-                                </label>
-                                <p className="text-xs text-orange-600/80 mt-0.5">
-                                    Amount billable to client
-                                </p>
-                            </div>
+                <HeroCard
+                    className="bg-orange-50/50 border-orange-100"
+                    shadow="none"
+                >
+                    <HeroCardBody className="p-4 flex flex-col gap-3">
+                        <div className="flex items-center gap-2 text-orange-600 font-bold text-xs uppercase tracking-wider">
+                            <Wallet size={16} /> Staff Paid
                         </div>
+                        <p className="text-2xl font-black text-orange-700">
+                            ${summary?.totalStaffPaid.toLocaleString()}
+                        </p>
+                    </HeroCardBody>
+                </HeroCard>
 
-                        <div className="flex items-center justify-start gap-2">
-                            <div className="p-2 bg-orange-100/50 dark:bg-orange-500/20 rounded-lg">
-                                <DollarSign
-                                    size={18}
-                                    className="text-orange-600"
-                                />
-                            </div>
-                            <p className="text-2xl font-black text-orange-700 dark:text-orange-400text-right">
-                                {totalCalculatedStaffCost.toLocaleString()}
+                <HeroCard
+                    className={
+                        isLoss
+                            ? 'bg-danger-50/50 border-danger-100'
+                            : 'bg-emerald-50/50 border-emerald-100'
+                    }
+                    shadow="none"
+                >
+                    <HeroCardBody className="p-4 flex flex-col gap-3">
+                        <div
+                            className={`flex items-center gap-2 font-bold text-xs uppercase tracking-wider ${isLoss ? 'text-danger-600' : 'text-emerald-600'}`}
+                        >
+                            <TrendingUp size={16} />{' '}
+                            {isLoss ? 'Loss' : 'Profit'}
+                        </div>
+                        <div className="flex items-baseline gap-2">
+                            <p
+                                className={`text-2xl font-black ${isLoss ? 'text-danger-700' : 'text-emerald-700'}`}
+                            >
+                                ${summary?.potentialProfit.toLocaleString()}
                             </p>
+                            <span className="text-[10px] font-bold">
+                                ({summary?.marginPercent}%)
+                            </span>
                         </div>
                     </HeroCardBody>
                 </HeroCard>
             </div>
 
-            <Divider />
-
-            {/* --- Staff Cost Table Card --- */}
-            <HeroCard className="h-full" shadow="none">
-                <HeroCardBody className="p-0 flex flex-col overflow-hidden">
-                    <div className="p-5 pb-3 flex items-center gap-2 border-b border-border-default">
-                        <Users size={16} />
-                        <label className="text-xs font-bold uppercase tracking-wide">
-                            Cost per member
-                        </label>
+            {/* --- PROGRESS --- */}
+            <div className="p-5 border border-divider rounded-2xl bg-default-50/50 space-y-3">
+                <div className="flex justify-between items-end">
+                    <p className="text-sm font-bold text-default-900">
+                        Collection Progress
+                    </p>
+                    <div className="text-right flex flex-col">
+                        <span className="text-lg font-black text-default-900">
+                            ${summary?.totalCollected.toLocaleString()}
+                        </span>
+                        <span className="text-[10px] text-default-400">
+                            Budget: ${financials?.incomeCost.toLocaleString()}
+                        </span>
                     </div>
+                </div>
+                <Progress
+                    aria-label="Collection progress"
+                    value={
+                        (summary?.totalCollected /
+                            (financials?.incomeCost || 1)) *
+                        100
+                    }
+                    color={summary?.isClientFullyPaid ? 'success' : 'primary'}
+                    size="md"
+                />
+            </div>
 
-                    <div className="p-5 flex-1 overflow-x-auto">
-                        <table className="w-full text-left border-collapse min-w-75">
+            {/* --- TABLE --- */}
+            <HeroCard shadow="none" className="border border-divider">
+                <CardHeader>
+                    <div className="w-full flex items-center justify-between">
+                        <div className="p-4 flex items-center gap-2 bg-default-50/30">
+                            <Users size={16} className="text-default-500" />
+                            <span className="text-xs font-bold uppercase text-default-600">
+                                Staff Audit
+                            </span>
+                        </div>
+
+                        {/* Badge 2: Trả lương staff */}
+                        <JobPayoutStatusBadge status={job.paymentStatus} />
+                    </div>
+                </CardHeader>
+
+                <Divider className="bg-border-default" />
+
+                <HeroCardBody className="p-0">
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left">
                             <thead>
-                                <tr className="border-b border-border-muted">
-                                    <th className="pb-3 text-xs font-bold uppercase tracking-wider">
+                                <tr className="border-b border-divider bg-default-50/20">
+                                    <th className="p-4 text-[10px] font-bold uppercase text-default-400">
                                         Assignee
                                     </th>
-                                    <th className="pb-3 text-xs font-bold uppercase tracking-wider text-right w-35">
-                                        Payout ($)
+                                    <th className="p-4 text-[10px] font-bold uppercase text-default-400 text-right">
+                                        Quota
+                                    </th>
+                                    <th className="p-4 text-[10px] font-bold uppercase text-default-400 text-right">
+                                        Paid
+                                    </th>
+                                    <th className="p-4 text-[10px] font-bold uppercase text-default-400 text-right">
+                                        Debt
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-border-muted">
-                                {job?.assignments?.length > 0 ? (
-                                    job.assignments.map((ass, index) => {
-                                        const isMe = ass.user.id === profile?.id
-
+                            <tbody className="divide-y divide-divider">
+                                {financials?.staffBreakdown?.map(
+                                    (staff: any) => {
+                                        const isMe =
+                                            staff.userId === profile?.id
                                         return (
-                                            <tr key={ass.id} className="group">
-                                                <td className="py-3 pr-2 align-middle">
+                                            <tr
+                                                key={staff.assignmentId}
+                                                className="hover:bg-default-50/50 transition-colors"
+                                            >
+                                                <td className="p-4">
                                                     <div className="flex items-center gap-3">
                                                         <Avatar
                                                             src={optimizeCloudinary(
-                                                                ass.user.avatar,
+                                                                staff.avatar,
                                                                 {
-                                                                    width: 100,
-                                                                    height: 100,
+                                                                    width: 80,
+                                                                    height: 80,
                                                                 }
                                                             )}
                                                             size="sm"
-                                                            className="shrink-0 border border-orange-200/50"
                                                         />
-                                                        <div className="flex flex-col truncate">
-                                                            <div className="flex items-center gap-2">
-                                                                <span className="text-sm font-semibold text-default-800 truncate">
+                                                        <div className="flex flex-col">
+                                                            <div className="flex items-center gap-1">
+                                                                <span className="text-sm font-bold text-default-800">
                                                                     {
-                                                                        ass.user
-                                                                            .displayName
+                                                                        staff.displayName
                                                                     }
                                                                 </span>
                                                                 {isMe && (
@@ -350,54 +348,48 @@ export function JobFinancialForm({ job }: { job: TJob }) {
                                                                         size="sm"
                                                                         color="primary"
                                                                         variant="flat"
-                                                                        className="h-4 px-1 text-[9px] font-bold tracking-wider uppercase border-none"
+                                                                        className="h-4 text-[8px] font-black px-1"
                                                                     >
-                                                                        You
+                                                                        YOU
                                                                     </Chip>
                                                                 )}
                                                             </div>
-                                                            {ass.user.department
-                                                                ?.displayName && (
-                                                                <span className="text-[10px] text-default-500 truncate">
-                                                                    {
-                                                                        ass.user
-                                                                            .department
-                                                                            .displayName
-                                                                    }
-                                                                </span>
-                                                            )}
+                                                            <span className="text-[9px] text-default-400 uppercase">
+                                                                Artist
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td className="py-3 pl-2 align-middle font-semibold text-right text-text-default">
+                                                <td className="p-4 text-right font-medium text-default-600">
                                                     $
-                                                    {
-                                                        formik.getFieldProps(
-                                                            `assignments.${index}.staffCost`
-                                                        ).value
-                                                    }
+                                                    {staff.quota.toLocaleString()}
+                                                </td>
+                                                <td className="p-4 text-right font-bold text-success-600">
+                                                    $
+                                                    {staff.paid.toLocaleString()}
+                                                </td>
+                                                <td className="p-4 text-right">
+                                                    {staff.remainingDebt > 0 ? (
+                                                        <span className="text-danger-600 font-bold text-sm">
+                                                            $
+                                                            {staff.remainingDebt.toLocaleString()}
+                                                        </span>
+                                                    ) : (
+                                                        <CheckCircle2
+                                                            size={16}
+                                                            className="text-success inline-block"
+                                                        />
+                                                    )}
                                                 </td>
                                             </tr>
                                         )
-                                    })
-                                ) : (
-                                    <tr>
-                                        <td
-                                            colSpan={2}
-                                            className="py-6 text-center"
-                                        >
-                                            <p className="text-sm text-orange-600/60 italic">
-                                                No staff assigned to this job
-                                                yet.
-                                            </p>
-                                        </td>
-                                    </tr>
+                                    }
                                 )}
                             </tbody>
                         </table>
                     </div>
                 </HeroCardBody>
             </HeroCard>
-        </form>
+        </div>
     )
 }
