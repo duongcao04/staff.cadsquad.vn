@@ -53,7 +53,7 @@ if command -v bun >/dev/null 2>&1 || [ -f "./node_modules/.bin/prisma" ]; then
   echo "[entrypoint] Running Prisma migrations..."
   
   # Using 'bunx' instead of 'npx'
-  if bunx prisma migrate deploy --schema=./prisma/schema.prisma; then
+  if bunx prisma migrate deploy --schema=./prisma; then
     echo "[entrypoint] Migrations completed successfully"
   else
     EXIT_CODE=$?

@@ -18,7 +18,7 @@ RUN apt-get update && \
 FROM base AS deps
 COPY package.json bun.lock bun.lockb* ./
 # Copy Prisma schema để chuẩn bị generate client
-COPY ./src/providers/prisma/schema.prisma ./prisma/schema.prisma
+COPY ./src/providers/prisma ./prisma
 COPY ./database ./database
 RUN bun install --frozen-lockfile
 
