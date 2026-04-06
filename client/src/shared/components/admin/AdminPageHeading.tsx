@@ -28,35 +28,34 @@ export function AdminPageHeading({
     ...props
 }: Props) {
     let titleComp = (
-        <h1
+        <div
             className={cn(
                 'text-2xl font-bold text-text-default',
                 classNames?.title
             )}
         >
             {title as React.ReactNode}
-        </h1>
+        </div>
     )
     if (showBadge) {
         titleComp = (
             <Badge
                 content={badgeCount > 99 ? '99+' : badgeCount}
                 size="lg"
-                color="danger"
-                variant="solid"
+                color="primary"
+                variant="flat"
                 classNames={{
                     badge: 'right-0 top-0 text-[10px]! font-bold!',
-                    base: 'pr-2',
                 }}
             >
-                <h1
+                <div
                     className={cn(
                         'text-2xl font-bold text-text-default',
                         classNames?.title
                     )}
                 >
                     {title}
-                </h1>
+                </div>
             </Badge>
         )
     }

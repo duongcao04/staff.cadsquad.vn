@@ -14,6 +14,7 @@ interface ConfirmCancelJobModalProps {
     onConfirm: () => Promise<void> | void
     isLoading?: boolean
     jobTitle?: string
+    notes?: React.ReactNode
 }
 
 export const ConfirmCancelJobModal = ({
@@ -27,7 +28,6 @@ export const ConfirmCancelJobModal = ({
         <Modal
             isOpen={isOpen}
             onOpenChange={onOpenChange}
-            backdrop="blur"
             hideCloseButton={isLoading}
             isDismissable={!isLoading}
         >
@@ -35,13 +35,16 @@ export const ConfirmCancelJobModal = ({
                 {(onClose) => (
                     <>
                         <ModalHeader className="flex flex-col gap-1 text-danger">
-                            Cancel Job
+                            Do you want cancel this job?
                         </ModalHeader>
                         <ModalBody>
                             <p>
-                                Are you sure you want to remove{' '}
-                                <span className="font-bold">{jobTitle}</span>{' '}
-                                from the active board?
+                                Are you sure you want to cancel{' '}
+                                <span className="font-semibold">
+                                    {jobTitle}
+                                </span>
+                                ? Once canceled, you will not be able to modify
+                                the project's workflows.
                             </p>
 
                             {/* Information Block */}
@@ -50,16 +53,16 @@ export const ConfirmCancelJobModal = ({
                                     <span className="font-bold text-warning">
                                         Note:
                                     </span>{' '}
-                                    This will NOT permanently delete the record.
-                                    You can view or restore it later in the{' '}
+                                    You can still review or restore the project
+                                    in the{' '}
                                     <Chip
                                         size="sm"
                                         variant="flat"
-                                        color="warning"
+                                        color="danger"
                                     >
                                         Cancelled Jobs
                                     </Chip>{' '}
-                                    page.
+                                    section.
                                 </p>
                             </div>
                         </ModalBody>

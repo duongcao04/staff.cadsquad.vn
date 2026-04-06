@@ -1,11 +1,11 @@
 import AddAttachmentsModal from '@/features/project-center/components/modals/AddAttachmentsModal'
 import AssignMemberModal from '@/features/project-center/components/modals/AssignMemberModal'
 import {
+    cancelJobOptions,
     handleCopy,
     INTERNAL_URLS,
     jobsListOptions,
     optimizeCloudinary,
-    useDeleteJobMutation,
 } from '@/lib'
 import { queryClient } from '@/main'
 import {
@@ -29,6 +29,7 @@ import {
     DropdownTrigger,
     useDisclosure,
 } from '@heroui/react'
+import { useMutation } from '@tanstack/react-query'
 import { useRouter } from '@tanstack/react-router'
 import {
     CalendarIcon,
@@ -47,7 +48,7 @@ type JobMobileCardProps = {
 }
 export function JobMobileCard({ job }: JobMobileCardProps) {
     const router = useRouter()
-    const deleteJobMutation = useDeleteJobMutation()
+    const deleteJobMutation = useMutation(cancelJobOptions)
 
     const isPauseDueAt =
         job.status.systemType === 'TERMINATED' ||

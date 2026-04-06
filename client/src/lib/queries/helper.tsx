@@ -1,5 +1,4 @@
 import { addToast } from '@heroui/react'
-
 import { type ApiError } from '../axios'
 
 export const onErrorToast = (error: unknown, title: string) => {

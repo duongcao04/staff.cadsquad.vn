@@ -22,11 +22,9 @@ export class UpdateClientDto {
 	type?: ClientType
 
 	@IsOptional()
-	@IsEmail()
 	email?: string
 
 	@IsOptional()
-	@IsEmail()
 	billingEmail?: string
 
 	@IsOptional()

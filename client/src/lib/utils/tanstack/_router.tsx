@@ -1,13 +1,11 @@
-import { useNavigate } from '@tanstack/react-router'
+import { router } from '@/main'
 import { startTransition } from 'react'
 
-export function useUpdateSearchParams(fromRoute: string) {
-    const navigate = useNavigate({ from: fromRoute as any })
-
-    return <T,>(updater: (old: T) => T) => {
+export class RouteUtil {
+    static updateParams<TSearch>(newParams: Partial<TSearch>) {
         startTransition(() => {
-            navigate({
-                search: updater as any,
+            router.navigate({
+                search: (prev: any) => ({ ...prev, ...newParams }) as never,
                 replace: true,
             })
         })

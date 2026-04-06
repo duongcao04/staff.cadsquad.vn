@@ -1,7 +1,7 @@
 import { isAfter, isValid, parseISO } from 'date-fns'
 import * as yup from 'yup'
 import { z, ZodType } from 'zod'
-import { ProjectCenterTabEnum } from '../../shared/enums'
+import { EJobPaymentStatus, ProjectCenterTabEnum } from '../../shared/enums'
 import { TJob } from '../../shared/types'
 import { ClientSchema } from './_client.schema'
 import { JobActivityLogSchema } from './_job-activity-log.schema'
@@ -10,6 +10,8 @@ import { JobStatusSchema } from './_job-status.schema'
 import { JobTypeSchema } from './_job-type.schema'
 import { PaymentChannelSchema } from './_payment-channel.schema'
 import { UserSchema } from './_user.schema'
+import { JobFolderTemplateSchema } from './_job-folder-template.schema'
+import { SharepointItemSchema } from './_sharepoint-item.schema'
 
 export const JobSchema: ZodType<TJob> = z.lazy(() => z.object({
     id: z.string().catch('N/A'),
@@ -23,12 +25,18 @@ export const JobSchema: ZodType<TJob> = z.lazy(() => z.object({
     client: z.lazy(() => ClientSchema.partial()).nullable().catch(null),
     comments: z.array(z.any()).default([]),
     jobDeliveries: z.array(z.any()).default([]),
-    sharepointFolderId: z.string().nullable(),
+    sharepointFolderId: z.string().nullish(),
+    sharepointFolder: z.lazy(() => SharepointItemSchema).nullish(),
     // Tự động ép kiểu số cho các trường tiền tệ
     incomeCost: z.coerce.number().catch(0),
     staffCost: z.coerce.number().catch(0),
+    folderTemplate: z.lazy(() => JobFolderTemplateSchema).nullable().catch(null),
+    folderTemplateId: z.string().nullable().catch(null),
     totalStaffCost: z.coerce.number().catch(0),
-    isPaid: z.preprocess((v) => Boolean(v), z.boolean().default(false)),
+    paymentStatus: z
+        .nativeEnum(EJobPaymentStatus)
+        .optional()
+        .default(EJobPaymentStatus.FAILED),
     isPinned: z.preprocess((v) => Boolean(v), z.boolean().default(false)),
     isPublished: z.preprocess((v) => Boolean(v), z.boolean().default(false)),
     paymentChannel: z.lazy(() => PaymentChannelSchema).nullable().catch(null),
@@ -36,7 +44,7 @@ export const JobSchema: ZodType<TJob> = z.lazy(() => z.object({
     description: z.string().nullable().catch(null),
     type: z.lazy(() => JobTypeSchema).optional(),
     // Dates
-    paidAt: z.coerce.date().nullable().catch(null),
+    payoutDate: z.coerce.date().nullable().catch(null),
     finishedAt: z.coerce.date().nullable().catch(null),
     createdAt: z.coerce.date().catch(new Date()),
     dueAt: z.coerce.date().catch(new Date()),
@@ -53,6 +61,7 @@ const BaseJobFormSchema = z.object({
     displayName: z.string("Display name is required").min(1, 'Display name is required'),
     description: z.string().optional(),
     attachmentUrls: z.array(z.string()).default([]),
+    clientId: z.string().optional(),
     clientName: z.string("Client name is required").min(1, 'Client name is required'),
     incomeCost: z.coerce.number({ message: 'Income cost must be a number' }).min(1, 'Income cost must be greater than 1'),
     totalStaffCost: z.coerce.number({ message: 'Total staff cost must be a number' }).optional().default(0),
@@ -216,3 +225,62 @@ export const DeliverJobInputSchema = z.object({
 
 // Type inference (Tương đương InferType của Yup)
 export type TDeliverJobInput = z.infer<typeof DeliverJobInputSchema>;
+
+
+export const JobPayoutSchema = z.lazy(() => z.object({
+    id: z.string().catch('N/A'),
+    no: z.string().catch('UNKNOWN'),
+    displayName: z.string().catch('Untitled Job'),
+    assignments: z.array(z.any()).default([]),
+    attachmentUrls: z.array(z.string()).default([]),
+    createdBy: z.lazy(() => UserSchema).optional(),
+    client: z.lazy(() => ClientSchema.partial()).nullable().catch(null),
+    jobDeliveries: z.array(z.any()).default([]),
+    sharepointFolderId: z.string().nullish(),
+    sharepointFolder: z.lazy(() => SharepointItemSchema).nullish(),
+    // Tự động ép kiểu số cho các trường tiền tệ
+    incomeCost: z.coerce.number().catch(0),
+    staffCost: z.coerce.number().catch(0),
+    folderTemplate: z.lazy(() => JobFolderTemplateSchema).nullable().catch(null),
+    folderTemplateId: z.string().nullable().catch(null),
+    totalStaffCost: z.coerce.number().catch(0),
+    paymentStatus: z
+        .nativeEnum(EJobPaymentStatus)
+        .optional()
+        .default(EJobPaymentStatus.FAILED),
+    paymentChannel: z.lazy(() => PaymentChannelSchema).nullable().catch(null),
+    status: z.lazy(() => JobStatusSchema).optional(),
+    description: z.string().nullable().catch(null),
+    type: z.lazy(() => JobTypeSchema).optional(),
+    // Dates
+    payoutDate: z.coerce.date().nullable().catch(null),
+    finishedAt: z.coerce.date().nullable().catch(null),
+    createdAt: z.coerce.date().catch(new Date()),
+    dueAt: z.coerce.date().catch(new Date()),
+    completedAt: z.coerce.date().nullable().catch(null),
+    deletedAt: z.coerce.date().nullable().catch(null),
+    startedAt: z.coerce.date().catch(new Date()),
+    updatedAt: z.coerce.date().catch(new Date()),
+}));
+
+export type TJobPayoutDetail = z.infer<typeof JobPayoutSchema>
+
+/**
+ * Schema bổ sung cho thông tin tài chính chi tiết của Job
+ */
+export const JobFinancialFieldSchema = z.object({
+    totalPaid: z.coerce.number().default(0),
+    remainingAmount: z.coerce.number().default(0),
+    isPartiallyPaid: z.preprocess((v) => Boolean(v), z.boolean().default(false)),
+});
+
+/**
+ * JobReceivableSchema: Kết hợp JobSchema gốc với field financial
+ * Dùng cho các query liệt kê công nợ khách hàng
+ */
+export const JobReceivableSchema = (JobSchema as any)._def.getter().extend({
+    financial: JobFinancialFieldSchema
+});
+
+// Loại bỏ type inference nếu cần
+export type TJobReceivable = z.infer<typeof JobReceivableSchema>;

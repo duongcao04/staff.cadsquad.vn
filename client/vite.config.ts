@@ -18,7 +18,9 @@ export default defineConfig(({ mode }) => {
         server: {
             port: 3000,
             host: true,
-            strictPort: true,
+            strictPort: true, fs: {
+                allow: ['..'] // Allows Vite to reach up one directory into 'shared'
+            }
         },
         preview: {
             port: 3000,
@@ -91,6 +93,7 @@ export default defineConfig(({ mode }) => {
         resolve: {
             alias: {
                 '@': path.resolve(__dirname, './src'),
+                "@staff-cadsquad/shared": path.resolve(__dirname, '../shared/index.ts')
             },
         },
 

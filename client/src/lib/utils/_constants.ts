@@ -21,10 +21,7 @@ export const INTERNAL_URLS = {
     workbench: [''].join('/'),
     projectCenter: ['', 'project-center'].join('/'),
     userSchedule: ['', 'schedule'].join('/'),
-    jobDetail: (jobNo: string, locale?: string) => {
-        if (!locale) return '/' + 'jobs' + '/' + jobNo
-        return '/' + locale + '/' + 'jobs' + '/' + jobNo
-    },
+    jobDetail: (jobNo: string) => ['', 'jobs', jobNo].join('/'),
     profile: ['', 'profile'].join('/'),
     notifications: ['', 'notifications'].join('/'),
     overview: ['', 'overview'].join('/'),
@@ -51,35 +48,48 @@ export const INTERNAL_URLS = {
     inviteMember: '/' + 'admin/mgmt/invite-member',
     revenueReports: '/' + 'admin/mgmt/revenue',
     roleAndPermissionManage: '/' + 'admin/mgmt/access-control',
-    editRolePermMatrix: (roleCode: string) =>
-        '/' + 'admin/mgmt/access-control/roles/' + roleCode + '/perm-matrix',
     userRolePermissionManage: (username: string) =>
         '/' + 'admin/mgmt/access-control/users/' + username,
     /**
      * ADMIN ROUTES
      */
     admin: {
-        overview: ["", 'admin'].join('/'),
+        overview: ['', 'admin'].join('/'),
         settings: ['', 'admin', 'settings'].join('/'),
-        schedule: ['', 'admin', 'schedule'].join('/')
+        schedule: ['', 'admin', 'schedule'].join('/'),
     },
     // MANAGEMENT
     management: {
         jobs: ['', 'mgmt', 'jobs'].join('/'),
+        jobCreation: ['', 'mgmt', 'jobs', 'create'].join('/'),
         jobDetail: (jobNo: string) => ['', 'mgmt', 'jobs', jobNo].join('/'),
         jobFolderTemplates: ['', 'mgmt', 'jobs', 'folder-templates'].join('/'),
-        jobFolderTemplateDetail: (id: string) => ['', 'mgmt', 'jobs', 'folder-templates', id].join('/'),
+        jobFolderTemplateDetail: (id: string) =>
+            ['', 'mgmt', 'jobs', 'folder-templates', id].join('/'),
+        jobTypes: ['', 'mgmt', 'job-types'].join('/'),
+        jobTypesDetail: (id: string) => ['', 'mgmt', 'job-types', id].join('/'),
         clients: ['', 'mgmt', 'clients'].join('/'),
         clientDetail: (code: string) => ['', 'mgmt', 'clients', code].join('/'),
         departments: ['', 'mgmt', 'departments'].join('/'),
-        departmentsDetail: (departmentCode: string) => ['', 'mgmt', 'departments', departmentCode].join('/'),
+        departmentsDetail: (departmentCode: string) =>
+            ['', 'mgmt', 'departments', departmentCode].join('/'),
+        jobTitles: ['', 'mgmt', 'job-titles'].join('/'),
+        jobTitlesDetail: (jobTitleCode: string) =>
+            ['', 'mgmt', 'job-titles', jobTitleCode].join('/'),
         paymentChannels: ['', 'mgmt', 'payments'].join('/'),
         accessControl: ['', 'mgmt', 'access-control'].join('/'),
         accessControlUser: ['', 'mgmt', 'access-control', 'user'].join('/'),
         roles: ['', 'mgmt', 'access-control', 'roles'].join('/'),
+        roleDetail: (code: string) =>
+            ['', 'mgmt', 'access-control', 'roles', code].join('/'),
+        rolePermMatrix: (code: string) =>
+            ['', 'mgmt', 'access-control', 'roles', code, 'perm-matrix'].join(
+                '/'
+            ),
         permissions: ['', 'mgmt', 'access-control', 'permissions'].join('/'),
         team: ['', 'mgmt', 'staff-directory'].join('/'),
-        staffDetail: (username: string) => ['', 'mgmt', 'staff-directory', username].join('/'),
+        staffDetail: (username: string) =>
+            ['', 'mgmt', 'staff-directory', username].join('/'),
         files: ['', 'mgmt', 'access-control', 'files'].join('/'),
     },
     /**
@@ -89,11 +99,14 @@ export const INTERNAL_URLS = {
         overview: ['', 'financial'].join('/'),
         paymentChannels: ['', 'financial', 'payment-channels'].join('/'),
         payouts: ['', 'financial', 'payouts'].join('/'),
-        payoutsDetail: (jobNo: string) => ['', 'financial', 'payouts', jobNo].join('/'),
+        payoutsDetail: (jobNo: string) =>
+            ['', 'financial', 'payouts', jobNo].join('/'),
         receivables: ['', 'financial', 'receivables'].join('/'),
         ledger: ['', 'financial', 'ledger'].join('/'),
+        transactionDetail: (id: string) =>
+            ['', 'financial', 'ledger', id].join('/'),
         settings: ['', 'financial', 'settings'].join('/'),
-        invoiceTemplates: ['', 'financial', 'invoice-templates'].join('/')
+        invoiceTemplates: ['', 'financial', 'invoice-templates'].join('/'),
     },
     /**
      * COMMUNITIES
@@ -323,8 +336,8 @@ export const APP_TABLE_SIZES = [
 
 export const DUE_DATE_PRESETS = [
     { key: 'lt_1_week', label: '< 1 week' },
-    { key: 'lt_2_weeks', label: '< 2 weeks' }, // Corrected "week" to "weeks"
-    { key: 'lt_3_weeks', label: '< 3 weeks' }, // Corrected "week" to "weeks"
+    { key: 'lt_2_weeks', label: '< 2 weeks' },
+    { key: 'lt_3_weeks', label: '< 3 weeks' },
     { key: 'lt_1_month', label: '< 1 month' },
     { key: 'gt_1_month', label: '> 1 month' },
 ] as const
@@ -350,5 +363,5 @@ export const EXCHANGE_RATE = {
 }
 
 export const SHAREPOINT = {
-    JOB_FOLDER_TEMPLATE_ID: '012FXBO3JBUBKQOMFIO5FLUWMJ2A3YWL3Q'
+    JOB_FOLDER_TEMPLATE_ID: '012FXBO3JBUBKQOMFIO5FLUWMJ2A3YWL3Q',
 }

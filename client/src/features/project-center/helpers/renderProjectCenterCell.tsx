@@ -1,14 +1,13 @@
-import { optimizeCloudinary } from '@/lib'
+import { JobHelper, optimizeCloudinary } from '@/lib'
 import { dateFormatter } from '@/lib/dayjs'
 import { currencyFormatter, IMAGES, INTERNAL_URLS } from '@/lib/utils'
 import { HeroButton, HeroCopyButton, HeroTooltip } from '@/shared/components'
 import JobFinishChip from '@/shared/components/chips/JobFinishChip'
 import JobStatusDropdown from '@/shared/components/dropdowns/JobStatusDropdown'
-import PaymentStatusDropdown from '@/shared/components/dropdowns/PaymentStatusDropdown'
 import CountdownTimer from '@/shared/components/ui/countdown-timer'
 import { JobStatusSystemTypeEnum } from '@/shared/enums'
 import { JobColumnKey, TJob, TJobStatus } from '@/shared/types'
-import { Button } from '@heroui/react'
+import { Button, Chip } from '@heroui/react'
 import { Avatar, Image } from 'antd'
 import dayjs from 'dayjs'
 import lodash from 'lodash'
@@ -49,7 +48,7 @@ export const renderProjectCenterCell = (
             )
         case 'clientName':
             return (
-                <p className="line-clamp-1 select-text cursor-text">
+                <p className="select-text line-clamp-1 cursor-text">
                     {data.client?.name || 'Unknown client'}
                 </p>
             )
@@ -74,9 +73,16 @@ export const renderProjectCenterCell = (
 
         case 'displayName':
             return (
-                <p className="w-62.5 line-clamp-1 font-medium select-text cursor-text">
-                    {data.displayName}
-                </p>
+                <div>
+                    <p className="font-bold text-text-default">
+                        {data.displayName}
+                    </p>
+                    <div className="flex items-center gap-2 mt-0.5">
+                        <span className="text-xs font-mono bg-background-hovered text-text-subdued px-1 py-0.5 rounded">
+                            {data.type.displayName}
+                        </span>
+                    </div>
+                </div>
             )
 
         case 'incomeCost':
@@ -99,14 +105,14 @@ export const renderProjectCenterCell = (
                     {currencyFormatter(data.staffCost, 'Vietnamese')}
                 </p>
             ) : (
-                <p className="text-xs italic text-text-subdued text-right">
+                <p className="text-xs italic text-right text-text-subdued">
                     Not assigned
                 </p>
             )
 
         case 'status':
             return (
-                <div className="flex items-center justify-center z-0">
+                <div className="z-0 flex items-center justify-center">
                     <JobStatusDropdown
                         jobData={data}
                         statusData={data.status as TJobStatus}
@@ -142,7 +148,7 @@ export const renderProjectCenterCell = (
 
         case 'attachmentUrls':
             return !data.attachmentUrls?.length ? (
-                <div className="size-full flex items-center justify-center">
+                <div className="flex items-center justify-center size-full">
                     <HeroTooltip content={'Add attachment'}>
                         <HeroButton
                             isIconOnly
@@ -157,14 +163,14 @@ export const renderProjectCenterCell = (
                     </HeroTooltip>
                 </div>
             ) : (
-                <p className="w-full text-center font-medium tracking-wide">
+                <p className="w-full font-medium tracking-wide text-center">
                     x{data.attachmentUrls.length}
                 </p>
             )
 
         case 'assignments':
             return !data.assignments.length ? (
-                <div className="size-full flex items-center justify-center">
+                <div className="flex items-center justify-center size-full">
                     <HeroTooltip content="Assign members">
                         <Button
                             isIconOnly
@@ -201,8 +207,18 @@ export const renderProjectCenterCell = (
                 </div>
             )
 
-        case 'isPaid':
-            return <PaymentStatusDropdown jobData={data} />
+        case 'paymentStatus':
+            const paymentDisplay = JobHelper.getJobPaymentStatusDisplay(
+                data.paymentStatus
+            )
+
+            return (
+                <Chip color={paymentDisplay.colorName} variant="flat">
+                    <span className="font-semibold">
+                        {paymentDisplay.title}
+                    </span>
+                </Chip>
+            )
 
         case 'paymentChannel':
             return data.paymentChannel ? (
@@ -256,7 +272,10 @@ export const renderProjectCenterCell = (
                             textValue={INTERNAL_URLS.jobDetail(data.no)}
                         />
                     </HeroTooltip>
-                    <ProjectCenterTableQuickActions data={data} />
+                    <ProjectCenterTableQuickActions
+                        data={data}
+                        onRefresh={actions.onRefresh}
+                    />
                 </div>
             )
 

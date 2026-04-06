@@ -1,23 +1,22 @@
+import { AppPermission, cookie, COOKIES, INTERNAL_URLS } from '@/lib'
+import { usePermission } from '@/shared/hooks'
 import { addToast } from '@heroui/react'
 import { useLocation, useRouter } from '@tanstack/react-router'
-import { useEffect, useState, useMemo } from 'react'
-import { cookie, COOKIES, INTERNAL_URLS } from '../../lib'
-import { AppPermission } from '../../lib/utils/_app-permissions'
-import { usePermission } from '../hooks'
+import { useEffect, useMemo, useState } from 'react'
 
 interface ProtectedRouteProps {
     children: React.ReactNode
-    permissions?: AppPermission | AppPermission[]
+    permissions?: AppPermission | AppPermission[] | string | string[]
     requireAll?: boolean
 }
-export default function ProtectedRoute({
+export function ProtectedRoute({
     children,
     permissions = [],
     requireAll = false,
 }: ProtectedRouteProps) {
     const router = useRouter()
     const { pathname } = useLocation()
-    const { user, hasAnyPermission, hasAllPermissions, loadingProfile } =
+    const { user, hasSomePermissions, hasEveryPermissions, loadingProfile } =
         usePermission()
     const [isChecking, setIsChecking] = useState(true)
 
@@ -56,8 +55,8 @@ export default function ProtectedRoute({
                 permsArray.length === 0
                     ? true
                     : requireAll
-                      ? hasAllPermissions(permsArray)
-                      : hasAnyPermission(permsArray)
+                      ? hasEveryPermissions(permsArray)
+                      : hasSomePermissions(permsArray)
 
             if (!isAllowed) {
                 addToast({
@@ -80,8 +79,8 @@ export default function ProtectedRoute({
         requireAll,
         pathname,
         router,
-        hasAnyPermission,
-        hasAllPermissions,
+        hasSomePermissions,
+        hasEveryPermissions,
     ])
 
     if (loadingProfile || isChecking) return <LoadingScreen />

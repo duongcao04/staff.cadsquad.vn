@@ -1,11 +1,13 @@
 import { clientsListOptions, INTERNAL_URLS } from '@/lib'
-import { AdminPageHeading } from '@/shared/components'
+import { AdminPageHeading, AppLoading } from '@/shared/components'
 import AdminContentContainer from '@/shared/components/admin/AdminContentContainer'
 import {
     Button,
     Card,
     CardBody,
+    CardHeader,
     Chip,
+    Divider,
     Input,
     Modal,
     ModalBody,
@@ -40,8 +42,11 @@ import {
     UserCircle,
 } from 'lucide-react'
 import { useState } from 'react'
+import { ClientHelper } from '../../../../lib/helpers'
 
 export const Route = createFileRoute('/_administrator/mgmt/clients/')({
+    head: () => ({ meta: [{ title: 'Client Management' }] }),
+    pendingComponent: AppLoading,
     component: ClientManagementPage,
 })
 export default function ClientManagementPage() {
@@ -49,11 +54,8 @@ export default function ClientManagementPage() {
     const [searchQuery, setSearchQuery] = useState('')
     const [selectedClient, setSelectedClient] = useState<any>(null)
 
-    // Fetch clients data from API
     const {
         data: { clients },
-        isLoading,
-        error,
     } = useSuspenseQuery(clientsListOptions())
 
     // Filter Logic
@@ -78,25 +80,11 @@ export default function ClientManagementPage() {
         onOpen()
     }
 
-    if (isLoading) return <div>Loading...</div>
-    if (error) return <div>Error loading clients.</div>
-
     return (
         <>
             <AdminPageHeading
-                title={
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div>
-                            <h1 className="text-2xl font-bold text-default-900 flex items-center gap-2">
-                                Client Directory
-                            </h1>
-                            <p className="text-sm text-default-500">
-                                Manage corporate and individual clients, billing
-                                details, and regional data.
-                            </p>
-                        </div>
-                    </div>
-                }
+                title="Clients"
+                description="Manage corporate and individual clients, billing details, and regional data."
                 actions={
                     <Button
                         color="primary"
@@ -107,16 +95,20 @@ export default function ClientManagementPage() {
                     </Button>
                 }
             />
-            <AdminContentContainer className="pt-0 space-y-6">
+
+            <AdminContentContainer className="mt-2 space-y-6">
                 {/* 2. KPI Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Card shadow="sm" className="border border-default-200">
+                    <Card
+                        shadow="none"
+                        className="border border-border-default"
+                    >
                         <CardBody className="p-5 flex flex-row items-center justify-between">
                             <div>
-                                <p className="text-sm font-semibold text-default-600">
+                                <p className="text-sm font-semibold text-text-subdued">
                                     Total Clients
                                 </p>
-                                <p className="text-2xl font-bold text-default-900 mt-1">
+                                <p className="text-2xl font-bold text-text-default mt-1">
                                     {totalClients}
                                 </p>
                             </div>
@@ -126,13 +118,16 @@ export default function ClientManagementPage() {
                         </CardBody>
                     </Card>
 
-                    <Card shadow="sm" className="border border-default-200">
+                    <Card
+                        shadow="none"
+                        className="border border-border-default"
+                    >
                         <CardBody className="p-5 flex flex-row items-center justify-between">
                             <div>
-                                <p className="text-sm font-semibold text-default-600">
+                                <p className="text-sm font-semibold text-text-subdued">
                                     Client Breakdown
                                 </p>
-                                <p className="text-lg font-bold text-default-900 mt-1">
+                                <p className="text-lg font-bold text-text-default mt-1">
                                     {companyCount} Corporate
                                 </p>
                                 <p className="text-xs text-default-500 mt-1">
@@ -145,13 +140,16 @@ export default function ClientManagementPage() {
                         </CardBody>
                     </Card>
 
-                    <Card shadow="sm" className="border border-default-200">
+                    <Card
+                        shadow="none"
+                        className="border border-border-default"
+                    >
                         <CardBody className="p-5 flex flex-row items-center justify-between">
                             <div>
-                                <p className="text-sm font-semibold text-default-600">
+                                <p className="text-sm font-semibold text-text-subdued">
                                     Global Reach
                                 </p>
-                                <p className="text-lg font-bold text-default-900 mt-1">
+                                <p className="text-lg font-bold text-text-default mt-1">
                                     3 Regions
                                 </p>
                                 <p className="text-xs text-default-500 mt-1">
@@ -166,162 +164,242 @@ export default function ClientManagementPage() {
                 </div>
 
                 {/* 3. Data Table */}
-                <Card shadow="sm" className="border border-default-200">
-                    <div className="p-4 border-b border-divider flex items-center justify-between bg-default-50">
+                <Card shadow="none" className="border border-border-default">
+                    <CardHeader>
                         <Input
                             placeholder="Search by client name or code..."
                             startContent={
                                 <Search
                                     size={16}
-                                    className="text-default-400"
+                                    className="text-text-subdued"
                                 />
                             }
                             className="max-w-md"
+                            classNames={{
+                                inputWrapper: 'border-1',
+                            }}
                             variant="bordered"
                             value={searchQuery}
                             onValueChange={setSearchQuery}
                         />
-                    </div>
+                    </CardHeader>
 
-                    <Table
-                        aria-label="Clients Table"
-                        removeWrapper
-                        className="bg-transparent"
-                    >
-                        <TableHeader>
-                            <TableColumn>CLIENT DETAILS</TableColumn>
-                            <TableColumn>CONTACT INFO</TableColumn>
-                            <TableColumn>LOCATION</TableColumn>
-                            <TableColumn>BILLING / TERMS</TableColumn>
-                            <TableColumn align="end">ACTIONS</TableColumn>
-                        </TableHeader>
-                        <TableBody emptyContent="No clients found.">
-                            {filteredClients.map((client) => (
-                                <TableRow
-                                    key={client.id}
-                                    className="hover:bg-default-100/50 transition-colors"
-                                >
-                                    <TableCell>
-                                        <div className="flex flex-col gap-1">
-                                            <div className="flex items-center gap-2">
-                                                <span className="font-bold text-default-900">
-                                                    {client.name}
-                                                </span>
-                                                <Chip
-                                                    size="sm"
-                                                    variant="flat"
-                                                    color={
-                                                        client.type ===
-                                                        'COMPANY'
-                                                            ? 'primary'
-                                                            : 'default'
-                                                    }
-                                                    className="h-5 text-[10px]"
-                                                >
-                                                    {client.type}
-                                                </Chip>
-                                            </div>
-                                            <span className="text-xs text-default-500 font-mono">
-                                                {client.code}
-                                            </span>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="flex flex-col gap-1 text-sm text-default-700">
-                                            <div className="flex items-center gap-2">
-                                                <Mail
-                                                    size={14}
-                                                    className="text-default-400"
-                                                />{' '}
-                                                {client.email}
-                                            </div>
-                                            {client.phoneNumber && (
-                                                <div className="flex items-center gap-2">
-                                                    <Phone
-                                                        size={14}
-                                                        className="text-default-400"
-                                                    />{' '}
-                                                    {client.phoneNumber}
+                    <Divider className="bg-border-default" />
+
+                    <CardBody>
+                        <Table aria-label="Clients Table" removeWrapper>
+                            <TableHeader>
+                                <TableColumn>Display name</TableColumn>
+                                <TableColumn>Location</TableColumn>
+                                <TableColumn>Type</TableColumn>
+                                <TableColumn>Contact</TableColumn>
+                                <TableColumn>Billing / Terms</TableColumn>
+                                <TableColumn align="end">Actions</TableColumn>
+                            </TableHeader>
+                            <TableBody emptyContent="No clients found.">
+                                {filteredClients.map((client) => {
+                                    const clientTypeDisplay =
+                                        ClientHelper.getClientTypeDisplay(
+                                            client.type
+                                        )
+
+                                    // Helper to check if location data exists
+                                    const hasLocation = !!(
+                                        client.country || client.region
+                                    )
+
+                                    return (
+                                        <TableRow
+                                            key={client.id}
+                                            className="hover:bg-background-hovered transition-colors group"
+                                        >
+                                            {/* --- Name & Identity --- */}
+                                            <TableCell>
+                                                <div className="flex flex-col gap-1">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="font-semibold text-text-default">
+                                                            {client.name ||
+                                                                'Unnamed Client'}
+                                                        </span>
+                                                    </div>
+                                                    <span className="text-[10px] text-default-500 font-mono uppercase tracking-tighter">
+                                                        {client.code || 'NO_ID'}
+                                                    </span>
                                                 </div>
-                                            )}
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="flex items-start gap-2 text-sm text-default-700">
-                                            <MapPin
-                                                size={16}
-                                                className="text-danger-400 mt-0.5"
-                                            />
-                                            <div className="flex flex-col">
-                                                <span className="font-medium">
-                                                    {client.country}
-                                                </span>
-                                                <span className="text-xs text-default-400">
-                                                    {client.region}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="flex flex-col gap-1">
-                                            <span className="text-sm font-semibold text-default-800">
-                                                NET {client.paymentTerms} Days
-                                            </span>
-                                            <span className="text-xs text-default-500">
-                                                Curr: {client.currency}
-                                            </span>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="flex items-center justify-end gap-2">
-                                            <Tooltip content="View Jobs">
-                                                <Link
-                                                    to={INTERNAL_URLS.management.clientDetail(
-                                                        client.code
-                                                    )}
-                                                >
-                                                    <Button
-                                                        isIconOnly
-                                                        size="sm"
-                                                        variant="light"
-                                                        color="primary"
-                                                    >
-                                                        <EyeIcon size={16} />
-                                                    </Button>
-                                                </Link>
-                                            </Tooltip>
-                                            <Tooltip content="Edit Client">
-                                                <Button
-                                                    isIconOnly
-                                                    size="sm"
-                                                    variant="light"
-                                                    color="default"
-                                                    onPress={() =>
-                                                        handleEdit(client)
+                                            </TableCell>
+
+                                            {/* --- Location (Handled) --- */}
+                                            <TableCell>
+                                                {hasLocation ? (
+                                                    <div className="flex items-start gap-2 text-sm text-default-700">
+                                                        <MapPin
+                                                            size={16}
+                                                            className="text-danger-400 mt-0.5 shrink-0"
+                                                        />
+                                                        <div className="flex flex-col">
+                                                            <span className="font-medium leading-tight">
+                                                                {client.country ||
+                                                                    'Global'}
+                                                            </span>
+                                                            {client.region && (
+                                                                <span className="text-[11px] text-text-subdued italic">
+                                                                    {
+                                                                        client.region
+                                                                    }
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex items-center gap-2 text-text-subdued italic text-xs">
+                                                        <Globe2
+                                                            size={14}
+                                                            className="opacity-50"
+                                                        />
+                                                        <span>
+                                                            No location recorded
+                                                        </span>
+                                                    </div>
+                                                )}
+                                            </TableCell>
+
+                                            {/* --- Client Type Badge --- */}
+                                            <TableCell>
+                                                <Chip
+                                                    color={
+                                                        clientTypeDisplay.colorName
                                                     }
-                                                >
-                                                    <Edit3 size={16} />
-                                                </Button>
-                                            </Tooltip>
-                                            <Tooltip
-                                                content="Delete Client"
-                                                color="danger"
-                                            >
-                                                <Button
-                                                    isIconOnly
                                                     size="sm"
-                                                    variant="light"
-                                                    color="danger"
+                                                    variant="shadow"
+                                                    className="shadow-sm"
                                                 >
-                                                    <Trash2 size={16} />
-                                                </Button>
-                                            </Tooltip>
-                                        </div>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                                                    <span className="text-white font-semibold text-tiny">
+                                                        {
+                                                            clientTypeDisplay.title
+                                                        }
+                                                    </span>
+                                                </Chip>
+                                            </TableCell>
+
+                                            {/* --- Contact Info (Handled) --- */}
+                                            <TableCell>
+                                                <div className="flex flex-col gap-1.5 text-sm">
+                                                    {client.email ? (
+                                                        <div className="flex items-center gap-2 text-text-default">
+                                                            <Mail
+                                                                size={12}
+                                                                className="text-primary-400 shrink-0"
+                                                            />
+                                                            <span className="truncate max-w-45">
+                                                                {client.email}
+                                                            </span>
+                                                        </div>
+                                                    ) : (
+                                                        <span className="text-[11px] text-default-400 italic ml-5">
+                                                            Missing email
+                                                        </span>
+                                                    )}
+
+                                                    {client.phoneNumber ? (
+                                                        <div className="flex items-center gap-2 text-text-default">
+                                                            <Phone
+                                                                size={12}
+                                                                className="text-success-400 shrink-0"
+                                                            />
+                                                            <span>
+                                                                {
+                                                                    client.phoneNumber
+                                                                }
+                                                            </span>
+                                                        </div>
+                                                    ) : (
+                                                        <span className="text-[10px] text-default-400/60 ml-5">
+                                                            No phone recorded
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </TableCell>
+
+                                            {/* --- Billing & Terms --- */}
+                                            <TableCell>
+                                                <div className="flex flex-col gap-0.5">
+                                                    <div className="flex items-center gap-1.5">
+                                                        <span className="text-xs font-black text-default-800">
+                                                            NET{' '}
+                                                            {client.paymentTerms ??
+                                                                30}
+                                                        </span>
+                                                        <span className="text-[10px] text-text-subdued uppercase">
+                                                            Days
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex items-center gap-1 text-[11px] font-mono font-bold uppercase">
+                                                        <span className="text-text-subdued">
+                                                            $
+                                                        </span>
+                                                        {client.currency ||
+                                                            'USD'}
+                                                    </div>
+                                                </div>
+                                            </TableCell>
+
+                                            {/* --- Actions --- */}
+                                            <TableCell>
+                                                <div className="flex items-center justify-end gap-1">
+                                                    <Tooltip content="View details">
+                                                        <Button
+                                                            isIconOnly
+                                                            size="sm"
+                                                            variant="light"
+                                                            as={Link}
+                                                            to={INTERNAL_URLS.management.clientDetail(
+                                                                client.code
+                                                            )}
+                                                            className="text-text-subdued hover:text-primary transition-colors"
+                                                        >
+                                                            <EyeIcon
+                                                                size={16}
+                                                            />
+                                                        </Button>
+                                                    </Tooltip>
+                                                    <Tooltip content="Edit">
+                                                        <Button
+                                                            isIconOnly
+                                                            size="sm"
+                                                            variant="light"
+                                                            onPress={() =>
+                                                                handleEdit(
+                                                                    client
+                                                                )
+                                                            }
+                                                            className="hover:text-warning transition-colors"
+                                                        >
+                                                            <Edit3 size={16} />
+                                                        </Button>
+                                                    </Tooltip>
+                                                    <Tooltip
+                                                        content="Delete"
+                                                        color="danger"
+                                                        closeDelay={0}
+                                                    >
+                                                        <Button
+                                                            isIconOnly
+                                                            size="sm"
+                                                            variant="light"
+                                                            color="danger"
+                                                            className="group-hover:opacity-100 transition-opacity"
+                                                        >
+                                                            <Trash2 size={16} />
+                                                        </Button>
+                                                    </Tooltip>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    )
+                                })}
+                            </TableBody>
+                        </Table>
+                    </CardBody>
                 </Card>
 
                 {/* Form Modal */}
@@ -398,7 +476,7 @@ const ClientFormModal = ({
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             {/* Left Column: General Info */}
                             <div className="space-y-4">
-                                <h3 className="text-sm font-bold text-default-900 border-b border-default-200 pb-2">
+                                <h3 className="text-sm font-bold text-text-default border-b border-default-200 pb-2">
                                     General Profile
                                 </h3>
 
@@ -478,7 +556,7 @@ const ClientFormModal = ({
                                     startContent={
                                         <Phone
                                             size={14}
-                                            className="text-default-400"
+                                            className="text-text-subdued"
                                         />
                                     }
                                 />
@@ -486,7 +564,7 @@ const ClientFormModal = ({
 
                             {/* Right Column: Financial & Billing */}
                             <div className="space-y-4">
-                                <h3 className="text-sm font-bold text-default-900 border-b border-default-200 pb-2">
+                                <h3 className="text-sm font-bold text-text-default border-b border-default-200 pb-2">
                                     Billing & Financials
                                 </h3>
 
@@ -502,7 +580,7 @@ const ClientFormModal = ({
                                     startContent={
                                         <Mail
                                             size={14}
-                                            className="text-default-400"
+                                            className="text-text-subdued"
                                         />
                                     }
                                 />

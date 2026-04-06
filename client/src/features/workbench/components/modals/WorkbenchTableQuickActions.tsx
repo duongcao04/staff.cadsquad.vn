@@ -2,10 +2,10 @@ import { DeliverJobModal } from '@/features/job-manage/components/modals/Deliver
 import ReScheduleModal from '@/features/job-manage/components/modals/ReScheduleModal'
 import AssignMemberModal from '@/features/project-center/components/modals/AssignMemberModal'
 import UpdateCostModal from '@/features/project-center/components/modals/UpdateCostModal'
-import { INTERNAL_URLS } from '@/lib'
+import { INTERNAL_URLS, JobHelper } from '@/lib'
 import {
-    useDeleteJobMutation,
-    useMarkPaidMutation,
+    cancelJobOptions,
+    markJobPaidOptions,
     workbenchDataOptions,
 } from '@/lib/queries'
 import { APP_PERMISSIONS } from '@/lib/utils'
@@ -21,34 +21,22 @@ import {
     DropdownTrigger,
     useDisclosure,
 } from '@heroui/react'
-import {
-    CalendarClock,
-    CircleCheck,
-    CircleDollarSign,
-    EllipsisVerticalIcon,
-    SquareArrowOutUpRight,
-    Trash,
-    TruckElectricIcon,
-    UserPlus,
-    WindArrowDownIcon,
-} from 'lucide-react'
+import { EllipsisVerticalIcon, WindArrowDownIcon } from 'lucide-react'
 
 type WorkbenchTableQuickActionsProps = {
     data: TJob
+    onRefresh: () => void
 }
 export function WorkbenchTableQuickActions({
     data,
+    onRefresh,
 }: WorkbenchTableQuickActionsProps) {
-    const { hasPermission } = usePermission()
+    const { hasPermission, hasSomePermissions } = usePermission()
+    const canPayout = JobHelper.canPayout(data)
 
-    const markPaidMutation = useMarkPaidMutation()
+    const markPaidMutation = useMutation(markJobPaidOptions)
 
-    const canPayout = useMemo(
-        () => data.status.systemType === 'COMPLETED' && !data.isPaid,
-        [data]
-    )
-    const { mutateAsync: deleteJobMutation, isPending: isDeleting } =
-        useDeleteJobMutation()
+    const cancelJobAction = useMutation(cancelJobOptions)
 
     const {
         isOpen: isOpenAssignModal,
@@ -84,12 +72,12 @@ export function WorkbenchTableQuickActions({
         id: 'UpdateCostModal',
     })
 
-    const deliverJobModal = useDisclosure({
+    const deliverModal = useDisclosure({
         id: 'DeliverJobModal',
     })
 
-    const onDeleteJob = async () => {
-        await deleteJobMutation(data?.id, {
+    const handleCancelJob = async () => {
+        await cancelJobAction.mutateAsync(data?.id, {
             onSuccess: () => {
                 queryClient.refetchQueries({
                     queryKey: workbenchDataOptions().queryKey,
@@ -115,20 +103,21 @@ export function WorkbenchTableQuickActions({
                 <ConfirmModal
                     isOpen={isOpenModal}
                     onClose={onCloseModal}
-                    onConfirm={onDeleteJob}
+                    onConfirm={handleCancelJob}
                     title="Delete job"
                     content={`Are you sure you want to delete job ${data.no}? This action cannot be undone.`}
                     confirmLabel="Yes"
-                    isLoading={isDeleting}
+                    isLoading={cancelJobAction.isPending}
                 />
             )}
             {hasPermission(APP_PERMISSIONS.JOB.DELIVER) &&
-                deliverJobModal.isOpen && (
+                deliverModal.isOpen && (
                     <DeliverJobModal
-                        isOpen={deliverJobModal.isOpen}
-                        onClose={deliverJobModal.onClose}
-                        onConfirm={() => {}}
+                        isOpen={deliverModal.isOpen}
+                        onClose={deliverModal.onClose}
+                        onSuccess={onRefresh}
                         defaultJob={data}
+                        showSelect={false}
                     />
                 )}
             {hasPermission(APP_PERMISSIONS.JOB.UPDATE) && isOpenUCostModal && (
@@ -157,7 +146,7 @@ export function WorkbenchTableQuickActions({
                     />
                 )}
 
-            {hasPermission(APP_PERMISSIONS.JOB.ASSIGN_MEMBER) &&
+            {hasPermission(APP_PERMISSIONS.JOB.ASSIGNMENT) &&
                 isOpenAssignModal && (
                     <AssignMemberModal
                         isOpen={isOpenAssignModal}
@@ -173,116 +162,100 @@ export function WorkbenchTableQuickActions({
                     </Button>
                 </DropdownTrigger>
                 <DropdownMenu aria-label="Job menu actions">
-                    <DropdownSection key="quick_actions" title="View">
+                    <DropdownSection key="quick_actions">
                         <DropdownItem
-                            key="openInNewTab"
-                            startContent={
-                                <SquareArrowOutUpRight
-                                    className="text-text-default"
-                                    size={14}
-                                />
-                            }
-                            onPress={() =>
-                                window.open(
-                                    INTERNAL_URLS.jobDetail(data.no),
-                                    '_blank'
-                                )
-                            }
+                            key="view_fullscreen"
+                            startContent={<SquareDashed fontSize={14} />}
+                            as={Link}
+                            href={INTERNAL_URLS.jobDetail(data.no)}
                         >
-                            Open in new tab
+                            View Fullscreen
                         </DropdownItem>
                     </DropdownSection>
-                    <DropdownSection key="job_actions" title="Job">
-                        {hasPermission(APP_PERMISSIONS.JOB.DELIVER) ? (
-                            <DropdownItem
-                                key="deliverJob"
-                                startContent={
-                                    <TruckElectricIcon
-                                        className="text-text-default"
-                                        size={14}
-                                    />
-                                }
-                                onPress={deliverJobModal.onOpen}
-                            >
-                                Deliver Job
-                            </DropdownItem>
-                        ) : null}
-                        {hasPermission(APP_PERMISSIONS.JOB.ASSIGN_MEMBER) ? (
-                            <DropdownItem
-                                key="assignReassign"
-                                startContent={
-                                    <UserPlus
-                                        size={14}
-                                        className="text-text-default"
-                                    />
-                                }
-                                onPress={() => onOpenAssignModal()}
-                            >
-                                Assign / Reassign
-                            </DropdownItem>
-                        ) : null}
+                    {hasSomePermissions([
+                        APP_PERMISSIONS.JOB.DELIVER,
+                        APP_PERMISSIONS.JOB.ASSIGNMENT,
+                        APP_PERMISSIONS.JOB.UPDATE,
+                        APP_PERMISSIONS.JOB.DELETE,
+                    ]) ? (
+                        <DropdownSection
+                            key="job_operations"
+                            title="Operations"
+                        >
+                            {hasPermission(APP_PERMISSIONS.JOB.DELIVER) ? (
+                                <DropdownItem
+                                    key="deliver_job"
+                                    startContent={
+                                        <LocationArrow fontSize={14} />
+                                    }
+                                    onPress={deliverModal.onOpen}
+                                >
+                                    Deliver
+                                </DropdownItem>
+                            ) : null}
+                            {hasPermission(APP_PERMISSIONS.JOB.ASSIGNMENT) ? (
+                                <DropdownItem
+                                    key="assignment_setting"
+                                    startContent={<PersonGear fontSize={14} />}
+                                    onPress={() => onOpenAssignModal()}
+                                >
+                                    Assignment
+                                </DropdownItem>
+                            ) : null}
 
-                        {/* TODO: */}
-                        {false && hasPermission(APP_PERMISSIONS.JOB.UPDATE) ? (
-                            <DropdownItem
-                                key="reschedule"
-                                startContent={
-                                    <CalendarClock
-                                        size={14}
-                                        className="text-text-default"
-                                    />
-                                }
-                                onPress={() => onOpenRescheduleModal()}
-                            >
-                                Reschedule
-                            </DropdownItem>
-                        ) : null}
-                        {hasPermission(APP_PERMISSIONS.JOB.DELETE) ? (
-                            <DropdownItem
-                                key="deleteJob"
-                                startContent={
-                                    <Trash
-                                        size={14}
-                                        className="text-text-default"
-                                    />
-                                }
-                                onPress={() => onOpenModal()}
-                            >
-                                Delete
-                            </DropdownItem>
-                        ) : null}
-                    </DropdownSection>
-                    <DropdownSection key="payment_actions" title="Payment">
-                        {hasPermission(APP_PERMISSIONS.JOB.UPDATE) ? (
-                            <DropdownItem
-                                key="updateCost"
-                                startContent={
-                                    <CircleDollarSign
-                                        size={14}
-                                        className="text-text-default"
-                                    />
-                                }
-                                onPress={() => onOpenUCostModal()}
-                            >
-                                Update Cost
-                            </DropdownItem>
-                        ) : null}
-                        {hasPermission(APP_PERMISSIONS.JOB.PAID) &&
-                        canPayout ? (
-                            <DropdownItem
-                                key="confirmPayout"
-                                startContent={
-                                    <CircleCheck
-                                        size={14}
-                                        className="text-text-default"
-                                    />
-                                }
-                                onPress={confirmPayoutModalDisclosure.onOpen}
-                            >
-                                Confirm Payout
-                            </DropdownItem>
-                        ) : null}
-                    </DropdownSection>
+                            {hasPermission(APP_PERMISSIONS.JOB.UPDATE) ? (
+                                <DropdownItem
+                                    key="reschedule_job"
+                                    startContent={<Clock fontSize={14} />}
+                                    onPress={() => onOpenRescheduleModal()}
+                                >
+                                    Reschedule
+                                </DropdownItem>
+                            ) : null}
+
+                            {hasPermission(APP_PERMISSIONS.JOB.DELETE) ? (
+                                <DropdownItem
+                                    key="cancel_job"
+                                    startContent={<Xmark fontSize={14} />}
+                                    onPress={() => onOpenModal()}
+                                    color="danger"
+                                >
+                                    Cancel
+                                </DropdownItem>
+                            ) : null}
+                        </DropdownSection>
+                    ) : null}
+                    {hasSomePermissions([
+                        APP_PERMISSIONS.JOB.UPDATE_FINANCIAL,
+                        APP_PERMISSIONS.JOB.PAID,
+                    ]) ? (
+                        <DropdownSection
+                            key="financial_operations"
+                            title="Financials"
+                        >
+                            {hasPermission(APP_PERMISSIONS.JOB.UPDATE) ? (
+                                <DropdownItem
+                                    key="update_financials"
+                                    startContent={<Sliders fontSize={14} />}
+                                    onPress={() => onOpenUCostModal()}
+                                >
+                                    Update Financials
+                                </DropdownItem>
+                            ) : null}
+                            {hasPermission(APP_PERMISSIONS.JOB.PAID) &&
+                            canPayout ? (
+                                <DropdownItem
+                                    key="confirm_payout"
+                                    startContent={<CircleCheck fontSize={14} />}
+                                    onPress={
+                                        confirmPayoutModalDisclosure.onOpen
+                                    }
+                                >
+                                    Confirm Payout
+                                </DropdownItem>
+                            ) : null}
+                        </DropdownSection>
+                    ) : null}
                 </DropdownMenu>
             </Dropdown>
         </>
@@ -297,9 +270,18 @@ import {
     HeroModalFooter,
     HeroModalHeader,
 } from '@/shared/components/ui/hero-modal'
-import { useNavigate } from '@tanstack/react-router'
+import {
+    CircleCheck,
+    Clock,
+    LocationArrow,
+    PersonGear,
+    Sliders,
+    SquareDashed,
+    Xmark,
+} from '@gravity-ui/icons'
+import { useMutation } from '@tanstack/react-query'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { AlertCircle, CheckCircle2, ExternalLink } from 'lucide-react'
-import { useMemo } from 'react'
 import { ConfirmPaymentModal } from '../../../financial/components/modals/ConfirmPaymentModal'
 
 interface Props {

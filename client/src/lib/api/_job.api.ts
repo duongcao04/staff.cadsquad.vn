@@ -11,11 +11,8 @@ import {
     type TUpdateJobInput,
     TUpdateJobRevenue,
 } from '@/lib/validationSchemas'
-import { TJobGeneralDetails } from '@/routes/_administrator/mgmt/jobs/$no'
 import { ProjectCenterTabEnum } from '@/shared/enums'
-import type {
-    IPaginate,
-} from '@/shared/interfaces'
+import type { IPaginate } from '@/shared/interfaces'
 import type {
     JobColumnKey,
     JobUpdateResponse,
@@ -28,12 +25,14 @@ export const jobApi = {
     // =========================================================================
     // CORE CRUD (Create, Read, Update, Delete)
     // =========================================================================
-    create: async (data: Omit<
-        TCreateJobFormValues,
-        | 'useExistingSharepointFolder'
-        | 'sharepointTemplateId'
-        | 'isCreateSharepointFolder'
-    >) => {
+    create: async (
+        data: Omit<
+            TCreateJobFormValues,
+            | 'useExistingSharepointFolder'
+            | 'sharepointTemplateId'
+            | 'isCreateSharepointFolder'
+        >
+    ) => {
         return axiosClient
             .post<ApiResponse<any>>('/v1/jobs', {
                 ...data,
@@ -66,6 +65,12 @@ export const jobApi = {
             .then((res) => res.data)
     },
 
+    jobFinancialDetail: async (id: string) => {
+        return axiosClient
+            .get<ApiResponse<any>>(`/v1/jobs/${id}/financials`)
+            .then((res) => res.data)
+    },
+
     findByJobNo: async (jobNo: string) => {
         return axiosClient
             .get<ApiResponse<any>>(`/v1/jobs/no/${jobNo}`)
@@ -86,6 +91,14 @@ export const jobApi = {
             .delete<
                 ApiResponse<{ id: string; message: string }>
             >(`/v1/jobs/${jobId}`)
+            .then((res) => res.data)
+    },
+
+    restore: async (jobId: string) => {
+        return axiosClient
+            .patch<
+                ApiResponse<{ id: string; message: string }>
+            >(`/v1/jobs/${jobId}/restore`)
             .then((res) => res.data)
     },
 
@@ -207,13 +220,13 @@ export const jobApi = {
     // =========================================================================
     updateGeneralInfo: async (
         jobId: string,
-        data: Partial<TJobGeneralDetails>
+        data: Partial<TUpdateJobInput>
     ) => {
         return axiosClient
             .patch<ApiResponse<JobUpdateResponse>>(
                 `/v1/jobs/${jobId}/general`,
                 {
-                    clientName: data.clientName,
+                    clientId: data.clientId,
                     displayName: data.displayName,
                     description: data.description,
                     dueAt: !lodash.isEmpty(data.dueAt)
@@ -286,6 +299,12 @@ export const jobApi = {
             .then((res) => res.data)
     },
 
+    payoutDetails: async (jobNo: string) => {
+        return axiosClient
+            .get<ApiResponse<any[]>>(`/v1/jobs/payouts/${jobNo}`)
+            .then((res) => res.data)
+    },
+
     jobsDueInMonth: async (month: number, year: number) => {
         return axiosClient
             .get<
@@ -303,9 +322,7 @@ export const jobApi = {
     getJobActivityLog: async (id: string) => {
         // You might want to type the response here if you have TJobActivityLog
         return axiosClient
-            .get<
-                ApiResponse<any[]>
-            >(`/v1/jobs/${id}/activity-logs`)
+            .get<ApiResponse<any[]>>(`/v1/jobs/${id}/activity-logs`)
             .then((res) => res.data)
     },
 

@@ -13,6 +13,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express'
 import { CopyItemDto } from './dtos/copy-item.dto'
 import { SharePointService } from './sharepoint.service'
+import { ResponseMessage } from '../../common/decorators/responseMessage.decorator'
 
 @Controller('sharepoint')
 // @UseGuards(JwtGuard) // Bảo vệ toàn bộ API bằng Token Local
@@ -23,6 +24,7 @@ export class SharePointController {
 	// GET /api/v1/sharepoint/items?folderId=xxx
 	// Nếu không truyền folderId -> Lấy Root
 	@Get('items')
+	@ResponseMessage("Get folder items successfully")
 	async listItems(@Query('folderId') folderId?: string) {
 		return this.service.getItems(folderId)
 	}
@@ -83,7 +85,7 @@ export class SharePointController {
 	@Get('resolve-path')
 	async getIdFromPath(@Query('path') path: string) {
 		// Gọi: GET /sharepoint/resolve-path?path=CSD- TEAM/ST006. CH.DUONG
-		const id = await this.service.getFolderIdByPath(path)
+		const id = await this.service.getFolderDetailsByPath(path)
 		return { path, id }
 	}
 	/**
@@ -117,5 +119,16 @@ export class SharePointController {
 			dto.destinationFolderId,
 			dto.newName
 		);
+	}
+
+	// 9. Lấy thông tin chi tiết của Folder (hoặc File)
+	// GET /api/v1/sharepoint/folder/xxx-folder-id-xxx
+	@Get('folder/:id')
+	async getFolderDetails(@Param('id') id: string) {
+		if (!id) {
+			throw new BadRequestException('Folder ID is required');
+		}
+
+		return this.service.getFolderDetails(id);
 	}
 }

@@ -126,7 +126,7 @@ export const searchOptions = (
                                     ? INTERNAL_URLS.management.staffDetail(
                                           item.username
                                       )
-                                    : INTERNAL_URLS.staffDirectory,
+                                    : INTERNAL_URLS.management.team,
                                 rawData: item,
                             }))
                         })

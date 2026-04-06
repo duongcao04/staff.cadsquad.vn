@@ -27,7 +27,7 @@ export const ClientSchema = z.object({
     paymentTerms: z.number().default(0),
 
     // Quan hệ với Jobs (Dùng lazy để tránh vòng lặp vô tận với JobSchema)
-    jobs: z.array(z.lazy(() => JobSchema)).default([]),
+    jobs: z.array(z.lazy(() => JobSchema)).nullish().default([]),
 
     // Ép kiểu Date từ API string
     createdAt: z.coerce.date().catch(new Date()),
@@ -35,26 +35,24 @@ export const ClientSchema = z.object({
 });
 
 export const EditClientFormSchema = z.object({
-    name: z.string()
-        .min(1, 'Client name is required')
+    name: z.string("Name is required")
+        .min(1, 'Name is required')
         .max(255, 'Name is too long'),
 
-    code: z.string()
+    code: z.string("Code is required")
         .min(2, 'Code must be at least 2 characters')
         .max(20, 'Code is too long'),
 
     type: z.nativeEnum(EClientType, {
-        message: 'Please select a valid client type', // Dùng message thay vì errorMap
+        message: 'Please select a valid client type',
     }),
 
-    // Sử dụng .nullish() hoặc .or(z.string().length(0)) để xử lý trường không bắt buộc
     email: z.string()
-        .email('Invalid email format')
-        .or(z.string().length(0)),
+        .email('Invalid email format').optional(),
 
     billingEmail: z.string()
         .email('Invalid email format')
-        .or(z.string().length(0)),
+        .or(z.string().length(0)).optional(),
 
     phoneNumber: z.string()
         .max(20, 'Phone number is too long')
@@ -62,17 +60,15 @@ export const EditClientFormSchema = z.object({
 
     address: z.string().optional(),
 
-    country: z.string().min(1, 'Country is required'),
+    country: z.string().optional(),
 
     taxId: z.string().optional(),
 
-    currency: z.string().default('USD'),
+    currency: z.string().optional().default('USD'),
 
-    // Chuyển đổi giá trị input (thường là string) sang number
     paymentTerms: z.coerce.number()
-        .min(0, 'Terms cannot be negative')
+        .min(0, 'Terms cannot be negative').optional()
         .default(30),
 });
 
-// Trích xuất Type cho Form Values
 export type TEditClientFormValues = z.infer<typeof EditClientFormSchema>;

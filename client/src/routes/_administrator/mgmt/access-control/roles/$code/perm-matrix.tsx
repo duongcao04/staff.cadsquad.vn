@@ -1,4 +1,12 @@
-import { permissionGroupsListOptions, roleOptions } from '@/lib/queries'
+import { INTERNAL_URLS } from '@/lib'
+import {
+    bulkUpdatePermissionOptions,
+    permissionGroupsListOptions,
+    roleOptions,
+} from '@/lib/queries'
+import { AdminPageHeading } from '@/shared/components'
+import AdminContentContainer from '@/shared/components/admin/AdminContentContainer'
+import { ArrowLeft, ArrowRotateLeft, FloppyDisk } from '@gravity-ui/icons'
 import {
     Accordion,
     AccordionItem,
@@ -11,22 +19,167 @@ import {
     CheckboxGroup,
     Divider,
 } from '@heroui/react'
-import { useSuspenseQueries } from '@tanstack/react-query'
-import { createFileRoute, useRouter } from '@tanstack/react-router'
-import { ListChecks, RotateCcw, Save, ShieldCheck } from 'lucide-react'
-import { useMemo, useState } from 'react'
-import { useBulkUpdatePermissions } from '../../../../../../lib/queries/useRole'
-// Import hook mutation mà chúng ta đã viết ở bước trước
+import { useMutation, useSuspenseQueries } from '@tanstack/react-query'
+import { createFileRoute, Link, useRouter } from '@tanstack/react-router'
+import { ListChecks, ShieldCheck } from 'lucide-react'
+import { Dispatch, SetStateAction, useMemo, useState } from 'react'
 
 export const Route = createFileRoute(
     '/_administrator/mgmt/access-control/roles/$code/perm-matrix'
 )({
-    component: EditPermissionsMatrix,
+    component: () => {
+        const router = useRouter()
+        const { code } = Route.useParams()
+
+        const [
+            { data: permissionGroups },
+            {
+                data: { role },
+            },
+        ] = useSuspenseQueries({
+            queries: [
+                { ...permissionGroupsListOptions() },
+                { ...roleOptions(code) },
+            ],
+        })
+
+        // 2. Local State cho danh sách Permission IDs đang chọn
+        const [selectedIds, setSelectedIds] = useState<string[]>(
+            role.permissions.map((p: any) => p.id)
+        )
+
+        // Khởi tạo Mutation
+        const { mutate: updatePermissions, isPending } = useMutation(
+            bulkUpdatePermissionOptions
+        )
+
+        // Kiểm tra xem dữ liệu đã thay đổi so với ban đầu chưa
+        const isDirty = useMemo(() => {
+            const initialIds = [
+                ...role.permissions.map((p: any) => p.id),
+            ].sort()
+            const currentIds = [...selectedIds].sort()
+            return JSON.stringify(initialIds) !== JSON.stringify(currentIds)
+        }, [selectedIds, role.permissions])
+
+        // 3. Handlers
+        const handleReset = () =>
+            setSelectedIds(role.permissions.map((p: any) => p.id))
+
+        const handleSave = () => {
+            // Gọi mutation để lưu vào DB thông qua API PATCH /v1/roles/:id/permissions/bulk
+            updatePermissions(
+                { roleId: role.id, permissionIds: selectedIds },
+                {
+                    onSuccess: () => {
+                        // Sau khi lưu thành công, có thể điều hướng hoặc giữ nguyên để edit tiếp
+                        // router.navigate({ href: '..' })
+                    },
+                }
+            )
+        }
+        return (
+            <>
+                <AdminPageHeading
+                    title={
+                        <div className="flex items-center gap-4">
+                            <Button
+                                isIconOnly
+                                variant="flat"
+                                onPress={() => router.history.back()}
+                            >
+                                <ArrowLeft fontSize={18} />
+                            </Button>
+                            <div className="space-y-0.5">
+                                <h1 className="text-2xl font-bold">
+                                    Edit Authority Matrix
+                                </h1>
+                                <p className="text-sm text-text-subdued font-medium">
+                                    Configure granular access for{' '}
+                                    <span
+                                        className="font-bold"
+                                        style={{ color: role.hexColor }}
+                                    >
+                                        {role.displayName}
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    }
+                    actions={
+                        <div className="flex gap-2">
+                            {isDirty && (
+                                <Button
+                                    variant="flat"
+                                    color="warning"
+                                    startContent={
+                                        <ArrowRotateLeft fontSize={14} />
+                                    }
+                                    onPress={handleReset}
+                                    isDisabled={isPending}
+                                >
+                                    Reset Changes
+                                </Button>
+                            )}
+                            <Button
+                                color="primary"
+                                startContent={<FloppyDisk fontSize={14} />}
+                                onPress={handleSave}
+                                isDisabled={!isDirty}
+                                isLoading={isPending}
+                            >
+                                Update Permissions
+                            </Button>
+                        </div>
+                    }
+                />
+                <AdminContentContainer className="pt-0 space-y-5">
+                    <Breadcrumbs className="text-xs">
+                        <BreadcrumbItem>
+                            <Link
+                                to={INTERNAL_URLS.admin.overview}
+                                className="text-text-subdued!"
+                            >
+                                Management
+                            </Link>
+                        </BreadcrumbItem>
+                        <BreadcrumbItem>
+                            <Link
+                                to={INTERNAL_URLS.management.accessControl}
+                                className="text-text-subdued!"
+                            >
+                                Access Control
+                            </Link>
+                        </BreadcrumbItem>
+                        <BreadcrumbItem>Roles</BreadcrumbItem>
+                        <BreadcrumbItem>{role.displayName}</BreadcrumbItem>
+                        <BreadcrumbItem>Permissions Matrix</BreadcrumbItem>
+                    </Breadcrumbs>
+
+                    <div className="space-y-8">
+                        <EditPermissionsMatrix
+                            setSelectedIds={setSelectedIds}
+                            selectedIds={selectedIds}
+                            isPending={isPending}
+                        />
+                    </div>
+                </AdminContentContainer>
+            </>
+        )
+    },
 })
 
-export default function EditPermissionsMatrix() {
+interface EditPermissionsMatrixProps {
+    selectedIds: string[]
+    setSelectedIds: Dispatch<SetStateAction<string[]>>
+    isPending: boolean
+}
+export default function EditPermissionsMatrix({
+    selectedIds,
+    setSelectedIds,
+    isPending,
+}: EditPermissionsMatrixProps) {
     const { code } = Route.useParams()
-    const router = useRouter()
 
     // 1. Fetch Master Permissions & Current Role Details
     const [
@@ -41,116 +194,30 @@ export default function EditPermissionsMatrix() {
         ],
     })
 
-    // 2. Local State cho danh sách Permission IDs đang chọn
-    const [selectedIds, setSelectedIds] = useState<string[]>(
-        role.permissions.map((p: any) => p.id)
-    )
-
-    // Khởi tạo Mutation
-    const { mutate: updatePermissions, isPending } = useBulkUpdatePermissions(
-        role.id
-    )
-
-    // Kiểm tra xem dữ liệu đã thay đổi so với ban đầu chưa
-    const isDirty = useMemo(() => {
-        const initialIds = [...role.permissions.map((p: any) => p.id)].sort()
-        const currentIds = [...selectedIds].sort()
-        return JSON.stringify(initialIds) !== JSON.stringify(currentIds)
-    }, [selectedIds, role.permissions])
-
-    // 3. Handlers
-    const handleReset = () =>
-        setSelectedIds(role.permissions.map((p: any) => p.id))
-
-    const handleSave = () => {
-        // Gọi mutation để lưu vào DB thông qua API PATCH /v1/roles/:id/permissions/bulk
-        updatePermissions(selectedIds, {
-            onSuccess: () => {
-                // Sau khi lưu thành công, có thể điều hướng hoặc giữ nguyên để edit tiếp
-                // router.navigate({ href: '..' })
-            },
-        })
-    }
-
     return (
-        <div className="p-8 space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-400">
-            {/* Navigation Header */}
-            <div className="flex flex-col gap-4">
-                <Breadcrumbs variant="light">
-                    <BreadcrumbItem
-                        onPress={() =>
-                            router.navigate({
-                                href: '/admin/mgmt/access-control/roles',
-                            })
-                        }
-                    >
-                        Roles
-                    </BreadcrumbItem>
-                    <BreadcrumbItem
-                        onPress={() => router.navigate({ href: `..` })}
-                    >
-                        {role.displayName}
-                    </BreadcrumbItem>
-                    <BreadcrumbItem>Permissions Matrix</BreadcrumbItem>
-                </Breadcrumbs>
-
-                <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-4">
-                        <div
-                            className="w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg"
-                            style={{ backgroundColor: role.hexColor }}
-                        >
-                            <ShieldCheck size={28} />
-                        </div>
-                        <div>
-                            <h1 className="text-2xl font-black">
-                                Edit Authority Matrix
-                            </h1>
-                            <p className="text-sm text-default-500 font-medium">
-                                Configure granular access for{' '}
-                                <span className="text-primary font-bold">
-                                    {role.displayName}
-                                </span>
-                            </p>
-                        </div>
+        <>
+            <Card shadow="none" className="bg-danger-50 border-none">
+                <CardBody className="flex flex-row items-center gap-4 p-4">
+                    <div className="p-2 bg-danger-100 rounded-full text-danger">
+                        <ShieldCheck size={20} />
                     </div>
-
-                    <div className="flex gap-2">
-                        {isDirty && (
-                            <Button
-                                variant="flat"
-                                color="warning"
-                                startContent={<RotateCcw size={18} />}
-                                onPress={handleReset}
-                                isDisabled={isPending}
-                            >
-                                Reset Changes
-                            </Button>
-                        )}
-                        <Button
-                            color="primary"
-                            size="lg"
-                            className="font-bold px-8 shadow-xl shadow-primary/30"
-                            startContent={<Save size={18} />}
-                            onPress={handleSave}
-                            isDisabled={!isDirty}
-                            isLoading={isPending} // Hiển thị trạng thái đang lưu
-                        >
-                            Update Permissions
-                        </Button>
-                    </div>
-                </div>
-            </div>
-
-            <Divider />
-
-            {/* Permission Matrix Area */}
-            <div className="max-w-5xl mx-auto py-4">
+                    <p className="text-sm text-danger-700">
+                        <b>Critical Action:</b> Changes made here will instantly
+                        affect all users assigned to the{' '}
+                        <b>{role.displayName}</b> role. Please ensure you have
+                        verified the internal security policy before saving.
+                    </p>
+                </CardBody>
+            </Card>
+            <div className="max-w-7xl mx-auto">
                 <Accordion
                     variant="splitted"
                     selectionMode="multiple"
                     defaultExpandedKeys={[permissionGroups[0]?.id]}
                     className="px-0"
+                    itemClasses={{
+                        trigger: 'cursor-pointer',
+                    }}
                 >
                     {permissionGroups.map((group) => (
                         <AccordionItem
@@ -163,12 +230,12 @@ export default function EditPermissionsMatrix() {
                                 />
                             }
                             title={
-                                <span className="font-black text-sm uppercase tracking-tight">
+                                <span className="font-medium tracking-tight">
                                     {group.name}
                                 </span>
                             }
                             subtitle={
-                                <span className="text-xs text-default-400">
+                                <span className="text-xs text-text-subdued">
                                     {group.permissions.length} actions
                                     controlled
                                 </span>
@@ -178,7 +245,7 @@ export default function EditPermissionsMatrix() {
                                 content: 'pb-6 px-4',
                             }}
                         >
-                            <Divider className="my-4" />
+                            <Divider className="mb-8" />
                             <CheckboxGroup
                                 color="primary"
                                 value={selectedIds}
@@ -194,13 +261,13 @@ export default function EditPermissionsMatrix() {
                                             <Checkbox
                                                 value={perm.id}
                                                 classNames={{
-                                                    label: 'text-sm font-bold text-default-700',
+                                                    label: '-mt-1 pl-1 font-medium text-text-default',
                                                 }}
                                             >
                                                 {perm.displayName}
                                             </Checkbox>
                                             {perm.description && (
-                                                <p className="text-[10px] text-default-400 ml-7 leading-tight italic">
+                                                <p className="text-sm text-text-subdued font-normal pl-8 leading-tight">
                                                     {perm.description}
                                                 </p>
                                             )}
@@ -212,21 +279,6 @@ export default function EditPermissionsMatrix() {
                     ))}
                 </Accordion>
             </div>
-
-            {/* Warning Footer */}
-            <Card className="bg-danger-50 border-none shadow-none mt-10">
-                <CardBody className="flex flex-row items-center gap-4 p-4">
-                    <div className="p-2 bg-danger-100 rounded-full text-danger">
-                        <ShieldCheck size={20} />
-                    </div>
-                    <p className="text-xs text-danger-700 font-medium">
-                        <b>Critical Action:</b> Changes made here will instantly
-                        affect all users assigned to the{' '}
-                        <b>{role.displayName}</b> role. Please ensure you have
-                        verified the internal security policy before saving.
-                    </p>
-                </CardBody>
-            </Card>
-        </div>
+        </>
     )
 }

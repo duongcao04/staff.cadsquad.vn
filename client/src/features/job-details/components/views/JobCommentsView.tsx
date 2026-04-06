@@ -1,7 +1,7 @@
 import { dateFormatter, linkify, optimizeCloudinary, useProfile } from '@/lib'
-import { jobCommentsOptions, useCreateJobCommentMutation } from '@/lib/queries'
+import { createJobCommentOptions, jobCommentsOptions } from '@/lib/queries'
 import { Avatar, Button, Divider, Skeleton } from '@heroui/react'
-import { useSuspenseQuery } from '@tanstack/react-query'
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query'
 import {
     Bold,
     ChevronDown,
@@ -51,7 +51,7 @@ export default function JobCommentsView({ job }: { job: TJob }) {
 function AddCommentArea({ jobId, parentId, onSuccess, autoFocus }: any) {
     const { data: profile } = useProfile()
 
-    const createCommentMutation = useCreateJobCommentMutation()
+    const createCommentMutation = useMutation(createJobCommentOptions)
 
     const [content, setContent] = useState('')
 

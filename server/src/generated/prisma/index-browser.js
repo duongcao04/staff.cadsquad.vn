@@ -24,12 +24,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 7.2.0
- * Query Engine version: 0c8ef2ce45c83248ab3df073180d5eda9e8be7a3
+ * Prisma Client JS version: 7.6.0
+ * Query Engine version: 75cbdc1eb7150937890ad5465d861175c6624711
  */
 Prisma.prismaVersion = {
-  client: "7.2.0",
-  engine: "0c8ef2ce45c83248ab3df073180d5eda9e8be7a3"
+  client: "7.6.0",
+  engine: "75cbdc1eb7150937890ad5465d861175c6624711"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -119,6 +119,21 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   RepeatableRead: 'RepeatableRead',
   Serializable: 'Serializable'
 });
+
+exports.Prisma.SystemAuditLogScalarFieldEnum = {
+  id: 'id',
+  actorId: 'actorId',
+  action: 'action',
+  module: 'module',
+  targetId: 'targetId',
+  targetDisplay: 'targetDisplay',
+  oldValues: 'oldValues',
+  newValues: 'newValues',
+  metadata: 'metadata',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  createdAt: 'createdAt'
+};
 
 exports.Prisma.BrowserSubscribesScalarFieldEnum = {
   id: 'id',
@@ -309,9 +324,9 @@ exports.Prisma.JobScalarFieldEnum = {
   displayName: 'displayName',
   description: 'description',
   attachmentUrls: 'attachmentUrls',
-  sharepointFolderId: 'sharepointFolderId',
   clientId: 'clientId',
   incomeCost: 'incomeCost',
+  sharepointFolderId: 'sharepointFolderId',
   totalStaffCost: 'totalStaffCost',
   createdById: 'createdById',
   paymentChannelId: 'paymentChannelId',
@@ -319,15 +334,26 @@ exports.Prisma.JobScalarFieldEnum = {
   startedAt: 'startedAt',
   priority: 'priority',
   isPublished: 'isPublished',
-  isPaid: 'isPaid',
   dueAt: 'dueAt',
   completedAt: 'completedAt',
   finishedAt: 'finishedAt',
-  paidAt: 'paidAt',
+  paymentStatus: 'paymentStatus',
+  payoutDate: 'payoutDate',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt',
   folderTemplateId: 'folderTemplateId'
+};
+
+exports.Prisma.SharepointItemScalarFieldEnum = {
+  id: 'id',
+  itemId: 'itemId',
+  displayName: 'displayName',
+  isFolder: 'isFolder',
+  size: 'size',
+  webUrl: 'webUrl',
+  createdDateTime: 'createdDateTime',
+  createdBy: 'createdBy'
 };
 
 exports.Prisma.JobAssignmentScalarFieldEnum = {
@@ -378,9 +404,16 @@ exports.Prisma.PaymentChannelScalarFieldEnum = {
   id: 'id',
   displayName: 'displayName',
   hexColor: 'hexColor',
+  type: 'type',
+  accountDetails: 'accountDetails',
+  feeRate: 'feeRate',
+  fixedFee: 'fixedFee',
+  totalVolume: 'totalVolume',
+  totalFees: 'totalFees',
   logoUrl: 'logoUrl',
   ownerName: 'ownerName',
   cardNumber: 'cardNumber',
+  isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -527,17 +560,42 @@ exports.Prisma.PostEventScalarFieldEnum = {
   postId: 'postId'
 };
 
+exports.Prisma.SystemSettingScalarFieldEnum = {
+  key: 'key',
+  value: 'value',
+  updatedAt: 'updatedAt',
+  modifierById: 'modifierById'
+};
+
+exports.Prisma.TransactionScalarFieldEnum = {
+  id: 'id',
+  amount: 'amount',
+  currency: 'currency',
+  type: 'type',
+  status: 'status',
+  referenceNo: 'referenceNo',
+  note: 'note',
+  evidenceUrl: 'evidenceUrl',
+  jobId: 'jobId',
+  clientId: 'clientId',
+  assignmentId: 'assignmentId',
+  paymentChannelId: 'paymentChannelId',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
 };
 
-exports.Prisma.JsonNullValueInput = {
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
   JsonNull: Prisma.JsonNull
 };
 
-exports.Prisma.NullableJsonNullValueInput = {
-  DbNull: Prisma.DbNull,
+exports.Prisma.JsonNullValueInput = {
   JsonNull: Prisma.JsonNull
 };
 
@@ -546,16 +604,27 @@ exports.Prisma.QueryMode = {
   insensitive: 'insensitive'
 };
 
-exports.Prisma.NullsOrder = {
-  first: 'first',
-  last: 'last'
-};
-
 exports.Prisma.JsonNullValueFilter = {
   DbNull: Prisma.DbNull,
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
 };
+
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
+exports.SystemModule = exports.$Enums.SystemModule = {
+  JOB: 'JOB',
+  DELIVERY: 'DELIVERY',
+  FINANCIAL: 'FINANCIAL',
+  SYSTEM: 'SYSTEM',
+  SECURITY: 'SECURITY',
+  USER_MANAGEMENT: 'USER_MANAGEMENT',
+  CLIENT: 'CLIENT',
+  ASSET: 'ASSET'
+};
+
 exports.SecurityLogStatus = exports.$Enums.SecurityLogStatus = {
   SUCCESS: 'SUCCESS',
   FAILED: 'FAILED',
@@ -596,9 +665,22 @@ exports.JobPriority = exports.$Enums.JobPriority = {
   URGENT: 'URGENT'
 };
 
+exports.JOB_PAYMENT_STATUS = exports.$Enums.JOB_PAYMENT_STATUS = {
+  PAID: 'PAID',
+  PENDING: 'PENDING',
+  UNPAID: 'UNPAID',
+  FAILED: 'FAILED'
+};
+
 exports.ClientType = exports.$Enums.ClientType = {
   INDIVIDUAL: 'INDIVIDUAL',
   COMPANY: 'COMPANY'
+};
+
+exports.PaymentChannelType = exports.$Enums.PaymentChannelType = {
+  BANK: 'BANK',
+  E_WALLET: 'E_WALLET',
+  CRYPTO: 'CRYPTO'
 };
 
 exports.JobStatusSystemType = exports.$Enums.JobStatusSystemType = {
@@ -677,7 +759,21 @@ exports.TopicType = exports.$Enums.TopicType = {
   SUPPORT: 'SUPPORT'
 };
 
+exports.TransactionType = exports.$Enums.TransactionType = {
+  INCOME: 'INCOME',
+  PAYOUT: 'PAYOUT',
+  REFUND: 'REFUND'
+};
+
+exports.TransactionStatus = exports.$Enums.TransactionStatus = {
+  PENDING: 'PENDING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED',
+  CANCELLED: 'CANCELLED'
+};
+
 exports.Prisma.ModelName = {
+  SystemAuditLog: 'SystemAuditLog',
   BrowserSubscribes: 'BrowserSubscribes',
   UserDevices: 'UserDevices',
   User: 'User',
@@ -696,6 +792,7 @@ exports.Prisma.ModelName = {
   UserConfig: 'UserConfig',
   FileSystem: 'FileSystem',
   Job: 'Job',
+  SharepointItem: 'SharepointItem',
   JobAssignment: 'JobAssignment',
   JobFolderTemplate: 'JobFolderTemplate',
   Client: 'Client',
@@ -712,7 +809,9 @@ exports.Prisma.ModelName = {
   CommunityMember: 'CommunityMember',
   Topic: 'Topic',
   Post: 'Post',
-  PostEvent: 'PostEvent'
+  PostEvent: 'PostEvent',
+  SystemSetting: 'SystemSetting',
+  Transaction: 'Transaction'
 };
 
 /**

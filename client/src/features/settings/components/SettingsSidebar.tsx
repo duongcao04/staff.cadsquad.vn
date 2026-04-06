@@ -99,7 +99,6 @@ export default function SettingsSidebar() {
                                                 ? 'bg-background-hovered text-text-default font-medium'
                                                 : 'text-text-subdued'
                                         )}
-                                        // Logic to handle selection (e.g. navigation)
                                         onPress={() =>
                                             router.navigate({
                                                 href: item.href,

@@ -21,7 +21,7 @@ import {
 export class MailService implements OnModuleInit {
 	private readonly logger = new Logger(MailService.name)
 
-	constructor(@InjectQueue(MAIL_QUEUE) private readonly mailQueue: Queue) {}
+	constructor(@InjectQueue(MAIL_QUEUE) private readonly mailQueue: Queue) { }
 
 	async onModuleInit() {
 		const isPaused = await this.mailQueue.isPaused()
@@ -81,7 +81,7 @@ export class MailService implements OnModuleInit {
 			no: string
 			displayName: string
 			incomeCost: number
-			paidAt?: Date
+			payoutDate?: Date
 		}
 	) {
 		const queueJobs = users.map((user) =>
@@ -92,7 +92,7 @@ export class MailService implements OnModuleInit {
 				jobNo: job.no,
 				jobTitle: job.displayName,
 				amount: job.incomeCost,
-				paidAt: job.paidAt || new Date(),
+				payoutDate: job.payoutDate || new Date(),
 			})
 		)
 		await Promise.all(queueJobs)

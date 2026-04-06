@@ -1,3 +1,6 @@
+import { optimizeCloudinary } from '@/lib'
+import { logoutOptions, useProfile } from '@/lib/queries'
+import { INTERNAL_URLS, THEME_SELECTS } from '@/lib/utils'
 import {
     addToast,
     Avatar,
@@ -10,6 +13,7 @@ import {
     SelectItem,
     User as UserComp,
 } from '@heroui/react'
+import { useMutation } from '@tanstack/react-query'
 import { useRouter } from '@tanstack/react-router'
 import {
     ChartArea,
@@ -22,20 +26,15 @@ import {
 } from 'lucide-react'
 import { useTheme } from 'next-themes'
 
-import { useLogout, useProfile } from '@/lib/queries'
-import { INTERNAL_URLS, THEME_SELECTS } from '@/lib/utils'
-
-import { optimizeCloudinary } from '../../../../lib'
-
 export function UserDropdown() {
     const { theme, setTheme } = useTheme()
 
     const router = useRouter()
     const { profile } = useProfile()
-    const { mutateAsync: logoutMutate } = useLogout()
+    const logout = useMutation(logoutOptions)
 
     const handleLogout = async () => {
-        logoutMutate().then(() => {
+        logout.mutateAsync().then(() => {
             addToast({
                 title: 'Logout successfully!',
                 color: 'success',
@@ -59,7 +58,7 @@ export function UserDropdown() {
                 <Avatar
                     className="cursor-pointer"
                     icon={<User size={18} />}
-                    src={optimizeCloudinary(profile.avatar)}
+                    src={profile.avatar}
                     classNames={{
                         base: '!size-6',
                     }}

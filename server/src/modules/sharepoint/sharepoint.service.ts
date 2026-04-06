@@ -310,18 +310,48 @@ export class SharePointService implements OnModuleInit, OnModuleDestroy {
 		await client.api(`${this.driveEndpoint}/items/${itemId}`).delete()
 		return { success: true }
 	}
+	
+	async getFolderDetailsByPath(path: string) {
+		const client = await this.getGraphClient();
 
-	async getFolderIdByPath(path: string): Promise<string> {
-		const client = await this.getGraphClient()
-		const safePath = path.startsWith('/') ? path.substring(1) : path
-		const endpoint = `/drives/${this.driveId}/root:/${safePath}`
+		// Clean the path: remove leading slash and encode for URLs (handles spaces/special chars)
+		const safePath = path.startsWith('/') ? path.substring(1) : path;
+		const encodedPath = encodeURIComponent(safePath);
+
+		const endpoint = `/drives/${this.driveId}/root:/${encodedPath}`;
 
 		try {
-			const item = await client.api(endpoint).get()
-			return item.id
+			const item = await client
+				.api(endpoint)
+				// Specify exactly which fields you want
+				.select([
+					'id',
+					'name',
+					'webUrl',
+					'folder',        // Contains childCount
+					'size',          // Total size of all items inside
+					'parentReference', // Site and Drive info
+					'createdDateTime',
+					'lastModifiedDateTime',
+					'file'           // Will be present if it's a file, null if folder
+				])
+				.get();
+
+			return {
+				id: item.id,
+				name: item.name,
+				url: item.webUrl,
+				isFolder: !!item.folder,
+				childCount: item.folder?.childCount || 0,
+				totalSize: item.size,
+				parentPath: item.parentReference?.path,
+				createdAt: item.createdDateTime,
+				updatedAt: item.lastModifiedDateTime,
+				raw: item // Keep the original response if needed
+			};
 		} catch (error) {
-			this.logger.error(`Folder not found: ${path}`)
-			throw new BadRequestException('Folder path not found in SharePoint')
+			this.logger.error(`Path resolution failed: ${path} - ${(error as Error).message}`);
+			throw new BadRequestException(`Path '${path}' not found in SharePoint.`);
 		}
 	}
 
@@ -335,5 +365,19 @@ export class SharePointService implements OnModuleInit, OnModuleDestroy {
 			webUrl: drive.webUrl,
 			description: drive.description,
 		}))
+	}
+
+	async getFolderDetails(folderId: string) {
+		try {
+			const client = await this.getGraphClient()
+			// Ví dụ sử dụng Microsoft Graph Client
+			const details = await client.api(`/sites/${this.siteId}/drive/items/${folderId}`)
+				.get();
+
+			return details;
+		} catch (error) {
+			// Xử lý lỗi (ví dụ: NotFoundException nếu folder không tồn tại)
+			throw error;
+		}
 	}
 }

@@ -5,14 +5,14 @@ import { UserResponseDto } from '../../user/dto/user-response.dto'
 export class DepartmentResponseDto {
     @ApiProperty({ description: 'Department ID' })
     @Expose()
-    id: string
+    id!: string
 
     @ApiProperty({ description: 'Display name of the department' })
     @Expose()
-    displayName: string
+    displayName!: string
 
     @Expose()
-    users: UserResponseDto[]
+    users!: UserResponseDto[]
 
     @ApiProperty({
         description: 'Optional notes for the department',
@@ -23,7 +23,7 @@ export class DepartmentResponseDto {
 
     @ApiProperty({ description: 'Unique code for the department' })
     @Expose()
-    code: string
+    code!: string
 
     @Expose()
     _count: any
@@ -37,9 +37,9 @@ export class DepartmentResponseDto {
 
     @ApiProperty({ description: 'Creation timestamp' })
     @Expose()
-    createdAt: Date
+    createdAt!: Date
 
     @ApiProperty({ description: 'Last update timestamp' })
     @Expose()
-    updatedAt: Date
+    updatedAt!: Date
 }

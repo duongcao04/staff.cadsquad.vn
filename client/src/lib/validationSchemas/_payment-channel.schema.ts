@@ -3,6 +3,7 @@ import { z, ZodType } from 'zod';
 import { TPaymentChannel } from "../../shared/types";
 import { COLORS, IMAGES } from "../utils";
 import { JobSchema } from "./_job.schema";
+import { EPaymentChannelType } from "../../shared/enums";
 
 export const PaymentChannelSchema: ZodType<TPaymentChannel> = z.lazy(() => z.object({
     // Sử dụng .catch() để rào nếu ID lỡ bị null/undefined
@@ -12,6 +13,16 @@ export const PaymentChannelSchema: ZodType<TPaymentChannel> = z.lazy(() => z.obj
 
     // Các trường optional có thể dùng .optional() hoặc gán default/null tùy UI
     hexColor: z.string().optional().catch(COLORS.white),
+
+    type: z.nativeEnum(EPaymentChannelType).catch(EPaymentChannelType.BANK),
+
+    accountDetails: z.string().nullish(),
+    feeRate: z.coerce.number().nullish().default(0),
+    fixedFee: z.coerce.number().nullish().default(0),
+    totalVolume: z.coerce.number().nullish().default(0),
+    totalFees: z.coerce.number().nullish().default(0),
+
+    isActive: z.coerce.boolean().catch(true),
 
     logoUrl: z.string().optional().catch(IMAGES.cadsquadLogoOrange),
 

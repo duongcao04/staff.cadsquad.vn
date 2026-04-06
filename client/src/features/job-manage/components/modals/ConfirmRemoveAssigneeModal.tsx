@@ -16,7 +16,7 @@ interface ConfirmRemoveAssigneeModalProps {
     onOpenChange: () => void
     onConfirm: () => Promise<void> | void
     isLoading?: boolean
-    assignee?: TUser
+    assignee: TUser
 }
 
 export const ConfirmRemoveAssigneeModal = ({
@@ -27,23 +27,15 @@ export const ConfirmRemoveAssigneeModal = ({
     assignee,
 }: ConfirmRemoveAssigneeModalProps) => {
     return (
-        <Modal
-            isOpen={isOpen}
-            onOpenChange={onOpenChange}
-            backdrop="opaque"
-            classNames={{
-                backdrop:
-                    'bg-gradient-to-t from-zinc-900 to-zinc-900/10 backdrop-opacity-20',
-            }}
-        >
+        <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
             <ModalContent>
                 {(onClose) => (
                     <>
-                        <ModalHeader className="flex flex-col gap-1">
-                            Remove Team Member
+                        <ModalHeader className="flex flex-col gap-1 text-danger">
+                            Remove Member
                         </ModalHeader>
                         <ModalBody>
-                            <p className="text-default-500 mb-2">
+                            <p className="mb-2 text-default-500">
                                 Are you sure you want to unassign this member
                                 from the current job? They will lose access to
                                 task-specific updates.
@@ -51,7 +43,7 @@ export const ConfirmRemoveAssigneeModal = ({
 
                             {/* Visual confirmation of WHO is being removed */}
                             {assignee && (
-                                <div className="border border-default-200 rounded-lg p-3 bg-default-50 dark:bg-default-100/50">
+                                <div className="p-3 border rounded-lg border-default-200 bg-default-50 dark:bg-default-100/50">
                                     <User
                                         name={assignee.displayName}
                                         description={
@@ -84,7 +76,7 @@ export const ConfirmRemoveAssigneeModal = ({
                                 color="danger"
                                 onPress={onConfirm}
                                 isLoading={isLoading}
-                                variant="flat"
+                                variant="shadow"
                             >
                                 Remove Member
                             </Button>

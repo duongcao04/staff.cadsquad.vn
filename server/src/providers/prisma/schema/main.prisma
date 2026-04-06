@@ -1,0 +1,906 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+    provider      = "prisma-client-js"
+    binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+    output        = "../../../../src/generated/prisma"
+}
+
+datasource db {
+    provider = "postgresql"
+}
+
+model BrowserSubscribes {
+    id String @id @default(uuid())
+
+    endpoint       String
+    expirationTime String?
+    p256dh         String
+    auth           String
+}
+
+model UserDevices {
+    id     String  @id @default(uuid())
+    userId String
+    user   User    @relation(fields: [userId], references: [id])
+    type   String
+    status Boolean @default(false)
+    value  String
+
+    @@unique([userId, type])
+}
+
+model User {
+    id                  String             @id @default(uuid())
+    code                String             @unique
+    email               String             @unique
+    personalEmail       String?
+    username            String             @unique
+    displayName         String
+    avatar              String
+    jobTitleId          String?
+    password            String
+    emailVerified       Boolean            @default(false)
+    jobTitle            JobTitle?          @relation(fields: [jobTitleId], references: [id])
+    departmentId        String?
+    department          Department?        @relation(fields: [departmentId], references: [id])
+    phoneNumber         String?
+    isActive            Boolean            @default(true)
+    notifications       Notification[]     @relation("UserNotifications")
+    jobsCreated         Job[]              @relation("JobCreator")
+    filesCreated        FileSystem[]       @relation("CreatedFiles")
+    files               FileSystem[]       @relation("UserFiles")
+    sendedNotifications Notification[]     @relation("UserSendedNotifications")
+    jobActivityLog      JobActivityLog[]
+    configs             UserConfig[]
+    jobComments         JobComment[]
+    gallery             Gallery[]
+    userDevices         UserDevices[]
+    statusChanges       JobStatusHistory[]
+    pinnedJobs          PinnedJob[]
+
+    // Organization
+    managerId String?
+    manager   User?   @relation("UserHierarchy", fields: [managerId], references: [id])
+    reports   User[]  @relation("UserHierarchy")
+
+    // Quan hệ Auth
+    sessions        Session[]
+    accounts        Account[]
+    jobDeliveries   JobDelivery[]
+    communities     CommunityMember[]
+    posts           Post[]
+    jobAssignments  JobAssignment[]
+    role            Role?             @relation(fields: [roleId], references: [id])
+    roleId          String?
+    // This for Grant permissions
+    userPermissions UserPermission[]
+    securityLogs    UserSecurityLog[]
+
+    deletedAt       DateTime?
+    lastLoginAt     DateTime?
+    createdAt       DateTime         @default(now())
+    updatedAt       DateTime         @updatedAt
+    systemAuditLogs SystemAuditLog[]
+
+    systemSettings SystemSetting[]
+    transactions   Transaction[]
+}
+
+model UserSecurityLog {
+    id     String @id @default(uuid())
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    event  String // e.g., "Login Success", "Password Changed", "Failed Attempt"
+    status SecurityLogStatus @default(SUCCESS)
+
+    ipAddress String?
+    userAgent String? // Thông tin trình duyệt/thiết bị
+
+    createdAt DateTime @default(now())
+
+    @@index([userId])
+    @@index([createdAt])
+}
+
+enum SecurityLogStatus {
+    SUCCESS
+    FAILED
+    WARNING
+}
+
+model Role {
+    id          String @id @default(uuid())
+    displayName String @unique // e.g., 'ADMIN', 'STAFF'
+    code        String @unique
+
+    // Relation: Role has many Permissions
+    permissions Permission[]
+    hexColor    String?
+    users       User[]
+}
+
+model Permission {
+    id          String @id @default(uuid())
+    displayName String
+    code        String @unique
+
+    entity       EntityEnum
+    action       String
+    entityAction String     @unique // e.g., 'job.read', 'job.write'
+    description  String?
+
+    // Relation: Permission belongs to many Roles
+    roles             Role[]
+    permissionGroup   PermissionGroup? @relation(fields: [permissionGroupId], references: [id])
+    permissionGroupId String?
+    userPermissions   UserPermission[]
+
+    @@unique([entity, action])
+}
+
+// Bảng này lưu các quyền "đặc biệt" của user (khác với Role)
+model UserPermission {
+    id String @id @default(uuid())
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    permissionId String
+    permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+    // QUAN TRỌNG:
+    // false (Mặc định): Cấp thêm quyền này cho user (Grant/Bonus)
+    // true: Cấm user dùng quyền này, kể cả khi Role của họ có quyền đó (Deny/Exclude)
+    isDenied Boolean @default(false)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([userId, permissionId]) // 1 user chỉ override 1 quyền 1 lần
+}
+
+model PermissionGroup {
+    id          String @id @default(uuid())
+    displayName String // e.g. "Recruitment Module"
+    code        String @unique // e.g. "MODULE_RECRUITMENT"
+    order       Int    @default(0) // To sort them in UI
+
+    permissions Permission[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+enum EntityEnum {
+    // Core Modules
+    JOB
+    USER
+    ROLE
+    PERMISSION
+
+    // CRM / Business
+    CLIENT
+    PAYMENT_CHANNEL
+    DEPARTMENT
+    JOB_TITLE
+    JOB_TYPE // <--- Added this (Fixes your SQL error)
+    JOB_STATUS // <--- Added this (For status management)
+    JOB_FOLDER_TEMPLATE
+
+    // Social / Community
+    COMMUNITY
+    TOPIC
+    POST
+    COMMENT
+
+    // Assets & System
+    FILE
+    NOTIFICATION
+    SYSTEM
+    ANALYTICS
+}
+
+// Model Session bắt buộc cho Better Auth
+model Session {
+    id        String   @id @default(uuid())
+    userId    String
+    token     String
+    expiresAt DateTime
+    ipAddress String?
+    userAgent String?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([token])
+}
+
+// Model Account cần update để lưu Token từ Azure
+model Account {
+    id           String    @id @default(uuid())
+    userId       String
+    accountId    String // ID của user bên Azure
+    providerId   String // Tên provider: "microsoft" hoặc "azure"
+    accessToken  String?
+    refreshToken String?
+    idToken      String?
+    expiresAt    DateTime?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    // Xóa enum AccountProvider cũ vì Better Auth dùng string cho linh hoạt
+}
+
+// Model Verification bắt buộc cho Better Auth (xác thực email)
+model Verification {
+    id         String   @id @default(uuid())
+    identifier String
+    value      String
+    expiresAt  DateTime
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt // Thêm field này nếu Prisma báo lỗi thiếu
+}
+
+model Gallery {
+    id          String   @id @default(uuid())
+    title       String?
+    description String?
+    url         String
+    userId      String
+    user        User     @relation(fields: [userId], references: [id])
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+}
+
+model JobComment {
+    id      String @id @default(uuid())
+    content String
+    jobId   String
+    job     Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+    userId  String
+    user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    parentId String? // Hỗ trợ reply comment
+    parent   JobComment?  @relation("JobCommentReplies", fields: [parentId], references: [id])
+    replies  JobComment[] @relation("JobCommentReplies")
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([jobId])
+    @@index([userId])
+    @@index([createdAt])
+}
+
+model JobTitle {
+    id          String   @id @default(uuid())
+    displayName String
+    notes       String?
+    code        String   @unique
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    users       User[]
+}
+
+model Department {
+    id          String   @id @default(uuid())
+    displayName String
+    notes       String?
+    code        String   @unique
+    hexColor    String?
+    users       User[]
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+}
+
+model UserConfig {
+    id          String              @id @default(uuid())
+    userId      String?
+    user        User?               @relation(fields: [userId], references: [id])
+    displayName String // VD: "Danh sách việc đã ghim"
+    description String? // VD: "Chứa các ID của việc làm được user quan tâm"
+    code        String
+    // Dùng Json để lưu mảng ID hoặc Object phức tạp
+    group       UserConfigGroupEnum @default(SYSTEM)
+    value       Json
+    createdAt   DateTime            @default(now())
+    updatedAt   DateTime            @updatedAt
+
+    @@unique([userId, code])
+}
+
+enum UserConfigGroupEnum {
+    SYSTEM
+    USER
+}
+
+enum RoleEnum {
+    USER
+    ADMIN
+    ACCOUNTING
+}
+
+enum AccountProvider {
+    GOOGLE
+    GITHUB
+    MICROSOFT
+    FACEBOOK
+    LOCAL
+}
+
+model FileSystem {
+    id    String   @id @default(uuid())
+    name  String
+    type  String
+    size  String
+    items Int?
+    path  String[]
+    color String?
+
+    createdById String
+    createdBy   User   @relation("CreatedFiles", fields: [createdById], references: [id])
+
+    visibleToUsers User[] @relation("UserFiles")
+
+    // Link files to jobs
+    job   Job?    @relation(fields: [jobId], references: [id])
+    jobId String?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([createdById])
+    @@index([jobId])
+}
+
+model Job {
+    id String @id @default(uuid())
+    no String @unique // Job No. example F260001
+
+    type   JobType @relation(fields: [typeId], references: [id])
+    typeId String
+
+    displayName    String
+    description    String?
+    attachmentUrls String[] @default([])
+    client         Client?  @relation(fields: [clientId], references: [id])
+    clientId       String?
+    incomeCost     Float
+
+    sharepointFolderId String?
+    sharepointFolder   SharepointItem? @relation(fields: [sharepointFolderId], references: [id])
+
+    totalStaffCost Float @default(0)
+
+    assignments JobAssignment[]
+
+    createdBy        User               @relation("JobCreator", fields: [createdById], references: [id])
+    createdById      String
+    paymentChannel   PaymentChannel?    @relation(fields: [paymentChannelId], references: [id])
+    paymentChannelId String?
+    status           JobStatus          @relation(fields: [statusId], references: [id])
+    statusId         String
+    activityLog      JobActivityLog[]
+    startedAt        DateTime           @default(now())
+    priority         JobPriority        @default(MEDIUM)
+    files            FileSystem[]
+    isPublished      Boolean            @default(false)
+    dueAt            DateTime
+    completedAt      DateTime?
+    finishedAt       DateTime?
+    paymentStatus    JOB_PAYMENT_STATUS @default(UNPAID)
+    payoutDate       DateTime?
+    createdAt        DateTime           @default(now())
+    updatedAt        DateTime           @updatedAt
+    deletedAt        DateTime?
+    comments         JobComment[]
+    statusHistory    JobStatusHistory[]
+    pinnedByUsers    PinnedJob[]
+    jobDeliveries    JobDelivery[]
+
+    folderTemplateId String?
+    folderTemplate   JobFolderTemplate? @relation(fields: [folderTemplateId], references: [id])
+
+    transactions Transaction[]
+
+    @@index([no])
+    @@index([statusId])
+    @@index([createdById])
+    @@index([priority])
+}
+
+model SharepointItem {
+    id              String  @id @default(uuid())
+    itemId          String
+    displayName     String?
+    isFolder        Boolean @default(false)
+    size            Int?
+    webUrl          String?
+    createdDateTime String?
+    createdBy       String?
+    jobs            Job[]
+
+    @@unique([itemId, id])
+}
+
+enum JOB_PAYMENT_STATUS {
+    PAID
+    PENDING
+    UNPAID
+    FAILED
+}
+
+model JobAssignment {
+    id           String        @id @default(uuid())
+    job          Job           @relation(fields: [jobId], references: [id])
+    jobId        String
+    user         User          @relation(fields: [userId], references: [id])
+    userId       String
+    staffCost    Float         @default(0)
+    assignedAt   DateTime      @default(now())
+    transactions Transaction[]
+
+    @@unique([jobId, userId]) // Prevents assigning the same person twice
+}
+
+model JobFolderTemplate {
+    id          String   @id @default(uuid())
+    displayName String
+    folderId    String
+    folderName  String
+    size        Int
+    webUrl      String
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    jobs Job[]
+
+    @@index([folderId])
+    @@index([id])
+    @@index([createdAt])
+}
+
+model Client {
+    id   String     @id @default(uuid())
+    name String     @unique
+    code String     @unique
+    type ClientType @default(INDIVIDUAL)
+
+    // Regional Info
+    region   String?
+    country  String?
+    address  String?
+    timezone String? @default("UTC")
+
+    // Contact Info
+    email        String?
+    phoneNumber  String?
+    billingEmail String?
+
+    // Financials
+    taxId        String?
+    currency     String  @default("USD")
+    paymentTerms Int     @default(30) // Days to pay
+
+    // Relations
+    jobs Job[] // Links back to your Job model
+
+    createdAt    DateTime      @default(now())
+    updatedAt    DateTime      @updatedAt
+    transactions Transaction[]
+}
+
+enum ClientType {
+    INDIVIDUAL
+    COMPANY
+}
+
+model PinnedJob {
+    userId   String
+    jobId    String
+    pinnedAt DateTime @default(now()) // Thời điểm lưu
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    job  Job  @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+    // Composite ID: Đảm bảo 1 user chỉ pin 1 job được 1 lần
+    @@id([userId, jobId])
+}
+
+enum JobPriority {
+    LOW
+    MEDIUM
+    HIGH
+    URGENT
+}
+
+model PaymentChannel {
+    id             String             @id @default(uuid())
+    displayName    String
+    hexColor       String?
+    type           PaymentChannelType @default(BANK)
+    accountDetails String?
+    feeRate        Float?
+    fixedFee       Float?
+    totalVolume    Float?
+    totalFees      Float?
+    logoUrl        String?
+    ownerName      String?
+    cardNumber     String?
+    isActive       Boolean            @default(true)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    jobs         Job[]
+    transactions Transaction[]
+}
+
+enum PaymentChannelType {
+    BANK
+    E_WALLET
+    CRYPTO
+}
+
+model JobType {
+    id                 String   @id @default(uuid())
+    code               String
+    sharepointFolderId String?
+    displayName        String
+    hexColor           String?
+    jobs               Job[]
+    createdAt          DateTime @default(now())
+    updatedAt          DateTime @updatedAt
+}
+
+model JobStatus {
+    id              String             @id @default(uuid())
+    displayName     String
+    code            String             @unique
+    thumbnailUrl    String?
+    hexColor        String
+    order           Int                @unique
+    icon            String?
+    nextStatusOrder Int?
+    prevStatusOrder Int?
+    jobs            Job[]
+    history         JobStatusHistory[]
+    createdAt       DateTime           @default(now())
+    updatedAt       DateTime           @updatedAt
+
+    // Field mới để phân loại
+    systemType JobStatusSystemType @default(STANDARD)
+
+    // Who is allowed to switch a job INTO this status?
+    allowedRolesToSet RoleEnum[] @default([ADMIN])
+
+    @@index([order, systemType])
+}
+
+// Định nghĩa các nhóm logic hệ thống quan tâm
+enum JobStatusSystemType {
+    STANDARD // Trạng thái bình thường (To do, In Progress...)
+    DELIVERED // Wait review
+    COMPLETED // Đã làm xong việc (nhưng chưa đóng hồ sơ)
+    TERMINATED // Kết thúc vòng đời (Finished, Cancelled, Closed...)
+}
+
+model JobDeliverFile {
+    id           String @id @default(uuid())
+    fileName     String
+    webUrl       String
+    sharepointId String
+
+    // Relation back to JobDelivery
+    jobDeliveryId String
+    jobDelivery   JobDelivery @relation(fields: [jobDeliveryId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([jobDeliveryId])
+}
+
+model JobDelivery {
+    id String @id @default(uuid())
+
+    jobId String
+
+    job Job @relation(fields: [jobId], references: [id])
+
+    userId String // The staff member who delivered
+
+    user User @relation(fields: [userId], references: [id])
+
+    note String? // "Here is the Figma link..."
+
+    link String? // External link
+
+    files JobDeliverFile[]
+
+    // Status of this specific delivery attempt
+    status DeliveryStatus @default(PENDING) // PENDING, APPROVED, REJECTED
+
+    adminFeedback String? // If rejected, why?
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+enum DeliveryStatus {
+    PENDING
+    APPROVED
+    REJECTED
+}
+
+// Tracking chặt chẽ thời gian job nằm ở mỗi trạng thái bao lâu
+model JobStatusHistory {
+    id String @id @default(uuid())
+
+    // Liên kết với Job
+    jobId String
+    job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+    // Liên kết với Trạng thái (để biết đang ở trạng thái nào)
+    statusId String
+    status   JobStatus @relation(fields: [statusId], references: [id])
+
+    // Ai là người đã chuyển sang trạng thái này?
+    changedById String
+    changedBy   User   @relation(fields: [changedById], references: [id])
+
+    // Thời gian
+    startedAt DateTime  @default(now()) // Thời điểm bắt đầu vào trạng thái này
+    endedAt   DateTime? // Thời điểm rời khỏi trạng thái này. Nếu null nghĩa là Job vẫn đang ở trạng thái này.
+
+    // Optional: Lưu duration (tính bằng giây) để query báo cáo cho nhanh, không cần tính toán lại
+    durationSeconds Int?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([jobId])
+    @@index([statusId])
+    @@index([startedAt])
+}
+
+model JobActivityLog {
+    id    String @id @default(uuid())
+    job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+    jobId String
+
+    // Data changes
+    fieldName    String?
+    // Publicly visible part (e.g., "John Doe")
+    currentValue String?
+    // Sensitive part (e.g., "Cost: $500")
+    // If this field is populated, only authorized users see it
+    metadata     Json? // Store { cost: 500 } here
+
+    // Metadata
+    modifiedAt   DateTime @default(now())
+    modifiedBy   User     @relation(fields: [modifiedById], references: [id])
+    modifiedById String
+
+    // Logic:
+    // If null -> Public (Everyone with Job access sees it)
+    // If set -> Only users with this Permission Code or ADMIN see it
+    requiredPermissionCode String?
+
+    activityType ActivityType @default(PRIVATE)
+    notes        String?
+
+    @@index([jobId, modifiedAt])
+    @@index([modifiedById])
+}
+
+enum ActivityType {
+    CREATE_JOB
+    // Member
+    ASSIGN_MEMBER
+    UNASSIGN_MEMBER
+    UPDATE_MEMBER_COST
+    // WorkFlow
+    FORCE_CHANGE_STATUS
+    DELIVER
+    APPROVE
+    REJECT
+    // Financial
+    PAID
+    // INFO
+    UPDATE_ATTACHMENTS
+    UPDATE_GENERAL_INFORMATION
+    // Client
+    UPDATE_CLIENT_INFORMATION
+    // Schedule
+    RESCHEDULE
+    // Danger
+    DELETE
+    // Private
+    PRIVATE
+}
+
+model Notification {
+    id     String @id @default(uuid())
+    /**
+     * Người nhận thông báo
+     */
+    userId String
+    user   User   @relation("UserNotifications", fields: [userId], references: [id])
+
+    title       String?
+    content     String
+    imageUrl    String?
+    senderId    String?
+    redirectUrl String?
+    sender      User?              @relation("UserSendedNotifications", fields: [senderId], references: [id])
+    type        NotificationType   @default(INFO)
+    status      NotificationStatus @default(UNSEEN)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([type])
+    @@index([userId, status])
+    @@index([createdAt])
+}
+
+enum NotificationStatus {
+    SEEN
+    UNSEEN
+}
+
+enum NotificationType {
+    // Global
+    INFO
+    WARNING
+    ERROR
+    SUCCESS
+    // Job
+    JOB_DEADLINE_REMINDER
+    JOB_UPDATE
+    JOB_CREATED
+    JOB_DELIVERED
+    JOB_APPROVED
+    JOB_REJECTED
+    JOB_ASSIGNED_MEMBER
+    JOB_PAID
+    JOB_DELETED
+    JOB_WAITING_PAYOUT
+    // User
+    USER_CREATED
+    USER_RESTORED
+    // System
+    ISSUE_REPORT
+}
+
+model Community {
+    id          String  @id @default(uuid())
+    code        String  @unique
+    displayName String
+    description String? @db.Text
+    color       String? // e.g. "bg-pink-600"
+    icon        String? // e.g. "S" or "MegaphoneIcon"
+    banner      String? // URL for the banner image
+
+    // Relation: One Community has many Topics
+    topics Topic[]
+
+    members CommunityMember[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model CommunityMember {
+    id String @id @default(uuid())
+
+    // The User
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    // The Community
+    communityId String
+    community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+
+    // Metadata for the membership
+    role     CommunityRole @default(MEMBER)
+    joinedAt DateTime      @default(now())
+
+    // Composite unique constraint: A user can only join a community once
+    @@unique([userId, communityId])
+    @@index([userId])
+    @@index([communityId])
+}
+
+enum CommunityRole {
+    MEMBER
+    MODERATOR
+    OWNER
+}
+
+model Topic {
+    id   String @id @default(uuid())
+    code String @unique
+
+    // Fields from CreateTopicModal
+    title       String // Mapped from UI "name"
+    description String?   @db.Text
+    type        TopicType @default(GENERAL)
+
+    icon String? // e.g. "S" or "MegaphoneIcon"
+
+    // Relation to Community
+    communityId String
+    community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+
+    // Metadata
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    posts     Post[]
+
+    @@index([communityId])
+}
+
+// 3. Define the Enum for Topic Types
+enum TopicType {
+    GENERAL // General Chat (HashIcon)
+    ANNOUNCEMENT // Official Notices (MegaphoneIcon)
+    FILES // Blueprints/Files (FileTextIcon)
+    IDEA // Kaizen Ideas (LightbulbIcon)
+    SUPPORT // IT Support (MessageSquareIcon)
+}
+
+model Post {
+    id      String @id @default(uuid())
+    content String @db.Text
+
+    // Attachments (Optional: reused from your existing attachment logic)
+    attachments String[] @default([])
+
+    // Relation to Author
+    authorId String
+    author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+    // Relation to Topic
+    topicId String
+    topic   Topic  @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+    likeCount Int @default(0)
+
+    // Engagement metadata
+    isPinned Boolean @default(false)
+
+    createdAt DateTime   @default(now())
+    updatedAt DateTime   @updatedAt
+    eventId   String?
+    event     PostEvent?
+
+    @@index([topicId])
+    @@index([authorId])
+    @@index([createdAt])
+}
+
+model PostEvent {
+    id           String   @id @default(uuid())
+    title        String
+    location     String?
+    startDate    DateTime
+    redirectUrl  String
+    thumbnailUrl String?
+
+    // Quan hệ với Post
+    postId String @unique
+    post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+}

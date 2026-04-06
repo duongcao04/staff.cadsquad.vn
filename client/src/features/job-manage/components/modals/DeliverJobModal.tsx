@@ -1,21 +1,25 @@
 import { sharepointApi, sharepointFolderItemsOptions } from '@/lib'
-import { jobsPendingDeliverOptions, useDeliverJobMutation } from '@/lib/queries'
+import { deliverJobOptions, jobsPendingDeliverOptions } from '@/lib/queries'
 import {
     DeliverJobInputSchema,
     TDeliverJobInput,
 } from '@/lib/validationSchemas/_job.schema'
 import { HeroAutocomplete, HeroAutocompleteItem } from '@/shared/components'
 import { JobStatusChip } from '@/shared/components/chips/JobStatusChip'
-import {
-    HeroModal,
-    HeroModalBody,
-    HeroModalContent,
-    HeroModalFooter,
-    HeroModalHeader,
-} from '@/shared/components/ui/hero-modal'
 import { TJob } from '@/shared/types'
-import { Button, Progress, Skeleton, Textarea } from '@heroui/react'
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
+import {
+    addToast,
+    Button,
+    Modal,
+    ModalBody,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    Progress,
+    Skeleton,
+    Textarea,
+} from '@heroui/react'
+import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { useFormik } from 'formik'
 import lodash from 'lodash'
 import { CheckCircle2, FileIcon, Send, UploadCloud, X } from 'lucide-react'
@@ -27,20 +31,22 @@ interface DeliverJobModalProps {
     isOpen: boolean
     defaultJob?: TJob
     onClose: () => void
-    onConfirm?: (data: any) => void
+    onSuccess?: () => void
     showSelect?: boolean
+    canUpload?: boolean
 }
 
 export const DeliverJobModal = ({
     isOpen,
     defaultJob,
     onClose,
-    onConfirm,
+    onSuccess,
     showSelect = true,
+    canUpload = false,
 }: DeliverJobModalProps) => {
     return (
-        <HeroModal isOpen={isOpen} onClose={onClose} size="lg">
-            <HeroModalContent>
+        <Modal isOpen={isOpen} onClose={onClose} size="lg">
+            <ModalContent>
                 <ErrorBoundary
                     fallback={
                         <div className="p-10 text-center text-danger flex flex-col gap-2">
@@ -56,14 +62,15 @@ export const DeliverJobModal = ({
                             <DeliverJobContent
                                 defaultJob={defaultJob}
                                 onClose={onClose}
-                                onConfirm={onConfirm}
+                                onSuccess={onSuccess}
                                 showSelect={showSelect}
+                                canUpload={canUpload}
                             />
                         )}
                     </Suspense>
                 </ErrorBoundary>
-            </HeroModalContent>
-        </HeroModal>
+            </ModalContent>
+        </Modal>
     )
 }
 
@@ -81,15 +88,17 @@ type UploadingFile = {
 export const DeliverJobContent = ({
     defaultJob,
     onClose,
-    onConfirm,
+    onSuccess,
     showSelect,
+    canUpload,
 }: {
     defaultJob?: TJob
     onClose: () => void
-    onConfirm?: (data: TDeliverJobInput) => void
+    onSuccess?: () => void
     showSelect: boolean
+    canUpload: boolean
 }) => {
-    const deliverJobMutation = useDeliverJobMutation()
+    const deliverAction = useMutation(deliverJobOptions)
 
     // State to manage files actively being uploaded or already uploaded in UI
     const [uploadStates, setUploadStates] = useState<UploadingFile[]>([])
@@ -108,21 +117,28 @@ export const DeliverJobContent = ({
         validationSchema: toFormikValidationSchema(DeliverJobInputSchema),
         enableReinitialize: true,
         onSubmit: async (values) => {
-            if (onConfirm) {
-                onConfirm(values)
-                onClose()
-                formik.resetForm()
-            } else {
-                await deliverJobMutation.mutateAsync({
+            await deliverAction.mutateAsync(
+                {
                     jobId: values.jobId,
                     data: {
                         files: values.files,
                         note: values.note,
                     },
-                })
-                onClose()
-                formik.resetForm()
-            }
+                },
+                {
+                    onSuccess() {
+                        onSuccess?.()
+                        addToast({
+                            title: 'Delivery Successful',
+                            description:
+                                'Congratulations! Your job has been delivered. Please wait for admin review.',
+                            color: 'success',
+                        })
+                    },
+                }
+            )
+            onClose()
+            formik.resetForm()
         },
     })
 
@@ -270,7 +286,7 @@ export const DeliverJobContent = ({
 
     return (
         <form onSubmit={formik.handleSubmit}>
-            <HeroModalHeader className="flex flex-col gap-1 border-b border-divider">
+            <ModalHeader className="flex flex-col gap-1 border-b border-divider">
                 <div className="flex items-center gap-2 text-primary">
                     <Send size={20} />
                     <span className="text-lg font-bold truncate">
@@ -280,9 +296,9 @@ export const DeliverJobContent = ({
                 <p className="text-xs text-default-400 font-normal">
                     This will change status to <strong>DELIVERED</strong>.
                 </p>
-            </HeroModalHeader>
+            </ModalHeader>
 
-            <HeroModalBody className="py-6 space-y-5">
+            <ModalBody className="p-4 space-y-5">
                 {pendingDeliverJobs.length > 0 ? (
                     <>
                         {showSelect && (
@@ -348,6 +364,10 @@ export const DeliverJobContent = ({
                             placeholder="Describe what you are delivering..."
                             variant="bordered"
                             labelPlacement="outside"
+                            classNames={{
+                                label: 'font-semibold',
+                                inputWrapper: 'border-1',
+                            }}
                             minRows={3}
                             value={formik.values.note}
                             onChange={formik.handleChange}
@@ -362,7 +382,7 @@ export const DeliverJobContent = ({
                         />
 
                         {/* FILE UPLOAD SECTION */}
-                        {selectedJob && (
+                        {canUpload && selectedJob && (
                             <div className="flex flex-col gap-2">
                                 <label className="text-sm font-medium">
                                     Upload Delivery Files
@@ -497,27 +517,28 @@ export const DeliverJobContent = ({
                         No jobs pending delivery.
                     </div>
                 )}
-            </HeroModalBody>
+            </ModalBody>
 
-            <HeroModalFooter className="border-t border-divider">
+            <ModalFooter className="border-t border-divider">
                 <Button variant="flat" onPress={onClose}>
                     Cancel
                 </Button>
                 <Button
                     color="primary"
                     type="submit"
-                    isLoading={deliverJobMutation.isPending}
+                    variant="shadow"
+                    isLoading={deliverAction.isPending}
                     isDisabled={
                         !formik.isValid ||
                         !formik.dirty ||
-                        deliverJobMutation.isPending ||
+                        deliverAction.isPending ||
                         isUploadingFiles
                     }
                     className="font-bold px-8"
                 >
                     Submit Delivery
                 </Button>
-            </HeroModalFooter>
+            </ModalFooter>
         </form>
     )
 }
@@ -525,11 +546,11 @@ export const DeliverJobContent = ({
 export const DeliverJobSkeleton = () => {
     return (
         <div className="animate-pulse">
-            <HeroModalHeader className="flex flex-col gap-2">
+            <ModalHeader className="flex flex-col gap-2">
                 <Skeleton className="w-1/3 h-6 rounded-lg" />
                 <Skeleton className="w-1/2 h-3 rounded-lg" />
-            </HeroModalHeader>
-            <HeroModalBody className="py-6 space-y-6">
+            </ModalHeader>
+            <ModalBody className="py-6 space-y-6">
                 <div className="space-y-2">
                     <Skeleton className="w-20 h-4 rounded-md" />
                     <Skeleton className="w-full h-10 rounded-xl" />
@@ -543,11 +564,11 @@ export const DeliverJobSkeleton = () => {
                     <Skeleton className="w-full h-10 rounded-xl" />
                 </div>
                 <Skeleton className="w-full h-20 rounded-xl" />
-            </HeroModalBody>
-            <HeroModalFooter>
+            </ModalBody>
+            <ModalFooter>
                 <Skeleton className="w-24 h-10 rounded-xl" />
                 <Skeleton className="w-32 h-10 rounded-xl" />
-            </HeroModalFooter>
+            </ModalFooter>
         </div>
     )
 }

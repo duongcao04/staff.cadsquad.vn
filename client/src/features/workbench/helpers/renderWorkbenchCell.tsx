@@ -1,14 +1,13 @@
-import { dateFormatter } from '@/lib'
+import { dateFormatter, JobHelper } from '@/lib'
 import { optimizeCloudinary } from '@/lib/cloudinary'
 import { currencyFormatter, IMAGES, INTERNAL_URLS } from '@/lib/utils'
 import { HeroButton, HeroCopyButton, HeroTooltip } from '@/shared/components'
 import JobFinishChip from '@/shared/components/chips/JobFinishChip'
 import JobStatusDropdown from '@/shared/components/dropdowns/JobStatusDropdown'
-import PaymentStatusDropdown from '@/shared/components/dropdowns/PaymentStatusDropdown'
 import CountdownTimer from '@/shared/components/ui/countdown-timer'
 import { JobStatusSystemTypeEnum } from '@/shared/enums'
 import { JobColumnKey, TJob, TJobStatus } from '@/shared/types'
-import { Button } from '@heroui/react'
+import { Button, Chip } from '@heroui/react'
 import { Avatar, Image } from 'antd'
 import dayjs from 'dayjs'
 import lodash from 'lodash'
@@ -97,14 +96,14 @@ export const renderWorkbenchCell = (
                     {currencyFormatter(data.staffCost, 'Vietnamese')}
                 </p>
             ) : (
-                <p className="text-xs italic text-text-subdued text-right">
+                <p className="text-xs italic text-right text-text-subdued">
                     Not assigned
                 </p>
             )
 
         case 'status':
             return (
-                <div className="flex items-center justify-center z-0">
+                <div className="z-0 flex items-center justify-center">
                     <JobStatusDropdown
                         jobData={data}
                         statusData={data.status as TJobStatus}
@@ -140,7 +139,7 @@ export const renderWorkbenchCell = (
 
         case 'attachmentUrls':
             return !data.attachmentUrls?.length ? (
-                <div className="size-full flex items-center justify-center">
+                <div className="flex items-center justify-center size-full">
                     <HeroTooltip content={'Add attachment'}>
                         <HeroButton
                             isIconOnly
@@ -155,14 +154,14 @@ export const renderWorkbenchCell = (
                     </HeroTooltip>
                 </div>
             ) : (
-                <p className="w-full text-center font-medium tracking-wide">
+                <p className="w-full font-medium tracking-wide text-center">
                     x{data.attachmentUrls.length}
                 </p>
             )
 
         case 'assignments':
             return !data.assignments.length ? (
-                <div className="size-full flex items-center justify-center">
+                <div className="flex items-center justify-center size-full">
                     <HeroTooltip content="Assign members">
                         <Button
                             isIconOnly
@@ -199,8 +198,18 @@ export const renderWorkbenchCell = (
                 </div>
             )
 
-        case 'isPaid':
-            return <PaymentStatusDropdown jobData={data} />
+        case 'paymentStatus':
+            const paymentDisplay = JobHelper.getJobPaymentStatusDisplay(
+                data.paymentStatus
+            )
+
+            return (
+                <Chip color={paymentDisplay.colorName} variant="flat">
+                    <span className="font-semibold">
+                        {paymentDisplay.title}
+                    </span>
+                </Chip>
+            )
 
         case 'paymentChannel':
             return data.paymentChannel ? (
@@ -254,7 +263,10 @@ export const renderWorkbenchCell = (
                             textValue={INTERNAL_URLS.jobDetail(data.no)}
                         />
                     </HeroTooltip>
-                    <WorkbenchTableQuickActions data={data} />
+                    <WorkbenchTableQuickActions
+                        data={data}
+                        onRefresh={actions.onRefresh}
+                    />
                 </div>
             )
 

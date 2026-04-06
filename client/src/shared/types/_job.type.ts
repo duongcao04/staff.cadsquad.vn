@@ -1,7 +1,10 @@
+import { TSharepointItem } from '../../lib/validationSchemas/_sharepoint-item.schema'
+import { EJobPaymentStatus } from '../enums'
 import { TClient } from './_client.type'
 import { TJobActivityLog } from './_job-activity-log.type'
 import { TJobComment } from './_job-comment.type'
 import { TJobDelivery } from './_job-delivery.type'
+import { TJobFolderTemplate } from './_job-folder-template.type'
 import { TJobStatus } from './_job-status.type'
 import { TJobType } from './_job-type.type'
 import { TPaymentChannel } from './_payment-channel.type'
@@ -56,6 +59,8 @@ export type TJob = {
      */
     client?: TClient
 
+    clientId?: string
+
     /**
      * The income generated from the job.
      * @type {number}
@@ -68,6 +73,7 @@ export type TJob = {
     jobDeliveries?: TJobDelivery[]
 
     sharepointFolderId?: string
+    sharepointFolder?: TSharepointItem
 
     /**
      * A list of comments.
@@ -159,11 +165,10 @@ export type TJob = {
      */
     isPublished: boolean
 
-    /**
-     * A flag indicating whether the job has been paid for.
-     * @type {boolean}
-     */
-    isPaid: boolean
+    paymentStatus: EJobPaymentStatus
+
+    folderTemplateId?: string
+    folderTemplate?: TJobFolderTemplate
 
     /**
      * The deadline for the job.
@@ -190,7 +195,7 @@ export type TJob = {
      * Can be null if the job is not yet paid.
      * @type {Date | undefined}
      */
-    paidAt?: Date
+    payoutDate?: Date
 
     /**
      * The timestamp when the job was created.
@@ -226,7 +231,7 @@ export type JobColumnKey =
     | 'dueAt'
     | 'attachmentUrls'
     | 'assignments'
-    | 'isPaid'
+    | 'paymentStatus'
     | 'paymentChannel'
     | 'completedAt'
     | 'createdAt'

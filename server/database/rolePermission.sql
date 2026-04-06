@@ -1,149 +1,135 @@
--- rolePermission.sql
+-- ==============================================================================================
+-- 1. INSERT PERMISSION GROUPS
+-- ==============================================================================================
+INSERT INTO "PermissionGroup" ("id", "displayName", "code", "order", "updatedAt") VALUES
+(gen_random_uuid(), 'Identity Control', 'MODULE_IDENTITY', 1, now()),
+(gen_random_uuid(), 'Staff Directory', 'MODULE_STAFF', 2, now()),
+(gen_random_uuid(), 'Client Hub', 'MODULE_CLIENT', 3, now()),
+(gen_random_uuid(), 'Financials', 'MODULE_FINANCE', 4, now()),
+(gen_random_uuid(), 'Job Settings', 'MODULE_JOB_SETTINGS', 5, now()),
+(gen_random_uuid(), 'Job Execution', 'MODULE_JOB_EXECUTION', 6, now()),
+(gen_random_uuid(), 'Social Hub', 'MODULE_SOCIAL', 7, now()),
+(gen_random_uuid(), 'File System', 'MODULE_FILES', 8, now()),
+(gen_random_uuid(), 'System Tracking', 'MODULE_SYSTEM', 9, now())
+ON CONFLICT ("code") DO UPDATE 
+SET "displayName" = EXCLUDED."displayName", 
+    "order" = EXCLUDED."order", 
+    "updatedAt" = now();
 
 -- ==============================================================================================
--- 1. INSERT ROLES
--- Strategy: Use fixed UUIDs. Keep DO NOTHING to prevent overwriting user-defined Role names/colors.
+-- 2. INSERT ROLES
 -- ==============================================================================================
 INSERT INTO "Role" ("id", "displayName", "code", "hexColor") VALUES 
 ('role-0000-0000-0000-0000-000000000001', 'Administrator', 'admin',      '#ef4444'),
 ('role-0000-0000-0000-0000-000000000002', 'Staff',         'staff',      '#3b82f6'),
 ('role-0000-0000-0000-0000-000000000003', 'Accountant',    'accounting', '#10b981')
-ON CONFLICT ("code") DO NOTHING;
-
+ON CONFLICT ("code") DO UPDATE 
+SET "displayName" = EXCLUDED."displayName", 
+    "hexColor" = EXCLUDED."hexColor";
 
 -- ==============================================================================================
--- 2. INSERT PERMISSION GROUPS (RE-GROUPED)
--- Strategy: Update logic applied to rename groups and re-order them.
+-- 3. INSERT PERMISSIONS
 -- ==============================================================================================
-INSERT INTO "PermissionGroup" ("id", "displayName", "code", "order", "updatedAt") VALUES 
-('group-0000-0000-0000-0000-000000000001', 'Job & Operation Management', 'GROUP_OPERATION', 1, NOW()),
-('group-0000-0000-0000-0000-000000000002', 'Human Resource Management',  'GROUP_HR',        2, NOW()),
-('group-0000-0000-0000-0000-000000000003', 'Finance & Client Management','GROUP_FINANCE',   3, NOW()),
-('group-0000-0000-0000-0000-000000000004', 'Internal Communication',     'GROUP_SOCIAL',    4, NOW()),
-('group-0000-0000-0000-0000-000000000005', 'System & Master Data',       'GROUP_SYSTEM',    5, NOW()),
-('group-0000-0000-0000-0000-000000000006', 'Analytics & Reporting',      'GROUP_ANALYTICS', 6, NOW())
-ON CONFLICT ("code") 
-DO UPDATE SET 
+INSERT INTO "Permission" ("id", "displayName", "code", "entity", "action", "entityAction", "description", "permissionGroupId") 
+SELECT gen_random_uuid(), * FROM (VALUES 
+
+    -- JOB EXECUTION
+    ('Manage Jobs',         'JOB_MANAGE',              'JOB'::"EntityEnum", 'manage',          'job.manage',          'Provides full administrative control over all job lifecycles and configurations.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_JOB_EXECUTION')),
+    ('Read All Job',        'JOB_READ_ALL',            'JOB'::"EntityEnum", 'readAll',         'job.readAll',         'Allows viewing all jobs across the organization.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_JOB_EXECUTION')),
+    ('Read Income Cost',    'JOB_READ_INCOME',         'JOB'::"EntityEnum", 'readIncome',      'job.readIncome',      'View income and revenue data.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_JOB_EXECUTION')),
+    ('Read Staff Cost',     'JOB_READ_STAFFCOST',      'JOB'::"EntityEnum", 'readStaffCost',   'job.readStaffCost',   'View staff cost allocations.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_JOB_EXECUTION')),
+    ('Read Cancelled Job',  'JOB_READ_CANCELLED',      'JOB'::"EntityEnum", 'readCancelled',   'job.readCancelled',   'View cancelled jobs.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_JOB_EXECUTION')),
+    ('Create Jobs',         'JOB_CREATE',              'JOB'::"EntityEnum", 'create',          'job.create',          'Create new jobs.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_JOB_EXECUTION')),
+    ('Update Jobs',         'JOB_UPDATE',              'JOB'::"EntityEnum", 'update',          'job.update',          'Update job details.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_JOB_EXECUTION')),
+    ('Delete Jobs',         'JOB_DELETE',              'JOB'::"EntityEnum", 'delete',          'job.delete',          'Delete jobs.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_JOB_EXECUTION')),
+    ('Publish Jobs',        'JOB_PUBLISH',             'JOB'::"EntityEnum", 'publish',         'job.publish',         'Publish jobs.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_JOB_EXECUTION')),
+    ('Deliver Job',         'JOB_DELIVER',             'JOB'::"EntityEnum", 'deliver',         'job.deliver',         'Deliver job outputs.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_JOB_EXECUTION')),
+    ('Review Job',          'JOB_REVIEW',              'JOB'::"EntityEnum", 'review',          'job.review',          'Review deliverables.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_JOB_EXECUTION')),
+    ('Assignment',          'JOB_ASSIGNMENT',          'JOB'::"EntityEnum", 'assignment',      'job.assignment',      'Assign or reassign staff to jobs.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_JOB_EXECUTION')),
+    ('Update Financial',    'JOB_UPDATE_FINANCIAL',    'JOB'::"EntityEnum", 'updateFinancial', 'job.updateFinancial', 'Update cost, revenue, pricing.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_JOB_EXECUTION')),
+
+    -- STAFF & IDENTITY
+    ('Manage Role',         'ROLE_MANAGE',        'ROLE'::"EntityEnum", 'manage', 'role.manage', 'Manage roles.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_IDENTITY')),
+    ('Manage Users',        'USER_MANAGE',        'USER'::"EntityEnum", 'manage', 'user.manage', 'Manage users.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_STAFF')),
+    ('Create Users',        'USER_CREATE',        'USER'::"EntityEnum", 'create', 'user.create', 'Create users.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_STAFF')),
+    ('Update Users',        'USER_UPDATE',        'USER'::"EntityEnum", 'update', 'user.update', 'Update users.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_STAFF')),
+    ('Delete Users',        'USER_DELETE',        'USER'::"EntityEnum", 'delete', 'user.delete', 'Delete users.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_STAFF')),
+    ('Reset Password',      'USER_RESET_PASSWORD','USER'::"EntityEnum", 'resetPassword', 'user.resetPassword', 'Reset password.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_IDENTITY')),
+    ('Block User',          'USER_BLOCK',         'USER'::"EntityEnum", 'block', 'user.block', 'Block user.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_IDENTITY')),
+
+    -- CLIENT & FINANCE
+    ('Manage Clients',      'CLIENT_MANAGE', 'CLIENT'::"EntityEnum", 'manage', 'client.manage', 'Manage clients.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_CLIENT')),
+    ('View Clients',        'CLIENT_READ',   'CLIENT'::"EntityEnum", 'read',   'client.read',   'View clients.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_CLIENT')),
+    ('Write Clients',       'CLIENT_WRITE',  'CLIENT'::"EntityEnum", 'write',  'client.write',  'Write clients.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_CLIENT')),
+    ('Mark Paid',           'JOB_PAID',      'JOB'::"EntityEnum", 'paid', 'job.paid', 'Mark job paid.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_FINANCE')),
+    ('Manage Payment',      'PAY_MANAGE',    'PAYMENT_CHANNEL'::"EntityEnum", 'manage', 'payment.manage', 'Manage payment.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_FINANCE')),
+    ('Create Payment',      'PAY_CREATE',    'PAYMENT_CHANNEL'::"EntityEnum", 'create', 'payment.create', 'Create payment.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_FINANCE')),
+    ('Update Payment',      'PAY_UPDATE',    'PAYMENT_CHANNEL'::"EntityEnum", 'update', 'payment.update', 'Update payment.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_FINANCE')),
+    ('Delete Payment',      'PAY_DELETE',    'PAYMENT_CHANNEL'::"EntityEnum", 'delete', 'payment.delete', 'Delete payment.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_FINANCE')),
+
+    -- SOCIAL & FILES
+    ('Manage Community', 'COMM_MANAGE', 'COMMUNITY'::"EntityEnum", 'manage', 'community.manage', 'Manage community.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_SOCIAL')),
+    ('Create Community', 'COMM_CREATE', 'COMMUNITY'::"EntityEnum", 'create', 'community.create', 'Create community.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_SOCIAL')),
+    ('Manage Post',      'POST_MANAGE', 'POST'::"EntityEnum", 'manage', 'post.manage', 'Manage post.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_SOCIAL')),
+    ('Create Post',      'POST_CREATE', 'POST'::"EntityEnum", 'create', 'post.create', 'Create post.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_SOCIAL')),
+    ('Manage Files',     'FILE_MANAGE', 'FILE'::"EntityEnum", 'manage', 'file.manage', 'Manage files.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_FILES')),
+    ('View Files',       'FILE_READ',   'FILE'::"EntityEnum", 'read',   'file.read',   'View files.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_FILES')),
+    ('Upload Files',     'FILE_WRITE',  'FILE'::"EntityEnum", 'write',  'file.write',  'Upload files.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_FILES')),
+
+    -- SYSTEM
+    ('System Config', 'SYS_MANAGE', 'SYSTEM'::"EntityEnum", 'manage', 'system.manage', 'System config.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_SYSTEM')),
+
+    -- ANALYTICS
+    ('Manage Analytics', 'ANALYTICS_MANAGE', 'ANALYTICS'::"EntityEnum", 'manage', 'analytics.manage', 'Manage analytics.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_SYSTEM')),
+    ('Read Analysis',    'ANALYTICS_READ',   'ANALYTICS'::"EntityEnum", 'read',   'analytics.read',   'View analytics.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_SYSTEM')),
+    ('Report Analysis',  'ANALYTICS_REPORT', 'ANALYTICS'::"EntityEnum", 'report', 'analytics.report', 'Export reports.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_SYSTEM'))
+
+) AS v(displayName, code, entity, action, entityAction, description, permissionGroupId)
+ON CONFLICT ("entityAction") DO UPDATE
+SET
     "displayName" = EXCLUDED."displayName",
-    "order" = EXCLUDED."order";
-
-
--- ==============================================================================================
--- 3. INSERT PERMISSIONS (DETAILED DESCRIPTIONS & RE-GROUPING)
--- Strategy: Use DO UPDATE to apply new Descriptions and Group mappings.
--- ==============================================================================================
-INSERT INTO "Permission" ("id", "displayName", "code", "entity", "action", "entityAction", "permissionGroupId", "description") VALUES 
-
--- === GROUP 1: JOB & OPERATION MANAGEMENT ===
-(gen_random_uuid(), 'View All Jobs',        'JOB_READ_ALL',       'JOB'::"EntityEnum", 'readAll',       'job.readAll',       'group-0000-0000-0000-0000-000000000001', 'Access to view the complete list of jobs, including those not explicitly assigned to the user.'),
-(gen_random_uuid(), 'View Sensitive Data',  'JOB_READ_SENSITIVE', 'JOB'::"EntityEnum", 'readSensitive', 'job.readSensitive', 'group-0000-0000-0000-0000-000000000001', 'Permission to view sensitive job data such as salary ranges, internal costs, and profit margins.'),
-(gen_random_uuid(), 'Create Jobs',          'JOB_CREATE',         'JOB'::"EntityEnum", 'create',        'job.create',        'group-0000-0000-0000-0000-000000000001', 'Ability to initialize and create new job entries in the system.'),
-(gen_random_uuid(), 'Update Jobs',          'JOB_UPDATE',         'JOB'::"EntityEnum", 'update',        'job.update',        'group-0000-0000-0000-0000-000000000001', 'Ability to modify existing job details, requirements, and statuses.'),
-(gen_random_uuid(), 'Delete Jobs',          'JOB_DELETE',         'JOB'::"EntityEnum", 'delete',        'job.delete',        'group-0000-0000-0000-0000-000000000001', 'Authority to permanently remove job entries from the system.'),
-(gen_random_uuid(), 'Publish Jobs',         'JOB_PUBLISH',        'JOB'::"EntityEnum", 'publish',       'job.publish',       'group-0000-0000-0000-0000-000000000001', 'Ability to make a job visible to the public or external candidates.'),
-(gen_random_uuid(), 'Deliver Jobs',         'JOB_DELIVER',        'JOB'::"EntityEnum", 'deliver',       'job.deliver',       'group-0000-0000-0000-0000-000000000001', 'Ability to mark a job or task as completed and submit deliverables.'),
-(gen_random_uuid(), 'Review Jobs',          'JOB_REVIEW',         'JOB'::"EntityEnum", 'review',        'job.review',        'group-0000-0000-0000-0000-000000000001', 'Authority to approve or reject submitted deliverables from staff.'),
-(gen_random_uuid(), 'Assign Member',        'JOB_ASSIGN_MEMBER',  'JOB'::"EntityEnum", 'assignMember',  'job.assignMember',  'group-0000-0000-0000-0000-000000000001', 'Ability to assign specific staff members or teams to a job.'),
-(gen_random_uuid(), 'Manage Jobs',        'JOB_MANAGE',  'JOB'::"EntityEnum", 'manage',  'job.manage',  'group-0000-0000-0000-0000-000000000001', 'Full administrative control to assign members, edit details, and oversee the lifecycle of jobs.'),
-
--- === GROUP 2: HUMAN RESOURCE MANAGEMENT ===
-(gen_random_uuid(), 'Create Users',         'USER_CREATE',        'USER'::"EntityEnum", 'create',        'user.create',        'group-0000-0000-0000-0000-000000000002', 'Ability to invite new staff members or create user accounts.'),
-(gen_random_uuid(), 'Update Users',         'USER_UPDATE',        'USER'::"EntityEnum", 'update',        'user.update',        'group-0000-0000-0000-0000-000000000002', 'Ability to edit staff profiles, contact information, and details.'),
-(gen_random_uuid(), 'Delete Users',         'USER_DELETE',        'USER'::"EntityEnum", 'delete',        'user.delete',        'group-0000-0000-0000-0000-000000000002', 'Authority to remove user accounts from the system.'),
-(gen_random_uuid(), 'Reset Password',       'USER_RESET_PASSWORD','USER'::"EntityEnum", 'resetPassword', 'user.resetPassword', 'group-0000-0000-0000-0000-000000000002', 'Administrative capability to force a password reset for a specific user.'),
-(gen_random_uuid(), 'Block User',           'USER_BLOCK',         'USER'::"EntityEnum", 'block',         'user.block',         'group-0000-0000-0000-0000-000000000002', 'Authority to temporarily ban or block a user from accessing the system.'),
-(gen_random_uuid(), 'Manage Role',          'ROLE_MANAGE',        'ROLE'::"EntityEnum", 'manage',        'role.manage',        'group-0000-0000-0000-0000-000000000002', 'High-level authority to create roles and configure permission sets.'),
-
--- === GROUP 3: FINANCE & CLIENT MANAGEMENT ===
-(gen_random_uuid(), 'View Clients',         'CLIENT_READ',        'CLIENT'::"EntityEnum", 'read',        'client.read',        'group-0000-0000-0000-0000-000000000003', 'Access to view client database and contact information.'),
-(gen_random_uuid(), 'Manage Clients',       'CLIENT_WRITE',       'CLIENT'::"EntityEnum", 'write',       'client.write',       'group-0000-0000-0000-0000-000000000003', 'Ability to create new client profiles or update existing client data.'),
-(gen_random_uuid(), 'Mark Paid',            'JOB_PAID',           'JOB'::"EntityEnum",    'paid',        'job.paid',           'group-0000-0000-0000-0000-000000000003', 'Financial authority to mark a job invoice as fully paid.'),
-(gen_random_uuid(), 'Create Payment Channel','PAY_CREATE',        'PAYMENT_CHANNEL'::"EntityEnum", 'create', 'payment.create', 'group-0000-0000-0000-0000-000000000003', 'Ability to configure new payment methods or banking channels.'),
-(gen_random_uuid(), 'Update Payment Channel','PAY_UPDATE',        'PAYMENT_CHANNEL'::"EntityEnum", 'update', 'payment.update', 'group-0000-0000-0000-0000-000000000003', 'Ability to modify payment channel details.'),
-(gen_random_uuid(), 'Delete Payment Channel','PAY_DELETE',        'PAYMENT_CHANNEL'::"EntityEnum", 'delete', 'payment.delete', 'group-0000-0000-0000-0000-000000000003', 'Authority to remove payment channels.'),
-
--- === GROUP 4: INTERNAL COMMUNICATION ===
-(gen_random_uuid(), 'Create Community',     'COMM_CREATE',        'COMMUNITY'::"EntityEnum", 'create',   'community.create',   'group-0000-0000-0000-0000-000000000004', 'Ability to start new internal communities or groups.'),
-(gen_random_uuid(), 'Create Post',          'POST_CREATE',        'POST'::"EntityEnum",      'create',   'post.create',        'group-0000-0000-0000-0000-000000000004', 'Ability to publish posts, announcements, or updates to the feed.'),
-
--- === GROUP 5: SYSTEM & MASTER DATA ===
--- Files
-(gen_random_uuid(), 'View Files',           'FILE_READ',          'FILE'::"EntityEnum",   'read',        'file.read',          'group-0000-0000-0000-0000-000000000005', 'Access to browse and view uploaded files in the system.'),
-(gen_random_uuid(), 'Upload Files',         'FILE_WRITE',         'FILE'::"EntityEnum",   'write',       'file.write',         'group-0000-0000-0000-0000-000000000005', 'Ability to upload documents and assets to storage.'),
-(gen_random_uuid(), 'System Config',        'SYS_MANAGE',         'SYSTEM'::"EntityEnum", 'manage',      'system.manage',      'group-0000-0000-0000-0000-000000000005', 'Root access to modify core system configurations and environment variables.'),
-
--- Departments (Master Data)
-(gen_random_uuid(), 'Read Sensitive Dept',  'DEPT_READ_SENSITIVE','DEPARTMENT'::"EntityEnum", 'readSensitive', 'department.readSensitive', 'group-0000-0000-0000-0000-000000000005', 'View hidden or sensitive department metadata.'),
-(gen_random_uuid(), 'Create Department',    'DEPT_CREATE',        'DEPARTMENT'::"EntityEnum", 'create',        'department.create',        'group-0000-0000-0000-0000-000000000005', 'Define new organizational departments.'),
-(gen_random_uuid(), 'Update Department',    'DEPT_UPDATE',        'DEPARTMENT'::"EntityEnum", 'update',        'department.update',        'group-0000-0000-0000-0000-000000000005', 'Modify existing department structures.'),
-(gen_random_uuid(), 'Delete Department',    'DEPT_DELETE',        'DEPARTMENT'::"EntityEnum", 'delete',        'department.delete',        'group-0000-0000-0000-0000-000000000005', 'Remove departments from master data.'),
-
--- Job Titles (Master Data)
-(gen_random_uuid(), 'Create Job Title',     'TITLE_CREATE',       'JOB_TITLE'::"EntityEnum", 'create',    'jobTitle.create',    'group-0000-0000-0000-0000-000000000005', 'Define new official job titles/positions.'),
-(gen_random_uuid(), 'Update Job Title',     'TITLE_UPDATE',       'JOB_TITLE'::"EntityEnum", 'update',    'jobTitle.update',    'group-0000-0000-0000-0000-000000000005', 'Modify existing job title definitions.'),
-(gen_random_uuid(), 'Delete Job Title',     'TITLE_DELETE',       'JOB_TITLE'::"EntityEnum", 'delete',    'jobTitle.delete',    'group-0000-0000-0000-0000-000000000005', 'Remove job titles from master data.'),
-
--- Job Types (Master Data)
-(gen_random_uuid(), 'Create Job Type',      'JOB_TYPE_CREATE',    'JOB_TYPE'::"EntityEnum",  'create',    'jobType.create',     'group-0000-0000-0000-0000-000000000005', 'Define new categories or types of jobs.'),
-(gen_random_uuid(), 'Update Job Type',      'JOB_TYPE_UPDATE',    'JOB_TYPE'::"EntityEnum",  'update',    'jobType.update',     'group-0000-0000-0000-0000-000000000005', 'Modify job type definitions.'),
-(gen_random_uuid(), 'Delete Job Type',      'JOB_TYPE_DELETE',    'JOB_TYPE'::"EntityEnum",  'delete',    'jobType.delete',     'group-0000-0000-0000-0000-000000000005', 'Remove job types from master data.'),
-
--- Job Statuses (Master Data)
-(gen_random_uuid(), 'Create Job Status',    'STATUS_CREATE',      'JOB_STATUS'::"EntityEnum", 'create',   'jobStatus.create',   'group-0000-0000-0000-0000-000000000005', 'Define new progression statuses for jobs.'),
-(gen_random_uuid(), 'Update Job Status',    'STATUS_UPDATE',      'JOB_STATUS'::"EntityEnum", 'update',   'jobStatus.update',   'group-0000-0000-0000-0000-000000000005', 'Modify job status workflows.'),
-(gen_random_uuid(), 'Delete Job Status',    'STATUS_DELETE',      'JOB_STATUS'::"EntityEnum", 'delete',   'jobStatus.delete',   'group-0000-0000-0000-0000-000000000005', 'Remove job statuses from master data.'),
-
--- === GROUP 6: ANALYTICS & REPORTING ===
-(gen_random_uuid(), 'Read Analysis',        'ANALYTICS_READ',     'ANALYTICS'::"EntityEnum", 'read',      'analytics.read',     'group-0000-0000-0000-0000-000000000006', 'Access to view dashboards and general performance metrics.'),
-(gen_random_uuid(), 'Report Analysis',      'ANALYTICS_REPORT',   'ANALYTICS'::"EntityEnum", 'report',    'analytics.report',   'group-0000-0000-0000-0000-000000000006', 'Ability to generate, export, and configure deep-dive analytical reports.')
-
-ON CONFLICT ("entityAction") 
-DO UPDATE SET 
-    "displayName" = EXCLUDED."displayName",
-    "permissionGroupId" = EXCLUDED."permissionGroupId",
-    "description" = EXCLUDED."description";
-
+    "code" = EXCLUDED."code",
+    "entity" = EXCLUDED."entity",
+    "action" = EXCLUDED."action",
+    "entityAction" = EXCLUDED."entityAction",
+    "description" = EXCLUDED."description",
+    "permissionGroupId" = EXCLUDED."permissionGroupId";
 
 -- ==============================================================================================
--- 4. MAP PERMISSIONS TO ROLES
--- Strategy: Fill if link does not exist.
+-- 4. GRANT PERMISSIONS
 -- ==============================================================================================
 
--- A. ADMIN: Gets ALL permissions
+-- ADMIN
 INSERT INTO "_PermissionToRole" ("A", "B")
-SELECT id, 'role-0000-0000-0000-0000-000000000001' FROM "Permission"
+SELECT p.id, r.id 
+FROM "Permission" p
+CROSS JOIN "Role" r
+WHERE r.code = 'admin'
 ON CONFLICT DO NOTHING;
 
--- B. STAFF: Gets Basic Operational Permissions
+-- STAFF
 INSERT INTO "_PermissionToRole" ("A", "B")
-SELECT id, 'role-0000-0000-0000-0000-000000000002' FROM "Permission"
-WHERE "entityAction" IN (
-    -- Jobs (Basic)
-    'job.read', 'job.create', 'job.update', 'job.deliver', 
-    -- User (Self-view implied)
-    'user.read',
-    -- CRM
-    'client.read',
-    -- Social
-    'community.read', 'post.create',
-    -- System
-    'file.read', 'file.write',
-    -- View lookups (Titles, Depts, Types, Statuses)
-    'department.read', 'jobTitle.read', 'jobType.read', 'jobStatus.read'
+SELECT p.id, r.id 
+FROM "Permission" p
+CROSS JOIN "Role" r
+WHERE r.code = 'staff' AND p.code IN (
+    'JOB_READ_ALL', 'JOB_CREATE', 'JOB_UPDATE', 'JOB_DELIVER', 'JOB_ASSIGNMENT',
+    'CLIENT_READ',
+    'COMM_CREATE', 'POST_CREATE',
+    'FILE_READ', 'FILE_WRITE'
 )
 ON CONFLICT DO NOTHING;
 
--- C. ACCOUNTANT: Gets Finance & Read-Only Access
+-- ACCOUNTANT
 INSERT INTO "_PermissionToRole" ("A", "B")
-SELECT id, 'role-0000-0000-0000-0000-000000000003' FROM "Permission"
-WHERE "entityAction" IN (
-    -- Job Access
-    'job.read', 'job.readAll', 'job.readSensitive', 'job.paid',
-    -- Client Access
-    'client.read', 'client.write',
-    -- Payment Access (Granular)
-    'payment.read', 'payment.readAll', 'payment.create', 'payment.update', 'payment.delete',
-    -- Analytics
-    'analytics.read','analytics.report'
+SELECT p.id, r.id 
+FROM "Permission" p
+CROSS JOIN "Role" r
+WHERE r.code = 'accounting' AND p.code IN (
+    'JOB_READ_ALL', 'JOB_READ_INCOME', 'JOB_READ_STAFFCOST', 'JOB_PAID', 'JOB_UPDATE_FINANCIAL',
+    'CLIENT_READ', 'CLIENT_WRITE',
+    'PAY_CREATE', 'PAY_UPDATE', 'PAY_DELETE',
+    'FILE_READ', 'FILE_WRITE',
+    'ANALYTICS_READ', 'ANALYTICS_REPORT'
 )
 ON CONFLICT DO NOTHING;

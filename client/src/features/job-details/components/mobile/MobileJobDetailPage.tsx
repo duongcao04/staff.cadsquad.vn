@@ -1,11 +1,9 @@
 import {
     currencyFormatter,
     dateFormatter,
+    JobHelper,
     INTERNAL_URLS,
-    PAID_STATUS_COLOR,
     useProfile,
-    useUpdateJobGeneralInfoMutation,
-    useUpdateJobMutation,
 } from '@/lib'
 import {
     JobDetailTabEnum,
@@ -13,7 +11,6 @@ import {
     TJobDetailSearch,
 } from '@/routes/_workspace/jobs/$no'
 import {
-    addToast,
     Avatar,
     Button,
     Chip,
@@ -23,7 +20,7 @@ import {
     Tabs,
     useDisclosure,
 } from '@heroui/react'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { Link, useNavigate } from '@tanstack/react-router'
 import dayjs from 'dayjs'
 import {
@@ -38,7 +35,12 @@ import {
     UserRound,
 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
-import { jobActivityLogsOptions, jobByNoOptions } from '../../../../lib/queries'
+import {
+    jobActivityLogsOptions,
+    jobByNoOptions,
+    updateJobGeneralInfoOptions,
+    updateJobOptions,
+} from '../../../../lib/queries'
 import { JobStatusChip } from '../../../../shared/components/chips/JobStatusChip'
 import JobAttachmentsField from '../../../../shared/components/form-fields/JobAttachmentsField'
 import CountdownTimer from '../../../../shared/components/ui/countdown-timer'
@@ -47,12 +49,14 @@ import {
     HeroCardBody,
 } from '../../../../shared/components/ui/hero-card'
 import HtmlReactParser from '../../../../shared/components/ui/html-react-parser'
-import { JobStatusSystemTypeEnum } from '../../../../shared/enums'
+import {
+    EJobPaymentStatus,
+    JobStatusSystemTypeEnum,
+} from '../../../../shared/enums'
 import { DeliverJobModal } from '../../../job-manage/components/modals/DeliverJobModal'
 import UpdateCostModal from '../../../project-center/components/modals/UpdateCostModal'
 import JobDescriptionModal from '../modals/JobDescriptionModal'
 import { JobActivityHistory } from '../views/JobActivityHistory'
-import JobAssigneesView from '../views/JobAssigneesView'
 import JobCommentsView from '../views/JobCommentsView'
 
 function MobileJobDetailPage() {
@@ -65,7 +69,9 @@ function MobileJobDetailPage() {
     const financialModal = useDisclosure()
     const fullEditorDisclosure = useDisclosure()
 
-    const updateJobGeneralInfoMutation = useUpdateJobGeneralInfoMutation()
+    const updateJobGeneralInfoMutation = useMutation(
+        updateJobGeneralInfoOptions
+    )
 
     const { data: job } = useQuery({ ...jobByNoOptions(no), enabled: !!no })
     const { data: activityLogs } = useQuery({
@@ -83,9 +89,7 @@ function MobileJobDetailPage() {
         })
     }
 
-    const updateJobMutation = useUpdateJobMutation(() =>
-        addToast({ title: 'Success', color: 'success' })
-    )
+    const updateJobMutation = useMutation(updateJobOptions)
 
     const [descContent, setDescContent] = useState('')
     useEffect(() => {
@@ -283,7 +287,7 @@ function MobileJobDetailPage() {
                                     </div>
                                 </div>
 
-                                <JobAssigneesView data={job} />
+                                {/* <JobAssigneesView data={job} /> */}
 
                                 <div className="space-y-3">
                                     <h3 className="text-sm font-bold text-text-subdued">
@@ -393,7 +397,7 @@ function MobileJobDetailPage() {
                             <span className="text-xs text-slate-500">
                                 Payment Status
                             </span>
-                            <PaidChip status={job.isPaid ? 'paid' : 'unpaid'} />
+                            <PaidChip status={job.paymentStatus} />
                         </div>
                         {isAdmin && (
                             <div className="flex justify-between items-center">
@@ -496,7 +500,7 @@ function MobileJobDetailPage() {
     )
 }
 
-const PaidChip = ({ status }: { status: 'paid' | 'unpaid' }) => (
+const PaidChip = ({ status }: { status: EJobPaymentStatus }) => (
     <Chip
         size="sm"
         variant="flat"
@@ -504,9 +508,16 @@ const PaidChip = ({ status }: { status: 'paid' | 'unpaid' }) => (
     >
         <div
             className="size-1.5 rounded-full"
-            style={{ backgroundColor: PAID_STATUS_COLOR[status].hexColor }}
+            style={{
+                backgroundColor:
+                    JobHelper.getJobPaymentStatusDisplay(status).hexColor,
+            }}
         />
-        <span style={{ color: PAID_STATUS_COLOR[status].hexColor }}>
+        <span
+            style={{
+                color: JobHelper.getJobPaymentStatusDisplay(status).hexColor,
+            }}
+        >
             {status.toUpperCase()}
         </span>
     </Chip>

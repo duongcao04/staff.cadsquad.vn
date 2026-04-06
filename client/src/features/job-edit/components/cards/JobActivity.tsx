@@ -1,13 +1,13 @@
-import { Avatar, Button, Divider, Textarea } from '@heroui/react'
-import { MessageSquare, Send } from 'lucide-react'
-import { HeroTooltip } from '@/shared/components'
-import { optimizeCloudinary } from '@/lib'
-import { TUser } from '@/shared/types'
 import { JobActivityHistory } from '@/features/job-details'
+import { optimizeCloudinary } from '@/lib'
+import { HeroTooltip } from '@/shared/components'
+import { TJobActivityLog, TUser } from '@/shared/types'
+import { Avatar, Button, Divider, Textarea } from '@heroui/react'
+import { Send } from 'lucide-react'
 
 type JobActivityProps = {
     profile: TUser
-    activityLogs: any[]
+    activityLogs?: TJobActivityLog[]
     isLoadingActivityLogs: boolean
 }
 
@@ -27,7 +27,7 @@ export function JobActivity({
                     <HeroTooltip
                         placement="right"
                         content={
-                            <div className="px-1 py-1 max-w-[250px] text-tiny text-default-600">
+                            <div className="px-1 py-1 max-w-62.5 text-tiny text-default-600">
                                 This feed tracks every change made to the job
                                 and serves as a communication hub for the
                                 assigned team.

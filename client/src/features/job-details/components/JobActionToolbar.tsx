@@ -6,7 +6,6 @@ import {
     UploadCloud,
 } from 'lucide-react'
 import { useState } from 'react'
-
 import { HeroCard, HeroCardBody } from '../../../shared/components/ui/hero-card'
 
 export const JobActionToolbar = () => {

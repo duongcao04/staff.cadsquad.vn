@@ -1,4 +1,5 @@
 import {
+    AppLoading,
     PageWithHeaderContainer,
     ScrollArea,
     ScrollBar,
@@ -10,6 +11,7 @@ import { useDevice } from '@/shared/hooks'
 import { appStore, ESidebarStatus } from '@/shared/stores'
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 import { useStore } from '@tanstack/react-store'
+import { Suspense } from 'react'
 
 export const Route = createFileRoute('/_administrator')({
     component: AdminLayout,
@@ -43,7 +45,6 @@ function AdminLayout() {
     const topOffset = IS_SHOW_HEADER ? (isSmallView ? '44px' : '56px') : 0
 
     return (
-        // <AdministratorGuard></AdministratorGuard>
         <PageWithHeaderContainer
             // header={<AdminHeader />}
             header={<></>}
@@ -75,26 +76,29 @@ function AdminLayout() {
                 )}
 
                 {/* Central Scroll Area */}
-                <ScrollArea
-                    className="size-full bg-background-muted"
-                    style={{
-                        marginLeft: leftMargin,
-                        marginRight: rightMargin,
-                        transition: 'margin 300ms cubic-bezier(0.4, 0, 0.2, 1)',
-                    }}
-                >
-                    <ScrollBar orientation="horizontal" />
-                    <ScrollBar orientation="vertical" />
-                    <div
+                <Suspense fallback={<AppLoading />}>
+                    <ScrollArea
+                        className="size-full bg-background-muted"
                         style={{
-                            paddingTop: isSmallView ? '12px' : '0',
-                            paddingBottom: isSmallView ? '80px' : '32px',
-                            paddingInline: isSmallView ? '20px' : '12px',
+                            marginLeft: leftMargin,
+                            marginRight: rightMargin,
+                            transition:
+                                'margin 300ms cubic-bezier(0.4, 0, 0.2, 1)',
                         }}
                     >
-                        <Outlet />
-                    </div>
-                </ScrollArea>
+                        <ScrollBar orientation="horizontal" />
+                        <ScrollBar orientation="vertical" />
+                        <div
+                            style={{
+                                paddingTop: isSmallView ? '12px' : '0',
+                                paddingBottom: isSmallView ? '80px' : '32px',
+                                paddingInline: isSmallView ? '20px' : '12px',
+                            }}
+                        >
+                            <Outlet />
+                        </div>
+                    </ScrollArea>
+                </Suspense>
 
                 {/* Right Sidebar */}
                 {!isSmallView && (

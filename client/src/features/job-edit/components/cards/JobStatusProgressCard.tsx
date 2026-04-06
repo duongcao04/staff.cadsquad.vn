@@ -1,12 +1,8 @@
 import { dateFormatter, jobStatusesListOptions } from '@/lib'
-import {
-    HeroButton,
-    HeroCard,
-    HeroCardBody,
-    HeroTooltip,
-} from '@/shared/components'
+import { HeroButton, HeroTooltip } from '@/shared/components'
 import { JobStatusSystemTypeEnum } from '@/shared/enums'
 import { TJob } from '@/shared/types'
+import { Card, CardBody } from '@heroui/react'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { Clock, InfoIcon, TruckElectricIcon } from 'lucide-react'
@@ -33,8 +29,8 @@ export function JobStatusProgressCard({ job }: { job: TJob }) {
         job?.status?.systemType === JobStatusSystemTypeEnum.DELIVERED
 
     return (
-        <HeroCard className="w-full border border-border-muted" shadow="none">
-            <HeroCardBody className="p-6">
+        <Card shadow="none" className="border border-border-default rounded-xl">
+            <CardBody className="p-5">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-2">
                     <div className="flex flex-col gap-0.5 shrink-0">
                         {/* Title and Tooltip Row */}
@@ -227,7 +223,7 @@ export function JobStatusProgressCard({ job }: { job: TJob }) {
                         )
                     })}
                 </div>
-            </HeroCardBody>
-        </HeroCard>
+            </CardBody>
+        </Card>
     )
 }

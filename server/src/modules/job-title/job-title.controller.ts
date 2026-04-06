@@ -18,18 +18,19 @@ import {
 import { RequirePermissions } from '../../common/decorators/require-permissions.decorator'
 import { ResponseMessage } from '../../common/decorators/responseMessage.decorator'
 import { PermissionsGuard } from '../../common/guards/permissions.guard'
-import { APP_PERMISSIONS } from '../../utils/_app-permissions'
 import { CreateJobTitleDto } from './dto/create-job-title.dto'
 import { JobTitleResponseDto } from './dto/job-title-response.dto'
 import { UpdateJobTitleDto } from './dto/update-job-title.dto'
 import { JobTitleService } from './job-title.service'
 import { JwtGuard } from '../auth/jwt.guard'
+import { APP_PERMISSIONS } from '@/utils'
+import { isUUID } from 'class-validator'
 
 @ApiTags('Job Titles')
 @Controller('job-titles')
 @UseGuards(JwtGuard)
 export class JobTitleController {
-    constructor(private readonly jobTitleService: JobTitleService) {}
+    constructor(private readonly jobTitleService: JobTitleService) { }
 
     @Post()
     @HttpCode(201)
@@ -61,18 +62,21 @@ export class JobTitleController {
         return this.jobTitleService.findAll()
     }
 
-    @Get(':id')
+    @Get(':identify')
     @HttpCode(200)
-    @ResponseMessage('Get job title detail successfully')
+    @ResponseMessage('Get job title details successfully')
     @ApiBearerAuth()
-    @ApiOperation({ summary: 'Get a job title by its ID' })
+    @ApiOperation({ summary: 'Get a job title details' })
     @ApiResponse({
         status: 200,
         description: 'Return a single job title.',
         type: JobTitleResponseDto,
     })
-    async findOne(@Param('id') id: string) {
-        return this.jobTitleService.findById(id)
+    async findOne(@Param('identify') identify: string) {
+        if (isUUID(identify)) {
+            return this.jobTitleService.findById(identify)
+        }
+        return this.jobTitleService.findByCode(identify)
     }
 
     @Patch(':id')

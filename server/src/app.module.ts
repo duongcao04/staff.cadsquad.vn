@@ -42,10 +42,15 @@ import { BullBoardModule } from '@bull-board/nestjs'
 import { BullModule } from '@nestjs/bullmq'
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
+import { EventEmitterModule } from '@nestjs/event-emitter'
 import { ScheduleModule } from '@nestjs/schedule'
 import { PrometheusModule } from '@willsoto/nestjs-prometheus'
 import { AdministratorModule } from './modules/administrator/administrator.module'
+import { AuditLogModule } from './modules/audit-log/audit-log.module'
+import { SystemSettingsModule } from './modules/system-settings/system-settings.module'
 import { BullConfigProvider } from './providers/bull-mq/bull-mq.provider'
+import { FinancialModule } from './modules/financial/financial.module'
+
 @Module({
 	imports: [
 		ConfigModule.forRoot({
@@ -76,9 +81,13 @@ import { BullConfigProvider } from './providers/bull-mq/bull-mq.provider'
 		// Cấu hình Bull Board Root (Tạo route truy cập)
 		BullBoardModule.forRoot({
 			route: '/queues', // Đường dẫn truy cập UI
-			adapter: ExpressAdapter, // Dùng adapter Express
+			adapter: ExpressAdapter,
 		}),
 		ScheduleModule.forRoot(),
+		EventEmitterModule.forRoot({
+			wildcard: true,
+			delimiter: '.', // Ký tự phân cách (mặc định là dấu chấm)
+		}),
 		PrismaModule,
 		RedisModule,
 		MailModule,
@@ -92,6 +101,7 @@ import { BullConfigProvider } from './providers/bull-mq/bull-mq.provider'
 		JobModule,
 		JobTypeModule,
 		JobStatusModule,
+		SystemSettingsModule,
 		PaymentChannelModule,
 		NotificationModule,
 		DepartmentModule,
@@ -105,7 +115,9 @@ import { BullConfigProvider } from './providers/bull-mq/bull-mq.provider'
 		AnalyticsModule,
 		CommunityModule,
 		ClientModule,
-		AdministratorModule
+		AdministratorModule,
+		AuditLogModule,
+		FinancialModule
 	],
 	controllers: [AppController],
 	providers: [AppService],

@@ -13,6 +13,10 @@ export const JobTitleSchema: ZodType<TJobTitle> = z.lazy(() => z.object({
 
 	notes: z.string().nullable(),
 
+	_count: z.object({
+		users: z.number().default(0)
+	}).optional().default({ users: 0 }),
+	
 	// Đảm bảo users luôn là một mảng, kể cả khi Backend trả về null/undefined
 	users: z.array(z.lazy(() => UserSchema)).default([]),
 

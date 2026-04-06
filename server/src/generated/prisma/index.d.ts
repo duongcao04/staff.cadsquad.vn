@@ -14,6 +14,11 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
 
 
 /**
+ * Model SystemAuditLog
+ * 
+ */
+export type SystemAuditLog = $Result.DefaultSelection<Prisma.$SystemAuditLogPayload>
+/**
  * Model BrowserSubscribes
  * 
  */
@@ -104,6 +109,11 @@ export type FileSystem = $Result.DefaultSelection<Prisma.$FileSystemPayload>
  */
 export type Job = $Result.DefaultSelection<Prisma.$JobPayload>
 /**
+ * Model SharepointItem
+ * 
+ */
+export type SharepointItem = $Result.DefaultSelection<Prisma.$SharepointItemPayload>
+/**
  * Model JobAssignment
  * 
  */
@@ -188,12 +198,36 @@ export type Post = $Result.DefaultSelection<Prisma.$PostPayload>
  * 
  */
 export type PostEvent = $Result.DefaultSelection<Prisma.$PostEventPayload>
+/**
+ * Model SystemSetting
+ * 
+ */
+export type SystemSetting = $Result.DefaultSelection<Prisma.$SystemSettingPayload>
+/**
+ * Model Transaction
+ * 
+ */
+export type Transaction = $Result.DefaultSelection<Prisma.$TransactionPayload>
 
 /**
  * Enums
  */
 export namespace $Enums {
-  export const SecurityLogStatus: {
+  export const SystemModule: {
+  JOB: 'JOB',
+  DELIVERY: 'DELIVERY',
+  FINANCIAL: 'FINANCIAL',
+  SYSTEM: 'SYSTEM',
+  SECURITY: 'SECURITY',
+  USER_MANAGEMENT: 'USER_MANAGEMENT',
+  CLIENT: 'CLIENT',
+  ASSET: 'ASSET'
+};
+
+export type SystemModule = (typeof SystemModule)[keyof typeof SystemModule]
+
+
+export const SecurityLogStatus: {
   SUCCESS: 'SUCCESS',
   FAILED: 'FAILED',
   WARNING: 'WARNING'
@@ -255,6 +289,16 @@ export const AccountProvider: {
 export type AccountProvider = (typeof AccountProvider)[keyof typeof AccountProvider]
 
 
+export const JOB_PAYMENT_STATUS: {
+  PAID: 'PAID',
+  PENDING: 'PENDING',
+  UNPAID: 'UNPAID',
+  FAILED: 'FAILED'
+};
+
+export type JOB_PAYMENT_STATUS = (typeof JOB_PAYMENT_STATUS)[keyof typeof JOB_PAYMENT_STATUS]
+
+
 export const ClientType: {
   INDIVIDUAL: 'INDIVIDUAL',
   COMPANY: 'COMPANY'
@@ -271,6 +315,15 @@ export const JobPriority: {
 };
 
 export type JobPriority = (typeof JobPriority)[keyof typeof JobPriority]
+
+
+export const PaymentChannelType: {
+  BANK: 'BANK',
+  E_WALLET: 'E_WALLET',
+  CRYPTO: 'CRYPTO'
+};
+
+export type PaymentChannelType = (typeof PaymentChannelType)[keyof typeof PaymentChannelType]
 
 
 export const JobStatusSystemType: {
@@ -363,7 +416,30 @@ export const TopicType: {
 
 export type TopicType = (typeof TopicType)[keyof typeof TopicType]
 
+
+export const TransactionType: {
+  INCOME: 'INCOME',
+  PAYOUT: 'PAYOUT',
+  REFUND: 'REFUND'
+};
+
+export type TransactionType = (typeof TransactionType)[keyof typeof TransactionType]
+
+
+export const TransactionStatus: {
+  PENDING: 'PENDING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED',
+  CANCELLED: 'CANCELLED'
+};
+
+export type TransactionStatus = (typeof TransactionStatus)[keyof typeof TransactionStatus]
+
 }
+
+export type SystemModule = $Enums.SystemModule
+
+export const SystemModule: typeof $Enums.SystemModule
 
 export type SecurityLogStatus = $Enums.SecurityLogStatus
 
@@ -385,6 +461,10 @@ export type AccountProvider = $Enums.AccountProvider
 
 export const AccountProvider: typeof $Enums.AccountProvider
 
+export type JOB_PAYMENT_STATUS = $Enums.JOB_PAYMENT_STATUS
+
+export const JOB_PAYMENT_STATUS: typeof $Enums.JOB_PAYMENT_STATUS
+
 export type ClientType = $Enums.ClientType
 
 export const ClientType: typeof $Enums.ClientType
@@ -392,6 +472,10 @@ export const ClientType: typeof $Enums.ClientType
 export type JobPriority = $Enums.JobPriority
 
 export const JobPriority: typeof $Enums.JobPriority
+
+export type PaymentChannelType = $Enums.PaymentChannelType
+
+export const PaymentChannelType: typeof $Enums.PaymentChannelType
 
 export type JobStatusSystemType = $Enums.JobStatusSystemType
 
@@ -421,15 +505,25 @@ export type TopicType = $Enums.TopicType
 
 export const TopicType: typeof $Enums.TopicType
 
+export type TransactionType = $Enums.TransactionType
+
+export const TransactionType: typeof $Enums.TransactionType
+
+export type TransactionStatus = $Enums.TransactionStatus
+
+export const TransactionStatus: typeof $Enums.TransactionStatus
+
 /**
  * ##  Prisma Client ʲˢ
  *
  * Type-safe database client for TypeScript & Node.js
  * @example
  * ```
- * const prisma = new PrismaClient()
- * // Fetch zero or more BrowserSubscribes
- * const browserSubscribes = await prisma.browserSubscribes.findMany()
+ * const prisma = new PrismaClient({
+ *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
+ * })
+ * // Fetch zero or more SystemAuditLogs
+ * const systemAuditLogs = await prisma.systemAuditLog.findMany()
  * ```
  *
  *
@@ -448,9 +542,11 @@ export class PrismaClient<
    * Type-safe database client for TypeScript & Node.js
    * @example
    * ```
-   * const prisma = new PrismaClient()
-   * // Fetch zero or more BrowserSubscribes
-   * const browserSubscribes = await prisma.browserSubscribes.findMany()
+   * const prisma = new PrismaClient({
+   *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
+   * })
+   * // Fetch zero or more SystemAuditLogs
+   * const systemAuditLogs = await prisma.systemAuditLog.findMany()
    * ```
    *
    *
@@ -528,7 +624,7 @@ export class PrismaClient<
    * ])
    * ```
    * 
-   * Read more in our [docs](https://www.prisma.io/docs/concepts/components/prisma-client/transactions).
+   * Read more in our [docs](https://www.prisma.io/docs/orm/prisma-client/queries/transactions).
    */
   $transaction<P extends Prisma.PrismaPromise<any>[]>(arg: [...P], options?: { isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<runtime.Types.Utils.UnwrapTuple<P>>
 
@@ -539,6 +635,16 @@ export class PrismaClient<
   }>>
 
       /**
+   * `prisma.systemAuditLog`: Exposes CRUD operations for the **SystemAuditLog** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SystemAuditLogs
+    * const systemAuditLogs = await prisma.systemAuditLog.findMany()
+    * ```
+    */
+  get systemAuditLog(): Prisma.SystemAuditLogDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.browserSubscribes`: Exposes CRUD operations for the **BrowserSubscribes** model.
     * Example usage:
     * ```ts
@@ -719,6 +825,16 @@ export class PrismaClient<
   get job(): Prisma.JobDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.sharepointItem`: Exposes CRUD operations for the **SharepointItem** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SharepointItems
+    * const sharepointItems = await prisma.sharepointItem.findMany()
+    * ```
+    */
+  get sharepointItem(): Prisma.SharepointItemDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.jobAssignment`: Exposes CRUD operations for the **JobAssignment** model.
     * Example usage:
     * ```ts
@@ -887,6 +1003,26 @@ export class PrismaClient<
     * ```
     */
   get postEvent(): Prisma.PostEventDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.systemSetting`: Exposes CRUD operations for the **SystemSetting** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SystemSettings
+    * const systemSettings = await prisma.systemSetting.findMany()
+    * ```
+    */
+  get systemSetting(): Prisma.SystemSettingDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.transaction`: Exposes CRUD operations for the **Transaction** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Transactions
+    * const transactions = await prisma.transaction.findMany()
+    * ```
+    */
+  get transaction(): Prisma.TransactionDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -937,8 +1073,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 7.2.0
-   * Query Engine version: 0c8ef2ce45c83248ab3df073180d5eda9e8be7a3
+   * Prisma Client JS version: 7.6.0
+   * Query Engine version: 75cbdc1eb7150937890ad5465d861175c6624711
    */
   export type PrismaVersion = {
     client: string
@@ -1321,6 +1457,7 @@ export namespace Prisma {
 
 
   export const ModelName: {
+    SystemAuditLog: 'SystemAuditLog',
     BrowserSubscribes: 'BrowserSubscribes',
     UserDevices: 'UserDevices',
     User: 'User',
@@ -1339,6 +1476,7 @@ export namespace Prisma {
     UserConfig: 'UserConfig',
     FileSystem: 'FileSystem',
     Job: 'Job',
+    SharepointItem: 'SharepointItem',
     JobAssignment: 'JobAssignment',
     JobFolderTemplate: 'JobFolderTemplate',
     Client: 'Client',
@@ -1355,7 +1493,9 @@ export namespace Prisma {
     CommunityMember: 'CommunityMember',
     Topic: 'Topic',
     Post: 'Post',
-    PostEvent: 'PostEvent'
+    PostEvent: 'PostEvent',
+    SystemSetting: 'SystemSetting',
+    Transaction: 'Transaction'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1371,10 +1511,84 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "browserSubscribes" | "userDevices" | "user" | "userSecurityLog" | "role" | "permission" | "userPermission" | "permissionGroup" | "session" | "account" | "verification" | "gallery" | "jobComment" | "jobTitle" | "department" | "userConfig" | "fileSystem" | "job" | "jobAssignment" | "jobFolderTemplate" | "client" | "pinnedJob" | "paymentChannel" | "jobType" | "jobStatus" | "jobDeliverFile" | "jobDelivery" | "jobStatusHistory" | "jobActivityLog" | "notification" | "community" | "communityMember" | "topic" | "post" | "postEvent"
+      modelProps: "systemAuditLog" | "browserSubscribes" | "userDevices" | "user" | "userSecurityLog" | "role" | "permission" | "userPermission" | "permissionGroup" | "session" | "account" | "verification" | "gallery" | "jobComment" | "jobTitle" | "department" | "userConfig" | "fileSystem" | "job" | "sharepointItem" | "jobAssignment" | "jobFolderTemplate" | "client" | "pinnedJob" | "paymentChannel" | "jobType" | "jobStatus" | "jobDeliverFile" | "jobDelivery" | "jobStatusHistory" | "jobActivityLog" | "notification" | "community" | "communityMember" | "topic" | "post" | "postEvent" | "systemSetting" | "transaction"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
+      SystemAuditLog: {
+        payload: Prisma.$SystemAuditLogPayload<ExtArgs>
+        fields: Prisma.SystemAuditLogFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SystemAuditLogFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemAuditLogPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SystemAuditLogFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemAuditLogPayload>
+          }
+          findFirst: {
+            args: Prisma.SystemAuditLogFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemAuditLogPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SystemAuditLogFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemAuditLogPayload>
+          }
+          findMany: {
+            args: Prisma.SystemAuditLogFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemAuditLogPayload>[]
+          }
+          create: {
+            args: Prisma.SystemAuditLogCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemAuditLogPayload>
+          }
+          createMany: {
+            args: Prisma.SystemAuditLogCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SystemAuditLogCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemAuditLogPayload>[]
+          }
+          delete: {
+            args: Prisma.SystemAuditLogDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemAuditLogPayload>
+          }
+          update: {
+            args: Prisma.SystemAuditLogUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemAuditLogPayload>
+          }
+          deleteMany: {
+            args: Prisma.SystemAuditLogDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SystemAuditLogUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SystemAuditLogUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemAuditLogPayload>[]
+          }
+          upsert: {
+            args: Prisma.SystemAuditLogUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemAuditLogPayload>
+          }
+          aggregate: {
+            args: Prisma.SystemAuditLogAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSystemAuditLog>
+          }
+          groupBy: {
+            args: Prisma.SystemAuditLogGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SystemAuditLogGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SystemAuditLogCountArgs<ExtArgs>
+            result: $Utils.Optional<SystemAuditLogCountAggregateOutputType> | number
+          }
+        }
+      }
       BrowserSubscribes: {
         payload: Prisma.$BrowserSubscribesPayload<ExtArgs>
         fields: Prisma.BrowserSubscribesFieldRefs
@@ -2707,6 +2921,80 @@ export namespace Prisma {
           }
         }
       }
+      SharepointItem: {
+        payload: Prisma.$SharepointItemPayload<ExtArgs>
+        fields: Prisma.SharepointItemFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SharepointItemFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SharepointItemPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SharepointItemFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SharepointItemPayload>
+          }
+          findFirst: {
+            args: Prisma.SharepointItemFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SharepointItemPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SharepointItemFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SharepointItemPayload>
+          }
+          findMany: {
+            args: Prisma.SharepointItemFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SharepointItemPayload>[]
+          }
+          create: {
+            args: Prisma.SharepointItemCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SharepointItemPayload>
+          }
+          createMany: {
+            args: Prisma.SharepointItemCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SharepointItemCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SharepointItemPayload>[]
+          }
+          delete: {
+            args: Prisma.SharepointItemDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SharepointItemPayload>
+          }
+          update: {
+            args: Prisma.SharepointItemUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SharepointItemPayload>
+          }
+          deleteMany: {
+            args: Prisma.SharepointItemDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SharepointItemUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SharepointItemUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SharepointItemPayload>[]
+          }
+          upsert: {
+            args: Prisma.SharepointItemUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SharepointItemPayload>
+          }
+          aggregate: {
+            args: Prisma.SharepointItemAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSharepointItem>
+          }
+          groupBy: {
+            args: Prisma.SharepointItemGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SharepointItemGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SharepointItemCountArgs<ExtArgs>
+            result: $Utils.Optional<SharepointItemCountAggregateOutputType> | number
+          }
+        }
+      }
       JobAssignment: {
         payload: Prisma.$JobAssignmentPayload<ExtArgs>
         fields: Prisma.JobAssignmentFieldRefs
@@ -3965,6 +4253,154 @@ export namespace Prisma {
           }
         }
       }
+      SystemSetting: {
+        payload: Prisma.$SystemSettingPayload<ExtArgs>
+        fields: Prisma.SystemSettingFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SystemSettingFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSettingPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SystemSettingFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSettingPayload>
+          }
+          findFirst: {
+            args: Prisma.SystemSettingFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSettingPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SystemSettingFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSettingPayload>
+          }
+          findMany: {
+            args: Prisma.SystemSettingFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSettingPayload>[]
+          }
+          create: {
+            args: Prisma.SystemSettingCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSettingPayload>
+          }
+          createMany: {
+            args: Prisma.SystemSettingCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SystemSettingCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSettingPayload>[]
+          }
+          delete: {
+            args: Prisma.SystemSettingDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSettingPayload>
+          }
+          update: {
+            args: Prisma.SystemSettingUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSettingPayload>
+          }
+          deleteMany: {
+            args: Prisma.SystemSettingDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SystemSettingUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SystemSettingUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSettingPayload>[]
+          }
+          upsert: {
+            args: Prisma.SystemSettingUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemSettingPayload>
+          }
+          aggregate: {
+            args: Prisma.SystemSettingAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSystemSetting>
+          }
+          groupBy: {
+            args: Prisma.SystemSettingGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SystemSettingGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SystemSettingCountArgs<ExtArgs>
+            result: $Utils.Optional<SystemSettingCountAggregateOutputType> | number
+          }
+        }
+      }
+      Transaction: {
+        payload: Prisma.$TransactionPayload<ExtArgs>
+        fields: Prisma.TransactionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TransactionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TransactionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>
+          }
+          findFirst: {
+            args: Prisma.TransactionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TransactionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>
+          }
+          findMany: {
+            args: Prisma.TransactionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>[]
+          }
+          create: {
+            args: Prisma.TransactionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>
+          }
+          createMany: {
+            args: Prisma.TransactionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TransactionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>[]
+          }
+          delete: {
+            args: Prisma.TransactionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>
+          }
+          update: {
+            args: Prisma.TransactionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>
+          }
+          deleteMany: {
+            args: Prisma.TransactionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TransactionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TransactionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>[]
+          }
+          upsert: {
+            args: Prisma.TransactionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>
+          }
+          aggregate: {
+            args: Prisma.TransactionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTransaction>
+          }
+          groupBy: {
+            args: Prisma.TransactionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TransactionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TransactionCountArgs<ExtArgs>
+            result: $Utils.Optional<TransactionCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -4073,6 +4509,7 @@ export namespace Prisma {
     comments?: runtime.SqlCommenterPlugin[]
   }
   export type GlobalOmitConfig = {
+    systemAuditLog?: SystemAuditLogOmit
     browserSubscribes?: BrowserSubscribesOmit
     userDevices?: UserDevicesOmit
     user?: UserOmit
@@ -4091,6 +4528,7 @@ export namespace Prisma {
     userConfig?: UserConfigOmit
     fileSystem?: FileSystemOmit
     job?: JobOmit
+    sharepointItem?: SharepointItemOmit
     jobAssignment?: JobAssignmentOmit
     jobFolderTemplate?: JobFolderTemplateOmit
     client?: ClientOmit
@@ -4108,6 +4546,8 @@ export namespace Prisma {
     topic?: TopicOmit
     post?: PostOmit
     postEvent?: PostEventOmit
+    systemSetting?: SystemSettingOmit
+    transaction?: TransactionOmit
   }
 
   /* Types for Logging */
@@ -4209,6 +4649,9 @@ export namespace Prisma {
     jobAssignments: number
     userPermissions: number
     securityLogs: number
+    systemAuditLogs: number
+    systemSettings: number
+    transactions: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4233,6 +4676,9 @@ export namespace Prisma {
     jobAssignments?: boolean | UserCountOutputTypeCountJobAssignmentsArgs
     userPermissions?: boolean | UserCountOutputTypeCountUserPermissionsArgs
     securityLogs?: boolean | UserCountOutputTypeCountSecurityLogsArgs
+    systemAuditLogs?: boolean | UserCountOutputTypeCountSystemAuditLogsArgs
+    systemSettings?: boolean | UserCountOutputTypeCountSystemSettingsArgs
+    transactions?: boolean | UserCountOutputTypeCountTransactionsArgs
   }
 
   // Custom InputTypes
@@ -4391,6 +4837,27 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountSecurityLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: UserSecurityLogWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountSystemAuditLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SystemAuditLogWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountSystemSettingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SystemSettingWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountTransactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransactionWhereInput
   }
 
 
@@ -4641,6 +5108,7 @@ export namespace Prisma {
     statusHistory: number
     pinnedByUsers: number
     jobDeliveries: number
+    transactions: number
   }
 
   export type JobCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4651,6 +5119,7 @@ export namespace Prisma {
     statusHistory?: boolean | JobCountOutputTypeCountStatusHistoryArgs
     pinnedByUsers?: boolean | JobCountOutputTypeCountPinnedByUsersArgs
     jobDeliveries?: boolean | JobCountOutputTypeCountJobDeliveriesArgs
+    transactions?: boolean | JobCountOutputTypeCountTransactionsArgs
   }
 
   // Custom InputTypes
@@ -4713,6 +5182,75 @@ export namespace Prisma {
     where?: JobDeliveryWhereInput
   }
 
+  /**
+   * JobCountOutputType without action
+   */
+  export type JobCountOutputTypeCountTransactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransactionWhereInput
+  }
+
+
+  /**
+   * Count Type SharepointItemCountOutputType
+   */
+
+  export type SharepointItemCountOutputType = {
+    jobs: number
+  }
+
+  export type SharepointItemCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    jobs?: boolean | SharepointItemCountOutputTypeCountJobsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * SharepointItemCountOutputType without action
+   */
+  export type SharepointItemCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SharepointItemCountOutputType
+     */
+    select?: SharepointItemCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * SharepointItemCountOutputType without action
+   */
+  export type SharepointItemCountOutputTypeCountJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JobWhereInput
+  }
+
+
+  /**
+   * Count Type JobAssignmentCountOutputType
+   */
+
+  export type JobAssignmentCountOutputType = {
+    transactions: number
+  }
+
+  export type JobAssignmentCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    transactions?: boolean | JobAssignmentCountOutputTypeCountTransactionsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * JobAssignmentCountOutputType without action
+   */
+  export type JobAssignmentCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobAssignmentCountOutputType
+     */
+    select?: JobAssignmentCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * JobAssignmentCountOutputType without action
+   */
+  export type JobAssignmentCountOutputTypeCountTransactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransactionWhereInput
+  }
+
 
   /**
    * Count Type JobFolderTemplateCountOutputType
@@ -4751,10 +5289,12 @@ export namespace Prisma {
 
   export type ClientCountOutputType = {
     jobs: number
+    transactions: number
   }
 
   export type ClientCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     jobs?: boolean | ClientCountOutputTypeCountJobsArgs
+    transactions?: boolean | ClientCountOutputTypeCountTransactionsArgs
   }
 
   // Custom InputTypes
@@ -4775,6 +5315,13 @@ export namespace Prisma {
     where?: JobWhereInput
   }
 
+  /**
+   * ClientCountOutputType without action
+   */
+  export type ClientCountOutputTypeCountTransactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransactionWhereInput
+  }
+
 
   /**
    * Count Type PaymentChannelCountOutputType
@@ -4782,10 +5329,12 @@ export namespace Prisma {
 
   export type PaymentChannelCountOutputType = {
     jobs: number
+    transactions: number
   }
 
   export type PaymentChannelCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     jobs?: boolean | PaymentChannelCountOutputTypeCountJobsArgs
+    transactions?: boolean | PaymentChannelCountOutputTypeCountTransactionsArgs
   }
 
   // Custom InputTypes
@@ -4804,6 +5353,13 @@ export namespace Prisma {
    */
   export type PaymentChannelCountOutputTypeCountJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: JobWhereInput
+  }
+
+  /**
+   * PaymentChannelCountOutputType without action
+   */
+  export type PaymentChannelCountOutputTypeCountTransactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransactionWhereInput
   }
 
 
@@ -4983,6 +5539,1167 @@ export namespace Prisma {
   /**
    * Models
    */
+
+  /**
+   * Model SystemAuditLog
+   */
+
+  export type AggregateSystemAuditLog = {
+    _count: SystemAuditLogCountAggregateOutputType | null
+    _min: SystemAuditLogMinAggregateOutputType | null
+    _max: SystemAuditLogMaxAggregateOutputType | null
+  }
+
+  export type SystemAuditLogMinAggregateOutputType = {
+    id: string | null
+    actorId: string | null
+    action: string | null
+    module: $Enums.SystemModule | null
+    targetId: string | null
+    targetDisplay: string | null
+    ipAddress: string | null
+    userAgent: string | null
+    createdAt: Date | null
+  }
+
+  export type SystemAuditLogMaxAggregateOutputType = {
+    id: string | null
+    actorId: string | null
+    action: string | null
+    module: $Enums.SystemModule | null
+    targetId: string | null
+    targetDisplay: string | null
+    ipAddress: string | null
+    userAgent: string | null
+    createdAt: Date | null
+  }
+
+  export type SystemAuditLogCountAggregateOutputType = {
+    id: number
+    actorId: number
+    action: number
+    module: number
+    targetId: number
+    targetDisplay: number
+    oldValues: number
+    newValues: number
+    metadata: number
+    ipAddress: number
+    userAgent: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type SystemAuditLogMinAggregateInputType = {
+    id?: true
+    actorId?: true
+    action?: true
+    module?: true
+    targetId?: true
+    targetDisplay?: true
+    ipAddress?: true
+    userAgent?: true
+    createdAt?: true
+  }
+
+  export type SystemAuditLogMaxAggregateInputType = {
+    id?: true
+    actorId?: true
+    action?: true
+    module?: true
+    targetId?: true
+    targetDisplay?: true
+    ipAddress?: true
+    userAgent?: true
+    createdAt?: true
+  }
+
+  export type SystemAuditLogCountAggregateInputType = {
+    id?: true
+    actorId?: true
+    action?: true
+    module?: true
+    targetId?: true
+    targetDisplay?: true
+    oldValues?: true
+    newValues?: true
+    metadata?: true
+    ipAddress?: true
+    userAgent?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type SystemAuditLogAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SystemAuditLog to aggregate.
+     */
+    where?: SystemAuditLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SystemAuditLogs to fetch.
+     */
+    orderBy?: SystemAuditLogOrderByWithRelationInput | SystemAuditLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SystemAuditLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SystemAuditLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SystemAuditLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SystemAuditLogs
+    **/
+    _count?: true | SystemAuditLogCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SystemAuditLogMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SystemAuditLogMaxAggregateInputType
+  }
+
+  export type GetSystemAuditLogAggregateType<T extends SystemAuditLogAggregateArgs> = {
+        [P in keyof T & keyof AggregateSystemAuditLog]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSystemAuditLog[P]>
+      : GetScalarType<T[P], AggregateSystemAuditLog[P]>
+  }
+
+
+
+
+  export type SystemAuditLogGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SystemAuditLogWhereInput
+    orderBy?: SystemAuditLogOrderByWithAggregationInput | SystemAuditLogOrderByWithAggregationInput[]
+    by: SystemAuditLogScalarFieldEnum[] | SystemAuditLogScalarFieldEnum
+    having?: SystemAuditLogScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SystemAuditLogCountAggregateInputType | true
+    _min?: SystemAuditLogMinAggregateInputType
+    _max?: SystemAuditLogMaxAggregateInputType
+  }
+
+  export type SystemAuditLogGroupByOutputType = {
+    id: string
+    actorId: string | null
+    action: string
+    module: $Enums.SystemModule
+    targetId: string | null
+    targetDisplay: string
+    oldValues: JsonValue | null
+    newValues: JsonValue | null
+    metadata: JsonValue | null
+    ipAddress: string | null
+    userAgent: string | null
+    createdAt: Date
+    _count: SystemAuditLogCountAggregateOutputType | null
+    _min: SystemAuditLogMinAggregateOutputType | null
+    _max: SystemAuditLogMaxAggregateOutputType | null
+  }
+
+  type GetSystemAuditLogGroupByPayload<T extends SystemAuditLogGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SystemAuditLogGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SystemAuditLogGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SystemAuditLogGroupByOutputType[P]>
+            : GetScalarType<T[P], SystemAuditLogGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SystemAuditLogSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    actorId?: boolean
+    action?: boolean
+    module?: boolean
+    targetId?: boolean
+    targetDisplay?: boolean
+    oldValues?: boolean
+    newValues?: boolean
+    metadata?: boolean
+    ipAddress?: boolean
+    userAgent?: boolean
+    createdAt?: boolean
+    actor?: boolean | SystemAuditLog$actorArgs<ExtArgs>
+  }, ExtArgs["result"]["systemAuditLog"]>
+
+  export type SystemAuditLogSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    actorId?: boolean
+    action?: boolean
+    module?: boolean
+    targetId?: boolean
+    targetDisplay?: boolean
+    oldValues?: boolean
+    newValues?: boolean
+    metadata?: boolean
+    ipAddress?: boolean
+    userAgent?: boolean
+    createdAt?: boolean
+    actor?: boolean | SystemAuditLog$actorArgs<ExtArgs>
+  }, ExtArgs["result"]["systemAuditLog"]>
+
+  export type SystemAuditLogSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    actorId?: boolean
+    action?: boolean
+    module?: boolean
+    targetId?: boolean
+    targetDisplay?: boolean
+    oldValues?: boolean
+    newValues?: boolean
+    metadata?: boolean
+    ipAddress?: boolean
+    userAgent?: boolean
+    createdAt?: boolean
+    actor?: boolean | SystemAuditLog$actorArgs<ExtArgs>
+  }, ExtArgs["result"]["systemAuditLog"]>
+
+  export type SystemAuditLogSelectScalar = {
+    id?: boolean
+    actorId?: boolean
+    action?: boolean
+    module?: boolean
+    targetId?: boolean
+    targetDisplay?: boolean
+    oldValues?: boolean
+    newValues?: boolean
+    metadata?: boolean
+    ipAddress?: boolean
+    userAgent?: boolean
+    createdAt?: boolean
+  }
+
+  export type SystemAuditLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "actorId" | "action" | "module" | "targetId" | "targetDisplay" | "oldValues" | "newValues" | "metadata" | "ipAddress" | "userAgent" | "createdAt", ExtArgs["result"]["systemAuditLog"]>
+  export type SystemAuditLogInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    actor?: boolean | SystemAuditLog$actorArgs<ExtArgs>
+  }
+  export type SystemAuditLogIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    actor?: boolean | SystemAuditLog$actorArgs<ExtArgs>
+  }
+  export type SystemAuditLogIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    actor?: boolean | SystemAuditLog$actorArgs<ExtArgs>
+  }
+
+  export type $SystemAuditLogPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SystemAuditLog"
+    objects: {
+      actor: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      actorId: string | null
+      action: string
+      module: $Enums.SystemModule
+      targetId: string | null
+      targetDisplay: string
+      oldValues: Prisma.JsonValue | null
+      newValues: Prisma.JsonValue | null
+      metadata: Prisma.JsonValue | null
+      ipAddress: string | null
+      userAgent: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["systemAuditLog"]>
+    composites: {}
+  }
+
+  type SystemAuditLogGetPayload<S extends boolean | null | undefined | SystemAuditLogDefaultArgs> = $Result.GetResult<Prisma.$SystemAuditLogPayload, S>
+
+  type SystemAuditLogCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SystemAuditLogFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SystemAuditLogCountAggregateInputType | true
+    }
+
+  export interface SystemAuditLogDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SystemAuditLog'], meta: { name: 'SystemAuditLog' } }
+    /**
+     * Find zero or one SystemAuditLog that matches the filter.
+     * @param {SystemAuditLogFindUniqueArgs} args - Arguments to find a SystemAuditLog
+     * @example
+     * // Get one SystemAuditLog
+     * const systemAuditLog = await prisma.systemAuditLog.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SystemAuditLogFindUniqueArgs>(args: SelectSubset<T, SystemAuditLogFindUniqueArgs<ExtArgs>>): Prisma__SystemAuditLogClient<$Result.GetResult<Prisma.$SystemAuditLogPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SystemAuditLog that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SystemAuditLogFindUniqueOrThrowArgs} args - Arguments to find a SystemAuditLog
+     * @example
+     * // Get one SystemAuditLog
+     * const systemAuditLog = await prisma.systemAuditLog.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SystemAuditLogFindUniqueOrThrowArgs>(args: SelectSubset<T, SystemAuditLogFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SystemAuditLogClient<$Result.GetResult<Prisma.$SystemAuditLogPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SystemAuditLog that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemAuditLogFindFirstArgs} args - Arguments to find a SystemAuditLog
+     * @example
+     * // Get one SystemAuditLog
+     * const systemAuditLog = await prisma.systemAuditLog.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SystemAuditLogFindFirstArgs>(args?: SelectSubset<T, SystemAuditLogFindFirstArgs<ExtArgs>>): Prisma__SystemAuditLogClient<$Result.GetResult<Prisma.$SystemAuditLogPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SystemAuditLog that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemAuditLogFindFirstOrThrowArgs} args - Arguments to find a SystemAuditLog
+     * @example
+     * // Get one SystemAuditLog
+     * const systemAuditLog = await prisma.systemAuditLog.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SystemAuditLogFindFirstOrThrowArgs>(args?: SelectSubset<T, SystemAuditLogFindFirstOrThrowArgs<ExtArgs>>): Prisma__SystemAuditLogClient<$Result.GetResult<Prisma.$SystemAuditLogPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SystemAuditLogs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemAuditLogFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SystemAuditLogs
+     * const systemAuditLogs = await prisma.systemAuditLog.findMany()
+     * 
+     * // Get first 10 SystemAuditLogs
+     * const systemAuditLogs = await prisma.systemAuditLog.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const systemAuditLogWithIdOnly = await prisma.systemAuditLog.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SystemAuditLogFindManyArgs>(args?: SelectSubset<T, SystemAuditLogFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SystemAuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SystemAuditLog.
+     * @param {SystemAuditLogCreateArgs} args - Arguments to create a SystemAuditLog.
+     * @example
+     * // Create one SystemAuditLog
+     * const SystemAuditLog = await prisma.systemAuditLog.create({
+     *   data: {
+     *     // ... data to create a SystemAuditLog
+     *   }
+     * })
+     * 
+     */
+    create<T extends SystemAuditLogCreateArgs>(args: SelectSubset<T, SystemAuditLogCreateArgs<ExtArgs>>): Prisma__SystemAuditLogClient<$Result.GetResult<Prisma.$SystemAuditLogPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SystemAuditLogs.
+     * @param {SystemAuditLogCreateManyArgs} args - Arguments to create many SystemAuditLogs.
+     * @example
+     * // Create many SystemAuditLogs
+     * const systemAuditLog = await prisma.systemAuditLog.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SystemAuditLogCreateManyArgs>(args?: SelectSubset<T, SystemAuditLogCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SystemAuditLogs and returns the data saved in the database.
+     * @param {SystemAuditLogCreateManyAndReturnArgs} args - Arguments to create many SystemAuditLogs.
+     * @example
+     * // Create many SystemAuditLogs
+     * const systemAuditLog = await prisma.systemAuditLog.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SystemAuditLogs and only return the `id`
+     * const systemAuditLogWithIdOnly = await prisma.systemAuditLog.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SystemAuditLogCreateManyAndReturnArgs>(args?: SelectSubset<T, SystemAuditLogCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SystemAuditLogPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SystemAuditLog.
+     * @param {SystemAuditLogDeleteArgs} args - Arguments to delete one SystemAuditLog.
+     * @example
+     * // Delete one SystemAuditLog
+     * const SystemAuditLog = await prisma.systemAuditLog.delete({
+     *   where: {
+     *     // ... filter to delete one SystemAuditLog
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SystemAuditLogDeleteArgs>(args: SelectSubset<T, SystemAuditLogDeleteArgs<ExtArgs>>): Prisma__SystemAuditLogClient<$Result.GetResult<Prisma.$SystemAuditLogPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SystemAuditLog.
+     * @param {SystemAuditLogUpdateArgs} args - Arguments to update one SystemAuditLog.
+     * @example
+     * // Update one SystemAuditLog
+     * const systemAuditLog = await prisma.systemAuditLog.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SystemAuditLogUpdateArgs>(args: SelectSubset<T, SystemAuditLogUpdateArgs<ExtArgs>>): Prisma__SystemAuditLogClient<$Result.GetResult<Prisma.$SystemAuditLogPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SystemAuditLogs.
+     * @param {SystemAuditLogDeleteManyArgs} args - Arguments to filter SystemAuditLogs to delete.
+     * @example
+     * // Delete a few SystemAuditLogs
+     * const { count } = await prisma.systemAuditLog.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SystemAuditLogDeleteManyArgs>(args?: SelectSubset<T, SystemAuditLogDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SystemAuditLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemAuditLogUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SystemAuditLogs
+     * const systemAuditLog = await prisma.systemAuditLog.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SystemAuditLogUpdateManyArgs>(args: SelectSubset<T, SystemAuditLogUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SystemAuditLogs and returns the data updated in the database.
+     * @param {SystemAuditLogUpdateManyAndReturnArgs} args - Arguments to update many SystemAuditLogs.
+     * @example
+     * // Update many SystemAuditLogs
+     * const systemAuditLog = await prisma.systemAuditLog.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SystemAuditLogs and only return the `id`
+     * const systemAuditLogWithIdOnly = await prisma.systemAuditLog.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SystemAuditLogUpdateManyAndReturnArgs>(args: SelectSubset<T, SystemAuditLogUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SystemAuditLogPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SystemAuditLog.
+     * @param {SystemAuditLogUpsertArgs} args - Arguments to update or create a SystemAuditLog.
+     * @example
+     * // Update or create a SystemAuditLog
+     * const systemAuditLog = await prisma.systemAuditLog.upsert({
+     *   create: {
+     *     // ... data to create a SystemAuditLog
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SystemAuditLog we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SystemAuditLogUpsertArgs>(args: SelectSubset<T, SystemAuditLogUpsertArgs<ExtArgs>>): Prisma__SystemAuditLogClient<$Result.GetResult<Prisma.$SystemAuditLogPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SystemAuditLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemAuditLogCountArgs} args - Arguments to filter SystemAuditLogs to count.
+     * @example
+     * // Count the number of SystemAuditLogs
+     * const count = await prisma.systemAuditLog.count({
+     *   where: {
+     *     // ... the filter for the SystemAuditLogs we want to count
+     *   }
+     * })
+    **/
+    count<T extends SystemAuditLogCountArgs>(
+      args?: Subset<T, SystemAuditLogCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SystemAuditLogCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SystemAuditLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemAuditLogAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SystemAuditLogAggregateArgs>(args: Subset<T, SystemAuditLogAggregateArgs>): Prisma.PrismaPromise<GetSystemAuditLogAggregateType<T>>
+
+    /**
+     * Group by SystemAuditLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemAuditLogGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SystemAuditLogGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SystemAuditLogGroupByArgs['orderBy'] }
+        : { orderBy?: SystemAuditLogGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SystemAuditLogGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSystemAuditLogGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SystemAuditLog model
+   */
+  readonly fields: SystemAuditLogFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SystemAuditLog.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SystemAuditLogClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    actor<T extends SystemAuditLog$actorArgs<ExtArgs> = {}>(args?: Subset<T, SystemAuditLog$actorArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SystemAuditLog model
+   */
+  interface SystemAuditLogFieldRefs {
+    readonly id: FieldRef<"SystemAuditLog", 'String'>
+    readonly actorId: FieldRef<"SystemAuditLog", 'String'>
+    readonly action: FieldRef<"SystemAuditLog", 'String'>
+    readonly module: FieldRef<"SystemAuditLog", 'SystemModule'>
+    readonly targetId: FieldRef<"SystemAuditLog", 'String'>
+    readonly targetDisplay: FieldRef<"SystemAuditLog", 'String'>
+    readonly oldValues: FieldRef<"SystemAuditLog", 'Json'>
+    readonly newValues: FieldRef<"SystemAuditLog", 'Json'>
+    readonly metadata: FieldRef<"SystemAuditLog", 'Json'>
+    readonly ipAddress: FieldRef<"SystemAuditLog", 'String'>
+    readonly userAgent: FieldRef<"SystemAuditLog", 'String'>
+    readonly createdAt: FieldRef<"SystemAuditLog", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SystemAuditLog findUnique
+   */
+  export type SystemAuditLogFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemAuditLog
+     */
+    select?: SystemAuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemAuditLog
+     */
+    omit?: SystemAuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemAuditLogInclude<ExtArgs> | null
+    /**
+     * Filter, which SystemAuditLog to fetch.
+     */
+    where: SystemAuditLogWhereUniqueInput
+  }
+
+  /**
+   * SystemAuditLog findUniqueOrThrow
+   */
+  export type SystemAuditLogFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemAuditLog
+     */
+    select?: SystemAuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemAuditLog
+     */
+    omit?: SystemAuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemAuditLogInclude<ExtArgs> | null
+    /**
+     * Filter, which SystemAuditLog to fetch.
+     */
+    where: SystemAuditLogWhereUniqueInput
+  }
+
+  /**
+   * SystemAuditLog findFirst
+   */
+  export type SystemAuditLogFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemAuditLog
+     */
+    select?: SystemAuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemAuditLog
+     */
+    omit?: SystemAuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemAuditLogInclude<ExtArgs> | null
+    /**
+     * Filter, which SystemAuditLog to fetch.
+     */
+    where?: SystemAuditLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SystemAuditLogs to fetch.
+     */
+    orderBy?: SystemAuditLogOrderByWithRelationInput | SystemAuditLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SystemAuditLogs.
+     */
+    cursor?: SystemAuditLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SystemAuditLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SystemAuditLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SystemAuditLogs.
+     */
+    distinct?: SystemAuditLogScalarFieldEnum | SystemAuditLogScalarFieldEnum[]
+  }
+
+  /**
+   * SystemAuditLog findFirstOrThrow
+   */
+  export type SystemAuditLogFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemAuditLog
+     */
+    select?: SystemAuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemAuditLog
+     */
+    omit?: SystemAuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemAuditLogInclude<ExtArgs> | null
+    /**
+     * Filter, which SystemAuditLog to fetch.
+     */
+    where?: SystemAuditLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SystemAuditLogs to fetch.
+     */
+    orderBy?: SystemAuditLogOrderByWithRelationInput | SystemAuditLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SystemAuditLogs.
+     */
+    cursor?: SystemAuditLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SystemAuditLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SystemAuditLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SystemAuditLogs.
+     */
+    distinct?: SystemAuditLogScalarFieldEnum | SystemAuditLogScalarFieldEnum[]
+  }
+
+  /**
+   * SystemAuditLog findMany
+   */
+  export type SystemAuditLogFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemAuditLog
+     */
+    select?: SystemAuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemAuditLog
+     */
+    omit?: SystemAuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemAuditLogInclude<ExtArgs> | null
+    /**
+     * Filter, which SystemAuditLogs to fetch.
+     */
+    where?: SystemAuditLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SystemAuditLogs to fetch.
+     */
+    orderBy?: SystemAuditLogOrderByWithRelationInput | SystemAuditLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SystemAuditLogs.
+     */
+    cursor?: SystemAuditLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SystemAuditLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SystemAuditLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SystemAuditLogs.
+     */
+    distinct?: SystemAuditLogScalarFieldEnum | SystemAuditLogScalarFieldEnum[]
+  }
+
+  /**
+   * SystemAuditLog create
+   */
+  export type SystemAuditLogCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemAuditLog
+     */
+    select?: SystemAuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemAuditLog
+     */
+    omit?: SystemAuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemAuditLogInclude<ExtArgs> | null
+    /**
+     * The data needed to create a SystemAuditLog.
+     */
+    data: XOR<SystemAuditLogCreateInput, SystemAuditLogUncheckedCreateInput>
+  }
+
+  /**
+   * SystemAuditLog createMany
+   */
+  export type SystemAuditLogCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SystemAuditLogs.
+     */
+    data: SystemAuditLogCreateManyInput | SystemAuditLogCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SystemAuditLog createManyAndReturn
+   */
+  export type SystemAuditLogCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemAuditLog
+     */
+    select?: SystemAuditLogSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemAuditLog
+     */
+    omit?: SystemAuditLogOmit<ExtArgs> | null
+    /**
+     * The data used to create many SystemAuditLogs.
+     */
+    data: SystemAuditLogCreateManyInput | SystemAuditLogCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemAuditLogIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SystemAuditLog update
+   */
+  export type SystemAuditLogUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemAuditLog
+     */
+    select?: SystemAuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemAuditLog
+     */
+    omit?: SystemAuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemAuditLogInclude<ExtArgs> | null
+    /**
+     * The data needed to update a SystemAuditLog.
+     */
+    data: XOR<SystemAuditLogUpdateInput, SystemAuditLogUncheckedUpdateInput>
+    /**
+     * Choose, which SystemAuditLog to update.
+     */
+    where: SystemAuditLogWhereUniqueInput
+  }
+
+  /**
+   * SystemAuditLog updateMany
+   */
+  export type SystemAuditLogUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SystemAuditLogs.
+     */
+    data: XOR<SystemAuditLogUpdateManyMutationInput, SystemAuditLogUncheckedUpdateManyInput>
+    /**
+     * Filter which SystemAuditLogs to update
+     */
+    where?: SystemAuditLogWhereInput
+    /**
+     * Limit how many SystemAuditLogs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SystemAuditLog updateManyAndReturn
+   */
+  export type SystemAuditLogUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemAuditLog
+     */
+    select?: SystemAuditLogSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemAuditLog
+     */
+    omit?: SystemAuditLogOmit<ExtArgs> | null
+    /**
+     * The data used to update SystemAuditLogs.
+     */
+    data: XOR<SystemAuditLogUpdateManyMutationInput, SystemAuditLogUncheckedUpdateManyInput>
+    /**
+     * Filter which SystemAuditLogs to update
+     */
+    where?: SystemAuditLogWhereInput
+    /**
+     * Limit how many SystemAuditLogs to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemAuditLogIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SystemAuditLog upsert
+   */
+  export type SystemAuditLogUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemAuditLog
+     */
+    select?: SystemAuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemAuditLog
+     */
+    omit?: SystemAuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemAuditLogInclude<ExtArgs> | null
+    /**
+     * The filter to search for the SystemAuditLog to update in case it exists.
+     */
+    where: SystemAuditLogWhereUniqueInput
+    /**
+     * In case the SystemAuditLog found by the `where` argument doesn't exist, create a new SystemAuditLog with this data.
+     */
+    create: XOR<SystemAuditLogCreateInput, SystemAuditLogUncheckedCreateInput>
+    /**
+     * In case the SystemAuditLog was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SystemAuditLogUpdateInput, SystemAuditLogUncheckedUpdateInput>
+  }
+
+  /**
+   * SystemAuditLog delete
+   */
+  export type SystemAuditLogDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemAuditLog
+     */
+    select?: SystemAuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemAuditLog
+     */
+    omit?: SystemAuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemAuditLogInclude<ExtArgs> | null
+    /**
+     * Filter which SystemAuditLog to delete.
+     */
+    where: SystemAuditLogWhereUniqueInput
+  }
+
+  /**
+   * SystemAuditLog deleteMany
+   */
+  export type SystemAuditLogDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SystemAuditLogs to delete
+     */
+    where?: SystemAuditLogWhereInput
+    /**
+     * Limit how many SystemAuditLogs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SystemAuditLog.actor
+   */
+  export type SystemAuditLog$actorArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * SystemAuditLog without action
+   */
+  export type SystemAuditLogDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemAuditLog
+     */
+    select?: SystemAuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemAuditLog
+     */
+    omit?: SystemAuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemAuditLogInclude<ExtArgs> | null
+  }
+
 
   /**
    * Model BrowserSubscribes
@@ -5789,6 +7506,11 @@ export namespace Prisma {
      * Skip the first `n` BrowserSubscribes.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BrowserSubscribes.
+     */
     distinct?: BrowserSubscribesScalarFieldEnum | BrowserSubscribesScalarFieldEnum[]
   }
 
@@ -6819,6 +8541,11 @@ export namespace Prisma {
      * Skip the first `n` UserDevices.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserDevices.
+     */
     distinct?: UserDevicesScalarFieldEnum | UserDevicesScalarFieldEnum[]
   }
 
@@ -7338,6 +9065,9 @@ export namespace Prisma {
     role?: boolean | User$roleArgs<ExtArgs>
     userPermissions?: boolean | User$userPermissionsArgs<ExtArgs>
     securityLogs?: boolean | User$securityLogsArgs<ExtArgs>
+    systemAuditLogs?: boolean | User$systemAuditLogsArgs<ExtArgs>
+    systemSettings?: boolean | User$systemSettingsArgs<ExtArgs>
+    transactions?: boolean | User$transactionsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -7442,6 +9172,9 @@ export namespace Prisma {
     role?: boolean | User$roleArgs<ExtArgs>
     userPermissions?: boolean | User$userPermissionsArgs<ExtArgs>
     securityLogs?: boolean | User$securityLogsArgs<ExtArgs>
+    systemAuditLogs?: boolean | User$systemAuditLogsArgs<ExtArgs>
+    systemSettings?: boolean | User$systemSettingsArgs<ExtArgs>
+    transactions?: boolean | User$transactionsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7485,6 +9218,9 @@ export namespace Prisma {
       role: Prisma.$RolePayload<ExtArgs> | null
       userPermissions: Prisma.$UserPermissionPayload<ExtArgs>[]
       securityLogs: Prisma.$UserSecurityLogPayload<ExtArgs>[]
+      systemAuditLogs: Prisma.$SystemAuditLogPayload<ExtArgs>[]
+      systemSettings: Prisma.$SystemSettingPayload<ExtArgs>[]
+      transactions: Prisma.$TransactionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -7925,6 +9661,9 @@ export namespace Prisma {
     role<T extends User$roleArgs<ExtArgs> = {}>(args?: Subset<T, User$roleArgs<ExtArgs>>): Prisma__RoleClient<$Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     userPermissions<T extends User$userPermissionsArgs<ExtArgs> = {}>(args?: Subset<T, User$userPermissionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPermissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     securityLogs<T extends User$securityLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$securityLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserSecurityLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    systemAuditLogs<T extends User$systemAuditLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$systemAuditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SystemAuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    systemSettings<T extends User$systemSettingsArgs<ExtArgs> = {}>(args?: Subset<T, User$systemSettingsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SystemSettingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    transactions<T extends User$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, User$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8169,6 +9908,11 @@ export namespace Prisma {
      * Skip the first `n` Users.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Users.
+     */
     distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
   }
 
@@ -8946,6 +10690,78 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: UserSecurityLogScalarFieldEnum | UserSecurityLogScalarFieldEnum[]
+  }
+
+  /**
+   * User.systemAuditLogs
+   */
+  export type User$systemAuditLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemAuditLog
+     */
+    select?: SystemAuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemAuditLog
+     */
+    omit?: SystemAuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemAuditLogInclude<ExtArgs> | null
+    where?: SystemAuditLogWhereInput
+    orderBy?: SystemAuditLogOrderByWithRelationInput | SystemAuditLogOrderByWithRelationInput[]
+    cursor?: SystemAuditLogWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SystemAuditLogScalarFieldEnum | SystemAuditLogScalarFieldEnum[]
+  }
+
+  /**
+   * User.systemSettings
+   */
+  export type User$systemSettingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSetting
+     */
+    select?: SystemSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSetting
+     */
+    omit?: SystemSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSettingInclude<ExtArgs> | null
+    where?: SystemSettingWhereInput
+    orderBy?: SystemSettingOrderByWithRelationInput | SystemSettingOrderByWithRelationInput[]
+    cursor?: SystemSettingWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SystemSettingScalarFieldEnum | SystemSettingScalarFieldEnum[]
+  }
+
+  /**
+   * User.transactions
+   */
+  export type User$transactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    where?: TransactionWhereInput
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    cursor?: TransactionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
   }
 
   /**
@@ -9833,6 +11649,11 @@ export namespace Prisma {
      * Skip the first `n` UserSecurityLogs.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserSecurityLogs.
+     */
     distinct?: UserSecurityLogScalarFieldEnum | UserSecurityLogScalarFieldEnum[]
   }
 
@@ -10878,6 +12699,11 @@ export namespace Prisma {
      * Skip the first `n` Roles.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Roles.
+     */
     distinct?: RoleScalarFieldEnum | RoleScalarFieldEnum[]
   }
 
@@ -12025,6 +13851,11 @@ export namespace Prisma {
      * Skip the first `n` Permissions.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Permissions.
+     */
     distinct?: PermissionScalarFieldEnum | PermissionScalarFieldEnum[]
   }
 
@@ -13171,6 +15002,11 @@ export namespace Prisma {
      * Skip the first `n` UserPermissions.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserPermissions.
+     */
     distinct?: UserPermissionScalarFieldEnum | UserPermissionScalarFieldEnum[]
   }
 
@@ -14272,6 +16108,11 @@ export namespace Prisma {
      * Skip the first `n` PermissionGroups.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PermissionGroups.
+     */
     distinct?: PermissionGroupScalarFieldEnum | PermissionGroupScalarFieldEnum[]
   }
 
@@ -15385,6 +17226,11 @@ export namespace Prisma {
      * Skip the first `n` Sessions.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Sessions.
+     */
     distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
   }
 
@@ -16508,6 +18354,11 @@ export namespace Prisma {
      * Skip the first `n` Accounts.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Accounts.
+     */
     distinct?: AccountScalarFieldEnum | AccountScalarFieldEnum[]
   }
 
@@ -17544,6 +19395,11 @@ export namespace Prisma {
      * Skip the first `n` Verifications.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Verifications.
+     */
     distinct?: VerificationScalarFieldEnum | VerificationScalarFieldEnum[]
   }
 
@@ -18600,6 +20456,11 @@ export namespace Prisma {
      * Skip the first `n` Galleries.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Galleries.
+     */
     distinct?: GalleryScalarFieldEnum | GalleryScalarFieldEnum[]
   }
 
@@ -19706,6 +21567,11 @@ export namespace Prisma {
      * Skip the first `n` JobComments.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobComments.
+     */
     distinct?: JobCommentScalarFieldEnum | JobCommentScalarFieldEnum[]
   }
 
@@ -20816,6 +22682,11 @@ export namespace Prisma {
      * Skip the first `n` JobTitles.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobTitles.
+     */
     distinct?: JobTitleScalarFieldEnum | JobTitleScalarFieldEnum[]
   }
 
@@ -21912,6 +23783,11 @@ export namespace Prisma {
      * Skip the first `n` Departments.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Departments.
+     */
     distinct?: DepartmentScalarFieldEnum | DepartmentScalarFieldEnum[]
   }
 
@@ -23034,6 +24910,11 @@ export namespace Prisma {
      * Skip the first `n` UserConfigs.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserConfigs.
+     */
     distinct?: UserConfigScalarFieldEnum | UserConfigScalarFieldEnum[]
   }
 
@@ -24233,6 +26114,11 @@ export namespace Prisma {
      * Skip the first `n` FileSystems.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FileSystems.
+     */
     distinct?: FileSystemScalarFieldEnum | FileSystemScalarFieldEnum[]
   }
 
@@ -24522,9 +26408,9 @@ export namespace Prisma {
     typeId: string | null
     displayName: string | null
     description: string | null
-    sharepointFolderId: string | null
     clientId: string | null
     incomeCost: number | null
+    sharepointFolderId: string | null
     totalStaffCost: number | null
     createdById: string | null
     paymentChannelId: string | null
@@ -24532,11 +26418,11 @@ export namespace Prisma {
     startedAt: Date | null
     priority: $Enums.JobPriority | null
     isPublished: boolean | null
-    isPaid: boolean | null
     dueAt: Date | null
     completedAt: Date | null
     finishedAt: Date | null
-    paidAt: Date | null
+    paymentStatus: $Enums.JOB_PAYMENT_STATUS | null
+    payoutDate: Date | null
     createdAt: Date | null
     updatedAt: Date | null
     deletedAt: Date | null
@@ -24549,9 +26435,9 @@ export namespace Prisma {
     typeId: string | null
     displayName: string | null
     description: string | null
-    sharepointFolderId: string | null
     clientId: string | null
     incomeCost: number | null
+    sharepointFolderId: string | null
     totalStaffCost: number | null
     createdById: string | null
     paymentChannelId: string | null
@@ -24559,11 +26445,11 @@ export namespace Prisma {
     startedAt: Date | null
     priority: $Enums.JobPriority | null
     isPublished: boolean | null
-    isPaid: boolean | null
     dueAt: Date | null
     completedAt: Date | null
     finishedAt: Date | null
-    paidAt: Date | null
+    paymentStatus: $Enums.JOB_PAYMENT_STATUS | null
+    payoutDate: Date | null
     createdAt: Date | null
     updatedAt: Date | null
     deletedAt: Date | null
@@ -24577,9 +26463,9 @@ export namespace Prisma {
     displayName: number
     description: number
     attachmentUrls: number
-    sharepointFolderId: number
     clientId: number
     incomeCost: number
+    sharepointFolderId: number
     totalStaffCost: number
     createdById: number
     paymentChannelId: number
@@ -24587,11 +26473,11 @@ export namespace Prisma {
     startedAt: number
     priority: number
     isPublished: number
-    isPaid: number
     dueAt: number
     completedAt: number
     finishedAt: number
-    paidAt: number
+    paymentStatus: number
+    payoutDate: number
     createdAt: number
     updatedAt: number
     deletedAt: number
@@ -24616,9 +26502,9 @@ export namespace Prisma {
     typeId?: true
     displayName?: true
     description?: true
-    sharepointFolderId?: true
     clientId?: true
     incomeCost?: true
+    sharepointFolderId?: true
     totalStaffCost?: true
     createdById?: true
     paymentChannelId?: true
@@ -24626,11 +26512,11 @@ export namespace Prisma {
     startedAt?: true
     priority?: true
     isPublished?: true
-    isPaid?: true
     dueAt?: true
     completedAt?: true
     finishedAt?: true
-    paidAt?: true
+    paymentStatus?: true
+    payoutDate?: true
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
@@ -24643,9 +26529,9 @@ export namespace Prisma {
     typeId?: true
     displayName?: true
     description?: true
-    sharepointFolderId?: true
     clientId?: true
     incomeCost?: true
+    sharepointFolderId?: true
     totalStaffCost?: true
     createdById?: true
     paymentChannelId?: true
@@ -24653,11 +26539,11 @@ export namespace Prisma {
     startedAt?: true
     priority?: true
     isPublished?: true
-    isPaid?: true
     dueAt?: true
     completedAt?: true
     finishedAt?: true
-    paidAt?: true
+    paymentStatus?: true
+    payoutDate?: true
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
@@ -24671,9 +26557,9 @@ export namespace Prisma {
     displayName?: true
     description?: true
     attachmentUrls?: true
-    sharepointFolderId?: true
     clientId?: true
     incomeCost?: true
+    sharepointFolderId?: true
     totalStaffCost?: true
     createdById?: true
     paymentChannelId?: true
@@ -24681,11 +26567,11 @@ export namespace Prisma {
     startedAt?: true
     priority?: true
     isPublished?: true
-    isPaid?: true
     dueAt?: true
     completedAt?: true
     finishedAt?: true
-    paidAt?: true
+    paymentStatus?: true
+    payoutDate?: true
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
@@ -24786,9 +26672,9 @@ export namespace Prisma {
     displayName: string
     description: string | null
     attachmentUrls: string[]
-    sharepointFolderId: string | null
     clientId: string | null
     incomeCost: number
+    sharepointFolderId: string | null
     totalStaffCost: number
     createdById: string
     paymentChannelId: string | null
@@ -24796,11 +26682,11 @@ export namespace Prisma {
     startedAt: Date
     priority: $Enums.JobPriority
     isPublished: boolean
-    isPaid: boolean
     dueAt: Date
     completedAt: Date | null
     finishedAt: Date | null
-    paidAt: Date | null
+    paymentStatus: $Enums.JOB_PAYMENT_STATUS
+    payoutDate: Date | null
     createdAt: Date
     updatedAt: Date
     deletedAt: Date | null
@@ -24833,9 +26719,9 @@ export namespace Prisma {
     displayName?: boolean
     description?: boolean
     attachmentUrls?: boolean
-    sharepointFolderId?: boolean
     clientId?: boolean
     incomeCost?: boolean
+    sharepointFolderId?: boolean
     totalStaffCost?: boolean
     createdById?: boolean
     paymentChannelId?: boolean
@@ -24843,17 +26729,18 @@ export namespace Prisma {
     startedAt?: boolean
     priority?: boolean
     isPublished?: boolean
-    isPaid?: boolean
     dueAt?: boolean
     completedAt?: boolean
     finishedAt?: boolean
-    paidAt?: boolean
+    paymentStatus?: boolean
+    payoutDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
     folderTemplateId?: boolean
     type?: boolean | JobTypeDefaultArgs<ExtArgs>
     client?: boolean | Job$clientArgs<ExtArgs>
+    sharepointFolder?: boolean | Job$sharepointFolderArgs<ExtArgs>
     assignments?: boolean | Job$assignmentsArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     paymentChannel?: boolean | Job$paymentChannelArgs<ExtArgs>
@@ -24865,6 +26752,7 @@ export namespace Prisma {
     pinnedByUsers?: boolean | Job$pinnedByUsersArgs<ExtArgs>
     jobDeliveries?: boolean | Job$jobDeliveriesArgs<ExtArgs>
     folderTemplate?: boolean | Job$folderTemplateArgs<ExtArgs>
+    transactions?: boolean | Job$transactionsArgs<ExtArgs>
     _count?: boolean | JobCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["job"]>
 
@@ -24875,9 +26763,9 @@ export namespace Prisma {
     displayName?: boolean
     description?: boolean
     attachmentUrls?: boolean
-    sharepointFolderId?: boolean
     clientId?: boolean
     incomeCost?: boolean
+    sharepointFolderId?: boolean
     totalStaffCost?: boolean
     createdById?: boolean
     paymentChannelId?: boolean
@@ -24885,17 +26773,18 @@ export namespace Prisma {
     startedAt?: boolean
     priority?: boolean
     isPublished?: boolean
-    isPaid?: boolean
     dueAt?: boolean
     completedAt?: boolean
     finishedAt?: boolean
-    paidAt?: boolean
+    paymentStatus?: boolean
+    payoutDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
     folderTemplateId?: boolean
     type?: boolean | JobTypeDefaultArgs<ExtArgs>
     client?: boolean | Job$clientArgs<ExtArgs>
+    sharepointFolder?: boolean | Job$sharepointFolderArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     paymentChannel?: boolean | Job$paymentChannelArgs<ExtArgs>
     status?: boolean | JobStatusDefaultArgs<ExtArgs>
@@ -24909,9 +26798,9 @@ export namespace Prisma {
     displayName?: boolean
     description?: boolean
     attachmentUrls?: boolean
-    sharepointFolderId?: boolean
     clientId?: boolean
     incomeCost?: boolean
+    sharepointFolderId?: boolean
     totalStaffCost?: boolean
     createdById?: boolean
     paymentChannelId?: boolean
@@ -24919,17 +26808,18 @@ export namespace Prisma {
     startedAt?: boolean
     priority?: boolean
     isPublished?: boolean
-    isPaid?: boolean
     dueAt?: boolean
     completedAt?: boolean
     finishedAt?: boolean
-    paidAt?: boolean
+    paymentStatus?: boolean
+    payoutDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
     folderTemplateId?: boolean
     type?: boolean | JobTypeDefaultArgs<ExtArgs>
     client?: boolean | Job$clientArgs<ExtArgs>
+    sharepointFolder?: boolean | Job$sharepointFolderArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     paymentChannel?: boolean | Job$paymentChannelArgs<ExtArgs>
     status?: boolean | JobStatusDefaultArgs<ExtArgs>
@@ -24943,9 +26833,9 @@ export namespace Prisma {
     displayName?: boolean
     description?: boolean
     attachmentUrls?: boolean
-    sharepointFolderId?: boolean
     clientId?: boolean
     incomeCost?: boolean
+    sharepointFolderId?: boolean
     totalStaffCost?: boolean
     createdById?: boolean
     paymentChannelId?: boolean
@@ -24953,21 +26843,22 @@ export namespace Prisma {
     startedAt?: boolean
     priority?: boolean
     isPublished?: boolean
-    isPaid?: boolean
     dueAt?: boolean
     completedAt?: boolean
     finishedAt?: boolean
-    paidAt?: boolean
+    paymentStatus?: boolean
+    payoutDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
     folderTemplateId?: boolean
   }
 
-  export type JobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "no" | "typeId" | "displayName" | "description" | "attachmentUrls" | "sharepointFolderId" | "clientId" | "incomeCost" | "totalStaffCost" | "createdById" | "paymentChannelId" | "statusId" | "startedAt" | "priority" | "isPublished" | "isPaid" | "dueAt" | "completedAt" | "finishedAt" | "paidAt" | "createdAt" | "updatedAt" | "deletedAt" | "folderTemplateId", ExtArgs["result"]["job"]>
+  export type JobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "no" | "typeId" | "displayName" | "description" | "attachmentUrls" | "clientId" | "incomeCost" | "sharepointFolderId" | "totalStaffCost" | "createdById" | "paymentChannelId" | "statusId" | "startedAt" | "priority" | "isPublished" | "dueAt" | "completedAt" | "finishedAt" | "paymentStatus" | "payoutDate" | "createdAt" | "updatedAt" | "deletedAt" | "folderTemplateId", ExtArgs["result"]["job"]>
   export type JobInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     type?: boolean | JobTypeDefaultArgs<ExtArgs>
     client?: boolean | Job$clientArgs<ExtArgs>
+    sharepointFolder?: boolean | Job$sharepointFolderArgs<ExtArgs>
     assignments?: boolean | Job$assignmentsArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     paymentChannel?: boolean | Job$paymentChannelArgs<ExtArgs>
@@ -24979,11 +26870,13 @@ export namespace Prisma {
     pinnedByUsers?: boolean | Job$pinnedByUsersArgs<ExtArgs>
     jobDeliveries?: boolean | Job$jobDeliveriesArgs<ExtArgs>
     folderTemplate?: boolean | Job$folderTemplateArgs<ExtArgs>
+    transactions?: boolean | Job$transactionsArgs<ExtArgs>
     _count?: boolean | JobCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type JobIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     type?: boolean | JobTypeDefaultArgs<ExtArgs>
     client?: boolean | Job$clientArgs<ExtArgs>
+    sharepointFolder?: boolean | Job$sharepointFolderArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     paymentChannel?: boolean | Job$paymentChannelArgs<ExtArgs>
     status?: boolean | JobStatusDefaultArgs<ExtArgs>
@@ -24992,6 +26885,7 @@ export namespace Prisma {
   export type JobIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     type?: boolean | JobTypeDefaultArgs<ExtArgs>
     client?: boolean | Job$clientArgs<ExtArgs>
+    sharepointFolder?: boolean | Job$sharepointFolderArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     paymentChannel?: boolean | Job$paymentChannelArgs<ExtArgs>
     status?: boolean | JobStatusDefaultArgs<ExtArgs>
@@ -25003,6 +26897,7 @@ export namespace Prisma {
     objects: {
       type: Prisma.$JobTypePayload<ExtArgs>
       client: Prisma.$ClientPayload<ExtArgs> | null
+      sharepointFolder: Prisma.$SharepointItemPayload<ExtArgs> | null
       assignments: Prisma.$JobAssignmentPayload<ExtArgs>[]
       createdBy: Prisma.$UserPayload<ExtArgs>
       paymentChannel: Prisma.$PaymentChannelPayload<ExtArgs> | null
@@ -25014,6 +26909,7 @@ export namespace Prisma {
       pinnedByUsers: Prisma.$PinnedJobPayload<ExtArgs>[]
       jobDeliveries: Prisma.$JobDeliveryPayload<ExtArgs>[]
       folderTemplate: Prisma.$JobFolderTemplatePayload<ExtArgs> | null
+      transactions: Prisma.$TransactionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -25022,9 +26918,9 @@ export namespace Prisma {
       displayName: string
       description: string | null
       attachmentUrls: string[]
-      sharepointFolderId: string | null
       clientId: string | null
       incomeCost: number
+      sharepointFolderId: string | null
       totalStaffCost: number
       createdById: string
       paymentChannelId: string | null
@@ -25032,11 +26928,11 @@ export namespace Prisma {
       startedAt: Date
       priority: $Enums.JobPriority
       isPublished: boolean
-      isPaid: boolean
       dueAt: Date
       completedAt: Date | null
       finishedAt: Date | null
-      paidAt: Date | null
+      paymentStatus: $Enums.JOB_PAYMENT_STATUS
+      payoutDate: Date | null
       createdAt: Date
       updatedAt: Date
       deletedAt: Date | null
@@ -25437,6 +27333,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     type<T extends JobTypeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobTypeDefaultArgs<ExtArgs>>): Prisma__JobTypeClient<$Result.GetResult<Prisma.$JobTypePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     client<T extends Job$clientArgs<ExtArgs> = {}>(args?: Subset<T, Job$clientArgs<ExtArgs>>): Prisma__ClientClient<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    sharepointFolder<T extends Job$sharepointFolderArgs<ExtArgs> = {}>(args?: Subset<T, Job$sharepointFolderArgs<ExtArgs>>): Prisma__SharepointItemClient<$Result.GetResult<Prisma.$SharepointItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     assignments<T extends Job$assignmentsArgs<ExtArgs> = {}>(args?: Subset<T, Job$assignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     createdBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     paymentChannel<T extends Job$paymentChannelArgs<ExtArgs> = {}>(args?: Subset<T, Job$paymentChannelArgs<ExtArgs>>): Prisma__PaymentChannelClient<$Result.GetResult<Prisma.$PaymentChannelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -25448,6 +27345,7 @@ export namespace Prisma {
     pinnedByUsers<T extends Job$pinnedByUsersArgs<ExtArgs> = {}>(args?: Subset<T, Job$pinnedByUsersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PinnedJobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     jobDeliveries<T extends Job$jobDeliveriesArgs<ExtArgs> = {}>(args?: Subset<T, Job$jobDeliveriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobDeliveryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     folderTemplate<T extends Job$folderTemplateArgs<ExtArgs> = {}>(args?: Subset<T, Job$folderTemplateArgs<ExtArgs>>): Prisma__JobFolderTemplateClient<$Result.GetResult<Prisma.$JobFolderTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    transactions<T extends Job$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, Job$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -25483,9 +27381,9 @@ export namespace Prisma {
     readonly displayName: FieldRef<"Job", 'String'>
     readonly description: FieldRef<"Job", 'String'>
     readonly attachmentUrls: FieldRef<"Job", 'String[]'>
-    readonly sharepointFolderId: FieldRef<"Job", 'String'>
     readonly clientId: FieldRef<"Job", 'String'>
     readonly incomeCost: FieldRef<"Job", 'Float'>
+    readonly sharepointFolderId: FieldRef<"Job", 'String'>
     readonly totalStaffCost: FieldRef<"Job", 'Float'>
     readonly createdById: FieldRef<"Job", 'String'>
     readonly paymentChannelId: FieldRef<"Job", 'String'>
@@ -25493,11 +27391,11 @@ export namespace Prisma {
     readonly startedAt: FieldRef<"Job", 'DateTime'>
     readonly priority: FieldRef<"Job", 'JobPriority'>
     readonly isPublished: FieldRef<"Job", 'Boolean'>
-    readonly isPaid: FieldRef<"Job", 'Boolean'>
     readonly dueAt: FieldRef<"Job", 'DateTime'>
     readonly completedAt: FieldRef<"Job", 'DateTime'>
     readonly finishedAt: FieldRef<"Job", 'DateTime'>
-    readonly paidAt: FieldRef<"Job", 'DateTime'>
+    readonly paymentStatus: FieldRef<"Job", 'JOB_PAYMENT_STATUS'>
+    readonly payoutDate: FieldRef<"Job", 'DateTime'>
     readonly createdAt: FieldRef<"Job", 'DateTime'>
     readonly updatedAt: FieldRef<"Job", 'DateTime'>
     readonly deletedAt: FieldRef<"Job", 'DateTime'>
@@ -25698,6 +27596,11 @@ export namespace Prisma {
      * Skip the first `n` Jobs.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Jobs.
+     */
     distinct?: JobScalarFieldEnum | JobScalarFieldEnum[]
   }
 
@@ -25917,6 +27820,25 @@ export namespace Prisma {
   }
 
   /**
+   * Job.sharepointFolder
+   */
+  export type Job$sharepointFolderArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SharepointItem
+     */
+    select?: SharepointItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SharepointItem
+     */
+    omit?: SharepointItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SharepointItemInclude<ExtArgs> | null
+    where?: SharepointItemWhereInput
+  }
+
+  /**
    * Job.assignments
    */
   export type Job$assignmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -26123,6 +28045,30 @@ export namespace Prisma {
   }
 
   /**
+   * Job.transactions
+   */
+  export type Job$transactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    where?: TransactionWhereInput
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    cursor?: TransactionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
+  }
+
+  /**
    * Job without action
    */
   export type JobDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -26138,6 +28084,1154 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: JobInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model SharepointItem
+   */
+
+  export type AggregateSharepointItem = {
+    _count: SharepointItemCountAggregateOutputType | null
+    _avg: SharepointItemAvgAggregateOutputType | null
+    _sum: SharepointItemSumAggregateOutputType | null
+    _min: SharepointItemMinAggregateOutputType | null
+    _max: SharepointItemMaxAggregateOutputType | null
+  }
+
+  export type SharepointItemAvgAggregateOutputType = {
+    size: number | null
+  }
+
+  export type SharepointItemSumAggregateOutputType = {
+    size: number | null
+  }
+
+  export type SharepointItemMinAggregateOutputType = {
+    id: string | null
+    itemId: string | null
+    displayName: string | null
+    isFolder: boolean | null
+    size: number | null
+    webUrl: string | null
+    createdDateTime: string | null
+    createdBy: string | null
+  }
+
+  export type SharepointItemMaxAggregateOutputType = {
+    id: string | null
+    itemId: string | null
+    displayName: string | null
+    isFolder: boolean | null
+    size: number | null
+    webUrl: string | null
+    createdDateTime: string | null
+    createdBy: string | null
+  }
+
+  export type SharepointItemCountAggregateOutputType = {
+    id: number
+    itemId: number
+    displayName: number
+    isFolder: number
+    size: number
+    webUrl: number
+    createdDateTime: number
+    createdBy: number
+    _all: number
+  }
+
+
+  export type SharepointItemAvgAggregateInputType = {
+    size?: true
+  }
+
+  export type SharepointItemSumAggregateInputType = {
+    size?: true
+  }
+
+  export type SharepointItemMinAggregateInputType = {
+    id?: true
+    itemId?: true
+    displayName?: true
+    isFolder?: true
+    size?: true
+    webUrl?: true
+    createdDateTime?: true
+    createdBy?: true
+  }
+
+  export type SharepointItemMaxAggregateInputType = {
+    id?: true
+    itemId?: true
+    displayName?: true
+    isFolder?: true
+    size?: true
+    webUrl?: true
+    createdDateTime?: true
+    createdBy?: true
+  }
+
+  export type SharepointItemCountAggregateInputType = {
+    id?: true
+    itemId?: true
+    displayName?: true
+    isFolder?: true
+    size?: true
+    webUrl?: true
+    createdDateTime?: true
+    createdBy?: true
+    _all?: true
+  }
+
+  export type SharepointItemAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SharepointItem to aggregate.
+     */
+    where?: SharepointItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SharepointItems to fetch.
+     */
+    orderBy?: SharepointItemOrderByWithRelationInput | SharepointItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SharepointItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SharepointItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SharepointItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SharepointItems
+    **/
+    _count?: true | SharepointItemCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SharepointItemAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SharepointItemSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SharepointItemMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SharepointItemMaxAggregateInputType
+  }
+
+  export type GetSharepointItemAggregateType<T extends SharepointItemAggregateArgs> = {
+        [P in keyof T & keyof AggregateSharepointItem]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSharepointItem[P]>
+      : GetScalarType<T[P], AggregateSharepointItem[P]>
+  }
+
+
+
+
+  export type SharepointItemGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SharepointItemWhereInput
+    orderBy?: SharepointItemOrderByWithAggregationInput | SharepointItemOrderByWithAggregationInput[]
+    by: SharepointItemScalarFieldEnum[] | SharepointItemScalarFieldEnum
+    having?: SharepointItemScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SharepointItemCountAggregateInputType | true
+    _avg?: SharepointItemAvgAggregateInputType
+    _sum?: SharepointItemSumAggregateInputType
+    _min?: SharepointItemMinAggregateInputType
+    _max?: SharepointItemMaxAggregateInputType
+  }
+
+  export type SharepointItemGroupByOutputType = {
+    id: string
+    itemId: string
+    displayName: string | null
+    isFolder: boolean
+    size: number | null
+    webUrl: string | null
+    createdDateTime: string | null
+    createdBy: string | null
+    _count: SharepointItemCountAggregateOutputType | null
+    _avg: SharepointItemAvgAggregateOutputType | null
+    _sum: SharepointItemSumAggregateOutputType | null
+    _min: SharepointItemMinAggregateOutputType | null
+    _max: SharepointItemMaxAggregateOutputType | null
+  }
+
+  type GetSharepointItemGroupByPayload<T extends SharepointItemGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SharepointItemGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SharepointItemGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SharepointItemGroupByOutputType[P]>
+            : GetScalarType<T[P], SharepointItemGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SharepointItemSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    itemId?: boolean
+    displayName?: boolean
+    isFolder?: boolean
+    size?: boolean
+    webUrl?: boolean
+    createdDateTime?: boolean
+    createdBy?: boolean
+    jobs?: boolean | SharepointItem$jobsArgs<ExtArgs>
+    _count?: boolean | SharepointItemCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["sharepointItem"]>
+
+  export type SharepointItemSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    itemId?: boolean
+    displayName?: boolean
+    isFolder?: boolean
+    size?: boolean
+    webUrl?: boolean
+    createdDateTime?: boolean
+    createdBy?: boolean
+  }, ExtArgs["result"]["sharepointItem"]>
+
+  export type SharepointItemSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    itemId?: boolean
+    displayName?: boolean
+    isFolder?: boolean
+    size?: boolean
+    webUrl?: boolean
+    createdDateTime?: boolean
+    createdBy?: boolean
+  }, ExtArgs["result"]["sharepointItem"]>
+
+  export type SharepointItemSelectScalar = {
+    id?: boolean
+    itemId?: boolean
+    displayName?: boolean
+    isFolder?: boolean
+    size?: boolean
+    webUrl?: boolean
+    createdDateTime?: boolean
+    createdBy?: boolean
+  }
+
+  export type SharepointItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "itemId" | "displayName" | "isFolder" | "size" | "webUrl" | "createdDateTime" | "createdBy", ExtArgs["result"]["sharepointItem"]>
+  export type SharepointItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    jobs?: boolean | SharepointItem$jobsArgs<ExtArgs>
+    _count?: boolean | SharepointItemCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type SharepointItemIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type SharepointItemIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $SharepointItemPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SharepointItem"
+    objects: {
+      jobs: Prisma.$JobPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      itemId: string
+      displayName: string | null
+      isFolder: boolean
+      size: number | null
+      webUrl: string | null
+      createdDateTime: string | null
+      createdBy: string | null
+    }, ExtArgs["result"]["sharepointItem"]>
+    composites: {}
+  }
+
+  type SharepointItemGetPayload<S extends boolean | null | undefined | SharepointItemDefaultArgs> = $Result.GetResult<Prisma.$SharepointItemPayload, S>
+
+  type SharepointItemCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SharepointItemFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SharepointItemCountAggregateInputType | true
+    }
+
+  export interface SharepointItemDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SharepointItem'], meta: { name: 'SharepointItem' } }
+    /**
+     * Find zero or one SharepointItem that matches the filter.
+     * @param {SharepointItemFindUniqueArgs} args - Arguments to find a SharepointItem
+     * @example
+     * // Get one SharepointItem
+     * const sharepointItem = await prisma.sharepointItem.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SharepointItemFindUniqueArgs>(args: SelectSubset<T, SharepointItemFindUniqueArgs<ExtArgs>>): Prisma__SharepointItemClient<$Result.GetResult<Prisma.$SharepointItemPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SharepointItem that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SharepointItemFindUniqueOrThrowArgs} args - Arguments to find a SharepointItem
+     * @example
+     * // Get one SharepointItem
+     * const sharepointItem = await prisma.sharepointItem.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SharepointItemFindUniqueOrThrowArgs>(args: SelectSubset<T, SharepointItemFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SharepointItemClient<$Result.GetResult<Prisma.$SharepointItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SharepointItem that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SharepointItemFindFirstArgs} args - Arguments to find a SharepointItem
+     * @example
+     * // Get one SharepointItem
+     * const sharepointItem = await prisma.sharepointItem.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SharepointItemFindFirstArgs>(args?: SelectSubset<T, SharepointItemFindFirstArgs<ExtArgs>>): Prisma__SharepointItemClient<$Result.GetResult<Prisma.$SharepointItemPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SharepointItem that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SharepointItemFindFirstOrThrowArgs} args - Arguments to find a SharepointItem
+     * @example
+     * // Get one SharepointItem
+     * const sharepointItem = await prisma.sharepointItem.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SharepointItemFindFirstOrThrowArgs>(args?: SelectSubset<T, SharepointItemFindFirstOrThrowArgs<ExtArgs>>): Prisma__SharepointItemClient<$Result.GetResult<Prisma.$SharepointItemPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SharepointItems that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SharepointItemFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SharepointItems
+     * const sharepointItems = await prisma.sharepointItem.findMany()
+     * 
+     * // Get first 10 SharepointItems
+     * const sharepointItems = await prisma.sharepointItem.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const sharepointItemWithIdOnly = await prisma.sharepointItem.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SharepointItemFindManyArgs>(args?: SelectSubset<T, SharepointItemFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SharepointItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SharepointItem.
+     * @param {SharepointItemCreateArgs} args - Arguments to create a SharepointItem.
+     * @example
+     * // Create one SharepointItem
+     * const SharepointItem = await prisma.sharepointItem.create({
+     *   data: {
+     *     // ... data to create a SharepointItem
+     *   }
+     * })
+     * 
+     */
+    create<T extends SharepointItemCreateArgs>(args: SelectSubset<T, SharepointItemCreateArgs<ExtArgs>>): Prisma__SharepointItemClient<$Result.GetResult<Prisma.$SharepointItemPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SharepointItems.
+     * @param {SharepointItemCreateManyArgs} args - Arguments to create many SharepointItems.
+     * @example
+     * // Create many SharepointItems
+     * const sharepointItem = await prisma.sharepointItem.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SharepointItemCreateManyArgs>(args?: SelectSubset<T, SharepointItemCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SharepointItems and returns the data saved in the database.
+     * @param {SharepointItemCreateManyAndReturnArgs} args - Arguments to create many SharepointItems.
+     * @example
+     * // Create many SharepointItems
+     * const sharepointItem = await prisma.sharepointItem.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SharepointItems and only return the `id`
+     * const sharepointItemWithIdOnly = await prisma.sharepointItem.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SharepointItemCreateManyAndReturnArgs>(args?: SelectSubset<T, SharepointItemCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SharepointItemPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SharepointItem.
+     * @param {SharepointItemDeleteArgs} args - Arguments to delete one SharepointItem.
+     * @example
+     * // Delete one SharepointItem
+     * const SharepointItem = await prisma.sharepointItem.delete({
+     *   where: {
+     *     // ... filter to delete one SharepointItem
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SharepointItemDeleteArgs>(args: SelectSubset<T, SharepointItemDeleteArgs<ExtArgs>>): Prisma__SharepointItemClient<$Result.GetResult<Prisma.$SharepointItemPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SharepointItem.
+     * @param {SharepointItemUpdateArgs} args - Arguments to update one SharepointItem.
+     * @example
+     * // Update one SharepointItem
+     * const sharepointItem = await prisma.sharepointItem.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SharepointItemUpdateArgs>(args: SelectSubset<T, SharepointItemUpdateArgs<ExtArgs>>): Prisma__SharepointItemClient<$Result.GetResult<Prisma.$SharepointItemPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SharepointItems.
+     * @param {SharepointItemDeleteManyArgs} args - Arguments to filter SharepointItems to delete.
+     * @example
+     * // Delete a few SharepointItems
+     * const { count } = await prisma.sharepointItem.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SharepointItemDeleteManyArgs>(args?: SelectSubset<T, SharepointItemDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SharepointItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SharepointItemUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SharepointItems
+     * const sharepointItem = await prisma.sharepointItem.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SharepointItemUpdateManyArgs>(args: SelectSubset<T, SharepointItemUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SharepointItems and returns the data updated in the database.
+     * @param {SharepointItemUpdateManyAndReturnArgs} args - Arguments to update many SharepointItems.
+     * @example
+     * // Update many SharepointItems
+     * const sharepointItem = await prisma.sharepointItem.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SharepointItems and only return the `id`
+     * const sharepointItemWithIdOnly = await prisma.sharepointItem.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SharepointItemUpdateManyAndReturnArgs>(args: SelectSubset<T, SharepointItemUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SharepointItemPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SharepointItem.
+     * @param {SharepointItemUpsertArgs} args - Arguments to update or create a SharepointItem.
+     * @example
+     * // Update or create a SharepointItem
+     * const sharepointItem = await prisma.sharepointItem.upsert({
+     *   create: {
+     *     // ... data to create a SharepointItem
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SharepointItem we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SharepointItemUpsertArgs>(args: SelectSubset<T, SharepointItemUpsertArgs<ExtArgs>>): Prisma__SharepointItemClient<$Result.GetResult<Prisma.$SharepointItemPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SharepointItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SharepointItemCountArgs} args - Arguments to filter SharepointItems to count.
+     * @example
+     * // Count the number of SharepointItems
+     * const count = await prisma.sharepointItem.count({
+     *   where: {
+     *     // ... the filter for the SharepointItems we want to count
+     *   }
+     * })
+    **/
+    count<T extends SharepointItemCountArgs>(
+      args?: Subset<T, SharepointItemCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SharepointItemCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SharepointItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SharepointItemAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SharepointItemAggregateArgs>(args: Subset<T, SharepointItemAggregateArgs>): Prisma.PrismaPromise<GetSharepointItemAggregateType<T>>
+
+    /**
+     * Group by SharepointItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SharepointItemGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SharepointItemGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SharepointItemGroupByArgs['orderBy'] }
+        : { orderBy?: SharepointItemGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SharepointItemGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSharepointItemGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SharepointItem model
+   */
+  readonly fields: SharepointItemFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SharepointItem.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SharepointItemClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    jobs<T extends SharepointItem$jobsArgs<ExtArgs> = {}>(args?: Subset<T, SharepointItem$jobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SharepointItem model
+   */
+  interface SharepointItemFieldRefs {
+    readonly id: FieldRef<"SharepointItem", 'String'>
+    readonly itemId: FieldRef<"SharepointItem", 'String'>
+    readonly displayName: FieldRef<"SharepointItem", 'String'>
+    readonly isFolder: FieldRef<"SharepointItem", 'Boolean'>
+    readonly size: FieldRef<"SharepointItem", 'Int'>
+    readonly webUrl: FieldRef<"SharepointItem", 'String'>
+    readonly createdDateTime: FieldRef<"SharepointItem", 'String'>
+    readonly createdBy: FieldRef<"SharepointItem", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SharepointItem findUnique
+   */
+  export type SharepointItemFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SharepointItem
+     */
+    select?: SharepointItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SharepointItem
+     */
+    omit?: SharepointItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SharepointItemInclude<ExtArgs> | null
+    /**
+     * Filter, which SharepointItem to fetch.
+     */
+    where: SharepointItemWhereUniqueInput
+  }
+
+  /**
+   * SharepointItem findUniqueOrThrow
+   */
+  export type SharepointItemFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SharepointItem
+     */
+    select?: SharepointItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SharepointItem
+     */
+    omit?: SharepointItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SharepointItemInclude<ExtArgs> | null
+    /**
+     * Filter, which SharepointItem to fetch.
+     */
+    where: SharepointItemWhereUniqueInput
+  }
+
+  /**
+   * SharepointItem findFirst
+   */
+  export type SharepointItemFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SharepointItem
+     */
+    select?: SharepointItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SharepointItem
+     */
+    omit?: SharepointItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SharepointItemInclude<ExtArgs> | null
+    /**
+     * Filter, which SharepointItem to fetch.
+     */
+    where?: SharepointItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SharepointItems to fetch.
+     */
+    orderBy?: SharepointItemOrderByWithRelationInput | SharepointItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SharepointItems.
+     */
+    cursor?: SharepointItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SharepointItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SharepointItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SharepointItems.
+     */
+    distinct?: SharepointItemScalarFieldEnum | SharepointItemScalarFieldEnum[]
+  }
+
+  /**
+   * SharepointItem findFirstOrThrow
+   */
+  export type SharepointItemFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SharepointItem
+     */
+    select?: SharepointItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SharepointItem
+     */
+    omit?: SharepointItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SharepointItemInclude<ExtArgs> | null
+    /**
+     * Filter, which SharepointItem to fetch.
+     */
+    where?: SharepointItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SharepointItems to fetch.
+     */
+    orderBy?: SharepointItemOrderByWithRelationInput | SharepointItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SharepointItems.
+     */
+    cursor?: SharepointItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SharepointItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SharepointItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SharepointItems.
+     */
+    distinct?: SharepointItemScalarFieldEnum | SharepointItemScalarFieldEnum[]
+  }
+
+  /**
+   * SharepointItem findMany
+   */
+  export type SharepointItemFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SharepointItem
+     */
+    select?: SharepointItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SharepointItem
+     */
+    omit?: SharepointItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SharepointItemInclude<ExtArgs> | null
+    /**
+     * Filter, which SharepointItems to fetch.
+     */
+    where?: SharepointItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SharepointItems to fetch.
+     */
+    orderBy?: SharepointItemOrderByWithRelationInput | SharepointItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SharepointItems.
+     */
+    cursor?: SharepointItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SharepointItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SharepointItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SharepointItems.
+     */
+    distinct?: SharepointItemScalarFieldEnum | SharepointItemScalarFieldEnum[]
+  }
+
+  /**
+   * SharepointItem create
+   */
+  export type SharepointItemCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SharepointItem
+     */
+    select?: SharepointItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SharepointItem
+     */
+    omit?: SharepointItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SharepointItemInclude<ExtArgs> | null
+    /**
+     * The data needed to create a SharepointItem.
+     */
+    data: XOR<SharepointItemCreateInput, SharepointItemUncheckedCreateInput>
+  }
+
+  /**
+   * SharepointItem createMany
+   */
+  export type SharepointItemCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SharepointItems.
+     */
+    data: SharepointItemCreateManyInput | SharepointItemCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SharepointItem createManyAndReturn
+   */
+  export type SharepointItemCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SharepointItem
+     */
+    select?: SharepointItemSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SharepointItem
+     */
+    omit?: SharepointItemOmit<ExtArgs> | null
+    /**
+     * The data used to create many SharepointItems.
+     */
+    data: SharepointItemCreateManyInput | SharepointItemCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SharepointItem update
+   */
+  export type SharepointItemUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SharepointItem
+     */
+    select?: SharepointItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SharepointItem
+     */
+    omit?: SharepointItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SharepointItemInclude<ExtArgs> | null
+    /**
+     * The data needed to update a SharepointItem.
+     */
+    data: XOR<SharepointItemUpdateInput, SharepointItemUncheckedUpdateInput>
+    /**
+     * Choose, which SharepointItem to update.
+     */
+    where: SharepointItemWhereUniqueInput
+  }
+
+  /**
+   * SharepointItem updateMany
+   */
+  export type SharepointItemUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SharepointItems.
+     */
+    data: XOR<SharepointItemUpdateManyMutationInput, SharepointItemUncheckedUpdateManyInput>
+    /**
+     * Filter which SharepointItems to update
+     */
+    where?: SharepointItemWhereInput
+    /**
+     * Limit how many SharepointItems to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SharepointItem updateManyAndReturn
+   */
+  export type SharepointItemUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SharepointItem
+     */
+    select?: SharepointItemSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SharepointItem
+     */
+    omit?: SharepointItemOmit<ExtArgs> | null
+    /**
+     * The data used to update SharepointItems.
+     */
+    data: XOR<SharepointItemUpdateManyMutationInput, SharepointItemUncheckedUpdateManyInput>
+    /**
+     * Filter which SharepointItems to update
+     */
+    where?: SharepointItemWhereInput
+    /**
+     * Limit how many SharepointItems to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SharepointItem upsert
+   */
+  export type SharepointItemUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SharepointItem
+     */
+    select?: SharepointItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SharepointItem
+     */
+    omit?: SharepointItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SharepointItemInclude<ExtArgs> | null
+    /**
+     * The filter to search for the SharepointItem to update in case it exists.
+     */
+    where: SharepointItemWhereUniqueInput
+    /**
+     * In case the SharepointItem found by the `where` argument doesn't exist, create a new SharepointItem with this data.
+     */
+    create: XOR<SharepointItemCreateInput, SharepointItemUncheckedCreateInput>
+    /**
+     * In case the SharepointItem was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SharepointItemUpdateInput, SharepointItemUncheckedUpdateInput>
+  }
+
+  /**
+   * SharepointItem delete
+   */
+  export type SharepointItemDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SharepointItem
+     */
+    select?: SharepointItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SharepointItem
+     */
+    omit?: SharepointItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SharepointItemInclude<ExtArgs> | null
+    /**
+     * Filter which SharepointItem to delete.
+     */
+    where: SharepointItemWhereUniqueInput
+  }
+
+  /**
+   * SharepointItem deleteMany
+   */
+  export type SharepointItemDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SharepointItems to delete
+     */
+    where?: SharepointItemWhereInput
+    /**
+     * Limit how many SharepointItems to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SharepointItem.jobs
+   */
+  export type SharepointItem$jobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Job
+     */
+    select?: JobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Job
+     */
+    omit?: JobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobInclude<ExtArgs> | null
+    where?: JobWhereInput
+    orderBy?: JobOrderByWithRelationInput | JobOrderByWithRelationInput[]
+    cursor?: JobWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JobScalarFieldEnum | JobScalarFieldEnum[]
+  }
+
+  /**
+   * SharepointItem without action
+   */
+  export type SharepointItemDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SharepointItem
+     */
+    select?: SharepointItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SharepointItem
+     */
+    omit?: SharepointItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SharepointItemInclude<ExtArgs> | null
   }
 
 
@@ -26341,6 +29435,8 @@ export namespace Prisma {
     assignedAt?: boolean
     job?: boolean | JobDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    transactions?: boolean | JobAssignment$transactionsArgs<ExtArgs>
+    _count?: boolean | JobAssignmentCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["jobAssignment"]>
 
   export type JobAssignmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -26375,6 +29471,8 @@ export namespace Prisma {
   export type JobAssignmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    transactions?: boolean | JobAssignment$transactionsArgs<ExtArgs>
+    _count?: boolean | JobAssignmentCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type JobAssignmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobDefaultArgs<ExtArgs>
@@ -26390,6 +29488,7 @@ export namespace Prisma {
     objects: {
       job: Prisma.$JobPayload<ExtArgs>
       user: Prisma.$UserPayload<ExtArgs>
+      transactions: Prisma.$TransactionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -26793,6 +29892,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     job<T extends JobDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobDefaultArgs<ExtArgs>>): Prisma__JobClient<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    transactions<T extends JobAssignment$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, JobAssignment$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -27023,6 +30123,11 @@ export namespace Prisma {
      * Skip the first `n` JobAssignments.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobAssignments.
+     */
     distinct?: JobAssignmentScalarFieldEnum | JobAssignmentScalarFieldEnum[]
   }
 
@@ -27220,6 +30325,30 @@ export namespace Prisma {
      * Limit how many JobAssignments to delete.
      */
     limit?: number
+  }
+
+  /**
+   * JobAssignment.transactions
+   */
+  export type JobAssignment$transactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    where?: TransactionWhereInput
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    cursor?: TransactionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
   }
 
   /**
@@ -28150,6 +31279,11 @@ export namespace Prisma {
      * Skip the first `n` JobFolderTemplates.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobFolderTemplates.
+     */
     distinct?: JobFolderTemplateScalarFieldEnum | JobFolderTemplateScalarFieldEnum[]
   }
 
@@ -28671,6 +31805,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     jobs?: boolean | Client$jobsArgs<ExtArgs>
+    transactions?: boolean | Client$transactionsArgs<ExtArgs>
     _count?: boolean | ClientCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["client"]>
 
@@ -28734,6 +31869,7 @@ export namespace Prisma {
   export type ClientOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "code" | "type" | "region" | "country" | "address" | "timezone" | "email" | "phoneNumber" | "billingEmail" | "taxId" | "currency" | "paymentTerms" | "createdAt" | "updatedAt", ExtArgs["result"]["client"]>
   export type ClientInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     jobs?: boolean | Client$jobsArgs<ExtArgs>
+    transactions?: boolean | Client$transactionsArgs<ExtArgs>
     _count?: boolean | ClientCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ClientIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -28743,6 +31879,7 @@ export namespace Prisma {
     name: "Client"
     objects: {
       jobs: Prisma.$JobPayload<ExtArgs>[]
+      transactions: Prisma.$TransactionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -29156,6 +32293,7 @@ export namespace Prisma {
   export interface Prisma__ClientClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     jobs<T extends Client$jobsArgs<ExtArgs> = {}>(args?: Subset<T, Client$jobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    transactions<T extends Client$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, Client$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -29397,6 +32535,11 @@ export namespace Prisma {
      * Skip the first `n` Clients.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Clients.
+     */
     distinct?: ClientScalarFieldEnum | ClientScalarFieldEnum[]
   }
 
@@ -29610,6 +32753,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: JobScalarFieldEnum | JobScalarFieldEnum[]
+  }
+
+  /**
+   * Client.transactions
+   */
+  export type Client$transactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    where?: TransactionWhereInput
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    cursor?: TransactionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
   }
 
   /**
@@ -30453,6 +33620,11 @@ export namespace Prisma {
      * Skip the first `n` PinnedJobs.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PinnedJobs.
+     */
     distinct?: PinnedJobScalarFieldEnum | PinnedJobScalarFieldEnum[]
   }
 
@@ -30677,17 +33849,40 @@ export namespace Prisma {
 
   export type AggregatePaymentChannel = {
     _count: PaymentChannelCountAggregateOutputType | null
+    _avg: PaymentChannelAvgAggregateOutputType | null
+    _sum: PaymentChannelSumAggregateOutputType | null
     _min: PaymentChannelMinAggregateOutputType | null
     _max: PaymentChannelMaxAggregateOutputType | null
+  }
+
+  export type PaymentChannelAvgAggregateOutputType = {
+    feeRate: number | null
+    fixedFee: number | null
+    totalVolume: number | null
+    totalFees: number | null
+  }
+
+  export type PaymentChannelSumAggregateOutputType = {
+    feeRate: number | null
+    fixedFee: number | null
+    totalVolume: number | null
+    totalFees: number | null
   }
 
   export type PaymentChannelMinAggregateOutputType = {
     id: string | null
     displayName: string | null
     hexColor: string | null
+    type: $Enums.PaymentChannelType | null
+    accountDetails: string | null
+    feeRate: number | null
+    fixedFee: number | null
+    totalVolume: number | null
+    totalFees: number | null
     logoUrl: string | null
     ownerName: string | null
     cardNumber: string | null
+    isActive: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -30696,9 +33891,16 @@ export namespace Prisma {
     id: string | null
     displayName: string | null
     hexColor: string | null
+    type: $Enums.PaymentChannelType | null
+    accountDetails: string | null
+    feeRate: number | null
+    fixedFee: number | null
+    totalVolume: number | null
+    totalFees: number | null
     logoUrl: string | null
     ownerName: string | null
     cardNumber: string | null
+    isActive: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -30707,22 +33909,50 @@ export namespace Prisma {
     id: number
     displayName: number
     hexColor: number
+    type: number
+    accountDetails: number
+    feeRate: number
+    fixedFee: number
+    totalVolume: number
+    totalFees: number
     logoUrl: number
     ownerName: number
     cardNumber: number
+    isActive: number
     createdAt: number
     updatedAt: number
     _all: number
   }
 
 
+  export type PaymentChannelAvgAggregateInputType = {
+    feeRate?: true
+    fixedFee?: true
+    totalVolume?: true
+    totalFees?: true
+  }
+
+  export type PaymentChannelSumAggregateInputType = {
+    feeRate?: true
+    fixedFee?: true
+    totalVolume?: true
+    totalFees?: true
+  }
+
   export type PaymentChannelMinAggregateInputType = {
     id?: true
     displayName?: true
     hexColor?: true
+    type?: true
+    accountDetails?: true
+    feeRate?: true
+    fixedFee?: true
+    totalVolume?: true
+    totalFees?: true
     logoUrl?: true
     ownerName?: true
     cardNumber?: true
+    isActive?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -30731,9 +33961,16 @@ export namespace Prisma {
     id?: true
     displayName?: true
     hexColor?: true
+    type?: true
+    accountDetails?: true
+    feeRate?: true
+    fixedFee?: true
+    totalVolume?: true
+    totalFees?: true
     logoUrl?: true
     ownerName?: true
     cardNumber?: true
+    isActive?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -30742,9 +33979,16 @@ export namespace Prisma {
     id?: true
     displayName?: true
     hexColor?: true
+    type?: true
+    accountDetails?: true
+    feeRate?: true
+    fixedFee?: true
+    totalVolume?: true
+    totalFees?: true
     logoUrl?: true
     ownerName?: true
     cardNumber?: true
+    isActive?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -30788,6 +34032,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: PaymentChannelAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PaymentChannelSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: PaymentChannelMinAggregateInputType
@@ -30818,6 +34074,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: PaymentChannelCountAggregateInputType | true
+    _avg?: PaymentChannelAvgAggregateInputType
+    _sum?: PaymentChannelSumAggregateInputType
     _min?: PaymentChannelMinAggregateInputType
     _max?: PaymentChannelMaxAggregateInputType
   }
@@ -30826,12 +34084,21 @@ export namespace Prisma {
     id: string
     displayName: string
     hexColor: string | null
+    type: $Enums.PaymentChannelType
+    accountDetails: string | null
+    feeRate: number | null
+    fixedFee: number | null
+    totalVolume: number | null
+    totalFees: number | null
     logoUrl: string | null
     ownerName: string | null
     cardNumber: string | null
+    isActive: boolean
     createdAt: Date
     updatedAt: Date
     _count: PaymentChannelCountAggregateOutputType | null
+    _avg: PaymentChannelAvgAggregateOutputType | null
+    _sum: PaymentChannelSumAggregateOutputType | null
     _min: PaymentChannelMinAggregateOutputType | null
     _max: PaymentChannelMaxAggregateOutputType | null
   }
@@ -30854,12 +34121,20 @@ export namespace Prisma {
     id?: boolean
     displayName?: boolean
     hexColor?: boolean
+    type?: boolean
+    accountDetails?: boolean
+    feeRate?: boolean
+    fixedFee?: boolean
+    totalVolume?: boolean
+    totalFees?: boolean
     logoUrl?: boolean
     ownerName?: boolean
     cardNumber?: boolean
+    isActive?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     jobs?: boolean | PaymentChannel$jobsArgs<ExtArgs>
+    transactions?: boolean | PaymentChannel$transactionsArgs<ExtArgs>
     _count?: boolean | PaymentChannelCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["paymentChannel"]>
 
@@ -30867,9 +34142,16 @@ export namespace Prisma {
     id?: boolean
     displayName?: boolean
     hexColor?: boolean
+    type?: boolean
+    accountDetails?: boolean
+    feeRate?: boolean
+    fixedFee?: boolean
+    totalVolume?: boolean
+    totalFees?: boolean
     logoUrl?: boolean
     ownerName?: boolean
     cardNumber?: boolean
+    isActive?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["paymentChannel"]>
@@ -30878,9 +34160,16 @@ export namespace Prisma {
     id?: boolean
     displayName?: boolean
     hexColor?: boolean
+    type?: boolean
+    accountDetails?: boolean
+    feeRate?: boolean
+    fixedFee?: boolean
+    totalVolume?: boolean
+    totalFees?: boolean
     logoUrl?: boolean
     ownerName?: boolean
     cardNumber?: boolean
+    isActive?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["paymentChannel"]>
@@ -30889,16 +34178,24 @@ export namespace Prisma {
     id?: boolean
     displayName?: boolean
     hexColor?: boolean
+    type?: boolean
+    accountDetails?: boolean
+    feeRate?: boolean
+    fixedFee?: boolean
+    totalVolume?: boolean
+    totalFees?: boolean
     logoUrl?: boolean
     ownerName?: boolean
     cardNumber?: boolean
+    isActive?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type PaymentChannelOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "displayName" | "hexColor" | "logoUrl" | "ownerName" | "cardNumber" | "createdAt" | "updatedAt", ExtArgs["result"]["paymentChannel"]>
+  export type PaymentChannelOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "displayName" | "hexColor" | "type" | "accountDetails" | "feeRate" | "fixedFee" | "totalVolume" | "totalFees" | "logoUrl" | "ownerName" | "cardNumber" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["paymentChannel"]>
   export type PaymentChannelInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     jobs?: boolean | PaymentChannel$jobsArgs<ExtArgs>
+    transactions?: boolean | PaymentChannel$transactionsArgs<ExtArgs>
     _count?: boolean | PaymentChannelCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type PaymentChannelIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -30908,14 +34205,22 @@ export namespace Prisma {
     name: "PaymentChannel"
     objects: {
       jobs: Prisma.$JobPayload<ExtArgs>[]
+      transactions: Prisma.$TransactionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       displayName: string
       hexColor: string | null
+      type: $Enums.PaymentChannelType
+      accountDetails: string | null
+      feeRate: number | null
+      fixedFee: number | null
+      totalVolume: number | null
+      totalFees: number | null
       logoUrl: string | null
       ownerName: string | null
       cardNumber: string | null
+      isActive: boolean
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["paymentChannel"]>
@@ -31313,6 +34618,7 @@ export namespace Prisma {
   export interface Prisma__PaymentChannelClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     jobs<T extends PaymentChannel$jobsArgs<ExtArgs> = {}>(args?: Subset<T, PaymentChannel$jobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    transactions<T extends PaymentChannel$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, PaymentChannel$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -31345,9 +34651,16 @@ export namespace Prisma {
     readonly id: FieldRef<"PaymentChannel", 'String'>
     readonly displayName: FieldRef<"PaymentChannel", 'String'>
     readonly hexColor: FieldRef<"PaymentChannel", 'String'>
+    readonly type: FieldRef<"PaymentChannel", 'PaymentChannelType'>
+    readonly accountDetails: FieldRef<"PaymentChannel", 'String'>
+    readonly feeRate: FieldRef<"PaymentChannel", 'Float'>
+    readonly fixedFee: FieldRef<"PaymentChannel", 'Float'>
+    readonly totalVolume: FieldRef<"PaymentChannel", 'Float'>
+    readonly totalFees: FieldRef<"PaymentChannel", 'Float'>
     readonly logoUrl: FieldRef<"PaymentChannel", 'String'>
     readonly ownerName: FieldRef<"PaymentChannel", 'String'>
     readonly cardNumber: FieldRef<"PaymentChannel", 'String'>
+    readonly isActive: FieldRef<"PaymentChannel", 'Boolean'>
     readonly createdAt: FieldRef<"PaymentChannel", 'DateTime'>
     readonly updatedAt: FieldRef<"PaymentChannel", 'DateTime'>
   }
@@ -31546,6 +34859,11 @@ export namespace Prisma {
      * Skip the first `n` PaymentChannels.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PaymentChannels.
+     */
     distinct?: PaymentChannelScalarFieldEnum | PaymentChannelScalarFieldEnum[]
   }
 
@@ -31759,6 +35077,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: JobScalarFieldEnum | JobScalarFieldEnum[]
+  }
+
+  /**
+   * PaymentChannel.transactions
+   */
+  export type PaymentChannel$transactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    where?: TransactionWhereInput
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    cursor?: TransactionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
   }
 
   /**
@@ -32642,6 +35984,11 @@ export namespace Prisma {
      * Skip the first `n` JobTypes.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobTypes.
+     */
     distinct?: JobTypeScalarFieldEnum | JobTypeScalarFieldEnum[]
   }
 
@@ -33858,6 +37205,11 @@ export namespace Prisma {
      * Skip the first `n` JobStatuses.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobStatuses.
+     */
     distinct?: JobStatusScalarFieldEnum | JobStatusScalarFieldEnum[]
   }
 
@@ -34982,6 +38334,11 @@ export namespace Prisma {
      * Skip the first `n` JobDeliverFiles.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobDeliverFiles.
+     */
     distinct?: JobDeliverFileScalarFieldEnum | JobDeliverFileScalarFieldEnum[]
   }
 
@@ -36106,6 +39463,11 @@ export namespace Prisma {
      * Skip the first `n` JobDeliveries.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobDeliveries.
+     */
     distinct?: JobDeliveryScalarFieldEnum | JobDeliveryScalarFieldEnum[]
   }
 
@@ -37290,6 +40652,11 @@ export namespace Prisma {
      * Skip the first `n` JobStatusHistories.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobStatusHistories.
+     */
     distinct?: JobStatusHistoryScalarFieldEnum | JobStatusHistoryScalarFieldEnum[]
   }
 
@@ -38417,6 +41784,11 @@ export namespace Prisma {
      * Skip the first `n` JobActivityLogs.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobActivityLogs.
+     */
     distinct?: JobActivityLogScalarFieldEnum | JobActivityLogScalarFieldEnum[]
   }
 
@@ -39565,6 +42937,11 @@ export namespace Prisma {
      * Skip the first `n` Notifications.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Notifications.
+     */
     distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
   }
 
@@ -40694,6 +44071,11 @@ export namespace Prisma {
      * Skip the first `n` Communities.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Communities.
+     */
     distinct?: CommunityScalarFieldEnum | CommunityScalarFieldEnum[]
   }
 
@@ -41800,6 +45182,11 @@ export namespace Prisma {
      * Skip the first `n` CommunityMembers.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CommunityMembers.
+     */
     distinct?: CommunityMemberScalarFieldEnum | CommunityMemberScalarFieldEnum[]
   }
 
@@ -42916,6 +46303,11 @@ export namespace Prisma {
      * Skip the first `n` Topics.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Topics.
+     */
     distinct?: TopicScalarFieldEnum | TopicScalarFieldEnum[]
   }
 
@@ -44105,6 +47497,11 @@ export namespace Prisma {
      * Skip the first `n` Posts.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Posts.
+     */
     distinct?: PostScalarFieldEnum | PostScalarFieldEnum[]
   }
 
@@ -45208,6 +48605,11 @@ export namespace Prisma {
      * Skip the first `n` PostEvents.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PostEvents.
+     */
     distinct?: PostEventScalarFieldEnum | PostEventScalarFieldEnum[]
   }
 
@@ -45427,6 +48829,2391 @@ export namespace Prisma {
 
 
   /**
+   * Model SystemSetting
+   */
+
+  export type AggregateSystemSetting = {
+    _count: SystemSettingCountAggregateOutputType | null
+    _min: SystemSettingMinAggregateOutputType | null
+    _max: SystemSettingMaxAggregateOutputType | null
+  }
+
+  export type SystemSettingMinAggregateOutputType = {
+    key: string | null
+    value: string | null
+    updatedAt: Date | null
+    modifierById: string | null
+  }
+
+  export type SystemSettingMaxAggregateOutputType = {
+    key: string | null
+    value: string | null
+    updatedAt: Date | null
+    modifierById: string | null
+  }
+
+  export type SystemSettingCountAggregateOutputType = {
+    key: number
+    value: number
+    updatedAt: number
+    modifierById: number
+    _all: number
+  }
+
+
+  export type SystemSettingMinAggregateInputType = {
+    key?: true
+    value?: true
+    updatedAt?: true
+    modifierById?: true
+  }
+
+  export type SystemSettingMaxAggregateInputType = {
+    key?: true
+    value?: true
+    updatedAt?: true
+    modifierById?: true
+  }
+
+  export type SystemSettingCountAggregateInputType = {
+    key?: true
+    value?: true
+    updatedAt?: true
+    modifierById?: true
+    _all?: true
+  }
+
+  export type SystemSettingAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SystemSetting to aggregate.
+     */
+    where?: SystemSettingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SystemSettings to fetch.
+     */
+    orderBy?: SystemSettingOrderByWithRelationInput | SystemSettingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SystemSettingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SystemSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SystemSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SystemSettings
+    **/
+    _count?: true | SystemSettingCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SystemSettingMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SystemSettingMaxAggregateInputType
+  }
+
+  export type GetSystemSettingAggregateType<T extends SystemSettingAggregateArgs> = {
+        [P in keyof T & keyof AggregateSystemSetting]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSystemSetting[P]>
+      : GetScalarType<T[P], AggregateSystemSetting[P]>
+  }
+
+
+
+
+  export type SystemSettingGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SystemSettingWhereInput
+    orderBy?: SystemSettingOrderByWithAggregationInput | SystemSettingOrderByWithAggregationInput[]
+    by: SystemSettingScalarFieldEnum[] | SystemSettingScalarFieldEnum
+    having?: SystemSettingScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SystemSettingCountAggregateInputType | true
+    _min?: SystemSettingMinAggregateInputType
+    _max?: SystemSettingMaxAggregateInputType
+  }
+
+  export type SystemSettingGroupByOutputType = {
+    key: string
+    value: string
+    updatedAt: Date
+    modifierById: string | null
+    _count: SystemSettingCountAggregateOutputType | null
+    _min: SystemSettingMinAggregateOutputType | null
+    _max: SystemSettingMaxAggregateOutputType | null
+  }
+
+  type GetSystemSettingGroupByPayload<T extends SystemSettingGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SystemSettingGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SystemSettingGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SystemSettingGroupByOutputType[P]>
+            : GetScalarType<T[P], SystemSettingGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SystemSettingSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    key?: boolean
+    value?: boolean
+    updatedAt?: boolean
+    modifierById?: boolean
+    modifierBy?: boolean | SystemSetting$modifierByArgs<ExtArgs>
+  }, ExtArgs["result"]["systemSetting"]>
+
+  export type SystemSettingSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    key?: boolean
+    value?: boolean
+    updatedAt?: boolean
+    modifierById?: boolean
+    modifierBy?: boolean | SystemSetting$modifierByArgs<ExtArgs>
+  }, ExtArgs["result"]["systemSetting"]>
+
+  export type SystemSettingSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    key?: boolean
+    value?: boolean
+    updatedAt?: boolean
+    modifierById?: boolean
+    modifierBy?: boolean | SystemSetting$modifierByArgs<ExtArgs>
+  }, ExtArgs["result"]["systemSetting"]>
+
+  export type SystemSettingSelectScalar = {
+    key?: boolean
+    value?: boolean
+    updatedAt?: boolean
+    modifierById?: boolean
+  }
+
+  export type SystemSettingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"key" | "value" | "updatedAt" | "modifierById", ExtArgs["result"]["systemSetting"]>
+  export type SystemSettingInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    modifierBy?: boolean | SystemSetting$modifierByArgs<ExtArgs>
+  }
+  export type SystemSettingIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    modifierBy?: boolean | SystemSetting$modifierByArgs<ExtArgs>
+  }
+  export type SystemSettingIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    modifierBy?: boolean | SystemSetting$modifierByArgs<ExtArgs>
+  }
+
+  export type $SystemSettingPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SystemSetting"
+    objects: {
+      modifierBy: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      key: string
+      value: string
+      updatedAt: Date
+      modifierById: string | null
+    }, ExtArgs["result"]["systemSetting"]>
+    composites: {}
+  }
+
+  type SystemSettingGetPayload<S extends boolean | null | undefined | SystemSettingDefaultArgs> = $Result.GetResult<Prisma.$SystemSettingPayload, S>
+
+  type SystemSettingCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SystemSettingFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SystemSettingCountAggregateInputType | true
+    }
+
+  export interface SystemSettingDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SystemSetting'], meta: { name: 'SystemSetting' } }
+    /**
+     * Find zero or one SystemSetting that matches the filter.
+     * @param {SystemSettingFindUniqueArgs} args - Arguments to find a SystemSetting
+     * @example
+     * // Get one SystemSetting
+     * const systemSetting = await prisma.systemSetting.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SystemSettingFindUniqueArgs>(args: SelectSubset<T, SystemSettingFindUniqueArgs<ExtArgs>>): Prisma__SystemSettingClient<$Result.GetResult<Prisma.$SystemSettingPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SystemSetting that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SystemSettingFindUniqueOrThrowArgs} args - Arguments to find a SystemSetting
+     * @example
+     * // Get one SystemSetting
+     * const systemSetting = await prisma.systemSetting.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SystemSettingFindUniqueOrThrowArgs>(args: SelectSubset<T, SystemSettingFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SystemSettingClient<$Result.GetResult<Prisma.$SystemSettingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SystemSetting that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemSettingFindFirstArgs} args - Arguments to find a SystemSetting
+     * @example
+     * // Get one SystemSetting
+     * const systemSetting = await prisma.systemSetting.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SystemSettingFindFirstArgs>(args?: SelectSubset<T, SystemSettingFindFirstArgs<ExtArgs>>): Prisma__SystemSettingClient<$Result.GetResult<Prisma.$SystemSettingPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SystemSetting that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemSettingFindFirstOrThrowArgs} args - Arguments to find a SystemSetting
+     * @example
+     * // Get one SystemSetting
+     * const systemSetting = await prisma.systemSetting.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SystemSettingFindFirstOrThrowArgs>(args?: SelectSubset<T, SystemSettingFindFirstOrThrowArgs<ExtArgs>>): Prisma__SystemSettingClient<$Result.GetResult<Prisma.$SystemSettingPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SystemSettings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemSettingFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SystemSettings
+     * const systemSettings = await prisma.systemSetting.findMany()
+     * 
+     * // Get first 10 SystemSettings
+     * const systemSettings = await prisma.systemSetting.findMany({ take: 10 })
+     * 
+     * // Only select the `key`
+     * const systemSettingWithKeyOnly = await prisma.systemSetting.findMany({ select: { key: true } })
+     * 
+     */
+    findMany<T extends SystemSettingFindManyArgs>(args?: SelectSubset<T, SystemSettingFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SystemSettingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SystemSetting.
+     * @param {SystemSettingCreateArgs} args - Arguments to create a SystemSetting.
+     * @example
+     * // Create one SystemSetting
+     * const SystemSetting = await prisma.systemSetting.create({
+     *   data: {
+     *     // ... data to create a SystemSetting
+     *   }
+     * })
+     * 
+     */
+    create<T extends SystemSettingCreateArgs>(args: SelectSubset<T, SystemSettingCreateArgs<ExtArgs>>): Prisma__SystemSettingClient<$Result.GetResult<Prisma.$SystemSettingPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SystemSettings.
+     * @param {SystemSettingCreateManyArgs} args - Arguments to create many SystemSettings.
+     * @example
+     * // Create many SystemSettings
+     * const systemSetting = await prisma.systemSetting.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SystemSettingCreateManyArgs>(args?: SelectSubset<T, SystemSettingCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SystemSettings and returns the data saved in the database.
+     * @param {SystemSettingCreateManyAndReturnArgs} args - Arguments to create many SystemSettings.
+     * @example
+     * // Create many SystemSettings
+     * const systemSetting = await prisma.systemSetting.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SystemSettings and only return the `key`
+     * const systemSettingWithKeyOnly = await prisma.systemSetting.createManyAndReturn({
+     *   select: { key: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SystemSettingCreateManyAndReturnArgs>(args?: SelectSubset<T, SystemSettingCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SystemSettingPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SystemSetting.
+     * @param {SystemSettingDeleteArgs} args - Arguments to delete one SystemSetting.
+     * @example
+     * // Delete one SystemSetting
+     * const SystemSetting = await prisma.systemSetting.delete({
+     *   where: {
+     *     // ... filter to delete one SystemSetting
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SystemSettingDeleteArgs>(args: SelectSubset<T, SystemSettingDeleteArgs<ExtArgs>>): Prisma__SystemSettingClient<$Result.GetResult<Prisma.$SystemSettingPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SystemSetting.
+     * @param {SystemSettingUpdateArgs} args - Arguments to update one SystemSetting.
+     * @example
+     * // Update one SystemSetting
+     * const systemSetting = await prisma.systemSetting.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SystemSettingUpdateArgs>(args: SelectSubset<T, SystemSettingUpdateArgs<ExtArgs>>): Prisma__SystemSettingClient<$Result.GetResult<Prisma.$SystemSettingPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SystemSettings.
+     * @param {SystemSettingDeleteManyArgs} args - Arguments to filter SystemSettings to delete.
+     * @example
+     * // Delete a few SystemSettings
+     * const { count } = await prisma.systemSetting.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SystemSettingDeleteManyArgs>(args?: SelectSubset<T, SystemSettingDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SystemSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemSettingUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SystemSettings
+     * const systemSetting = await prisma.systemSetting.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SystemSettingUpdateManyArgs>(args: SelectSubset<T, SystemSettingUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SystemSettings and returns the data updated in the database.
+     * @param {SystemSettingUpdateManyAndReturnArgs} args - Arguments to update many SystemSettings.
+     * @example
+     * // Update many SystemSettings
+     * const systemSetting = await prisma.systemSetting.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SystemSettings and only return the `key`
+     * const systemSettingWithKeyOnly = await prisma.systemSetting.updateManyAndReturn({
+     *   select: { key: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SystemSettingUpdateManyAndReturnArgs>(args: SelectSubset<T, SystemSettingUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SystemSettingPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SystemSetting.
+     * @param {SystemSettingUpsertArgs} args - Arguments to update or create a SystemSetting.
+     * @example
+     * // Update or create a SystemSetting
+     * const systemSetting = await prisma.systemSetting.upsert({
+     *   create: {
+     *     // ... data to create a SystemSetting
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SystemSetting we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SystemSettingUpsertArgs>(args: SelectSubset<T, SystemSettingUpsertArgs<ExtArgs>>): Prisma__SystemSettingClient<$Result.GetResult<Prisma.$SystemSettingPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SystemSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemSettingCountArgs} args - Arguments to filter SystemSettings to count.
+     * @example
+     * // Count the number of SystemSettings
+     * const count = await prisma.systemSetting.count({
+     *   where: {
+     *     // ... the filter for the SystemSettings we want to count
+     *   }
+     * })
+    **/
+    count<T extends SystemSettingCountArgs>(
+      args?: Subset<T, SystemSettingCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SystemSettingCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SystemSetting.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemSettingAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SystemSettingAggregateArgs>(args: Subset<T, SystemSettingAggregateArgs>): Prisma.PrismaPromise<GetSystemSettingAggregateType<T>>
+
+    /**
+     * Group by SystemSetting.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemSettingGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SystemSettingGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SystemSettingGroupByArgs['orderBy'] }
+        : { orderBy?: SystemSettingGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SystemSettingGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSystemSettingGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SystemSetting model
+   */
+  readonly fields: SystemSettingFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SystemSetting.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SystemSettingClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    modifierBy<T extends SystemSetting$modifierByArgs<ExtArgs> = {}>(args?: Subset<T, SystemSetting$modifierByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SystemSetting model
+   */
+  interface SystemSettingFieldRefs {
+    readonly key: FieldRef<"SystemSetting", 'String'>
+    readonly value: FieldRef<"SystemSetting", 'String'>
+    readonly updatedAt: FieldRef<"SystemSetting", 'DateTime'>
+    readonly modifierById: FieldRef<"SystemSetting", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SystemSetting findUnique
+   */
+  export type SystemSettingFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSetting
+     */
+    select?: SystemSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSetting
+     */
+    omit?: SystemSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSettingInclude<ExtArgs> | null
+    /**
+     * Filter, which SystemSetting to fetch.
+     */
+    where: SystemSettingWhereUniqueInput
+  }
+
+  /**
+   * SystemSetting findUniqueOrThrow
+   */
+  export type SystemSettingFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSetting
+     */
+    select?: SystemSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSetting
+     */
+    omit?: SystemSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSettingInclude<ExtArgs> | null
+    /**
+     * Filter, which SystemSetting to fetch.
+     */
+    where: SystemSettingWhereUniqueInput
+  }
+
+  /**
+   * SystemSetting findFirst
+   */
+  export type SystemSettingFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSetting
+     */
+    select?: SystemSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSetting
+     */
+    omit?: SystemSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSettingInclude<ExtArgs> | null
+    /**
+     * Filter, which SystemSetting to fetch.
+     */
+    where?: SystemSettingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SystemSettings to fetch.
+     */
+    orderBy?: SystemSettingOrderByWithRelationInput | SystemSettingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SystemSettings.
+     */
+    cursor?: SystemSettingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SystemSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SystemSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SystemSettings.
+     */
+    distinct?: SystemSettingScalarFieldEnum | SystemSettingScalarFieldEnum[]
+  }
+
+  /**
+   * SystemSetting findFirstOrThrow
+   */
+  export type SystemSettingFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSetting
+     */
+    select?: SystemSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSetting
+     */
+    omit?: SystemSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSettingInclude<ExtArgs> | null
+    /**
+     * Filter, which SystemSetting to fetch.
+     */
+    where?: SystemSettingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SystemSettings to fetch.
+     */
+    orderBy?: SystemSettingOrderByWithRelationInput | SystemSettingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SystemSettings.
+     */
+    cursor?: SystemSettingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SystemSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SystemSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SystemSettings.
+     */
+    distinct?: SystemSettingScalarFieldEnum | SystemSettingScalarFieldEnum[]
+  }
+
+  /**
+   * SystemSetting findMany
+   */
+  export type SystemSettingFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSetting
+     */
+    select?: SystemSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSetting
+     */
+    omit?: SystemSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSettingInclude<ExtArgs> | null
+    /**
+     * Filter, which SystemSettings to fetch.
+     */
+    where?: SystemSettingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SystemSettings to fetch.
+     */
+    orderBy?: SystemSettingOrderByWithRelationInput | SystemSettingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SystemSettings.
+     */
+    cursor?: SystemSettingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SystemSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SystemSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SystemSettings.
+     */
+    distinct?: SystemSettingScalarFieldEnum | SystemSettingScalarFieldEnum[]
+  }
+
+  /**
+   * SystemSetting create
+   */
+  export type SystemSettingCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSetting
+     */
+    select?: SystemSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSetting
+     */
+    omit?: SystemSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSettingInclude<ExtArgs> | null
+    /**
+     * The data needed to create a SystemSetting.
+     */
+    data: XOR<SystemSettingCreateInput, SystemSettingUncheckedCreateInput>
+  }
+
+  /**
+   * SystemSetting createMany
+   */
+  export type SystemSettingCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SystemSettings.
+     */
+    data: SystemSettingCreateManyInput | SystemSettingCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SystemSetting createManyAndReturn
+   */
+  export type SystemSettingCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSetting
+     */
+    select?: SystemSettingSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSetting
+     */
+    omit?: SystemSettingOmit<ExtArgs> | null
+    /**
+     * The data used to create many SystemSettings.
+     */
+    data: SystemSettingCreateManyInput | SystemSettingCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSettingIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SystemSetting update
+   */
+  export type SystemSettingUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSetting
+     */
+    select?: SystemSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSetting
+     */
+    omit?: SystemSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSettingInclude<ExtArgs> | null
+    /**
+     * The data needed to update a SystemSetting.
+     */
+    data: XOR<SystemSettingUpdateInput, SystemSettingUncheckedUpdateInput>
+    /**
+     * Choose, which SystemSetting to update.
+     */
+    where: SystemSettingWhereUniqueInput
+  }
+
+  /**
+   * SystemSetting updateMany
+   */
+  export type SystemSettingUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SystemSettings.
+     */
+    data: XOR<SystemSettingUpdateManyMutationInput, SystemSettingUncheckedUpdateManyInput>
+    /**
+     * Filter which SystemSettings to update
+     */
+    where?: SystemSettingWhereInput
+    /**
+     * Limit how many SystemSettings to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SystemSetting updateManyAndReturn
+   */
+  export type SystemSettingUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSetting
+     */
+    select?: SystemSettingSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSetting
+     */
+    omit?: SystemSettingOmit<ExtArgs> | null
+    /**
+     * The data used to update SystemSettings.
+     */
+    data: XOR<SystemSettingUpdateManyMutationInput, SystemSettingUncheckedUpdateManyInput>
+    /**
+     * Filter which SystemSettings to update
+     */
+    where?: SystemSettingWhereInput
+    /**
+     * Limit how many SystemSettings to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSettingIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SystemSetting upsert
+   */
+  export type SystemSettingUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSetting
+     */
+    select?: SystemSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSetting
+     */
+    omit?: SystemSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSettingInclude<ExtArgs> | null
+    /**
+     * The filter to search for the SystemSetting to update in case it exists.
+     */
+    where: SystemSettingWhereUniqueInput
+    /**
+     * In case the SystemSetting found by the `where` argument doesn't exist, create a new SystemSetting with this data.
+     */
+    create: XOR<SystemSettingCreateInput, SystemSettingUncheckedCreateInput>
+    /**
+     * In case the SystemSetting was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SystemSettingUpdateInput, SystemSettingUncheckedUpdateInput>
+  }
+
+  /**
+   * SystemSetting delete
+   */
+  export type SystemSettingDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSetting
+     */
+    select?: SystemSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSetting
+     */
+    omit?: SystemSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSettingInclude<ExtArgs> | null
+    /**
+     * Filter which SystemSetting to delete.
+     */
+    where: SystemSettingWhereUniqueInput
+  }
+
+  /**
+   * SystemSetting deleteMany
+   */
+  export type SystemSettingDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SystemSettings to delete
+     */
+    where?: SystemSettingWhereInput
+    /**
+     * Limit how many SystemSettings to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SystemSetting.modifierBy
+   */
+  export type SystemSetting$modifierByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * SystemSetting without action
+   */
+  export type SystemSettingDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemSetting
+     */
+    select?: SystemSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemSetting
+     */
+    omit?: SystemSettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SystemSettingInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Transaction
+   */
+
+  export type AggregateTransaction = {
+    _count: TransactionCountAggregateOutputType | null
+    _avg: TransactionAvgAggregateOutputType | null
+    _sum: TransactionSumAggregateOutputType | null
+    _min: TransactionMinAggregateOutputType | null
+    _max: TransactionMaxAggregateOutputType | null
+  }
+
+  export type TransactionAvgAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type TransactionSumAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type TransactionMinAggregateOutputType = {
+    id: string | null
+    amount: number | null
+    currency: string | null
+    type: $Enums.TransactionType | null
+    status: $Enums.TransactionStatus | null
+    referenceNo: string | null
+    note: string | null
+    evidenceUrl: string | null
+    jobId: string | null
+    clientId: string | null
+    assignmentId: string | null
+    paymentChannelId: string | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TransactionMaxAggregateOutputType = {
+    id: string | null
+    amount: number | null
+    currency: string | null
+    type: $Enums.TransactionType | null
+    status: $Enums.TransactionStatus | null
+    referenceNo: string | null
+    note: string | null
+    evidenceUrl: string | null
+    jobId: string | null
+    clientId: string | null
+    assignmentId: string | null
+    paymentChannelId: string | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TransactionCountAggregateOutputType = {
+    id: number
+    amount: number
+    currency: number
+    type: number
+    status: number
+    referenceNo: number
+    note: number
+    evidenceUrl: number
+    jobId: number
+    clientId: number
+    assignmentId: number
+    paymentChannelId: number
+    createdById: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type TransactionAvgAggregateInputType = {
+    amount?: true
+  }
+
+  export type TransactionSumAggregateInputType = {
+    amount?: true
+  }
+
+  export type TransactionMinAggregateInputType = {
+    id?: true
+    amount?: true
+    currency?: true
+    type?: true
+    status?: true
+    referenceNo?: true
+    note?: true
+    evidenceUrl?: true
+    jobId?: true
+    clientId?: true
+    assignmentId?: true
+    paymentChannelId?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TransactionMaxAggregateInputType = {
+    id?: true
+    amount?: true
+    currency?: true
+    type?: true
+    status?: true
+    referenceNo?: true
+    note?: true
+    evidenceUrl?: true
+    jobId?: true
+    clientId?: true
+    assignmentId?: true
+    paymentChannelId?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TransactionCountAggregateInputType = {
+    id?: true
+    amount?: true
+    currency?: true
+    type?: true
+    status?: true
+    referenceNo?: true
+    note?: true
+    evidenceUrl?: true
+    jobId?: true
+    clientId?: true
+    assignmentId?: true
+    paymentChannelId?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type TransactionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Transaction to aggregate.
+     */
+    where?: TransactionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Transactions to fetch.
+     */
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TransactionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Transactions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Transactions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Transactions
+    **/
+    _count?: true | TransactionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: TransactionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TransactionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TransactionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TransactionMaxAggregateInputType
+  }
+
+  export type GetTransactionAggregateType<T extends TransactionAggregateArgs> = {
+        [P in keyof T & keyof AggregateTransaction]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTransaction[P]>
+      : GetScalarType<T[P], AggregateTransaction[P]>
+  }
+
+
+
+
+  export type TransactionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransactionWhereInput
+    orderBy?: TransactionOrderByWithAggregationInput | TransactionOrderByWithAggregationInput[]
+    by: TransactionScalarFieldEnum[] | TransactionScalarFieldEnum
+    having?: TransactionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TransactionCountAggregateInputType | true
+    _avg?: TransactionAvgAggregateInputType
+    _sum?: TransactionSumAggregateInputType
+    _min?: TransactionMinAggregateInputType
+    _max?: TransactionMaxAggregateInputType
+  }
+
+  export type TransactionGroupByOutputType = {
+    id: string
+    amount: number
+    currency: string
+    type: $Enums.TransactionType
+    status: $Enums.TransactionStatus
+    referenceNo: string | null
+    note: string | null
+    evidenceUrl: string | null
+    jobId: string
+    clientId: string | null
+    assignmentId: string | null
+    paymentChannelId: string | null
+    createdById: string
+    createdAt: Date
+    updatedAt: Date
+    _count: TransactionCountAggregateOutputType | null
+    _avg: TransactionAvgAggregateOutputType | null
+    _sum: TransactionSumAggregateOutputType | null
+    _min: TransactionMinAggregateOutputType | null
+    _max: TransactionMaxAggregateOutputType | null
+  }
+
+  type GetTransactionGroupByPayload<T extends TransactionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TransactionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TransactionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TransactionGroupByOutputType[P]>
+            : GetScalarType<T[P], TransactionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TransactionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    amount?: boolean
+    currency?: boolean
+    type?: boolean
+    status?: boolean
+    referenceNo?: boolean
+    note?: boolean
+    evidenceUrl?: boolean
+    jobId?: boolean
+    clientId?: boolean
+    assignmentId?: boolean
+    paymentChannelId?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    client?: boolean | Transaction$clientArgs<ExtArgs>
+    assignment?: boolean | Transaction$assignmentArgs<ExtArgs>
+    paymentChannel?: boolean | Transaction$paymentChannelArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["transaction"]>
+
+  export type TransactionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    amount?: boolean
+    currency?: boolean
+    type?: boolean
+    status?: boolean
+    referenceNo?: boolean
+    note?: boolean
+    evidenceUrl?: boolean
+    jobId?: boolean
+    clientId?: boolean
+    assignmentId?: boolean
+    paymentChannelId?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    client?: boolean | Transaction$clientArgs<ExtArgs>
+    assignment?: boolean | Transaction$assignmentArgs<ExtArgs>
+    paymentChannel?: boolean | Transaction$paymentChannelArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["transaction"]>
+
+  export type TransactionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    amount?: boolean
+    currency?: boolean
+    type?: boolean
+    status?: boolean
+    referenceNo?: boolean
+    note?: boolean
+    evidenceUrl?: boolean
+    jobId?: boolean
+    clientId?: boolean
+    assignmentId?: boolean
+    paymentChannelId?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    client?: boolean | Transaction$clientArgs<ExtArgs>
+    assignment?: boolean | Transaction$assignmentArgs<ExtArgs>
+    paymentChannel?: boolean | Transaction$paymentChannelArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["transaction"]>
+
+  export type TransactionSelectScalar = {
+    id?: boolean
+    amount?: boolean
+    currency?: boolean
+    type?: boolean
+    status?: boolean
+    referenceNo?: boolean
+    note?: boolean
+    evidenceUrl?: boolean
+    jobId?: boolean
+    clientId?: boolean
+    assignmentId?: boolean
+    paymentChannelId?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type TransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "amount" | "currency" | "type" | "status" | "referenceNo" | "note" | "evidenceUrl" | "jobId" | "clientId" | "assignmentId" | "paymentChannelId" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["transaction"]>
+  export type TransactionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    client?: boolean | Transaction$clientArgs<ExtArgs>
+    assignment?: boolean | Transaction$assignmentArgs<ExtArgs>
+    paymentChannel?: boolean | Transaction$paymentChannelArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type TransactionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    client?: boolean | Transaction$clientArgs<ExtArgs>
+    assignment?: boolean | Transaction$assignmentArgs<ExtArgs>
+    paymentChannel?: boolean | Transaction$paymentChannelArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type TransactionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    client?: boolean | Transaction$clientArgs<ExtArgs>
+    assignment?: boolean | Transaction$assignmentArgs<ExtArgs>
+    paymentChannel?: boolean | Transaction$paymentChannelArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $TransactionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Transaction"
+    objects: {
+      job: Prisma.$JobPayload<ExtArgs>
+      client: Prisma.$ClientPayload<ExtArgs> | null
+      assignment: Prisma.$JobAssignmentPayload<ExtArgs> | null
+      paymentChannel: Prisma.$PaymentChannelPayload<ExtArgs> | null
+      createdBy: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      amount: number
+      currency: string
+      type: $Enums.TransactionType
+      status: $Enums.TransactionStatus
+      referenceNo: string | null
+      note: string | null
+      evidenceUrl: string | null
+      jobId: string
+      clientId: string | null
+      assignmentId: string | null
+      paymentChannelId: string | null
+      createdById: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["transaction"]>
+    composites: {}
+  }
+
+  type TransactionGetPayload<S extends boolean | null | undefined | TransactionDefaultArgs> = $Result.GetResult<Prisma.$TransactionPayload, S>
+
+  type TransactionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TransactionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TransactionCountAggregateInputType | true
+    }
+
+  export interface TransactionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Transaction'], meta: { name: 'Transaction' } }
+    /**
+     * Find zero or one Transaction that matches the filter.
+     * @param {TransactionFindUniqueArgs} args - Arguments to find a Transaction
+     * @example
+     * // Get one Transaction
+     * const transaction = await prisma.transaction.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TransactionFindUniqueArgs>(args: SelectSubset<T, TransactionFindUniqueArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Transaction that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TransactionFindUniqueOrThrowArgs} args - Arguments to find a Transaction
+     * @example
+     * // Get one Transaction
+     * const transaction = await prisma.transaction.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TransactionFindUniqueOrThrowArgs>(args: SelectSubset<T, TransactionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Transaction that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionFindFirstArgs} args - Arguments to find a Transaction
+     * @example
+     * // Get one Transaction
+     * const transaction = await prisma.transaction.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TransactionFindFirstArgs>(args?: SelectSubset<T, TransactionFindFirstArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Transaction that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionFindFirstOrThrowArgs} args - Arguments to find a Transaction
+     * @example
+     * // Get one Transaction
+     * const transaction = await prisma.transaction.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TransactionFindFirstOrThrowArgs>(args?: SelectSubset<T, TransactionFindFirstOrThrowArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Transactions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Transactions
+     * const transactions = await prisma.transaction.findMany()
+     * 
+     * // Get first 10 Transactions
+     * const transactions = await prisma.transaction.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const transactionWithIdOnly = await prisma.transaction.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TransactionFindManyArgs>(args?: SelectSubset<T, TransactionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Transaction.
+     * @param {TransactionCreateArgs} args - Arguments to create a Transaction.
+     * @example
+     * // Create one Transaction
+     * const Transaction = await prisma.transaction.create({
+     *   data: {
+     *     // ... data to create a Transaction
+     *   }
+     * })
+     * 
+     */
+    create<T extends TransactionCreateArgs>(args: SelectSubset<T, TransactionCreateArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Transactions.
+     * @param {TransactionCreateManyArgs} args - Arguments to create many Transactions.
+     * @example
+     * // Create many Transactions
+     * const transaction = await prisma.transaction.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TransactionCreateManyArgs>(args?: SelectSubset<T, TransactionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Transactions and returns the data saved in the database.
+     * @param {TransactionCreateManyAndReturnArgs} args - Arguments to create many Transactions.
+     * @example
+     * // Create many Transactions
+     * const transaction = await prisma.transaction.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Transactions and only return the `id`
+     * const transactionWithIdOnly = await prisma.transaction.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TransactionCreateManyAndReturnArgs>(args?: SelectSubset<T, TransactionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Transaction.
+     * @param {TransactionDeleteArgs} args - Arguments to delete one Transaction.
+     * @example
+     * // Delete one Transaction
+     * const Transaction = await prisma.transaction.delete({
+     *   where: {
+     *     // ... filter to delete one Transaction
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TransactionDeleteArgs>(args: SelectSubset<T, TransactionDeleteArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Transaction.
+     * @param {TransactionUpdateArgs} args - Arguments to update one Transaction.
+     * @example
+     * // Update one Transaction
+     * const transaction = await prisma.transaction.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TransactionUpdateArgs>(args: SelectSubset<T, TransactionUpdateArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Transactions.
+     * @param {TransactionDeleteManyArgs} args - Arguments to filter Transactions to delete.
+     * @example
+     * // Delete a few Transactions
+     * const { count } = await prisma.transaction.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TransactionDeleteManyArgs>(args?: SelectSubset<T, TransactionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Transactions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Transactions
+     * const transaction = await prisma.transaction.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TransactionUpdateManyArgs>(args: SelectSubset<T, TransactionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Transactions and returns the data updated in the database.
+     * @param {TransactionUpdateManyAndReturnArgs} args - Arguments to update many Transactions.
+     * @example
+     * // Update many Transactions
+     * const transaction = await prisma.transaction.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Transactions and only return the `id`
+     * const transactionWithIdOnly = await prisma.transaction.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TransactionUpdateManyAndReturnArgs>(args: SelectSubset<T, TransactionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Transaction.
+     * @param {TransactionUpsertArgs} args - Arguments to update or create a Transaction.
+     * @example
+     * // Update or create a Transaction
+     * const transaction = await prisma.transaction.upsert({
+     *   create: {
+     *     // ... data to create a Transaction
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Transaction we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TransactionUpsertArgs>(args: SelectSubset<T, TransactionUpsertArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Transactions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionCountArgs} args - Arguments to filter Transactions to count.
+     * @example
+     * // Count the number of Transactions
+     * const count = await prisma.transaction.count({
+     *   where: {
+     *     // ... the filter for the Transactions we want to count
+     *   }
+     * })
+    **/
+    count<T extends TransactionCountArgs>(
+      args?: Subset<T, TransactionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TransactionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Transaction.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TransactionAggregateArgs>(args: Subset<T, TransactionAggregateArgs>): Prisma.PrismaPromise<GetTransactionAggregateType<T>>
+
+    /**
+     * Group by Transaction.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TransactionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TransactionGroupByArgs['orderBy'] }
+        : { orderBy?: TransactionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TransactionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTransactionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Transaction model
+   */
+  readonly fields: TransactionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Transaction.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TransactionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    job<T extends JobDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobDefaultArgs<ExtArgs>>): Prisma__JobClient<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    client<T extends Transaction$clientArgs<ExtArgs> = {}>(args?: Subset<T, Transaction$clientArgs<ExtArgs>>): Prisma__ClientClient<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    assignment<T extends Transaction$assignmentArgs<ExtArgs> = {}>(args?: Subset<T, Transaction$assignmentArgs<ExtArgs>>): Prisma__JobAssignmentClient<$Result.GetResult<Prisma.$JobAssignmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    paymentChannel<T extends Transaction$paymentChannelArgs<ExtArgs> = {}>(args?: Subset<T, Transaction$paymentChannelArgs<ExtArgs>>): Prisma__PaymentChannelClient<$Result.GetResult<Prisma.$PaymentChannelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    createdBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Transaction model
+   */
+  interface TransactionFieldRefs {
+    readonly id: FieldRef<"Transaction", 'String'>
+    readonly amount: FieldRef<"Transaction", 'Float'>
+    readonly currency: FieldRef<"Transaction", 'String'>
+    readonly type: FieldRef<"Transaction", 'TransactionType'>
+    readonly status: FieldRef<"Transaction", 'TransactionStatus'>
+    readonly referenceNo: FieldRef<"Transaction", 'String'>
+    readonly note: FieldRef<"Transaction", 'String'>
+    readonly evidenceUrl: FieldRef<"Transaction", 'String'>
+    readonly jobId: FieldRef<"Transaction", 'String'>
+    readonly clientId: FieldRef<"Transaction", 'String'>
+    readonly assignmentId: FieldRef<"Transaction", 'String'>
+    readonly paymentChannelId: FieldRef<"Transaction", 'String'>
+    readonly createdById: FieldRef<"Transaction", 'String'>
+    readonly createdAt: FieldRef<"Transaction", 'DateTime'>
+    readonly updatedAt: FieldRef<"Transaction", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Transaction findUnique
+   */
+  export type TransactionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * Filter, which Transaction to fetch.
+     */
+    where: TransactionWhereUniqueInput
+  }
+
+  /**
+   * Transaction findUniqueOrThrow
+   */
+  export type TransactionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * Filter, which Transaction to fetch.
+     */
+    where: TransactionWhereUniqueInput
+  }
+
+  /**
+   * Transaction findFirst
+   */
+  export type TransactionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * Filter, which Transaction to fetch.
+     */
+    where?: TransactionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Transactions to fetch.
+     */
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Transactions.
+     */
+    cursor?: TransactionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Transactions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Transactions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Transactions.
+     */
+    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
+  }
+
+  /**
+   * Transaction findFirstOrThrow
+   */
+  export type TransactionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * Filter, which Transaction to fetch.
+     */
+    where?: TransactionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Transactions to fetch.
+     */
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Transactions.
+     */
+    cursor?: TransactionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Transactions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Transactions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Transactions.
+     */
+    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
+  }
+
+  /**
+   * Transaction findMany
+   */
+  export type TransactionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * Filter, which Transactions to fetch.
+     */
+    where?: TransactionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Transactions to fetch.
+     */
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Transactions.
+     */
+    cursor?: TransactionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Transactions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Transactions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Transactions.
+     */
+    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
+  }
+
+  /**
+   * Transaction create
+   */
+  export type TransactionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Transaction.
+     */
+    data: XOR<TransactionCreateInput, TransactionUncheckedCreateInput>
+  }
+
+  /**
+   * Transaction createMany
+   */
+  export type TransactionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Transactions.
+     */
+    data: TransactionCreateManyInput | TransactionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Transaction createManyAndReturn
+   */
+  export type TransactionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * The data used to create many Transactions.
+     */
+    data: TransactionCreateManyInput | TransactionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Transaction update
+   */
+  export type TransactionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Transaction.
+     */
+    data: XOR<TransactionUpdateInput, TransactionUncheckedUpdateInput>
+    /**
+     * Choose, which Transaction to update.
+     */
+    where: TransactionWhereUniqueInput
+  }
+
+  /**
+   * Transaction updateMany
+   */
+  export type TransactionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Transactions.
+     */
+    data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyInput>
+    /**
+     * Filter which Transactions to update
+     */
+    where?: TransactionWhereInput
+    /**
+     * Limit how many Transactions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Transaction updateManyAndReturn
+   */
+  export type TransactionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * The data used to update Transactions.
+     */
+    data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyInput>
+    /**
+     * Filter which Transactions to update
+     */
+    where?: TransactionWhereInput
+    /**
+     * Limit how many Transactions to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Transaction upsert
+   */
+  export type TransactionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Transaction to update in case it exists.
+     */
+    where: TransactionWhereUniqueInput
+    /**
+     * In case the Transaction found by the `where` argument doesn't exist, create a new Transaction with this data.
+     */
+    create: XOR<TransactionCreateInput, TransactionUncheckedCreateInput>
+    /**
+     * In case the Transaction was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TransactionUpdateInput, TransactionUncheckedUpdateInput>
+  }
+
+  /**
+   * Transaction delete
+   */
+  export type TransactionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * Filter which Transaction to delete.
+     */
+    where: TransactionWhereUniqueInput
+  }
+
+  /**
+   * Transaction deleteMany
+   */
+  export type TransactionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Transactions to delete
+     */
+    where?: TransactionWhereInput
+    /**
+     * Limit how many Transactions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Transaction.client
+   */
+  export type Transaction$clientArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Client
+     */
+    select?: ClientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Client
+     */
+    omit?: ClientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientInclude<ExtArgs> | null
+    where?: ClientWhereInput
+  }
+
+  /**
+   * Transaction.assignment
+   */
+  export type Transaction$assignmentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobAssignment
+     */
+    select?: JobAssignmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobAssignment
+     */
+    omit?: JobAssignmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobAssignmentInclude<ExtArgs> | null
+    where?: JobAssignmentWhereInput
+  }
+
+  /**
+   * Transaction.paymentChannel
+   */
+  export type Transaction$paymentChannelArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentChannel
+     */
+    select?: PaymentChannelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentChannel
+     */
+    omit?: PaymentChannelOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentChannelInclude<ExtArgs> | null
+    where?: PaymentChannelWhereInput
+  }
+
+  /**
+   * Transaction without action
+   */
+  export type TransactionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -45438,6 +51225,24 @@ export namespace Prisma {
   };
 
   export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
+
+
+  export const SystemAuditLogScalarFieldEnum: {
+    id: 'id',
+    actorId: 'actorId',
+    action: 'action',
+    module: 'module',
+    targetId: 'targetId',
+    targetDisplay: 'targetDisplay',
+    oldValues: 'oldValues',
+    newValues: 'newValues',
+    metadata: 'metadata',
+    ipAddress: 'ipAddress',
+    userAgent: 'userAgent',
+    createdAt: 'createdAt'
+  };
+
+  export type SystemAuditLogScalarFieldEnum = (typeof SystemAuditLogScalarFieldEnum)[keyof typeof SystemAuditLogScalarFieldEnum]
 
 
   export const BrowserSubscribesScalarFieldEnum: {
@@ -45680,9 +51485,9 @@ export namespace Prisma {
     displayName: 'displayName',
     description: 'description',
     attachmentUrls: 'attachmentUrls',
-    sharepointFolderId: 'sharepointFolderId',
     clientId: 'clientId',
     incomeCost: 'incomeCost',
+    sharepointFolderId: 'sharepointFolderId',
     totalStaffCost: 'totalStaffCost',
     createdById: 'createdById',
     paymentChannelId: 'paymentChannelId',
@@ -45690,11 +51495,11 @@ export namespace Prisma {
     startedAt: 'startedAt',
     priority: 'priority',
     isPublished: 'isPublished',
-    isPaid: 'isPaid',
     dueAt: 'dueAt',
     completedAt: 'completedAt',
     finishedAt: 'finishedAt',
-    paidAt: 'paidAt',
+    paymentStatus: 'paymentStatus',
+    payoutDate: 'payoutDate',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     deletedAt: 'deletedAt',
@@ -45702,6 +51507,20 @@ export namespace Prisma {
   };
 
   export type JobScalarFieldEnum = (typeof JobScalarFieldEnum)[keyof typeof JobScalarFieldEnum]
+
+
+  export const SharepointItemScalarFieldEnum: {
+    id: 'id',
+    itemId: 'itemId',
+    displayName: 'displayName',
+    isFolder: 'isFolder',
+    size: 'size',
+    webUrl: 'webUrl',
+    createdDateTime: 'createdDateTime',
+    createdBy: 'createdBy'
+  };
+
+  export type SharepointItemScalarFieldEnum = (typeof SharepointItemScalarFieldEnum)[keyof typeof SharepointItemScalarFieldEnum]
 
 
   export const JobAssignmentScalarFieldEnum: {
@@ -45764,9 +51583,16 @@ export namespace Prisma {
     id: 'id',
     displayName: 'displayName',
     hexColor: 'hexColor',
+    type: 'type',
+    accountDetails: 'accountDetails',
+    feeRate: 'feeRate',
+    fixedFee: 'fixedFee',
+    totalVolume: 'totalVolume',
+    totalFees: 'totalFees',
     logoUrl: 'logoUrl',
     ownerName: 'ownerName',
     cardNumber: 'cardNumber',
+    isActive: 'isActive',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -45952,19 +51778,43 @@ export namespace Prisma {
   export type PostEventScalarFieldEnum = (typeof PostEventScalarFieldEnum)[keyof typeof PostEventScalarFieldEnum]
 
 
+  export const SystemSettingScalarFieldEnum: {
+    key: 'key',
+    value: 'value',
+    updatedAt: 'updatedAt',
+    modifierById: 'modifierById'
+  };
+
+  export type SystemSettingScalarFieldEnum = (typeof SystemSettingScalarFieldEnum)[keyof typeof SystemSettingScalarFieldEnum]
+
+
+  export const TransactionScalarFieldEnum: {
+    id: 'id',
+    amount: 'amount',
+    currency: 'currency',
+    type: 'type',
+    status: 'status',
+    referenceNo: 'referenceNo',
+    note: 'note',
+    evidenceUrl: 'evidenceUrl',
+    jobId: 'jobId',
+    clientId: 'clientId',
+    assignmentId: 'assignmentId',
+    paymentChannelId: 'paymentChannelId',
+    createdById: 'createdById',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type TransactionScalarFieldEnum = (typeof TransactionScalarFieldEnum)[keyof typeof TransactionScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
   };
 
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
-
-
-  export const JsonNullValueInput: {
-    JsonNull: typeof JsonNull
-  };
-
-  export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
   export const NullableJsonNullValueInput: {
@@ -45975,20 +51825,19 @@ export namespace Prisma {
   export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
+  export const JsonNullValueInput: {
+    JsonNull: typeof JsonNull
+  };
+
+  export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
   export const QueryMode: {
     default: 'default',
     insensitive: 'insensitive'
   };
 
   export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
-
-
-  export const NullsOrder: {
-    first: 'first',
-    last: 'last'
-  };
-
-  export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
   export const JsonNullValueFilter: {
@@ -45998,6 +51847,14 @@ export namespace Prisma {
   };
 
   export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
+
+
+  export const NullsOrder: {
+    first: 'first',
+    last: 'last'
+  };
+
+  export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
   /**
@@ -46020,9 +51877,30 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Boolean'
+   * Reference to a field of type 'SystemModule'
    */
-  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+  export type EnumSystemModuleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SystemModule'>
+    
+
+
+  /**
+   * Reference to a field of type 'SystemModule[]'
+   */
+  export type ListEnumSystemModuleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SystemModule[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -46037,6 +51915,13 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -46097,20 +51982,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Json'
-   */
-  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
-    
-
-
-  /**
-   * Reference to a field of type 'QueryMode'
-   */
-  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
-    
-
-
-  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -46139,6 +52010,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'JOB_PAYMENT_STATUS'
+   */
+  export type EnumJOB_PAYMENT_STATUSFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JOB_PAYMENT_STATUS'>
+    
+
+
+  /**
+   * Reference to a field of type 'JOB_PAYMENT_STATUS[]'
+   */
+  export type ListEnumJOB_PAYMENT_STATUSFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JOB_PAYMENT_STATUS[]'>
+    
+
+
+  /**
    * Reference to a field of type 'ClientType'
    */
   export type EnumClientTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClientType'>
@@ -46149,6 +52034,20 @@ export namespace Prisma {
    * Reference to a field of type 'ClientType[]'
    */
   export type ListEnumClientTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClientType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'PaymentChannelType'
+   */
+  export type EnumPaymentChannelTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentChannelType'>
+    
+
+
+  /**
+   * Reference to a field of type 'PaymentChannelType[]'
+   */
+  export type ListEnumPaymentChannelTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentChannelType[]'>
     
 
 
@@ -46262,10 +52161,128 @@ export namespace Prisma {
    */
   export type ListEnumTopicTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TopicType[]'>
     
+
+
+  /**
+   * Reference to a field of type 'TransactionType'
+   */
+  export type EnumTransactionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransactionType'>
+    
+
+
+  /**
+   * Reference to a field of type 'TransactionType[]'
+   */
+  export type ListEnumTransactionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransactionType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'TransactionStatus'
+   */
+  export type EnumTransactionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransactionStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'TransactionStatus[]'
+   */
+  export type ListEnumTransactionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransactionStatus[]'>
+    
   /**
    * Deep Input Types
    */
 
+
+  export type SystemAuditLogWhereInput = {
+    AND?: SystemAuditLogWhereInput | SystemAuditLogWhereInput[]
+    OR?: SystemAuditLogWhereInput[]
+    NOT?: SystemAuditLogWhereInput | SystemAuditLogWhereInput[]
+    id?: StringFilter<"SystemAuditLog"> | string
+    actorId?: StringNullableFilter<"SystemAuditLog"> | string | null
+    action?: StringFilter<"SystemAuditLog"> | string
+    module?: EnumSystemModuleFilter<"SystemAuditLog"> | $Enums.SystemModule
+    targetId?: StringNullableFilter<"SystemAuditLog"> | string | null
+    targetDisplay?: StringFilter<"SystemAuditLog"> | string
+    oldValues?: JsonNullableFilter<"SystemAuditLog">
+    newValues?: JsonNullableFilter<"SystemAuditLog">
+    metadata?: JsonNullableFilter<"SystemAuditLog">
+    ipAddress?: StringNullableFilter<"SystemAuditLog"> | string | null
+    userAgent?: StringNullableFilter<"SystemAuditLog"> | string | null
+    createdAt?: DateTimeFilter<"SystemAuditLog"> | Date | string
+    actor?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type SystemAuditLogOrderByWithRelationInput = {
+    id?: SortOrder
+    actorId?: SortOrderInput | SortOrder
+    action?: SortOrder
+    module?: SortOrder
+    targetId?: SortOrderInput | SortOrder
+    targetDisplay?: SortOrder
+    oldValues?: SortOrderInput | SortOrder
+    newValues?: SortOrderInput | SortOrder
+    metadata?: SortOrderInput | SortOrder
+    ipAddress?: SortOrderInput | SortOrder
+    userAgent?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    actor?: UserOrderByWithRelationInput
+  }
+
+  export type SystemAuditLogWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: SystemAuditLogWhereInput | SystemAuditLogWhereInput[]
+    OR?: SystemAuditLogWhereInput[]
+    NOT?: SystemAuditLogWhereInput | SystemAuditLogWhereInput[]
+    actorId?: StringNullableFilter<"SystemAuditLog"> | string | null
+    action?: StringFilter<"SystemAuditLog"> | string
+    module?: EnumSystemModuleFilter<"SystemAuditLog"> | $Enums.SystemModule
+    targetId?: StringNullableFilter<"SystemAuditLog"> | string | null
+    targetDisplay?: StringFilter<"SystemAuditLog"> | string
+    oldValues?: JsonNullableFilter<"SystemAuditLog">
+    newValues?: JsonNullableFilter<"SystemAuditLog">
+    metadata?: JsonNullableFilter<"SystemAuditLog">
+    ipAddress?: StringNullableFilter<"SystemAuditLog"> | string | null
+    userAgent?: StringNullableFilter<"SystemAuditLog"> | string | null
+    createdAt?: DateTimeFilter<"SystemAuditLog"> | Date | string
+    actor?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id">
+
+  export type SystemAuditLogOrderByWithAggregationInput = {
+    id?: SortOrder
+    actorId?: SortOrderInput | SortOrder
+    action?: SortOrder
+    module?: SortOrder
+    targetId?: SortOrderInput | SortOrder
+    targetDisplay?: SortOrder
+    oldValues?: SortOrderInput | SortOrder
+    newValues?: SortOrderInput | SortOrder
+    metadata?: SortOrderInput | SortOrder
+    ipAddress?: SortOrderInput | SortOrder
+    userAgent?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: SystemAuditLogCountOrderByAggregateInput
+    _max?: SystemAuditLogMaxOrderByAggregateInput
+    _min?: SystemAuditLogMinOrderByAggregateInput
+  }
+
+  export type SystemAuditLogScalarWhereWithAggregatesInput = {
+    AND?: SystemAuditLogScalarWhereWithAggregatesInput | SystemAuditLogScalarWhereWithAggregatesInput[]
+    OR?: SystemAuditLogScalarWhereWithAggregatesInput[]
+    NOT?: SystemAuditLogScalarWhereWithAggregatesInput | SystemAuditLogScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SystemAuditLog"> | string
+    actorId?: StringNullableWithAggregatesFilter<"SystemAuditLog"> | string | null
+    action?: StringWithAggregatesFilter<"SystemAuditLog"> | string
+    module?: EnumSystemModuleWithAggregatesFilter<"SystemAuditLog"> | $Enums.SystemModule
+    targetId?: StringNullableWithAggregatesFilter<"SystemAuditLog"> | string | null
+    targetDisplay?: StringWithAggregatesFilter<"SystemAuditLog"> | string
+    oldValues?: JsonNullableWithAggregatesFilter<"SystemAuditLog">
+    newValues?: JsonNullableWithAggregatesFilter<"SystemAuditLog">
+    metadata?: JsonNullableWithAggregatesFilter<"SystemAuditLog">
+    ipAddress?: StringNullableWithAggregatesFilter<"SystemAuditLog"> | string | null
+    userAgent?: StringNullableWithAggregatesFilter<"SystemAuditLog"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"SystemAuditLog"> | Date | string
+  }
 
   export type BrowserSubscribesWhereInput = {
     AND?: BrowserSubscribesWhereInput | BrowserSubscribesWhereInput[]
@@ -46423,6 +52440,9 @@ export namespace Prisma {
     role?: XOR<RoleNullableScalarRelationFilter, RoleWhereInput> | null
     userPermissions?: UserPermissionListRelationFilter
     securityLogs?: UserSecurityLogListRelationFilter
+    systemAuditLogs?: SystemAuditLogListRelationFilter
+    systemSettings?: SystemSettingListRelationFilter
+    transactions?: TransactionListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -46470,6 +52490,9 @@ export namespace Prisma {
     role?: RoleOrderByWithRelationInput
     userPermissions?: UserPermissionOrderByRelationAggregateInput
     securityLogs?: UserSecurityLogOrderByRelationAggregateInput
+    systemAuditLogs?: SystemAuditLogOrderByRelationAggregateInput
+    systemSettings?: SystemSettingOrderByRelationAggregateInput
+    transactions?: TransactionOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -46520,6 +52543,9 @@ export namespace Prisma {
     role?: XOR<RoleNullableScalarRelationFilter, RoleWhereInput> | null
     userPermissions?: UserPermissionListRelationFilter
     securityLogs?: UserSecurityLogListRelationFilter
+    systemAuditLogs?: SystemAuditLogListRelationFilter
+    systemSettings?: SystemSettingListRelationFilter
+    transactions?: TransactionListRelationFilter
   }, "id" | "code" | "email" | "username">
 
   export type UserOrderByWithAggregationInput = {
@@ -47543,9 +53569,9 @@ export namespace Prisma {
     displayName?: StringFilter<"Job"> | string
     description?: StringNullableFilter<"Job"> | string | null
     attachmentUrls?: StringNullableListFilter<"Job">
-    sharepointFolderId?: StringNullableFilter<"Job"> | string | null
     clientId?: StringNullableFilter<"Job"> | string | null
     incomeCost?: FloatFilter<"Job"> | number
+    sharepointFolderId?: StringNullableFilter<"Job"> | string | null
     totalStaffCost?: FloatFilter<"Job"> | number
     createdById?: StringFilter<"Job"> | string
     paymentChannelId?: StringNullableFilter<"Job"> | string | null
@@ -47553,17 +53579,18 @@ export namespace Prisma {
     startedAt?: DateTimeFilter<"Job"> | Date | string
     priority?: EnumJobPriorityFilter<"Job"> | $Enums.JobPriority
     isPublished?: BoolFilter<"Job"> | boolean
-    isPaid?: BoolFilter<"Job"> | boolean
     dueAt?: DateTimeFilter<"Job"> | Date | string
     completedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
     finishedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
-    paidAt?: DateTimeNullableFilter<"Job"> | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFilter<"Job"> | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: DateTimeNullableFilter<"Job"> | Date | string | null
     createdAt?: DateTimeFilter<"Job"> | Date | string
     updatedAt?: DateTimeFilter<"Job"> | Date | string
     deletedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
     folderTemplateId?: StringNullableFilter<"Job"> | string | null
     type?: XOR<JobTypeScalarRelationFilter, JobTypeWhereInput>
     client?: XOR<ClientNullableScalarRelationFilter, ClientWhereInput> | null
+    sharepointFolder?: XOR<SharepointItemNullableScalarRelationFilter, SharepointItemWhereInput> | null
     assignments?: JobAssignmentListRelationFilter
     createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
     paymentChannel?: XOR<PaymentChannelNullableScalarRelationFilter, PaymentChannelWhereInput> | null
@@ -47575,6 +53602,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobListRelationFilter
     jobDeliveries?: JobDeliveryListRelationFilter
     folderTemplate?: XOR<JobFolderTemplateNullableScalarRelationFilter, JobFolderTemplateWhereInput> | null
+    transactions?: TransactionListRelationFilter
   }
 
   export type JobOrderByWithRelationInput = {
@@ -47584,9 +53612,9 @@ export namespace Prisma {
     displayName?: SortOrder
     description?: SortOrderInput | SortOrder
     attachmentUrls?: SortOrder
-    sharepointFolderId?: SortOrderInput | SortOrder
     clientId?: SortOrderInput | SortOrder
     incomeCost?: SortOrder
+    sharepointFolderId?: SortOrderInput | SortOrder
     totalStaffCost?: SortOrder
     createdById?: SortOrder
     paymentChannelId?: SortOrderInput | SortOrder
@@ -47594,17 +53622,18 @@ export namespace Prisma {
     startedAt?: SortOrder
     priority?: SortOrder
     isPublished?: SortOrder
-    isPaid?: SortOrder
     dueAt?: SortOrder
     completedAt?: SortOrderInput | SortOrder
     finishedAt?: SortOrderInput | SortOrder
-    paidAt?: SortOrderInput | SortOrder
+    paymentStatus?: SortOrder
+    payoutDate?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
     folderTemplateId?: SortOrderInput | SortOrder
     type?: JobTypeOrderByWithRelationInput
     client?: ClientOrderByWithRelationInput
+    sharepointFolder?: SharepointItemOrderByWithRelationInput
     assignments?: JobAssignmentOrderByRelationAggregateInput
     createdBy?: UserOrderByWithRelationInput
     paymentChannel?: PaymentChannelOrderByWithRelationInput
@@ -47616,6 +53645,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobOrderByRelationAggregateInput
     jobDeliveries?: JobDeliveryOrderByRelationAggregateInput
     folderTemplate?: JobFolderTemplateOrderByWithRelationInput
+    transactions?: TransactionOrderByRelationAggregateInput
   }
 
   export type JobWhereUniqueInput = Prisma.AtLeast<{
@@ -47628,9 +53658,9 @@ export namespace Prisma {
     displayName?: StringFilter<"Job"> | string
     description?: StringNullableFilter<"Job"> | string | null
     attachmentUrls?: StringNullableListFilter<"Job">
-    sharepointFolderId?: StringNullableFilter<"Job"> | string | null
     clientId?: StringNullableFilter<"Job"> | string | null
     incomeCost?: FloatFilter<"Job"> | number
+    sharepointFolderId?: StringNullableFilter<"Job"> | string | null
     totalStaffCost?: FloatFilter<"Job"> | number
     createdById?: StringFilter<"Job"> | string
     paymentChannelId?: StringNullableFilter<"Job"> | string | null
@@ -47638,17 +53668,18 @@ export namespace Prisma {
     startedAt?: DateTimeFilter<"Job"> | Date | string
     priority?: EnumJobPriorityFilter<"Job"> | $Enums.JobPriority
     isPublished?: BoolFilter<"Job"> | boolean
-    isPaid?: BoolFilter<"Job"> | boolean
     dueAt?: DateTimeFilter<"Job"> | Date | string
     completedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
     finishedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
-    paidAt?: DateTimeNullableFilter<"Job"> | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFilter<"Job"> | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: DateTimeNullableFilter<"Job"> | Date | string | null
     createdAt?: DateTimeFilter<"Job"> | Date | string
     updatedAt?: DateTimeFilter<"Job"> | Date | string
     deletedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
     folderTemplateId?: StringNullableFilter<"Job"> | string | null
     type?: XOR<JobTypeScalarRelationFilter, JobTypeWhereInput>
     client?: XOR<ClientNullableScalarRelationFilter, ClientWhereInput> | null
+    sharepointFolder?: XOR<SharepointItemNullableScalarRelationFilter, SharepointItemWhereInput> | null
     assignments?: JobAssignmentListRelationFilter
     createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
     paymentChannel?: XOR<PaymentChannelNullableScalarRelationFilter, PaymentChannelWhereInput> | null
@@ -47660,6 +53691,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobListRelationFilter
     jobDeliveries?: JobDeliveryListRelationFilter
     folderTemplate?: XOR<JobFolderTemplateNullableScalarRelationFilter, JobFolderTemplateWhereInput> | null
+    transactions?: TransactionListRelationFilter
   }, "id" | "no">
 
   export type JobOrderByWithAggregationInput = {
@@ -47669,9 +53701,9 @@ export namespace Prisma {
     displayName?: SortOrder
     description?: SortOrderInput | SortOrder
     attachmentUrls?: SortOrder
-    sharepointFolderId?: SortOrderInput | SortOrder
     clientId?: SortOrderInput | SortOrder
     incomeCost?: SortOrder
+    sharepointFolderId?: SortOrderInput | SortOrder
     totalStaffCost?: SortOrder
     createdById?: SortOrder
     paymentChannelId?: SortOrderInput | SortOrder
@@ -47679,11 +53711,11 @@ export namespace Prisma {
     startedAt?: SortOrder
     priority?: SortOrder
     isPublished?: SortOrder
-    isPaid?: SortOrder
     dueAt?: SortOrder
     completedAt?: SortOrderInput | SortOrder
     finishedAt?: SortOrderInput | SortOrder
-    paidAt?: SortOrderInput | SortOrder
+    paymentStatus?: SortOrder
+    payoutDate?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
@@ -47705,9 +53737,9 @@ export namespace Prisma {
     displayName?: StringWithAggregatesFilter<"Job"> | string
     description?: StringNullableWithAggregatesFilter<"Job"> | string | null
     attachmentUrls?: StringNullableListFilter<"Job">
-    sharepointFolderId?: StringNullableWithAggregatesFilter<"Job"> | string | null
     clientId?: StringNullableWithAggregatesFilter<"Job"> | string | null
     incomeCost?: FloatWithAggregatesFilter<"Job"> | number
+    sharepointFolderId?: StringNullableWithAggregatesFilter<"Job"> | string | null
     totalStaffCost?: FloatWithAggregatesFilter<"Job"> | number
     createdById?: StringWithAggregatesFilter<"Job"> | string
     paymentChannelId?: StringNullableWithAggregatesFilter<"Job"> | string | null
@@ -47715,15 +53747,88 @@ export namespace Prisma {
     startedAt?: DateTimeWithAggregatesFilter<"Job"> | Date | string
     priority?: EnumJobPriorityWithAggregatesFilter<"Job"> | $Enums.JobPriority
     isPublished?: BoolWithAggregatesFilter<"Job"> | boolean
-    isPaid?: BoolWithAggregatesFilter<"Job"> | boolean
     dueAt?: DateTimeWithAggregatesFilter<"Job"> | Date | string
     completedAt?: DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
     finishedAt?: DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
-    paidAt?: DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSWithAggregatesFilter<"Job"> | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Job"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Job"> | Date | string
     deletedAt?: DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
     folderTemplateId?: StringNullableWithAggregatesFilter<"Job"> | string | null
+  }
+
+  export type SharepointItemWhereInput = {
+    AND?: SharepointItemWhereInput | SharepointItemWhereInput[]
+    OR?: SharepointItemWhereInput[]
+    NOT?: SharepointItemWhereInput | SharepointItemWhereInput[]
+    id?: StringFilter<"SharepointItem"> | string
+    itemId?: StringFilter<"SharepointItem"> | string
+    displayName?: StringNullableFilter<"SharepointItem"> | string | null
+    isFolder?: BoolFilter<"SharepointItem"> | boolean
+    size?: IntNullableFilter<"SharepointItem"> | number | null
+    webUrl?: StringNullableFilter<"SharepointItem"> | string | null
+    createdDateTime?: StringNullableFilter<"SharepointItem"> | string | null
+    createdBy?: StringNullableFilter<"SharepointItem"> | string | null
+    jobs?: JobListRelationFilter
+  }
+
+  export type SharepointItemOrderByWithRelationInput = {
+    id?: SortOrder
+    itemId?: SortOrder
+    displayName?: SortOrderInput | SortOrder
+    isFolder?: SortOrder
+    size?: SortOrderInput | SortOrder
+    webUrl?: SortOrderInput | SortOrder
+    createdDateTime?: SortOrderInput | SortOrder
+    createdBy?: SortOrderInput | SortOrder
+    jobs?: JobOrderByRelationAggregateInput
+  }
+
+  export type SharepointItemWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    itemId_id?: SharepointItemItemIdIdCompoundUniqueInput
+    AND?: SharepointItemWhereInput | SharepointItemWhereInput[]
+    OR?: SharepointItemWhereInput[]
+    NOT?: SharepointItemWhereInput | SharepointItemWhereInput[]
+    itemId?: StringFilter<"SharepointItem"> | string
+    displayName?: StringNullableFilter<"SharepointItem"> | string | null
+    isFolder?: BoolFilter<"SharepointItem"> | boolean
+    size?: IntNullableFilter<"SharepointItem"> | number | null
+    webUrl?: StringNullableFilter<"SharepointItem"> | string | null
+    createdDateTime?: StringNullableFilter<"SharepointItem"> | string | null
+    createdBy?: StringNullableFilter<"SharepointItem"> | string | null
+    jobs?: JobListRelationFilter
+  }, "id" | "itemId_id">
+
+  export type SharepointItemOrderByWithAggregationInput = {
+    id?: SortOrder
+    itemId?: SortOrder
+    displayName?: SortOrderInput | SortOrder
+    isFolder?: SortOrder
+    size?: SortOrderInput | SortOrder
+    webUrl?: SortOrderInput | SortOrder
+    createdDateTime?: SortOrderInput | SortOrder
+    createdBy?: SortOrderInput | SortOrder
+    _count?: SharepointItemCountOrderByAggregateInput
+    _avg?: SharepointItemAvgOrderByAggregateInput
+    _max?: SharepointItemMaxOrderByAggregateInput
+    _min?: SharepointItemMinOrderByAggregateInput
+    _sum?: SharepointItemSumOrderByAggregateInput
+  }
+
+  export type SharepointItemScalarWhereWithAggregatesInput = {
+    AND?: SharepointItemScalarWhereWithAggregatesInput | SharepointItemScalarWhereWithAggregatesInput[]
+    OR?: SharepointItemScalarWhereWithAggregatesInput[]
+    NOT?: SharepointItemScalarWhereWithAggregatesInput | SharepointItemScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SharepointItem"> | string
+    itemId?: StringWithAggregatesFilter<"SharepointItem"> | string
+    displayName?: StringNullableWithAggregatesFilter<"SharepointItem"> | string | null
+    isFolder?: BoolWithAggregatesFilter<"SharepointItem"> | boolean
+    size?: IntNullableWithAggregatesFilter<"SharepointItem"> | number | null
+    webUrl?: StringNullableWithAggregatesFilter<"SharepointItem"> | string | null
+    createdDateTime?: StringNullableWithAggregatesFilter<"SharepointItem"> | string | null
+    createdBy?: StringNullableWithAggregatesFilter<"SharepointItem"> | string | null
   }
 
   export type JobAssignmentWhereInput = {
@@ -47737,6 +53842,7 @@ export namespace Prisma {
     assignedAt?: DateTimeFilter<"JobAssignment"> | Date | string
     job?: XOR<JobScalarRelationFilter, JobWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    transactions?: TransactionListRelationFilter
   }
 
   export type JobAssignmentOrderByWithRelationInput = {
@@ -47747,6 +53853,7 @@ export namespace Prisma {
     assignedAt?: SortOrder
     job?: JobOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
+    transactions?: TransactionOrderByRelationAggregateInput
   }
 
   export type JobAssignmentWhereUniqueInput = Prisma.AtLeast<{
@@ -47761,6 +53868,7 @@ export namespace Prisma {
     assignedAt?: DateTimeFilter<"JobAssignment"> | Date | string
     job?: XOR<JobScalarRelationFilter, JobWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    transactions?: TransactionListRelationFilter
   }, "id" | "jobId_userId">
 
   export type JobAssignmentOrderByWithAggregationInput = {
@@ -47880,6 +53988,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Client"> | Date | string
     updatedAt?: DateTimeFilter<"Client"> | Date | string
     jobs?: JobListRelationFilter
+    transactions?: TransactionListRelationFilter
   }
 
   export type ClientOrderByWithRelationInput = {
@@ -47900,13 +54009,13 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     jobs?: JobOrderByRelationAggregateInput
+    transactions?: TransactionOrderByRelationAggregateInput
   }
 
   export type ClientWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     name?: string
     code?: string
-    email?: string
     AND?: ClientWhereInput | ClientWhereInput[]
     OR?: ClientWhereInput[]
     NOT?: ClientWhereInput | ClientWhereInput[]
@@ -47915,6 +54024,7 @@ export namespace Prisma {
     country?: StringNullableFilter<"Client"> | string | null
     address?: StringNullableFilter<"Client"> | string | null
     timezone?: StringNullableFilter<"Client"> | string | null
+    email?: StringNullableFilter<"Client"> | string | null
     phoneNumber?: StringNullableFilter<"Client"> | string | null
     billingEmail?: StringNullableFilter<"Client"> | string | null
     taxId?: StringNullableFilter<"Client"> | string | null
@@ -47923,7 +54033,8 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Client"> | Date | string
     updatedAt?: DateTimeFilter<"Client"> | Date | string
     jobs?: JobListRelationFilter
-  }, "id" | "name" | "code" | "email">
+    transactions?: TransactionListRelationFilter
+  }, "id" | "name" | "code">
 
   export type ClientOrderByWithAggregationInput = {
     id?: SortOrder
@@ -48027,24 +54138,40 @@ export namespace Prisma {
     id?: StringFilter<"PaymentChannel"> | string
     displayName?: StringFilter<"PaymentChannel"> | string
     hexColor?: StringNullableFilter<"PaymentChannel"> | string | null
+    type?: EnumPaymentChannelTypeFilter<"PaymentChannel"> | $Enums.PaymentChannelType
+    accountDetails?: StringNullableFilter<"PaymentChannel"> | string | null
+    feeRate?: FloatNullableFilter<"PaymentChannel"> | number | null
+    fixedFee?: FloatNullableFilter<"PaymentChannel"> | number | null
+    totalVolume?: FloatNullableFilter<"PaymentChannel"> | number | null
+    totalFees?: FloatNullableFilter<"PaymentChannel"> | number | null
     logoUrl?: StringNullableFilter<"PaymentChannel"> | string | null
     ownerName?: StringNullableFilter<"PaymentChannel"> | string | null
     cardNumber?: StringNullableFilter<"PaymentChannel"> | string | null
+    isActive?: BoolFilter<"PaymentChannel"> | boolean
     createdAt?: DateTimeFilter<"PaymentChannel"> | Date | string
     updatedAt?: DateTimeFilter<"PaymentChannel"> | Date | string
     jobs?: JobListRelationFilter
+    transactions?: TransactionListRelationFilter
   }
 
   export type PaymentChannelOrderByWithRelationInput = {
     id?: SortOrder
     displayName?: SortOrder
     hexColor?: SortOrderInput | SortOrder
+    type?: SortOrder
+    accountDetails?: SortOrderInput | SortOrder
+    feeRate?: SortOrderInput | SortOrder
+    fixedFee?: SortOrderInput | SortOrder
+    totalVolume?: SortOrderInput | SortOrder
+    totalFees?: SortOrderInput | SortOrder
     logoUrl?: SortOrderInput | SortOrder
     ownerName?: SortOrderInput | SortOrder
     cardNumber?: SortOrderInput | SortOrder
+    isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     jobs?: JobOrderByRelationAggregateInput
+    transactions?: TransactionOrderByRelationAggregateInput
   }
 
   export type PaymentChannelWhereUniqueInput = Prisma.AtLeast<{
@@ -48054,26 +54181,43 @@ export namespace Prisma {
     NOT?: PaymentChannelWhereInput | PaymentChannelWhereInput[]
     displayName?: StringFilter<"PaymentChannel"> | string
     hexColor?: StringNullableFilter<"PaymentChannel"> | string | null
+    type?: EnumPaymentChannelTypeFilter<"PaymentChannel"> | $Enums.PaymentChannelType
+    accountDetails?: StringNullableFilter<"PaymentChannel"> | string | null
+    feeRate?: FloatNullableFilter<"PaymentChannel"> | number | null
+    fixedFee?: FloatNullableFilter<"PaymentChannel"> | number | null
+    totalVolume?: FloatNullableFilter<"PaymentChannel"> | number | null
+    totalFees?: FloatNullableFilter<"PaymentChannel"> | number | null
     logoUrl?: StringNullableFilter<"PaymentChannel"> | string | null
     ownerName?: StringNullableFilter<"PaymentChannel"> | string | null
     cardNumber?: StringNullableFilter<"PaymentChannel"> | string | null
+    isActive?: BoolFilter<"PaymentChannel"> | boolean
     createdAt?: DateTimeFilter<"PaymentChannel"> | Date | string
     updatedAt?: DateTimeFilter<"PaymentChannel"> | Date | string
     jobs?: JobListRelationFilter
+    transactions?: TransactionListRelationFilter
   }, "id">
 
   export type PaymentChannelOrderByWithAggregationInput = {
     id?: SortOrder
     displayName?: SortOrder
     hexColor?: SortOrderInput | SortOrder
+    type?: SortOrder
+    accountDetails?: SortOrderInput | SortOrder
+    feeRate?: SortOrderInput | SortOrder
+    fixedFee?: SortOrderInput | SortOrder
+    totalVolume?: SortOrderInput | SortOrder
+    totalFees?: SortOrderInput | SortOrder
     logoUrl?: SortOrderInput | SortOrder
     ownerName?: SortOrderInput | SortOrder
     cardNumber?: SortOrderInput | SortOrder
+    isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: PaymentChannelCountOrderByAggregateInput
+    _avg?: PaymentChannelAvgOrderByAggregateInput
     _max?: PaymentChannelMaxOrderByAggregateInput
     _min?: PaymentChannelMinOrderByAggregateInput
+    _sum?: PaymentChannelSumOrderByAggregateInput
   }
 
   export type PaymentChannelScalarWhereWithAggregatesInput = {
@@ -48083,9 +54227,16 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"PaymentChannel"> | string
     displayName?: StringWithAggregatesFilter<"PaymentChannel"> | string
     hexColor?: StringNullableWithAggregatesFilter<"PaymentChannel"> | string | null
+    type?: EnumPaymentChannelTypeWithAggregatesFilter<"PaymentChannel"> | $Enums.PaymentChannelType
+    accountDetails?: StringNullableWithAggregatesFilter<"PaymentChannel"> | string | null
+    feeRate?: FloatNullableWithAggregatesFilter<"PaymentChannel"> | number | null
+    fixedFee?: FloatNullableWithAggregatesFilter<"PaymentChannel"> | number | null
+    totalVolume?: FloatNullableWithAggregatesFilter<"PaymentChannel"> | number | null
+    totalFees?: FloatNullableWithAggregatesFilter<"PaymentChannel"> | number | null
     logoUrl?: StringNullableWithAggregatesFilter<"PaymentChannel"> | string | null
     ownerName?: StringNullableWithAggregatesFilter<"PaymentChannel"> | string | null
     cardNumber?: StringNullableWithAggregatesFilter<"PaymentChannel"> | string | null
+    isActive?: BoolWithAggregatesFilter<"PaymentChannel"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"PaymentChannel"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"PaymentChannel"> | Date | string
   }
@@ -49023,6 +55174,279 @@ export namespace Prisma {
     postId?: StringWithAggregatesFilter<"PostEvent"> | string
   }
 
+  export type SystemSettingWhereInput = {
+    AND?: SystemSettingWhereInput | SystemSettingWhereInput[]
+    OR?: SystemSettingWhereInput[]
+    NOT?: SystemSettingWhereInput | SystemSettingWhereInput[]
+    key?: StringFilter<"SystemSetting"> | string
+    value?: StringFilter<"SystemSetting"> | string
+    updatedAt?: DateTimeFilter<"SystemSetting"> | Date | string
+    modifierById?: StringNullableFilter<"SystemSetting"> | string | null
+    modifierBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type SystemSettingOrderByWithRelationInput = {
+    key?: SortOrder
+    value?: SortOrder
+    updatedAt?: SortOrder
+    modifierById?: SortOrderInput | SortOrder
+    modifierBy?: UserOrderByWithRelationInput
+  }
+
+  export type SystemSettingWhereUniqueInput = Prisma.AtLeast<{
+    key?: string
+    AND?: SystemSettingWhereInput | SystemSettingWhereInput[]
+    OR?: SystemSettingWhereInput[]
+    NOT?: SystemSettingWhereInput | SystemSettingWhereInput[]
+    value?: StringFilter<"SystemSetting"> | string
+    updatedAt?: DateTimeFilter<"SystemSetting"> | Date | string
+    modifierById?: StringNullableFilter<"SystemSetting"> | string | null
+    modifierBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "key">
+
+  export type SystemSettingOrderByWithAggregationInput = {
+    key?: SortOrder
+    value?: SortOrder
+    updatedAt?: SortOrder
+    modifierById?: SortOrderInput | SortOrder
+    _count?: SystemSettingCountOrderByAggregateInput
+    _max?: SystemSettingMaxOrderByAggregateInput
+    _min?: SystemSettingMinOrderByAggregateInput
+  }
+
+  export type SystemSettingScalarWhereWithAggregatesInput = {
+    AND?: SystemSettingScalarWhereWithAggregatesInput | SystemSettingScalarWhereWithAggregatesInput[]
+    OR?: SystemSettingScalarWhereWithAggregatesInput[]
+    NOT?: SystemSettingScalarWhereWithAggregatesInput | SystemSettingScalarWhereWithAggregatesInput[]
+    key?: StringWithAggregatesFilter<"SystemSetting"> | string
+    value?: StringWithAggregatesFilter<"SystemSetting"> | string
+    updatedAt?: DateTimeWithAggregatesFilter<"SystemSetting"> | Date | string
+    modifierById?: StringNullableWithAggregatesFilter<"SystemSetting"> | string | null
+  }
+
+  export type TransactionWhereInput = {
+    AND?: TransactionWhereInput | TransactionWhereInput[]
+    OR?: TransactionWhereInput[]
+    NOT?: TransactionWhereInput | TransactionWhereInput[]
+    id?: StringFilter<"Transaction"> | string
+    amount?: FloatFilter<"Transaction"> | number
+    currency?: StringFilter<"Transaction"> | string
+    type?: EnumTransactionTypeFilter<"Transaction"> | $Enums.TransactionType
+    status?: EnumTransactionStatusFilter<"Transaction"> | $Enums.TransactionStatus
+    referenceNo?: StringNullableFilter<"Transaction"> | string | null
+    note?: StringNullableFilter<"Transaction"> | string | null
+    evidenceUrl?: StringNullableFilter<"Transaction"> | string | null
+    jobId?: StringFilter<"Transaction"> | string
+    clientId?: StringNullableFilter<"Transaction"> | string | null
+    assignmentId?: StringNullableFilter<"Transaction"> | string | null
+    paymentChannelId?: StringNullableFilter<"Transaction"> | string | null
+    createdById?: StringFilter<"Transaction"> | string
+    createdAt?: DateTimeFilter<"Transaction"> | Date | string
+    updatedAt?: DateTimeFilter<"Transaction"> | Date | string
+    job?: XOR<JobScalarRelationFilter, JobWhereInput>
+    client?: XOR<ClientNullableScalarRelationFilter, ClientWhereInput> | null
+    assignment?: XOR<JobAssignmentNullableScalarRelationFilter, JobAssignmentWhereInput> | null
+    paymentChannel?: XOR<PaymentChannelNullableScalarRelationFilter, PaymentChannelWhereInput> | null
+    createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type TransactionOrderByWithRelationInput = {
+    id?: SortOrder
+    amount?: SortOrder
+    currency?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    referenceNo?: SortOrderInput | SortOrder
+    note?: SortOrderInput | SortOrder
+    evidenceUrl?: SortOrderInput | SortOrder
+    jobId?: SortOrder
+    clientId?: SortOrderInput | SortOrder
+    assignmentId?: SortOrderInput | SortOrder
+    paymentChannelId?: SortOrderInput | SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    job?: JobOrderByWithRelationInput
+    client?: ClientOrderByWithRelationInput
+    assignment?: JobAssignmentOrderByWithRelationInput
+    paymentChannel?: PaymentChannelOrderByWithRelationInput
+    createdBy?: UserOrderByWithRelationInput
+  }
+
+  export type TransactionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    referenceNo?: string
+    AND?: TransactionWhereInput | TransactionWhereInput[]
+    OR?: TransactionWhereInput[]
+    NOT?: TransactionWhereInput | TransactionWhereInput[]
+    amount?: FloatFilter<"Transaction"> | number
+    currency?: StringFilter<"Transaction"> | string
+    type?: EnumTransactionTypeFilter<"Transaction"> | $Enums.TransactionType
+    status?: EnumTransactionStatusFilter<"Transaction"> | $Enums.TransactionStatus
+    note?: StringNullableFilter<"Transaction"> | string | null
+    evidenceUrl?: StringNullableFilter<"Transaction"> | string | null
+    jobId?: StringFilter<"Transaction"> | string
+    clientId?: StringNullableFilter<"Transaction"> | string | null
+    assignmentId?: StringNullableFilter<"Transaction"> | string | null
+    paymentChannelId?: StringNullableFilter<"Transaction"> | string | null
+    createdById?: StringFilter<"Transaction"> | string
+    createdAt?: DateTimeFilter<"Transaction"> | Date | string
+    updatedAt?: DateTimeFilter<"Transaction"> | Date | string
+    job?: XOR<JobScalarRelationFilter, JobWhereInput>
+    client?: XOR<ClientNullableScalarRelationFilter, ClientWhereInput> | null
+    assignment?: XOR<JobAssignmentNullableScalarRelationFilter, JobAssignmentWhereInput> | null
+    paymentChannel?: XOR<PaymentChannelNullableScalarRelationFilter, PaymentChannelWhereInput> | null
+    createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "referenceNo">
+
+  export type TransactionOrderByWithAggregationInput = {
+    id?: SortOrder
+    amount?: SortOrder
+    currency?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    referenceNo?: SortOrderInput | SortOrder
+    note?: SortOrderInput | SortOrder
+    evidenceUrl?: SortOrderInput | SortOrder
+    jobId?: SortOrder
+    clientId?: SortOrderInput | SortOrder
+    assignmentId?: SortOrderInput | SortOrder
+    paymentChannelId?: SortOrderInput | SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: TransactionCountOrderByAggregateInput
+    _avg?: TransactionAvgOrderByAggregateInput
+    _max?: TransactionMaxOrderByAggregateInput
+    _min?: TransactionMinOrderByAggregateInput
+    _sum?: TransactionSumOrderByAggregateInput
+  }
+
+  export type TransactionScalarWhereWithAggregatesInput = {
+    AND?: TransactionScalarWhereWithAggregatesInput | TransactionScalarWhereWithAggregatesInput[]
+    OR?: TransactionScalarWhereWithAggregatesInput[]
+    NOT?: TransactionScalarWhereWithAggregatesInput | TransactionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Transaction"> | string
+    amount?: FloatWithAggregatesFilter<"Transaction"> | number
+    currency?: StringWithAggregatesFilter<"Transaction"> | string
+    type?: EnumTransactionTypeWithAggregatesFilter<"Transaction"> | $Enums.TransactionType
+    status?: EnumTransactionStatusWithAggregatesFilter<"Transaction"> | $Enums.TransactionStatus
+    referenceNo?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
+    note?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
+    evidenceUrl?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
+    jobId?: StringWithAggregatesFilter<"Transaction"> | string
+    clientId?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
+    assignmentId?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
+    paymentChannelId?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
+    createdById?: StringWithAggregatesFilter<"Transaction"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Transaction"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Transaction"> | Date | string
+  }
+
+  export type SystemAuditLogCreateInput = {
+    id?: string
+    action: string
+    module: $Enums.SystemModule
+    targetId?: string | null
+    targetDisplay: string
+    oldValues?: NullableJsonNullValueInput | InputJsonValue
+    newValues?: NullableJsonNullValueInput | InputJsonValue
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: string | null
+    userAgent?: string | null
+    createdAt?: Date | string
+    actor?: UserCreateNestedOneWithoutSystemAuditLogsInput
+  }
+
+  export type SystemAuditLogUncheckedCreateInput = {
+    id?: string
+    actorId?: string | null
+    action: string
+    module: $Enums.SystemModule
+    targetId?: string | null
+    targetDisplay: string
+    oldValues?: NullableJsonNullValueInput | InputJsonValue
+    newValues?: NullableJsonNullValueInput | InputJsonValue
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: string | null
+    userAgent?: string | null
+    createdAt?: Date | string
+  }
+
+  export type SystemAuditLogUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    module?: EnumSystemModuleFieldUpdateOperationsInput | $Enums.SystemModule
+    targetId?: NullableStringFieldUpdateOperationsInput | string | null
+    targetDisplay?: StringFieldUpdateOperationsInput | string
+    oldValues?: NullableJsonNullValueInput | InputJsonValue
+    newValues?: NullableJsonNullValueInput | InputJsonValue
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    actor?: UserUpdateOneWithoutSystemAuditLogsNestedInput
+  }
+
+  export type SystemAuditLogUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    actorId?: NullableStringFieldUpdateOperationsInput | string | null
+    action?: StringFieldUpdateOperationsInput | string
+    module?: EnumSystemModuleFieldUpdateOperationsInput | $Enums.SystemModule
+    targetId?: NullableStringFieldUpdateOperationsInput | string | null
+    targetDisplay?: StringFieldUpdateOperationsInput | string
+    oldValues?: NullableJsonNullValueInput | InputJsonValue
+    newValues?: NullableJsonNullValueInput | InputJsonValue
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SystemAuditLogCreateManyInput = {
+    id?: string
+    actorId?: string | null
+    action: string
+    module: $Enums.SystemModule
+    targetId?: string | null
+    targetDisplay: string
+    oldValues?: NullableJsonNullValueInput | InputJsonValue
+    newValues?: NullableJsonNullValueInput | InputJsonValue
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: string | null
+    userAgent?: string | null
+    createdAt?: Date | string
+  }
+
+  export type SystemAuditLogUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    module?: EnumSystemModuleFieldUpdateOperationsInput | $Enums.SystemModule
+    targetId?: NullableStringFieldUpdateOperationsInput | string | null
+    targetDisplay?: StringFieldUpdateOperationsInput | string
+    oldValues?: NullableJsonNullValueInput | InputJsonValue
+    newValues?: NullableJsonNullValueInput | InputJsonValue
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SystemAuditLogUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    actorId?: NullableStringFieldUpdateOperationsInput | string | null
+    action?: StringFieldUpdateOperationsInput | string
+    module?: EnumSystemModuleFieldUpdateOperationsInput | $Enums.SystemModule
+    targetId?: NullableStringFieldUpdateOperationsInput | string | null
+    targetDisplay?: StringFieldUpdateOperationsInput | string
+    oldValues?: NullableJsonNullValueInput | InputJsonValue
+    newValues?: NullableJsonNullValueInput | InputJsonValue
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type BrowserSubscribesCreateInput = {
     id?: string
     endpoint: string
@@ -49175,6 +55599,9 @@ export namespace Prisma {
     role?: RoleCreateNestedOneWithoutUsersInput
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -49218,6 +55645,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUpdateInput = {
@@ -49261,6 +55691,9 @@ export namespace Prisma {
     role?: RoleUpdateOneWithoutUsersNestedInput
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -49304,6 +55737,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -50405,22 +56841,22 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     type: JobTypeCreateNestedOneWithoutJobsInput
     client?: ClientCreateNestedOneWithoutJobsInput
+    sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
@@ -50432,6 +56868,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
     folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+    transactions?: TransactionCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateInput = {
@@ -50441,9 +56878,9 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     paymentChannelId?: string | null
@@ -50451,11 +56888,11 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -50467,6 +56904,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobUpdateInput = {
@@ -50475,22 +56913,22 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     type?: JobTypeUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneWithoutJobsNestedInput
+    sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
@@ -50502,6 +56940,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
     folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+    transactions?: TransactionUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateInput = {
@@ -50511,9 +56950,9 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -50521,11 +56960,11 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50537,6 +56976,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobCreateManyInput = {
@@ -50546,9 +56986,9 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     paymentChannelId?: string | null
@@ -50556,11 +56996,11 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -50573,17 +57013,16 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -50596,9 +57035,9 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -50606,15 +57045,96 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type SharepointItemCreateInput = {
+    id?: string
+    itemId: string
+    displayName?: string | null
+    isFolder?: boolean
+    size?: number | null
+    webUrl?: string | null
+    createdDateTime?: string | null
+    createdBy?: string | null
+    jobs?: JobCreateNestedManyWithoutSharepointFolderInput
+  }
+
+  export type SharepointItemUncheckedCreateInput = {
+    id?: string
+    itemId: string
+    displayName?: string | null
+    isFolder?: boolean
+    size?: number | null
+    webUrl?: string | null
+    createdDateTime?: string | null
+    createdBy?: string | null
+    jobs?: JobUncheckedCreateNestedManyWithoutSharepointFolderInput
+  }
+
+  export type SharepointItemUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    itemId?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    isFolder?: BoolFieldUpdateOperationsInput | boolean
+    size?: NullableIntFieldUpdateOperationsInput | number | null
+    webUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdDateTime?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    jobs?: JobUpdateManyWithoutSharepointFolderNestedInput
+  }
+
+  export type SharepointItemUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    itemId?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    isFolder?: BoolFieldUpdateOperationsInput | boolean
+    size?: NullableIntFieldUpdateOperationsInput | number | null
+    webUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdDateTime?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    jobs?: JobUncheckedUpdateManyWithoutSharepointFolderNestedInput
+  }
+
+  export type SharepointItemCreateManyInput = {
+    id?: string
+    itemId: string
+    displayName?: string | null
+    isFolder?: boolean
+    size?: number | null
+    webUrl?: string | null
+    createdDateTime?: string | null
+    createdBy?: string | null
+  }
+
+  export type SharepointItemUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    itemId?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    isFolder?: BoolFieldUpdateOperationsInput | boolean
+    size?: NullableIntFieldUpdateOperationsInput | number | null
+    webUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdDateTime?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type SharepointItemUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    itemId?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    isFolder?: BoolFieldUpdateOperationsInput | boolean
+    size?: NullableIntFieldUpdateOperationsInput | number | null
+    webUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdDateTime?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type JobAssignmentCreateInput = {
@@ -50623,6 +57143,7 @@ export namespace Prisma {
     assignedAt?: Date | string
     job: JobCreateNestedOneWithoutAssignmentsInput
     user: UserCreateNestedOneWithoutJobAssignmentsInput
+    transactions?: TransactionCreateNestedManyWithoutAssignmentInput
   }
 
   export type JobAssignmentUncheckedCreateInput = {
@@ -50631,6 +57152,7 @@ export namespace Prisma {
     userId: string
     staffCost?: number
     assignedAt?: Date | string
+    transactions?: TransactionUncheckedCreateNestedManyWithoutAssignmentInput
   }
 
   export type JobAssignmentUpdateInput = {
@@ -50639,6 +57161,7 @@ export namespace Prisma {
     assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     job?: JobUpdateOneRequiredWithoutAssignmentsNestedInput
     user?: UserUpdateOneRequiredWithoutJobAssignmentsNestedInput
+    transactions?: TransactionUpdateManyWithoutAssignmentNestedInput
   }
 
   export type JobAssignmentUncheckedUpdateInput = {
@@ -50647,6 +57170,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     staffCost?: FloatFieldUpdateOperationsInput | number
     assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transactions?: TransactionUncheckedUpdateManyWithoutAssignmentNestedInput
   }
 
   export type JobAssignmentCreateManyInput = {
@@ -50770,6 +57294,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     jobs?: JobCreateNestedManyWithoutClientInput
+    transactions?: TransactionCreateNestedManyWithoutClientInput
   }
 
   export type ClientUncheckedCreateInput = {
@@ -50790,6 +57315,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     jobs?: JobUncheckedCreateNestedManyWithoutClientInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutClientInput
   }
 
   export type ClientUpdateInput = {
@@ -50810,6 +57336,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     jobs?: JobUpdateManyWithoutClientNestedInput
+    transactions?: TransactionUpdateManyWithoutClientNestedInput
   }
 
   export type ClientUncheckedUpdateInput = {
@@ -50830,6 +57357,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     jobs?: JobUncheckedUpdateManyWithoutClientNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutClientNestedInput
   }
 
   export type ClientCreateManyInput = {
@@ -50933,57 +57461,96 @@ export namespace Prisma {
     id?: string
     displayName: string
     hexColor?: string | null
+    type?: $Enums.PaymentChannelType
+    accountDetails?: string | null
+    feeRate?: number | null
+    fixedFee?: number | null
+    totalVolume?: number | null
+    totalFees?: number | null
     logoUrl?: string | null
     ownerName?: string | null
     cardNumber?: string | null
+    isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     jobs?: JobCreateNestedManyWithoutPaymentChannelInput
+    transactions?: TransactionCreateNestedManyWithoutPaymentChannelInput
   }
 
   export type PaymentChannelUncheckedCreateInput = {
     id?: string
     displayName: string
     hexColor?: string | null
+    type?: $Enums.PaymentChannelType
+    accountDetails?: string | null
+    feeRate?: number | null
+    fixedFee?: number | null
+    totalVolume?: number | null
+    totalFees?: number | null
     logoUrl?: string | null
     ownerName?: string | null
     cardNumber?: string | null
+    isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     jobs?: JobUncheckedCreateNestedManyWithoutPaymentChannelInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutPaymentChannelInput
   }
 
   export type PaymentChannelUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     displayName?: StringFieldUpdateOperationsInput | string
     hexColor?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumPaymentChannelTypeFieldUpdateOperationsInput | $Enums.PaymentChannelType
+    accountDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    feeRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    fixedFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalVolume?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalFees?: NullableFloatFieldUpdateOperationsInput | number | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     ownerName?: NullableStringFieldUpdateOperationsInput | string | null
     cardNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     jobs?: JobUpdateManyWithoutPaymentChannelNestedInput
+    transactions?: TransactionUpdateManyWithoutPaymentChannelNestedInput
   }
 
   export type PaymentChannelUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     displayName?: StringFieldUpdateOperationsInput | string
     hexColor?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumPaymentChannelTypeFieldUpdateOperationsInput | $Enums.PaymentChannelType
+    accountDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    feeRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    fixedFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalVolume?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalFees?: NullableFloatFieldUpdateOperationsInput | number | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     ownerName?: NullableStringFieldUpdateOperationsInput | string | null
     cardNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     jobs?: JobUncheckedUpdateManyWithoutPaymentChannelNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutPaymentChannelNestedInput
   }
 
   export type PaymentChannelCreateManyInput = {
     id?: string
     displayName: string
     hexColor?: string | null
+    type?: $Enums.PaymentChannelType
+    accountDetails?: string | null
+    feeRate?: number | null
+    fixedFee?: number | null
+    totalVolume?: number | null
+    totalFees?: number | null
     logoUrl?: string | null
     ownerName?: string | null
     cardNumber?: string | null
+    isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -50992,9 +57559,16 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     displayName?: StringFieldUpdateOperationsInput | string
     hexColor?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumPaymentChannelTypeFieldUpdateOperationsInput | $Enums.PaymentChannelType
+    accountDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    feeRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    fixedFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalVolume?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalFees?: NullableFloatFieldUpdateOperationsInput | number | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     ownerName?: NullableStringFieldUpdateOperationsInput | string | null
     cardNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -51003,9 +57577,16 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     displayName?: StringFieldUpdateOperationsInput | string
     hexColor?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumPaymentChannelTypeFieldUpdateOperationsInput | $Enums.PaymentChannelType
+    accountDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    feeRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    fixedFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalVolume?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalFees?: NullableFloatFieldUpdateOperationsInput | number | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     ownerName?: NullableStringFieldUpdateOperationsInput | string | null
     cardNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -52020,6 +58601,175 @@ export namespace Prisma {
     postId?: StringFieldUpdateOperationsInput | string
   }
 
+  export type SystemSettingCreateInput = {
+    key: string
+    value: string
+    updatedAt?: Date | string
+    modifierBy?: UserCreateNestedOneWithoutSystemSettingsInput
+  }
+
+  export type SystemSettingUncheckedCreateInput = {
+    key: string
+    value: string
+    updatedAt?: Date | string
+    modifierById?: string | null
+  }
+
+  export type SystemSettingUpdateInput = {
+    key?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    modifierBy?: UserUpdateOneWithoutSystemSettingsNestedInput
+  }
+
+  export type SystemSettingUncheckedUpdateInput = {
+    key?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    modifierById?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type SystemSettingCreateManyInput = {
+    key: string
+    value: string
+    updatedAt?: Date | string
+    modifierById?: string | null
+  }
+
+  export type SystemSettingUpdateManyMutationInput = {
+    key?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SystemSettingUncheckedUpdateManyInput = {
+    key?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    modifierById?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type TransactionCreateInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutTransactionsInput
+    client?: ClientCreateNestedOneWithoutTransactionsInput
+    assignment?: JobAssignmentCreateNestedOneWithoutTransactionsInput
+    paymentChannel?: PaymentChannelCreateNestedOneWithoutTransactionsInput
+    createdBy: UserCreateNestedOneWithoutTransactionsInput
+  }
+
+  export type TransactionUncheckedCreateInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    jobId: string
+    clientId?: string | null
+    assignmentId?: string | null
+    paymentChannelId?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransactionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutTransactionsNestedInput
+    client?: ClientUpdateOneWithoutTransactionsNestedInput
+    assignment?: JobAssignmentUpdateOneWithoutTransactionsNestedInput
+    paymentChannel?: PaymentChannelUpdateOneWithoutTransactionsNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutTransactionsNestedInput
+  }
+
+  export type TransactionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    jobId?: StringFieldUpdateOperationsInput | string
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransactionCreateManyInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    jobId: string
+    clientId?: string | null
+    assignmentId?: string | null
+    paymentChannelId?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransactionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransactionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    jobId?: StringFieldUpdateOperationsInput | string
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -52050,33 +58800,94 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type EnumSystemModuleFilter<$PrismaModel = never> = {
+    equals?: $Enums.SystemModule | EnumSystemModuleFieldRefInput<$PrismaModel>
+    in?: $Enums.SystemModule[] | ListEnumSystemModuleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SystemModule[] | ListEnumSystemModuleFieldRefInput<$PrismaModel>
+    not?: NestedEnumSystemModuleFilter<$PrismaModel> | $Enums.SystemModule
+  }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type DateTimeFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
+  export type UserNullableScalarRelationFilter = {
+    is?: UserWhereInput | null
+    isNot?: UserWhereInput | null
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
   }
 
-  export type BrowserSubscribesCountOrderByAggregateInput = {
+  export type SystemAuditLogCountOrderByAggregateInput = {
     id?: SortOrder
-    endpoint?: SortOrder
-    expirationTime?: SortOrder
-    p256dh?: SortOrder
-    auth?: SortOrder
+    actorId?: SortOrder
+    action?: SortOrder
+    module?: SortOrder
+    targetId?: SortOrder
+    targetDisplay?: SortOrder
+    oldValues?: SortOrder
+    newValues?: SortOrder
+    metadata?: SortOrder
+    ipAddress?: SortOrder
+    userAgent?: SortOrder
+    createdAt?: SortOrder
   }
 
-  export type BrowserSubscribesMaxOrderByAggregateInput = {
+  export type SystemAuditLogMaxOrderByAggregateInput = {
     id?: SortOrder
-    endpoint?: SortOrder
-    expirationTime?: SortOrder
-    p256dh?: SortOrder
-    auth?: SortOrder
+    actorId?: SortOrder
+    action?: SortOrder
+    module?: SortOrder
+    targetId?: SortOrder
+    targetDisplay?: SortOrder
+    ipAddress?: SortOrder
+    userAgent?: SortOrder
+    createdAt?: SortOrder
   }
 
-  export type BrowserSubscribesMinOrderByAggregateInput = {
+  export type SystemAuditLogMinOrderByAggregateInput = {
     id?: SortOrder
-    endpoint?: SortOrder
-    expirationTime?: SortOrder
-    p256dh?: SortOrder
-    auth?: SortOrder
+    actorId?: SortOrder
+    action?: SortOrder
+    module?: SortOrder
+    targetId?: SortOrder
+    targetDisplay?: SortOrder
+    ipAddress?: SortOrder
+    userAgent?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -52113,6 +58924,80 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type EnumSystemModuleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SystemModule | EnumSystemModuleFieldRefInput<$PrismaModel>
+    in?: $Enums.SystemModule[] | ListEnumSystemModuleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SystemModule[] | ListEnumSystemModuleFieldRefInput<$PrismaModel>
+    not?: NestedEnumSystemModuleWithAggregatesFilter<$PrismaModel> | $Enums.SystemModule
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSystemModuleFilter<$PrismaModel>
+    _max?: NestedEnumSystemModuleFilter<$PrismaModel>
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
+  }
+
+  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type BrowserSubscribesCountOrderByAggregateInput = {
+    id?: SortOrder
+    endpoint?: SortOrder
+    expirationTime?: SortOrder
+    p256dh?: SortOrder
+    auth?: SortOrder
+  }
+
+  export type BrowserSubscribesMaxOrderByAggregateInput = {
+    id?: SortOrder
+    endpoint?: SortOrder
+    expirationTime?: SortOrder
+    p256dh?: SortOrder
+    auth?: SortOrder
+  }
+
+  export type BrowserSubscribesMinOrderByAggregateInput = {
+    id?: SortOrder
+    endpoint?: SortOrder
+    expirationTime?: SortOrder
+    p256dh?: SortOrder
+    auth?: SortOrder
   }
 
   export type BoolFilter<$PrismaModel = never> = {
@@ -52171,17 +59056,6 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type DateTimeFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
   export type JobTitleNullableScalarRelationFilter = {
@@ -52254,11 +59128,6 @@ export namespace Prisma {
     none?: PinnedJobWhereInput
   }
 
-  export type UserNullableScalarRelationFilter = {
-    is?: UserWhereInput | null
-    isNot?: UserWhereInput | null
-  }
-
   export type UserListRelationFilter = {
     every?: UserWhereInput
     some?: UserWhereInput
@@ -52316,6 +59185,24 @@ export namespace Prisma {
     every?: UserSecurityLogWhereInput
     some?: UserSecurityLogWhereInput
     none?: UserSecurityLogWhereInput
+  }
+
+  export type SystemAuditLogListRelationFilter = {
+    every?: SystemAuditLogWhereInput
+    some?: SystemAuditLogWhereInput
+    none?: SystemAuditLogWhereInput
+  }
+
+  export type SystemSettingListRelationFilter = {
+    every?: SystemSettingWhereInput
+    some?: SystemSettingWhereInput
+    none?: SystemSettingWhereInput
+  }
+
+  export type TransactionListRelationFilter = {
+    every?: TransactionWhereInput
+    some?: TransactionWhereInput
+    none?: TransactionWhereInput
   }
 
   export type NotificationOrderByRelationAggregateInput = {
@@ -52391,6 +59278,18 @@ export namespace Prisma {
   }
 
   export type UserSecurityLogOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SystemAuditLogOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SystemSettingOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type TransactionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -52472,20 +59371,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
-  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
   export type EnumSecurityLogStatusFilter<$PrismaModel = never> = {
@@ -53172,6 +60057,13 @@ export namespace Prisma {
     not?: NestedEnumJobPriorityFilter<$PrismaModel> | $Enums.JobPriority
   }
 
+  export type EnumJOB_PAYMENT_STATUSFilter<$PrismaModel = never> = {
+    equals?: $Enums.JOB_PAYMENT_STATUS | EnumJOB_PAYMENT_STATUSFieldRefInput<$PrismaModel>
+    in?: $Enums.JOB_PAYMENT_STATUS[] | ListEnumJOB_PAYMENT_STATUSFieldRefInput<$PrismaModel>
+    notIn?: $Enums.JOB_PAYMENT_STATUS[] | ListEnumJOB_PAYMENT_STATUSFieldRefInput<$PrismaModel>
+    not?: NestedEnumJOB_PAYMENT_STATUSFilter<$PrismaModel> | $Enums.JOB_PAYMENT_STATUS
+  }
+
   export type JobTypeScalarRelationFilter = {
     is?: JobTypeWhereInput
     isNot?: JobTypeWhereInput
@@ -53180,6 +60072,11 @@ export namespace Prisma {
   export type ClientNullableScalarRelationFilter = {
     is?: ClientWhereInput | null
     isNot?: ClientWhereInput | null
+  }
+
+  export type SharepointItemNullableScalarRelationFilter = {
+    is?: SharepointItemWhereInput | null
+    isNot?: SharepointItemWhereInput | null
   }
 
   export type PaymentChannelNullableScalarRelationFilter = {
@@ -53204,9 +60101,9 @@ export namespace Prisma {
     displayName?: SortOrder
     description?: SortOrder
     attachmentUrls?: SortOrder
-    sharepointFolderId?: SortOrder
     clientId?: SortOrder
     incomeCost?: SortOrder
+    sharepointFolderId?: SortOrder
     totalStaffCost?: SortOrder
     createdById?: SortOrder
     paymentChannelId?: SortOrder
@@ -53214,11 +60111,11 @@ export namespace Prisma {
     startedAt?: SortOrder
     priority?: SortOrder
     isPublished?: SortOrder
-    isPaid?: SortOrder
     dueAt?: SortOrder
     completedAt?: SortOrder
     finishedAt?: SortOrder
-    paidAt?: SortOrder
+    paymentStatus?: SortOrder
+    payoutDate?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
@@ -53236,9 +60133,9 @@ export namespace Prisma {
     typeId?: SortOrder
     displayName?: SortOrder
     description?: SortOrder
-    sharepointFolderId?: SortOrder
     clientId?: SortOrder
     incomeCost?: SortOrder
+    sharepointFolderId?: SortOrder
     totalStaffCost?: SortOrder
     createdById?: SortOrder
     paymentChannelId?: SortOrder
@@ -53246,11 +60143,11 @@ export namespace Prisma {
     startedAt?: SortOrder
     priority?: SortOrder
     isPublished?: SortOrder
-    isPaid?: SortOrder
     dueAt?: SortOrder
     completedAt?: SortOrder
     finishedAt?: SortOrder
-    paidAt?: SortOrder
+    paymentStatus?: SortOrder
+    payoutDate?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
@@ -53263,9 +60160,9 @@ export namespace Prisma {
     typeId?: SortOrder
     displayName?: SortOrder
     description?: SortOrder
-    sharepointFolderId?: SortOrder
     clientId?: SortOrder
     incomeCost?: SortOrder
+    sharepointFolderId?: SortOrder
     totalStaffCost?: SortOrder
     createdById?: SortOrder
     paymentChannelId?: SortOrder
@@ -53273,11 +60170,11 @@ export namespace Prisma {
     startedAt?: SortOrder
     priority?: SortOrder
     isPublished?: SortOrder
-    isPaid?: SortOrder
     dueAt?: SortOrder
     completedAt?: SortOrder
     finishedAt?: SortOrder
-    paidAt?: SortOrder
+    paymentStatus?: SortOrder
+    payoutDate?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
@@ -53313,6 +60210,62 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumJobPriorityFilter<$PrismaModel>
     _max?: NestedEnumJobPriorityFilter<$PrismaModel>
+  }
+
+  export type EnumJOB_PAYMENT_STATUSWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.JOB_PAYMENT_STATUS | EnumJOB_PAYMENT_STATUSFieldRefInput<$PrismaModel>
+    in?: $Enums.JOB_PAYMENT_STATUS[] | ListEnumJOB_PAYMENT_STATUSFieldRefInput<$PrismaModel>
+    notIn?: $Enums.JOB_PAYMENT_STATUS[] | ListEnumJOB_PAYMENT_STATUSFieldRefInput<$PrismaModel>
+    not?: NestedEnumJOB_PAYMENT_STATUSWithAggregatesFilter<$PrismaModel> | $Enums.JOB_PAYMENT_STATUS
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumJOB_PAYMENT_STATUSFilter<$PrismaModel>
+    _max?: NestedEnumJOB_PAYMENT_STATUSFilter<$PrismaModel>
+  }
+
+  export type SharepointItemItemIdIdCompoundUniqueInput = {
+    itemId: string
+    id: string
+  }
+
+  export type SharepointItemCountOrderByAggregateInput = {
+    id?: SortOrder
+    itemId?: SortOrder
+    displayName?: SortOrder
+    isFolder?: SortOrder
+    size?: SortOrder
+    webUrl?: SortOrder
+    createdDateTime?: SortOrder
+    createdBy?: SortOrder
+  }
+
+  export type SharepointItemAvgOrderByAggregateInput = {
+    size?: SortOrder
+  }
+
+  export type SharepointItemMaxOrderByAggregateInput = {
+    id?: SortOrder
+    itemId?: SortOrder
+    displayName?: SortOrder
+    isFolder?: SortOrder
+    size?: SortOrder
+    webUrl?: SortOrder
+    createdDateTime?: SortOrder
+    createdBy?: SortOrder
+  }
+
+  export type SharepointItemMinOrderByAggregateInput = {
+    id?: SortOrder
+    itemId?: SortOrder
+    displayName?: SortOrder
+    isFolder?: SortOrder
+    size?: SortOrder
+    webUrl?: SortOrder
+    createdDateTime?: SortOrder
+    createdBy?: SortOrder
+  }
+
+  export type SharepointItemSumOrderByAggregateInput = {
+    size?: SortOrder
   }
 
   export type JobAssignmentJobIdUserIdCompoundUniqueInput = {
@@ -53498,24 +60451,63 @@ export namespace Prisma {
     pinnedAt?: SortOrder
   }
 
+  export type EnumPaymentChannelTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentChannelType | EnumPaymentChannelTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentChannelType[] | ListEnumPaymentChannelTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentChannelType[] | ListEnumPaymentChannelTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentChannelTypeFilter<$PrismaModel> | $Enums.PaymentChannelType
+  }
+
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type PaymentChannelCountOrderByAggregateInput = {
     id?: SortOrder
     displayName?: SortOrder
     hexColor?: SortOrder
+    type?: SortOrder
+    accountDetails?: SortOrder
+    feeRate?: SortOrder
+    fixedFee?: SortOrder
+    totalVolume?: SortOrder
+    totalFees?: SortOrder
     logoUrl?: SortOrder
     ownerName?: SortOrder
     cardNumber?: SortOrder
+    isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type PaymentChannelAvgOrderByAggregateInput = {
+    feeRate?: SortOrder
+    fixedFee?: SortOrder
+    totalVolume?: SortOrder
+    totalFees?: SortOrder
   }
 
   export type PaymentChannelMaxOrderByAggregateInput = {
     id?: SortOrder
     displayName?: SortOrder
     hexColor?: SortOrder
+    type?: SortOrder
+    accountDetails?: SortOrder
+    feeRate?: SortOrder
+    fixedFee?: SortOrder
+    totalVolume?: SortOrder
+    totalFees?: SortOrder
     logoUrl?: SortOrder
     ownerName?: SortOrder
     cardNumber?: SortOrder
+    isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -53524,11 +60516,51 @@ export namespace Prisma {
     id?: SortOrder
     displayName?: SortOrder
     hexColor?: SortOrder
+    type?: SortOrder
+    accountDetails?: SortOrder
+    feeRate?: SortOrder
+    fixedFee?: SortOrder
+    totalVolume?: SortOrder
+    totalFees?: SortOrder
     logoUrl?: SortOrder
     ownerName?: SortOrder
     cardNumber?: SortOrder
+    isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type PaymentChannelSumOrderByAggregateInput = {
+    feeRate?: SortOrder
+    fixedFee?: SortOrder
+    totalVolume?: SortOrder
+    totalFees?: SortOrder
+  }
+
+  export type EnumPaymentChannelTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentChannelType | EnumPaymentChannelTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentChannelType[] | ListEnumPaymentChannelTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentChannelType[] | ListEnumPaymentChannelTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentChannelTypeWithAggregatesFilter<$PrismaModel> | $Enums.PaymentChannelType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPaymentChannelTypeFilter<$PrismaModel>
+    _max?: NestedEnumPaymentChannelTypeFilter<$PrismaModel>
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type JobTypeCountOrderByAggregateInput = {
@@ -53785,29 +60817,6 @@ export namespace Prisma {
   export type JobStatusHistorySumOrderByAggregateInput = {
     durationSeconds?: SortOrder
   }
-  export type JsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
 
   export type EnumActivityTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.ActivityType | EnumActivityTypeFieldRefInput<$PrismaModel>
@@ -53851,32 +60860,6 @@ export namespace Prisma {
     requiredPermissionCode?: SortOrder
     activityType?: SortOrder
     notes?: SortOrder
-  }
-  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedJsonNullableFilter<$PrismaModel>
-    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type EnumActivityTypeWithAggregatesFilter<$PrismaModel = never> = {
@@ -54205,12 +61188,158 @@ export namespace Prisma {
     postId?: SortOrder
   }
 
+  export type SystemSettingCountOrderByAggregateInput = {
+    key?: SortOrder
+    value?: SortOrder
+    updatedAt?: SortOrder
+    modifierById?: SortOrder
+  }
+
+  export type SystemSettingMaxOrderByAggregateInput = {
+    key?: SortOrder
+    value?: SortOrder
+    updatedAt?: SortOrder
+    modifierById?: SortOrder
+  }
+
+  export type SystemSettingMinOrderByAggregateInput = {
+    key?: SortOrder
+    value?: SortOrder
+    updatedAt?: SortOrder
+    modifierById?: SortOrder
+  }
+
+  export type EnumTransactionTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionType | EnumTransactionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionTypeFilter<$PrismaModel> | $Enums.TransactionType
+  }
+
+  export type EnumTransactionStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionStatus | EnumTransactionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionStatusFilter<$PrismaModel> | $Enums.TransactionStatus
+  }
+
+  export type JobAssignmentNullableScalarRelationFilter = {
+    is?: JobAssignmentWhereInput | null
+    isNot?: JobAssignmentWhereInput | null
+  }
+
+  export type TransactionCountOrderByAggregateInput = {
+    id?: SortOrder
+    amount?: SortOrder
+    currency?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    referenceNo?: SortOrder
+    note?: SortOrder
+    evidenceUrl?: SortOrder
+    jobId?: SortOrder
+    clientId?: SortOrder
+    assignmentId?: SortOrder
+    paymentChannelId?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TransactionAvgOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type TransactionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    amount?: SortOrder
+    currency?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    referenceNo?: SortOrder
+    note?: SortOrder
+    evidenceUrl?: SortOrder
+    jobId?: SortOrder
+    clientId?: SortOrder
+    assignmentId?: SortOrder
+    paymentChannelId?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TransactionMinOrderByAggregateInput = {
+    id?: SortOrder
+    amount?: SortOrder
+    currency?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    referenceNo?: SortOrder
+    note?: SortOrder
+    evidenceUrl?: SortOrder
+    jobId?: SortOrder
+    clientId?: SortOrder
+    assignmentId?: SortOrder
+    paymentChannelId?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TransactionSumOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type EnumTransactionTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionType | EnumTransactionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionTypeWithAggregatesFilter<$PrismaModel> | $Enums.TransactionType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTransactionTypeFilter<$PrismaModel>
+    _max?: NestedEnumTransactionTypeFilter<$PrismaModel>
+  }
+
+  export type EnumTransactionStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionStatus | EnumTransactionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionStatusWithAggregatesFilter<$PrismaModel> | $Enums.TransactionStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTransactionStatusFilter<$PrismaModel>
+    _max?: NestedEnumTransactionStatusFilter<$PrismaModel>
+  }
+
+  export type UserCreateNestedOneWithoutSystemAuditLogsInput = {
+    create?: XOR<UserCreateWithoutSystemAuditLogsInput, UserUncheckedCreateWithoutSystemAuditLogsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSystemAuditLogsInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
 
+  export type EnumSystemModuleFieldUpdateOperationsInput = {
+    set?: $Enums.SystemModule
+  }
+
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
+  }
+
+  export type DateTimeFieldUpdateOperationsInput = {
+    set?: Date | string
+  }
+
+  export type UserUpdateOneWithoutSystemAuditLogsNestedInput = {
+    create?: XOR<UserCreateWithoutSystemAuditLogsInput, UserUncheckedCreateWithoutSystemAuditLogsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSystemAuditLogsInput
+    upsert?: UserUpsertWithoutSystemAuditLogsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSystemAuditLogsInput, UserUpdateWithoutSystemAuditLogsInput>, UserUncheckedUpdateWithoutSystemAuditLogsInput>
   }
 
   export type UserCreateNestedOneWithoutUserDevicesInput = {
@@ -54401,6 +61530,27 @@ export namespace Prisma {
     connect?: UserSecurityLogWhereUniqueInput | UserSecurityLogWhereUniqueInput[]
   }
 
+  export type SystemAuditLogCreateNestedManyWithoutActorInput = {
+    create?: XOR<SystemAuditLogCreateWithoutActorInput, SystemAuditLogUncheckedCreateWithoutActorInput> | SystemAuditLogCreateWithoutActorInput[] | SystemAuditLogUncheckedCreateWithoutActorInput[]
+    connectOrCreate?: SystemAuditLogCreateOrConnectWithoutActorInput | SystemAuditLogCreateOrConnectWithoutActorInput[]
+    createMany?: SystemAuditLogCreateManyActorInputEnvelope
+    connect?: SystemAuditLogWhereUniqueInput | SystemAuditLogWhereUniqueInput[]
+  }
+
+  export type SystemSettingCreateNestedManyWithoutModifierByInput = {
+    create?: XOR<SystemSettingCreateWithoutModifierByInput, SystemSettingUncheckedCreateWithoutModifierByInput> | SystemSettingCreateWithoutModifierByInput[] | SystemSettingUncheckedCreateWithoutModifierByInput[]
+    connectOrCreate?: SystemSettingCreateOrConnectWithoutModifierByInput | SystemSettingCreateOrConnectWithoutModifierByInput[]
+    createMany?: SystemSettingCreateManyModifierByInputEnvelope
+    connect?: SystemSettingWhereUniqueInput | SystemSettingWhereUniqueInput[]
+  }
+
+  export type TransactionCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<TransactionCreateWithoutCreatedByInput, TransactionUncheckedCreateWithoutCreatedByInput> | TransactionCreateWithoutCreatedByInput[] | TransactionUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutCreatedByInput | TransactionCreateOrConnectWithoutCreatedByInput[]
+    createMany?: TransactionCreateManyCreatedByInputEnvelope
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
   export type NotificationUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
     connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
@@ -54547,12 +61697,29 @@ export namespace Prisma {
     connect?: UserSecurityLogWhereUniqueInput | UserSecurityLogWhereUniqueInput[]
   }
 
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
+  export type SystemAuditLogUncheckedCreateNestedManyWithoutActorInput = {
+    create?: XOR<SystemAuditLogCreateWithoutActorInput, SystemAuditLogUncheckedCreateWithoutActorInput> | SystemAuditLogCreateWithoutActorInput[] | SystemAuditLogUncheckedCreateWithoutActorInput[]
+    connectOrCreate?: SystemAuditLogCreateOrConnectWithoutActorInput | SystemAuditLogCreateOrConnectWithoutActorInput[]
+    createMany?: SystemAuditLogCreateManyActorInputEnvelope
+    connect?: SystemAuditLogWhereUniqueInput | SystemAuditLogWhereUniqueInput[]
   }
 
-  export type DateTimeFieldUpdateOperationsInput = {
-    set?: Date | string
+  export type SystemSettingUncheckedCreateNestedManyWithoutModifierByInput = {
+    create?: XOR<SystemSettingCreateWithoutModifierByInput, SystemSettingUncheckedCreateWithoutModifierByInput> | SystemSettingCreateWithoutModifierByInput[] | SystemSettingUncheckedCreateWithoutModifierByInput[]
+    connectOrCreate?: SystemSettingCreateOrConnectWithoutModifierByInput | SystemSettingCreateOrConnectWithoutModifierByInput[]
+    createMany?: SystemSettingCreateManyModifierByInputEnvelope
+    connect?: SystemSettingWhereUniqueInput | SystemSettingWhereUniqueInput[]
+  }
+
+  export type TransactionUncheckedCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<TransactionCreateWithoutCreatedByInput, TransactionUncheckedCreateWithoutCreatedByInput> | TransactionCreateWithoutCreatedByInput[] | TransactionUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutCreatedByInput | TransactionCreateOrConnectWithoutCreatedByInput[]
+    createMany?: TransactionCreateManyCreatedByInputEnvelope
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
   }
 
   export type JobTitleUpdateOneWithoutUsersNestedInput = {
@@ -54888,6 +62055,48 @@ export namespace Prisma {
     deleteMany?: UserSecurityLogScalarWhereInput | UserSecurityLogScalarWhereInput[]
   }
 
+  export type SystemAuditLogUpdateManyWithoutActorNestedInput = {
+    create?: XOR<SystemAuditLogCreateWithoutActorInput, SystemAuditLogUncheckedCreateWithoutActorInput> | SystemAuditLogCreateWithoutActorInput[] | SystemAuditLogUncheckedCreateWithoutActorInput[]
+    connectOrCreate?: SystemAuditLogCreateOrConnectWithoutActorInput | SystemAuditLogCreateOrConnectWithoutActorInput[]
+    upsert?: SystemAuditLogUpsertWithWhereUniqueWithoutActorInput | SystemAuditLogUpsertWithWhereUniqueWithoutActorInput[]
+    createMany?: SystemAuditLogCreateManyActorInputEnvelope
+    set?: SystemAuditLogWhereUniqueInput | SystemAuditLogWhereUniqueInput[]
+    disconnect?: SystemAuditLogWhereUniqueInput | SystemAuditLogWhereUniqueInput[]
+    delete?: SystemAuditLogWhereUniqueInput | SystemAuditLogWhereUniqueInput[]
+    connect?: SystemAuditLogWhereUniqueInput | SystemAuditLogWhereUniqueInput[]
+    update?: SystemAuditLogUpdateWithWhereUniqueWithoutActorInput | SystemAuditLogUpdateWithWhereUniqueWithoutActorInput[]
+    updateMany?: SystemAuditLogUpdateManyWithWhereWithoutActorInput | SystemAuditLogUpdateManyWithWhereWithoutActorInput[]
+    deleteMany?: SystemAuditLogScalarWhereInput | SystemAuditLogScalarWhereInput[]
+  }
+
+  export type SystemSettingUpdateManyWithoutModifierByNestedInput = {
+    create?: XOR<SystemSettingCreateWithoutModifierByInput, SystemSettingUncheckedCreateWithoutModifierByInput> | SystemSettingCreateWithoutModifierByInput[] | SystemSettingUncheckedCreateWithoutModifierByInput[]
+    connectOrCreate?: SystemSettingCreateOrConnectWithoutModifierByInput | SystemSettingCreateOrConnectWithoutModifierByInput[]
+    upsert?: SystemSettingUpsertWithWhereUniqueWithoutModifierByInput | SystemSettingUpsertWithWhereUniqueWithoutModifierByInput[]
+    createMany?: SystemSettingCreateManyModifierByInputEnvelope
+    set?: SystemSettingWhereUniqueInput | SystemSettingWhereUniqueInput[]
+    disconnect?: SystemSettingWhereUniqueInput | SystemSettingWhereUniqueInput[]
+    delete?: SystemSettingWhereUniqueInput | SystemSettingWhereUniqueInput[]
+    connect?: SystemSettingWhereUniqueInput | SystemSettingWhereUniqueInput[]
+    update?: SystemSettingUpdateWithWhereUniqueWithoutModifierByInput | SystemSettingUpdateWithWhereUniqueWithoutModifierByInput[]
+    updateMany?: SystemSettingUpdateManyWithWhereWithoutModifierByInput | SystemSettingUpdateManyWithWhereWithoutModifierByInput[]
+    deleteMany?: SystemSettingScalarWhereInput | SystemSettingScalarWhereInput[]
+  }
+
+  export type TransactionUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<TransactionCreateWithoutCreatedByInput, TransactionUncheckedCreateWithoutCreatedByInput> | TransactionCreateWithoutCreatedByInput[] | TransactionUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutCreatedByInput | TransactionCreateOrConnectWithoutCreatedByInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutCreatedByInput | TransactionUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: TransactionCreateManyCreatedByInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutCreatedByInput | TransactionUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutCreatedByInput | TransactionUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
   export type NotificationUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
     connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
@@ -55179,6 +62388,48 @@ export namespace Prisma {
     update?: UserSecurityLogUpdateWithWhereUniqueWithoutUserInput | UserSecurityLogUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: UserSecurityLogUpdateManyWithWhereWithoutUserInput | UserSecurityLogUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: UserSecurityLogScalarWhereInput | UserSecurityLogScalarWhereInput[]
+  }
+
+  export type SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput = {
+    create?: XOR<SystemAuditLogCreateWithoutActorInput, SystemAuditLogUncheckedCreateWithoutActorInput> | SystemAuditLogCreateWithoutActorInput[] | SystemAuditLogUncheckedCreateWithoutActorInput[]
+    connectOrCreate?: SystemAuditLogCreateOrConnectWithoutActorInput | SystemAuditLogCreateOrConnectWithoutActorInput[]
+    upsert?: SystemAuditLogUpsertWithWhereUniqueWithoutActorInput | SystemAuditLogUpsertWithWhereUniqueWithoutActorInput[]
+    createMany?: SystemAuditLogCreateManyActorInputEnvelope
+    set?: SystemAuditLogWhereUniqueInput | SystemAuditLogWhereUniqueInput[]
+    disconnect?: SystemAuditLogWhereUniqueInput | SystemAuditLogWhereUniqueInput[]
+    delete?: SystemAuditLogWhereUniqueInput | SystemAuditLogWhereUniqueInput[]
+    connect?: SystemAuditLogWhereUniqueInput | SystemAuditLogWhereUniqueInput[]
+    update?: SystemAuditLogUpdateWithWhereUniqueWithoutActorInput | SystemAuditLogUpdateWithWhereUniqueWithoutActorInput[]
+    updateMany?: SystemAuditLogUpdateManyWithWhereWithoutActorInput | SystemAuditLogUpdateManyWithWhereWithoutActorInput[]
+    deleteMany?: SystemAuditLogScalarWhereInput | SystemAuditLogScalarWhereInput[]
+  }
+
+  export type SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput = {
+    create?: XOR<SystemSettingCreateWithoutModifierByInput, SystemSettingUncheckedCreateWithoutModifierByInput> | SystemSettingCreateWithoutModifierByInput[] | SystemSettingUncheckedCreateWithoutModifierByInput[]
+    connectOrCreate?: SystemSettingCreateOrConnectWithoutModifierByInput | SystemSettingCreateOrConnectWithoutModifierByInput[]
+    upsert?: SystemSettingUpsertWithWhereUniqueWithoutModifierByInput | SystemSettingUpsertWithWhereUniqueWithoutModifierByInput[]
+    createMany?: SystemSettingCreateManyModifierByInputEnvelope
+    set?: SystemSettingWhereUniqueInput | SystemSettingWhereUniqueInput[]
+    disconnect?: SystemSettingWhereUniqueInput | SystemSettingWhereUniqueInput[]
+    delete?: SystemSettingWhereUniqueInput | SystemSettingWhereUniqueInput[]
+    connect?: SystemSettingWhereUniqueInput | SystemSettingWhereUniqueInput[]
+    update?: SystemSettingUpdateWithWhereUniqueWithoutModifierByInput | SystemSettingUpdateWithWhereUniqueWithoutModifierByInput[]
+    updateMany?: SystemSettingUpdateManyWithWhereWithoutModifierByInput | SystemSettingUpdateManyWithWhereWithoutModifierByInput[]
+    deleteMany?: SystemSettingScalarWhereInput | SystemSettingScalarWhereInput[]
+  }
+
+  export type TransactionUncheckedUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<TransactionCreateWithoutCreatedByInput, TransactionUncheckedCreateWithoutCreatedByInput> | TransactionCreateWithoutCreatedByInput[] | TransactionUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutCreatedByInput | TransactionCreateOrConnectWithoutCreatedByInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutCreatedByInput | TransactionUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: TransactionCreateManyCreatedByInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutCreatedByInput | TransactionUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutCreatedByInput | TransactionUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutSecurityLogsInput = {
@@ -55790,6 +63041,12 @@ export namespace Prisma {
     connect?: ClientWhereUniqueInput
   }
 
+  export type SharepointItemCreateNestedOneWithoutJobsInput = {
+    create?: XOR<SharepointItemCreateWithoutJobsInput, SharepointItemUncheckedCreateWithoutJobsInput>
+    connectOrCreate?: SharepointItemCreateOrConnectWithoutJobsInput
+    connect?: SharepointItemWhereUniqueInput
+  }
+
   export type JobAssignmentCreateNestedManyWithoutJobInput = {
     create?: XOR<JobAssignmentCreateWithoutJobInput, JobAssignmentUncheckedCreateWithoutJobInput> | JobAssignmentCreateWithoutJobInput[] | JobAssignmentUncheckedCreateWithoutJobInput[]
     connectOrCreate?: JobAssignmentCreateOrConnectWithoutJobInput | JobAssignmentCreateOrConnectWithoutJobInput[]
@@ -55863,6 +63120,13 @@ export namespace Prisma {
     connect?: JobFolderTemplateWhereUniqueInput
   }
 
+  export type TransactionCreateNestedManyWithoutJobInput = {
+    create?: XOR<TransactionCreateWithoutJobInput, TransactionUncheckedCreateWithoutJobInput> | TransactionCreateWithoutJobInput[] | TransactionUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutJobInput | TransactionCreateOrConnectWithoutJobInput[]
+    createMany?: TransactionCreateManyJobInputEnvelope
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
   export type JobAssignmentUncheckedCreateNestedManyWithoutJobInput = {
     create?: XOR<JobAssignmentCreateWithoutJobInput, JobAssignmentUncheckedCreateWithoutJobInput> | JobAssignmentCreateWithoutJobInput[] | JobAssignmentUncheckedCreateWithoutJobInput[]
     connectOrCreate?: JobAssignmentCreateOrConnectWithoutJobInput | JobAssignmentCreateOrConnectWithoutJobInput[]
@@ -55912,6 +63176,13 @@ export namespace Prisma {
     connect?: JobDeliveryWhereUniqueInput | JobDeliveryWhereUniqueInput[]
   }
 
+  export type TransactionUncheckedCreateNestedManyWithoutJobInput = {
+    create?: XOR<TransactionCreateWithoutJobInput, TransactionUncheckedCreateWithoutJobInput> | TransactionCreateWithoutJobInput[] | TransactionUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutJobInput | TransactionCreateOrConnectWithoutJobInput[]
+    createMany?: TransactionCreateManyJobInputEnvelope
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
   export type JobUpdateattachmentUrlsInput = {
     set?: string[]
     push?: string | string[]
@@ -55927,6 +63198,10 @@ export namespace Prisma {
 
   export type EnumJobPriorityFieldUpdateOperationsInput = {
     set?: $Enums.JobPriority
+  }
+
+  export type EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput = {
+    set?: $Enums.JOB_PAYMENT_STATUS
   }
 
   export type JobTypeUpdateOneRequiredWithoutJobsNestedInput = {
@@ -55945,6 +63220,16 @@ export namespace Prisma {
     delete?: ClientWhereInput | boolean
     connect?: ClientWhereUniqueInput
     update?: XOR<XOR<ClientUpdateToOneWithWhereWithoutJobsInput, ClientUpdateWithoutJobsInput>, ClientUncheckedUpdateWithoutJobsInput>
+  }
+
+  export type SharepointItemUpdateOneWithoutJobsNestedInput = {
+    create?: XOR<SharepointItemCreateWithoutJobsInput, SharepointItemUncheckedCreateWithoutJobsInput>
+    connectOrCreate?: SharepointItemCreateOrConnectWithoutJobsInput
+    upsert?: SharepointItemUpsertWithoutJobsInput
+    disconnect?: SharepointItemWhereInput | boolean
+    delete?: SharepointItemWhereInput | boolean
+    connect?: SharepointItemWhereUniqueInput
+    update?: XOR<XOR<SharepointItemUpdateToOneWithWhereWithoutJobsInput, SharepointItemUpdateWithoutJobsInput>, SharepointItemUncheckedUpdateWithoutJobsInput>
   }
 
   export type JobAssignmentUpdateManyWithoutJobNestedInput = {
@@ -56081,6 +63366,20 @@ export namespace Prisma {
     update?: XOR<XOR<JobFolderTemplateUpdateToOneWithWhereWithoutJobsInput, JobFolderTemplateUpdateWithoutJobsInput>, JobFolderTemplateUncheckedUpdateWithoutJobsInput>
   }
 
+  export type TransactionUpdateManyWithoutJobNestedInput = {
+    create?: XOR<TransactionCreateWithoutJobInput, TransactionUncheckedCreateWithoutJobInput> | TransactionCreateWithoutJobInput[] | TransactionUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutJobInput | TransactionCreateOrConnectWithoutJobInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutJobInput | TransactionUpsertWithWhereUniqueWithoutJobInput[]
+    createMany?: TransactionCreateManyJobInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutJobInput | TransactionUpdateWithWhereUniqueWithoutJobInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutJobInput | TransactionUpdateManyWithWhereWithoutJobInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
   export type JobAssignmentUncheckedUpdateManyWithoutJobNestedInput = {
     create?: XOR<JobAssignmentCreateWithoutJobInput, JobAssignmentUncheckedCreateWithoutJobInput> | JobAssignmentCreateWithoutJobInput[] | JobAssignmentUncheckedCreateWithoutJobInput[]
     connectOrCreate?: JobAssignmentCreateOrConnectWithoutJobInput | JobAssignmentCreateOrConnectWithoutJobInput[]
@@ -56179,6 +63478,62 @@ export namespace Prisma {
     deleteMany?: JobDeliveryScalarWhereInput | JobDeliveryScalarWhereInput[]
   }
 
+  export type TransactionUncheckedUpdateManyWithoutJobNestedInput = {
+    create?: XOR<TransactionCreateWithoutJobInput, TransactionUncheckedCreateWithoutJobInput> | TransactionCreateWithoutJobInput[] | TransactionUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutJobInput | TransactionCreateOrConnectWithoutJobInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutJobInput | TransactionUpsertWithWhereUniqueWithoutJobInput[]
+    createMany?: TransactionCreateManyJobInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutJobInput | TransactionUpdateWithWhereUniqueWithoutJobInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutJobInput | TransactionUpdateManyWithWhereWithoutJobInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
+  export type JobCreateNestedManyWithoutSharepointFolderInput = {
+    create?: XOR<JobCreateWithoutSharepointFolderInput, JobUncheckedCreateWithoutSharepointFolderInput> | JobCreateWithoutSharepointFolderInput[] | JobUncheckedCreateWithoutSharepointFolderInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutSharepointFolderInput | JobCreateOrConnectWithoutSharepointFolderInput[]
+    createMany?: JobCreateManySharepointFolderInputEnvelope
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+  }
+
+  export type JobUncheckedCreateNestedManyWithoutSharepointFolderInput = {
+    create?: XOR<JobCreateWithoutSharepointFolderInput, JobUncheckedCreateWithoutSharepointFolderInput> | JobCreateWithoutSharepointFolderInput[] | JobUncheckedCreateWithoutSharepointFolderInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutSharepointFolderInput | JobCreateOrConnectWithoutSharepointFolderInput[]
+    createMany?: JobCreateManySharepointFolderInputEnvelope
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+  }
+
+  export type JobUpdateManyWithoutSharepointFolderNestedInput = {
+    create?: XOR<JobCreateWithoutSharepointFolderInput, JobUncheckedCreateWithoutSharepointFolderInput> | JobCreateWithoutSharepointFolderInput[] | JobUncheckedCreateWithoutSharepointFolderInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutSharepointFolderInput | JobCreateOrConnectWithoutSharepointFolderInput[]
+    upsert?: JobUpsertWithWhereUniqueWithoutSharepointFolderInput | JobUpsertWithWhereUniqueWithoutSharepointFolderInput[]
+    createMany?: JobCreateManySharepointFolderInputEnvelope
+    set?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    disconnect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    delete?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    update?: JobUpdateWithWhereUniqueWithoutSharepointFolderInput | JobUpdateWithWhereUniqueWithoutSharepointFolderInput[]
+    updateMany?: JobUpdateManyWithWhereWithoutSharepointFolderInput | JobUpdateManyWithWhereWithoutSharepointFolderInput[]
+    deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
+  }
+
+  export type JobUncheckedUpdateManyWithoutSharepointFolderNestedInput = {
+    create?: XOR<JobCreateWithoutSharepointFolderInput, JobUncheckedCreateWithoutSharepointFolderInput> | JobCreateWithoutSharepointFolderInput[] | JobUncheckedCreateWithoutSharepointFolderInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutSharepointFolderInput | JobCreateOrConnectWithoutSharepointFolderInput[]
+    upsert?: JobUpsertWithWhereUniqueWithoutSharepointFolderInput | JobUpsertWithWhereUniqueWithoutSharepointFolderInput[]
+    createMany?: JobCreateManySharepointFolderInputEnvelope
+    set?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    disconnect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    delete?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    update?: JobUpdateWithWhereUniqueWithoutSharepointFolderInput | JobUpdateWithWhereUniqueWithoutSharepointFolderInput[]
+    updateMany?: JobUpdateManyWithWhereWithoutSharepointFolderInput | JobUpdateManyWithWhereWithoutSharepointFolderInput[]
+    deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
+  }
+
   export type JobCreateNestedOneWithoutAssignmentsInput = {
     create?: XOR<JobCreateWithoutAssignmentsInput, JobUncheckedCreateWithoutAssignmentsInput>
     connectOrCreate?: JobCreateOrConnectWithoutAssignmentsInput
@@ -56189,6 +63544,20 @@ export namespace Prisma {
     create?: XOR<UserCreateWithoutJobAssignmentsInput, UserUncheckedCreateWithoutJobAssignmentsInput>
     connectOrCreate?: UserCreateOrConnectWithoutJobAssignmentsInput
     connect?: UserWhereUniqueInput
+  }
+
+  export type TransactionCreateNestedManyWithoutAssignmentInput = {
+    create?: XOR<TransactionCreateWithoutAssignmentInput, TransactionUncheckedCreateWithoutAssignmentInput> | TransactionCreateWithoutAssignmentInput[] | TransactionUncheckedCreateWithoutAssignmentInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutAssignmentInput | TransactionCreateOrConnectWithoutAssignmentInput[]
+    createMany?: TransactionCreateManyAssignmentInputEnvelope
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
+  export type TransactionUncheckedCreateNestedManyWithoutAssignmentInput = {
+    create?: XOR<TransactionCreateWithoutAssignmentInput, TransactionUncheckedCreateWithoutAssignmentInput> | TransactionCreateWithoutAssignmentInput[] | TransactionUncheckedCreateWithoutAssignmentInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutAssignmentInput | TransactionCreateOrConnectWithoutAssignmentInput[]
+    createMany?: TransactionCreateManyAssignmentInputEnvelope
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
   }
 
   export type JobUpdateOneRequiredWithoutAssignmentsNestedInput = {
@@ -56205,6 +63574,34 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutJobAssignmentsInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutJobAssignmentsInput, UserUpdateWithoutJobAssignmentsInput>, UserUncheckedUpdateWithoutJobAssignmentsInput>
+  }
+
+  export type TransactionUpdateManyWithoutAssignmentNestedInput = {
+    create?: XOR<TransactionCreateWithoutAssignmentInput, TransactionUncheckedCreateWithoutAssignmentInput> | TransactionCreateWithoutAssignmentInput[] | TransactionUncheckedCreateWithoutAssignmentInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutAssignmentInput | TransactionCreateOrConnectWithoutAssignmentInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutAssignmentInput | TransactionUpsertWithWhereUniqueWithoutAssignmentInput[]
+    createMany?: TransactionCreateManyAssignmentInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutAssignmentInput | TransactionUpdateWithWhereUniqueWithoutAssignmentInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutAssignmentInput | TransactionUpdateManyWithWhereWithoutAssignmentInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
+  export type TransactionUncheckedUpdateManyWithoutAssignmentNestedInput = {
+    create?: XOR<TransactionCreateWithoutAssignmentInput, TransactionUncheckedCreateWithoutAssignmentInput> | TransactionCreateWithoutAssignmentInput[] | TransactionUncheckedCreateWithoutAssignmentInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutAssignmentInput | TransactionCreateOrConnectWithoutAssignmentInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutAssignmentInput | TransactionUpsertWithWhereUniqueWithoutAssignmentInput[]
+    createMany?: TransactionCreateManyAssignmentInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutAssignmentInput | TransactionUpdateWithWhereUniqueWithoutAssignmentInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutAssignmentInput | TransactionUpdateManyWithWhereWithoutAssignmentInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
   }
 
   export type JobCreateNestedManyWithoutFolderTemplateInput = {
@@ -56256,11 +63653,25 @@ export namespace Prisma {
     connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
   }
 
+  export type TransactionCreateNestedManyWithoutClientInput = {
+    create?: XOR<TransactionCreateWithoutClientInput, TransactionUncheckedCreateWithoutClientInput> | TransactionCreateWithoutClientInput[] | TransactionUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutClientInput | TransactionCreateOrConnectWithoutClientInput[]
+    createMany?: TransactionCreateManyClientInputEnvelope
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
   export type JobUncheckedCreateNestedManyWithoutClientInput = {
     create?: XOR<JobCreateWithoutClientInput, JobUncheckedCreateWithoutClientInput> | JobCreateWithoutClientInput[] | JobUncheckedCreateWithoutClientInput[]
     connectOrCreate?: JobCreateOrConnectWithoutClientInput | JobCreateOrConnectWithoutClientInput[]
     createMany?: JobCreateManyClientInputEnvelope
     connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+  }
+
+  export type TransactionUncheckedCreateNestedManyWithoutClientInput = {
+    create?: XOR<TransactionCreateWithoutClientInput, TransactionUncheckedCreateWithoutClientInput> | TransactionCreateWithoutClientInput[] | TransactionUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutClientInput | TransactionCreateOrConnectWithoutClientInput[]
+    createMany?: TransactionCreateManyClientInputEnvelope
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
   }
 
   export type EnumClientTypeFieldUpdateOperationsInput = {
@@ -56281,6 +63692,20 @@ export namespace Prisma {
     deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
   }
 
+  export type TransactionUpdateManyWithoutClientNestedInput = {
+    create?: XOR<TransactionCreateWithoutClientInput, TransactionUncheckedCreateWithoutClientInput> | TransactionCreateWithoutClientInput[] | TransactionUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutClientInput | TransactionCreateOrConnectWithoutClientInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutClientInput | TransactionUpsertWithWhereUniqueWithoutClientInput[]
+    createMany?: TransactionCreateManyClientInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutClientInput | TransactionUpdateWithWhereUniqueWithoutClientInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutClientInput | TransactionUpdateManyWithWhereWithoutClientInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
   export type JobUncheckedUpdateManyWithoutClientNestedInput = {
     create?: XOR<JobCreateWithoutClientInput, JobUncheckedCreateWithoutClientInput> | JobCreateWithoutClientInput[] | JobUncheckedCreateWithoutClientInput[]
     connectOrCreate?: JobCreateOrConnectWithoutClientInput | JobCreateOrConnectWithoutClientInput[]
@@ -56293,6 +63718,20 @@ export namespace Prisma {
     update?: JobUpdateWithWhereUniqueWithoutClientInput | JobUpdateWithWhereUniqueWithoutClientInput[]
     updateMany?: JobUpdateManyWithWhereWithoutClientInput | JobUpdateManyWithWhereWithoutClientInput[]
     deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
+  }
+
+  export type TransactionUncheckedUpdateManyWithoutClientNestedInput = {
+    create?: XOR<TransactionCreateWithoutClientInput, TransactionUncheckedCreateWithoutClientInput> | TransactionCreateWithoutClientInput[] | TransactionUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutClientInput | TransactionCreateOrConnectWithoutClientInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutClientInput | TransactionUpsertWithWhereUniqueWithoutClientInput[]
+    createMany?: TransactionCreateManyClientInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutClientInput | TransactionUpdateWithWhereUniqueWithoutClientInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutClientInput | TransactionUpdateManyWithWhereWithoutClientInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutPinnedJobsInput = {
@@ -56330,11 +63769,37 @@ export namespace Prisma {
     connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
   }
 
+  export type TransactionCreateNestedManyWithoutPaymentChannelInput = {
+    create?: XOR<TransactionCreateWithoutPaymentChannelInput, TransactionUncheckedCreateWithoutPaymentChannelInput> | TransactionCreateWithoutPaymentChannelInput[] | TransactionUncheckedCreateWithoutPaymentChannelInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutPaymentChannelInput | TransactionCreateOrConnectWithoutPaymentChannelInput[]
+    createMany?: TransactionCreateManyPaymentChannelInputEnvelope
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
   export type JobUncheckedCreateNestedManyWithoutPaymentChannelInput = {
     create?: XOR<JobCreateWithoutPaymentChannelInput, JobUncheckedCreateWithoutPaymentChannelInput> | JobCreateWithoutPaymentChannelInput[] | JobUncheckedCreateWithoutPaymentChannelInput[]
     connectOrCreate?: JobCreateOrConnectWithoutPaymentChannelInput | JobCreateOrConnectWithoutPaymentChannelInput[]
     createMany?: JobCreateManyPaymentChannelInputEnvelope
     connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+  }
+
+  export type TransactionUncheckedCreateNestedManyWithoutPaymentChannelInput = {
+    create?: XOR<TransactionCreateWithoutPaymentChannelInput, TransactionUncheckedCreateWithoutPaymentChannelInput> | TransactionCreateWithoutPaymentChannelInput[] | TransactionUncheckedCreateWithoutPaymentChannelInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutPaymentChannelInput | TransactionCreateOrConnectWithoutPaymentChannelInput[]
+    createMany?: TransactionCreateManyPaymentChannelInputEnvelope
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
+  export type EnumPaymentChannelTypeFieldUpdateOperationsInput = {
+    set?: $Enums.PaymentChannelType
+  }
+
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type JobUpdateManyWithoutPaymentChannelNestedInput = {
@@ -56351,6 +63816,20 @@ export namespace Prisma {
     deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
   }
 
+  export type TransactionUpdateManyWithoutPaymentChannelNestedInput = {
+    create?: XOR<TransactionCreateWithoutPaymentChannelInput, TransactionUncheckedCreateWithoutPaymentChannelInput> | TransactionCreateWithoutPaymentChannelInput[] | TransactionUncheckedCreateWithoutPaymentChannelInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutPaymentChannelInput | TransactionCreateOrConnectWithoutPaymentChannelInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutPaymentChannelInput | TransactionUpsertWithWhereUniqueWithoutPaymentChannelInput[]
+    createMany?: TransactionCreateManyPaymentChannelInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutPaymentChannelInput | TransactionUpdateWithWhereUniqueWithoutPaymentChannelInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutPaymentChannelInput | TransactionUpdateManyWithWhereWithoutPaymentChannelInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
   export type JobUncheckedUpdateManyWithoutPaymentChannelNestedInput = {
     create?: XOR<JobCreateWithoutPaymentChannelInput, JobUncheckedCreateWithoutPaymentChannelInput> | JobCreateWithoutPaymentChannelInput[] | JobUncheckedCreateWithoutPaymentChannelInput[]
     connectOrCreate?: JobCreateOrConnectWithoutPaymentChannelInput | JobCreateOrConnectWithoutPaymentChannelInput[]
@@ -56363,6 +63842,20 @@ export namespace Prisma {
     update?: JobUpdateWithWhereUniqueWithoutPaymentChannelInput | JobUpdateWithWhereUniqueWithoutPaymentChannelInput[]
     updateMany?: JobUpdateManyWithWhereWithoutPaymentChannelInput | JobUpdateManyWithWhereWithoutPaymentChannelInput[]
     deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
+  }
+
+  export type TransactionUncheckedUpdateManyWithoutPaymentChannelNestedInput = {
+    create?: XOR<TransactionCreateWithoutPaymentChannelInput, TransactionUncheckedCreateWithoutPaymentChannelInput> | TransactionCreateWithoutPaymentChannelInput[] | TransactionUncheckedCreateWithoutPaymentChannelInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutPaymentChannelInput | TransactionCreateOrConnectWithoutPaymentChannelInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutPaymentChannelInput | TransactionUpsertWithWhereUniqueWithoutPaymentChannelInput[]
+    createMany?: TransactionCreateManyPaymentChannelInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutPaymentChannelInput | TransactionUpdateWithWhereUniqueWithoutPaymentChannelInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutPaymentChannelInput | TransactionUpdateManyWithWhereWithoutPaymentChannelInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
   }
 
   export type JobCreateNestedManyWithoutTypeInput = {
@@ -56963,6 +64456,106 @@ export namespace Prisma {
     update?: XOR<XOR<PostUpdateToOneWithWhereWithoutEventInput, PostUpdateWithoutEventInput>, PostUncheckedUpdateWithoutEventInput>
   }
 
+  export type UserCreateNestedOneWithoutSystemSettingsInput = {
+    create?: XOR<UserCreateWithoutSystemSettingsInput, UserUncheckedCreateWithoutSystemSettingsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSystemSettingsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneWithoutSystemSettingsNestedInput = {
+    create?: XOR<UserCreateWithoutSystemSettingsInput, UserUncheckedCreateWithoutSystemSettingsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSystemSettingsInput
+    upsert?: UserUpsertWithoutSystemSettingsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSystemSettingsInput, UserUpdateWithoutSystemSettingsInput>, UserUncheckedUpdateWithoutSystemSettingsInput>
+  }
+
+  export type JobCreateNestedOneWithoutTransactionsInput = {
+    create?: XOR<JobCreateWithoutTransactionsInput, JobUncheckedCreateWithoutTransactionsInput>
+    connectOrCreate?: JobCreateOrConnectWithoutTransactionsInput
+    connect?: JobWhereUniqueInput
+  }
+
+  export type ClientCreateNestedOneWithoutTransactionsInput = {
+    create?: XOR<ClientCreateWithoutTransactionsInput, ClientUncheckedCreateWithoutTransactionsInput>
+    connectOrCreate?: ClientCreateOrConnectWithoutTransactionsInput
+    connect?: ClientWhereUniqueInput
+  }
+
+  export type JobAssignmentCreateNestedOneWithoutTransactionsInput = {
+    create?: XOR<JobAssignmentCreateWithoutTransactionsInput, JobAssignmentUncheckedCreateWithoutTransactionsInput>
+    connectOrCreate?: JobAssignmentCreateOrConnectWithoutTransactionsInput
+    connect?: JobAssignmentWhereUniqueInput
+  }
+
+  export type PaymentChannelCreateNestedOneWithoutTransactionsInput = {
+    create?: XOR<PaymentChannelCreateWithoutTransactionsInput, PaymentChannelUncheckedCreateWithoutTransactionsInput>
+    connectOrCreate?: PaymentChannelCreateOrConnectWithoutTransactionsInput
+    connect?: PaymentChannelWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutTransactionsInput = {
+    create?: XOR<UserCreateWithoutTransactionsInput, UserUncheckedCreateWithoutTransactionsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTransactionsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EnumTransactionTypeFieldUpdateOperationsInput = {
+    set?: $Enums.TransactionType
+  }
+
+  export type EnumTransactionStatusFieldUpdateOperationsInput = {
+    set?: $Enums.TransactionStatus
+  }
+
+  export type JobUpdateOneRequiredWithoutTransactionsNestedInput = {
+    create?: XOR<JobCreateWithoutTransactionsInput, JobUncheckedCreateWithoutTransactionsInput>
+    connectOrCreate?: JobCreateOrConnectWithoutTransactionsInput
+    upsert?: JobUpsertWithoutTransactionsInput
+    connect?: JobWhereUniqueInput
+    update?: XOR<XOR<JobUpdateToOneWithWhereWithoutTransactionsInput, JobUpdateWithoutTransactionsInput>, JobUncheckedUpdateWithoutTransactionsInput>
+  }
+
+  export type ClientUpdateOneWithoutTransactionsNestedInput = {
+    create?: XOR<ClientCreateWithoutTransactionsInput, ClientUncheckedCreateWithoutTransactionsInput>
+    connectOrCreate?: ClientCreateOrConnectWithoutTransactionsInput
+    upsert?: ClientUpsertWithoutTransactionsInput
+    disconnect?: ClientWhereInput | boolean
+    delete?: ClientWhereInput | boolean
+    connect?: ClientWhereUniqueInput
+    update?: XOR<XOR<ClientUpdateToOneWithWhereWithoutTransactionsInput, ClientUpdateWithoutTransactionsInput>, ClientUncheckedUpdateWithoutTransactionsInput>
+  }
+
+  export type JobAssignmentUpdateOneWithoutTransactionsNestedInput = {
+    create?: XOR<JobAssignmentCreateWithoutTransactionsInput, JobAssignmentUncheckedCreateWithoutTransactionsInput>
+    connectOrCreate?: JobAssignmentCreateOrConnectWithoutTransactionsInput
+    upsert?: JobAssignmentUpsertWithoutTransactionsInput
+    disconnect?: JobAssignmentWhereInput | boolean
+    delete?: JobAssignmentWhereInput | boolean
+    connect?: JobAssignmentWhereUniqueInput
+    update?: XOR<XOR<JobAssignmentUpdateToOneWithWhereWithoutTransactionsInput, JobAssignmentUpdateWithoutTransactionsInput>, JobAssignmentUncheckedUpdateWithoutTransactionsInput>
+  }
+
+  export type PaymentChannelUpdateOneWithoutTransactionsNestedInput = {
+    create?: XOR<PaymentChannelCreateWithoutTransactionsInput, PaymentChannelUncheckedCreateWithoutTransactionsInput>
+    connectOrCreate?: PaymentChannelCreateOrConnectWithoutTransactionsInput
+    upsert?: PaymentChannelUpsertWithoutTransactionsInput
+    disconnect?: PaymentChannelWhereInput | boolean
+    delete?: PaymentChannelWhereInput | boolean
+    connect?: PaymentChannelWhereUniqueInput
+    update?: XOR<XOR<PaymentChannelUpdateToOneWithWhereWithoutTransactionsInput, PaymentChannelUpdateWithoutTransactionsInput>, PaymentChannelUncheckedUpdateWithoutTransactionsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutTransactionsNestedInput = {
+    create?: XOR<UserCreateWithoutTransactionsInput, UserUncheckedCreateWithoutTransactionsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTransactionsInput
+    upsert?: UserUpsertWithoutTransactionsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTransactionsInput, UserUpdateWithoutTransactionsInput>, UserUncheckedUpdateWithoutTransactionsInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -56989,6 +64582,24 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type NestedEnumSystemModuleFilter<$PrismaModel = never> = {
+    equals?: $Enums.SystemModule | EnumSystemModuleFieldRefInput<$PrismaModel>
+    in?: $Enums.SystemModule[] | ListEnumSystemModuleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SystemModule[] | ListEnumSystemModuleFieldRefInput<$PrismaModel>
+    not?: NestedEnumSystemModuleFilter<$PrismaModel> | $Enums.SystemModule
+  }
+
+  export type NestedDateTimeFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
@@ -57047,6 +64658,53 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedEnumSystemModuleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SystemModule | EnumSystemModuleFieldRefInput<$PrismaModel>
+    in?: $Enums.SystemModule[] | ListEnumSystemModuleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SystemModule[] | ListEnumSystemModuleFieldRefInput<$PrismaModel>
+    not?: NestedEnumSystemModuleWithAggregatesFilter<$PrismaModel> | $Enums.SystemModule
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSystemModuleFilter<$PrismaModel>
+    _max?: NestedEnumSystemModuleFilter<$PrismaModel>
+  }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
   export type NestedBoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
@@ -57071,17 +64729,6 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
-  export type NestedDateTimeFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
-  }
-
   export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -57094,20 +64741,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
-  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
   export type NestedEnumSecurityLogStatusFilter<$PrismaModel = never> = {
@@ -57245,6 +64878,13 @@ export namespace Prisma {
     not?: NestedEnumJobPriorityFilter<$PrismaModel> | $Enums.JobPriority
   }
 
+  export type NestedEnumJOB_PAYMENT_STATUSFilter<$PrismaModel = never> = {
+    equals?: $Enums.JOB_PAYMENT_STATUS | EnumJOB_PAYMENT_STATUSFieldRefInput<$PrismaModel>
+    in?: $Enums.JOB_PAYMENT_STATUS[] | ListEnumJOB_PAYMENT_STATUSFieldRefInput<$PrismaModel>
+    notIn?: $Enums.JOB_PAYMENT_STATUS[] | ListEnumJOB_PAYMENT_STATUSFieldRefInput<$PrismaModel>
+    not?: NestedEnumJOB_PAYMENT_STATUSFilter<$PrismaModel> | $Enums.JOB_PAYMENT_STATUS
+  }
+
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[] | ListFloatFieldRefInput<$PrismaModel>
@@ -57271,6 +64911,16 @@ export namespace Prisma {
     _max?: NestedEnumJobPriorityFilter<$PrismaModel>
   }
 
+  export type NestedEnumJOB_PAYMENT_STATUSWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.JOB_PAYMENT_STATUS | EnumJOB_PAYMENT_STATUSFieldRefInput<$PrismaModel>
+    in?: $Enums.JOB_PAYMENT_STATUS[] | ListEnumJOB_PAYMENT_STATUSFieldRefInput<$PrismaModel>
+    notIn?: $Enums.JOB_PAYMENT_STATUS[] | ListEnumJOB_PAYMENT_STATUSFieldRefInput<$PrismaModel>
+    not?: NestedEnumJOB_PAYMENT_STATUSWithAggregatesFilter<$PrismaModel> | $Enums.JOB_PAYMENT_STATUS
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumJOB_PAYMENT_STATUSFilter<$PrismaModel>
+    _max?: NestedEnumJOB_PAYMENT_STATUSFilter<$PrismaModel>
+  }
+
   export type NestedEnumClientTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.ClientType | EnumClientTypeFieldRefInput<$PrismaModel>
     in?: $Enums.ClientType[] | ListEnumClientTypeFieldRefInput<$PrismaModel>
@@ -57286,6 +64936,39 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumClientTypeFilter<$PrismaModel>
     _max?: NestedEnumClientTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumPaymentChannelTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentChannelType | EnumPaymentChannelTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentChannelType[] | ListEnumPaymentChannelTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentChannelType[] | ListEnumPaymentChannelTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentChannelTypeFilter<$PrismaModel> | $Enums.PaymentChannelType
+  }
+
+  export type NestedEnumPaymentChannelTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentChannelType | EnumPaymentChannelTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentChannelType[] | ListEnumPaymentChannelTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentChannelType[] | ListEnumPaymentChannelTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentChannelTypeWithAggregatesFilter<$PrismaModel> | $Enums.PaymentChannelType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPaymentChannelTypeFilter<$PrismaModel>
+    _max?: NestedEnumPaymentChannelTypeFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumJobStatusSystemTypeFilter<$PrismaModel = never> = {
@@ -57327,29 +65010,6 @@ export namespace Prisma {
     in?: $Enums.ActivityType[] | ListEnumActivityTypeFieldRefInput<$PrismaModel>
     notIn?: $Enums.ActivityType[] | ListEnumActivityTypeFieldRefInput<$PrismaModel>
     not?: NestedEnumActivityTypeFilter<$PrismaModel> | $Enums.ActivityType
-  }
-  export type NestedJsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<NestedJsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
   export type NestedEnumActivityTypeWithAggregatesFilter<$PrismaModel = never> = {
@@ -57430,6 +65090,236 @@ export namespace Prisma {
     _max?: NestedEnumTopicTypeFilter<$PrismaModel>
   }
 
+  export type NestedEnumTransactionTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionType | EnumTransactionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionTypeFilter<$PrismaModel> | $Enums.TransactionType
+  }
+
+  export type NestedEnumTransactionStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionStatus | EnumTransactionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionStatusFilter<$PrismaModel> | $Enums.TransactionStatus
+  }
+
+  export type NestedEnumTransactionTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionType | EnumTransactionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionTypeWithAggregatesFilter<$PrismaModel> | $Enums.TransactionType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTransactionTypeFilter<$PrismaModel>
+    _max?: NestedEnumTransactionTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumTransactionStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionStatus | EnumTransactionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionStatusWithAggregatesFilter<$PrismaModel> | $Enums.TransactionStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTransactionStatusFilter<$PrismaModel>
+    _max?: NestedEnumTransactionStatusFilter<$PrismaModel>
+  }
+
+  export type UserCreateWithoutSystemAuditLogsInput = {
+    id?: string
+    code: string
+    email: string
+    personalEmail?: string | null
+    username: string
+    displayName: string
+    avatar: string
+    password: string
+    emailVerified?: boolean
+    phoneNumber?: string | null
+    isActive?: boolean
+    deletedAt?: Date | string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    jobTitle?: JobTitleCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    jobsCreated?: JobCreateNestedManyWithoutCreatedByInput
+    filesCreated?: FileSystemCreateNestedManyWithoutCreatedByInput
+    files?: FileSystemCreateNestedManyWithoutVisibleToUsersInput
+    sendedNotifications?: NotificationCreateNestedManyWithoutSenderInput
+    jobActivityLog?: JobActivityLogCreateNestedManyWithoutModifiedByInput
+    configs?: UserConfigCreateNestedManyWithoutUserInput
+    jobComments?: JobCommentCreateNestedManyWithoutUserInput
+    gallery?: GalleryCreateNestedManyWithoutUserInput
+    userDevices?: UserDevicesCreateNestedManyWithoutUserInput
+    statusChanges?: JobStatusHistoryCreateNestedManyWithoutChangedByInput
+    pinnedJobs?: PinnedJobCreateNestedManyWithoutUserInput
+    manager?: UserCreateNestedOneWithoutReportsInput
+    reports?: UserCreateNestedManyWithoutManagerInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    jobDeliveries?: JobDeliveryCreateNestedManyWithoutUserInput
+    communities?: CommunityMemberCreateNestedManyWithoutUserInput
+    posts?: PostCreateNestedManyWithoutAuthorInput
+    jobAssignments?: JobAssignmentCreateNestedManyWithoutUserInput
+    role?: RoleCreateNestedOneWithoutUsersInput
+    userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
+    securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserUncheckedCreateWithoutSystemAuditLogsInput = {
+    id?: string
+    code: string
+    email: string
+    personalEmail?: string | null
+    username: string
+    displayName: string
+    avatar: string
+    jobTitleId?: string | null
+    password: string
+    emailVerified?: boolean
+    departmentId?: string | null
+    phoneNumber?: string | null
+    isActive?: boolean
+    managerId?: string | null
+    roleId?: string | null
+    deletedAt?: Date | string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    jobsCreated?: JobUncheckedCreateNestedManyWithoutCreatedByInput
+    filesCreated?: FileSystemUncheckedCreateNestedManyWithoutCreatedByInput
+    files?: FileSystemUncheckedCreateNestedManyWithoutVisibleToUsersInput
+    sendedNotifications?: NotificationUncheckedCreateNestedManyWithoutSenderInput
+    jobActivityLog?: JobActivityLogUncheckedCreateNestedManyWithoutModifiedByInput
+    configs?: UserConfigUncheckedCreateNestedManyWithoutUserInput
+    jobComments?: JobCommentUncheckedCreateNestedManyWithoutUserInput
+    gallery?: GalleryUncheckedCreateNestedManyWithoutUserInput
+    userDevices?: UserDevicesUncheckedCreateNestedManyWithoutUserInput
+    statusChanges?: JobStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
+    pinnedJobs?: PinnedJobUncheckedCreateNestedManyWithoutUserInput
+    reports?: UserUncheckedCreateNestedManyWithoutManagerInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutUserInput
+    communities?: CommunityMemberUncheckedCreateNestedManyWithoutUserInput
+    posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
+    userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
+    securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserCreateOrConnectWithoutSystemAuditLogsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutSystemAuditLogsInput, UserUncheckedCreateWithoutSystemAuditLogsInput>
+  }
+
+  export type UserUpsertWithoutSystemAuditLogsInput = {
+    update: XOR<UserUpdateWithoutSystemAuditLogsInput, UserUncheckedUpdateWithoutSystemAuditLogsInput>
+    create: XOR<UserCreateWithoutSystemAuditLogsInput, UserUncheckedCreateWithoutSystemAuditLogsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutSystemAuditLogsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutSystemAuditLogsInput, UserUncheckedUpdateWithoutSystemAuditLogsInput>
+  }
+
+  export type UserUpdateWithoutSystemAuditLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    jobTitle?: JobTitleUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    jobsCreated?: JobUpdateManyWithoutCreatedByNestedInput
+    filesCreated?: FileSystemUpdateManyWithoutCreatedByNestedInput
+    files?: FileSystemUpdateManyWithoutVisibleToUsersNestedInput
+    sendedNotifications?: NotificationUpdateManyWithoutSenderNestedInput
+    jobActivityLog?: JobActivityLogUpdateManyWithoutModifiedByNestedInput
+    configs?: UserConfigUpdateManyWithoutUserNestedInput
+    jobComments?: JobCommentUpdateManyWithoutUserNestedInput
+    gallery?: GalleryUpdateManyWithoutUserNestedInput
+    userDevices?: UserDevicesUpdateManyWithoutUserNestedInput
+    statusChanges?: JobStatusHistoryUpdateManyWithoutChangedByNestedInput
+    pinnedJobs?: PinnedJobUpdateManyWithoutUserNestedInput
+    manager?: UserUpdateOneWithoutReportsNestedInput
+    reports?: UserUpdateManyWithoutManagerNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    jobDeliveries?: JobDeliveryUpdateManyWithoutUserNestedInput
+    communities?: CommunityMemberUpdateManyWithoutUserNestedInput
+    posts?: PostUpdateManyWithoutAuthorNestedInput
+    jobAssignments?: JobAssignmentUpdateManyWithoutUserNestedInput
+    role?: RoleUpdateOneWithoutUsersNestedInput
+    userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
+    securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutSystemAuditLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
+    jobTitleId?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    managerId?: NullableStringFieldUpdateOperationsInput | string | null
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    jobsCreated?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
+    filesCreated?: FileSystemUncheckedUpdateManyWithoutCreatedByNestedInput
+    files?: FileSystemUncheckedUpdateManyWithoutVisibleToUsersNestedInput
+    sendedNotifications?: NotificationUncheckedUpdateManyWithoutSenderNestedInput
+    jobActivityLog?: JobActivityLogUncheckedUpdateManyWithoutModifiedByNestedInput
+    configs?: UserConfigUncheckedUpdateManyWithoutUserNestedInput
+    jobComments?: JobCommentUncheckedUpdateManyWithoutUserNestedInput
+    gallery?: GalleryUncheckedUpdateManyWithoutUserNestedInput
+    userDevices?: UserDevicesUncheckedUpdateManyWithoutUserNestedInput
+    statusChanges?: JobStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+    pinnedJobs?: PinnedJobUncheckedUpdateManyWithoutUserNestedInput
+    reports?: UserUncheckedUpdateManyWithoutManagerNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutUserNestedInput
+    communities?: CommunityMemberUncheckedUpdateManyWithoutUserNestedInput
+    posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
+    userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
+    securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  }
+
   export type UserCreateWithoutUserDevicesInput = {
     id?: string
     code: string
@@ -57470,6 +65360,9 @@ export namespace Prisma {
     role?: RoleCreateNestedOneWithoutUsersInput
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutUserDevicesInput = {
@@ -57512,6 +65405,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutUserDevicesInput = {
@@ -57570,6 +65466,9 @@ export namespace Prisma {
     role?: RoleUpdateOneWithoutUsersNestedInput
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUserDevicesInput = {
@@ -57612,6 +65511,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type JobTitleCreateWithoutUsersInput = {
@@ -57704,22 +65606,22 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     type: JobTypeCreateNestedOneWithoutJobsInput
     client?: ClientCreateNestedOneWithoutJobsInput
+    sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
     status: JobStatusCreateNestedOneWithoutJobsInput
@@ -57730,6 +65632,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
     folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+    transactions?: TransactionCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutCreatedByInput = {
@@ -57739,20 +65642,20 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     paymentChannelId?: string | null
     statusId: string
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -57764,6 +65667,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutCreatedByInput = {
@@ -58123,6 +66027,9 @@ export namespace Prisma {
     role?: RoleCreateNestedOneWithoutUsersInput
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutReportsInput = {
@@ -58165,6 +66072,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutReportsInput = {
@@ -58212,6 +66122,9 @@ export namespace Prisma {
     role?: RoleCreateNestedOneWithoutUsersInput
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutManagerInput = {
@@ -58254,6 +66167,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutManagerInput = {
@@ -58429,6 +66345,7 @@ export namespace Prisma {
     staffCost?: number
     assignedAt?: Date | string
     job: JobCreateNestedOneWithoutAssignmentsInput
+    transactions?: TransactionCreateNestedManyWithoutAssignmentInput
   }
 
   export type JobAssignmentUncheckedCreateWithoutUserInput = {
@@ -58436,6 +66353,7 @@ export namespace Prisma {
     jobId: string
     staffCost?: number
     assignedAt?: Date | string
+    transactions?: TransactionUncheckedCreateNestedManyWithoutAssignmentInput
   }
 
   export type JobAssignmentCreateOrConnectWithoutUserInput = {
@@ -58520,6 +66438,110 @@ export namespace Prisma {
 
   export type UserSecurityLogCreateManyUserInputEnvelope = {
     data: UserSecurityLogCreateManyUserInput | UserSecurityLogCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SystemAuditLogCreateWithoutActorInput = {
+    id?: string
+    action: string
+    module: $Enums.SystemModule
+    targetId?: string | null
+    targetDisplay: string
+    oldValues?: NullableJsonNullValueInput | InputJsonValue
+    newValues?: NullableJsonNullValueInput | InputJsonValue
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: string | null
+    userAgent?: string | null
+    createdAt?: Date | string
+  }
+
+  export type SystemAuditLogUncheckedCreateWithoutActorInput = {
+    id?: string
+    action: string
+    module: $Enums.SystemModule
+    targetId?: string | null
+    targetDisplay: string
+    oldValues?: NullableJsonNullValueInput | InputJsonValue
+    newValues?: NullableJsonNullValueInput | InputJsonValue
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: string | null
+    userAgent?: string | null
+    createdAt?: Date | string
+  }
+
+  export type SystemAuditLogCreateOrConnectWithoutActorInput = {
+    where: SystemAuditLogWhereUniqueInput
+    create: XOR<SystemAuditLogCreateWithoutActorInput, SystemAuditLogUncheckedCreateWithoutActorInput>
+  }
+
+  export type SystemAuditLogCreateManyActorInputEnvelope = {
+    data: SystemAuditLogCreateManyActorInput | SystemAuditLogCreateManyActorInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SystemSettingCreateWithoutModifierByInput = {
+    key: string
+    value: string
+    updatedAt?: Date | string
+  }
+
+  export type SystemSettingUncheckedCreateWithoutModifierByInput = {
+    key: string
+    value: string
+    updatedAt?: Date | string
+  }
+
+  export type SystemSettingCreateOrConnectWithoutModifierByInput = {
+    where: SystemSettingWhereUniqueInput
+    create: XOR<SystemSettingCreateWithoutModifierByInput, SystemSettingUncheckedCreateWithoutModifierByInput>
+  }
+
+  export type SystemSettingCreateManyModifierByInputEnvelope = {
+    data: SystemSettingCreateManyModifierByInput | SystemSettingCreateManyModifierByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TransactionCreateWithoutCreatedByInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutTransactionsInput
+    client?: ClientCreateNestedOneWithoutTransactionsInput
+    assignment?: JobAssignmentCreateNestedOneWithoutTransactionsInput
+    paymentChannel?: PaymentChannelCreateNestedOneWithoutTransactionsInput
+  }
+
+  export type TransactionUncheckedCreateWithoutCreatedByInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    jobId: string
+    clientId?: string | null
+    assignmentId?: string | null
+    paymentChannelId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransactionCreateOrConnectWithoutCreatedByInput = {
+    where: TransactionWhereUniqueInput
+    create: XOR<TransactionCreateWithoutCreatedByInput, TransactionUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type TransactionCreateManyCreatedByInputEnvelope = {
+    data: TransactionCreateManyCreatedByInput | TransactionCreateManyCreatedByInput[]
     skipDuplicates?: boolean
   }
 
@@ -58642,9 +66664,9 @@ export namespace Prisma {
     displayName?: StringFilter<"Job"> | string
     description?: StringNullableFilter<"Job"> | string | null
     attachmentUrls?: StringNullableListFilter<"Job">
-    sharepointFolderId?: StringNullableFilter<"Job"> | string | null
     clientId?: StringNullableFilter<"Job"> | string | null
     incomeCost?: FloatFilter<"Job"> | number
+    sharepointFolderId?: StringNullableFilter<"Job"> | string | null
     totalStaffCost?: FloatFilter<"Job"> | number
     createdById?: StringFilter<"Job"> | string
     paymentChannelId?: StringNullableFilter<"Job"> | string | null
@@ -58652,11 +66674,11 @@ export namespace Prisma {
     startedAt?: DateTimeFilter<"Job"> | Date | string
     priority?: EnumJobPriorityFilter<"Job"> | $Enums.JobPriority
     isPublished?: BoolFilter<"Job"> | boolean
-    isPaid?: BoolFilter<"Job"> | boolean
     dueAt?: DateTimeFilter<"Job"> | Date | string
     completedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
     finishedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
-    paidAt?: DateTimeNullableFilter<"Job"> | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFilter<"Job"> | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: DateTimeNullableFilter<"Job"> | Date | string | null
     createdAt?: DateTimeFilter<"Job"> | Date | string
     updatedAt?: DateTimeFilter<"Job"> | Date | string
     deletedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
@@ -58983,6 +67005,9 @@ export namespace Prisma {
     role?: RoleUpdateOneWithoutUsersNestedInput
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReportsInput = {
@@ -59025,6 +67050,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUpsertWithWhereUniqueWithoutManagerInput = {
@@ -59331,6 +67359,103 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"UserSecurityLog"> | Date | string
   }
 
+  export type SystemAuditLogUpsertWithWhereUniqueWithoutActorInput = {
+    where: SystemAuditLogWhereUniqueInput
+    update: XOR<SystemAuditLogUpdateWithoutActorInput, SystemAuditLogUncheckedUpdateWithoutActorInput>
+    create: XOR<SystemAuditLogCreateWithoutActorInput, SystemAuditLogUncheckedCreateWithoutActorInput>
+  }
+
+  export type SystemAuditLogUpdateWithWhereUniqueWithoutActorInput = {
+    where: SystemAuditLogWhereUniqueInput
+    data: XOR<SystemAuditLogUpdateWithoutActorInput, SystemAuditLogUncheckedUpdateWithoutActorInput>
+  }
+
+  export type SystemAuditLogUpdateManyWithWhereWithoutActorInput = {
+    where: SystemAuditLogScalarWhereInput
+    data: XOR<SystemAuditLogUpdateManyMutationInput, SystemAuditLogUncheckedUpdateManyWithoutActorInput>
+  }
+
+  export type SystemAuditLogScalarWhereInput = {
+    AND?: SystemAuditLogScalarWhereInput | SystemAuditLogScalarWhereInput[]
+    OR?: SystemAuditLogScalarWhereInput[]
+    NOT?: SystemAuditLogScalarWhereInput | SystemAuditLogScalarWhereInput[]
+    id?: StringFilter<"SystemAuditLog"> | string
+    actorId?: StringNullableFilter<"SystemAuditLog"> | string | null
+    action?: StringFilter<"SystemAuditLog"> | string
+    module?: EnumSystemModuleFilter<"SystemAuditLog"> | $Enums.SystemModule
+    targetId?: StringNullableFilter<"SystemAuditLog"> | string | null
+    targetDisplay?: StringFilter<"SystemAuditLog"> | string
+    oldValues?: JsonNullableFilter<"SystemAuditLog">
+    newValues?: JsonNullableFilter<"SystemAuditLog">
+    metadata?: JsonNullableFilter<"SystemAuditLog">
+    ipAddress?: StringNullableFilter<"SystemAuditLog"> | string | null
+    userAgent?: StringNullableFilter<"SystemAuditLog"> | string | null
+    createdAt?: DateTimeFilter<"SystemAuditLog"> | Date | string
+  }
+
+  export type SystemSettingUpsertWithWhereUniqueWithoutModifierByInput = {
+    where: SystemSettingWhereUniqueInput
+    update: XOR<SystemSettingUpdateWithoutModifierByInput, SystemSettingUncheckedUpdateWithoutModifierByInput>
+    create: XOR<SystemSettingCreateWithoutModifierByInput, SystemSettingUncheckedCreateWithoutModifierByInput>
+  }
+
+  export type SystemSettingUpdateWithWhereUniqueWithoutModifierByInput = {
+    where: SystemSettingWhereUniqueInput
+    data: XOR<SystemSettingUpdateWithoutModifierByInput, SystemSettingUncheckedUpdateWithoutModifierByInput>
+  }
+
+  export type SystemSettingUpdateManyWithWhereWithoutModifierByInput = {
+    where: SystemSettingScalarWhereInput
+    data: XOR<SystemSettingUpdateManyMutationInput, SystemSettingUncheckedUpdateManyWithoutModifierByInput>
+  }
+
+  export type SystemSettingScalarWhereInput = {
+    AND?: SystemSettingScalarWhereInput | SystemSettingScalarWhereInput[]
+    OR?: SystemSettingScalarWhereInput[]
+    NOT?: SystemSettingScalarWhereInput | SystemSettingScalarWhereInput[]
+    key?: StringFilter<"SystemSetting"> | string
+    value?: StringFilter<"SystemSetting"> | string
+    updatedAt?: DateTimeFilter<"SystemSetting"> | Date | string
+    modifierById?: StringNullableFilter<"SystemSetting"> | string | null
+  }
+
+  export type TransactionUpsertWithWhereUniqueWithoutCreatedByInput = {
+    where: TransactionWhereUniqueInput
+    update: XOR<TransactionUpdateWithoutCreatedByInput, TransactionUncheckedUpdateWithoutCreatedByInput>
+    create: XOR<TransactionCreateWithoutCreatedByInput, TransactionUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type TransactionUpdateWithWhereUniqueWithoutCreatedByInput = {
+    where: TransactionWhereUniqueInput
+    data: XOR<TransactionUpdateWithoutCreatedByInput, TransactionUncheckedUpdateWithoutCreatedByInput>
+  }
+
+  export type TransactionUpdateManyWithWhereWithoutCreatedByInput = {
+    where: TransactionScalarWhereInput
+    data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyWithoutCreatedByInput>
+  }
+
+  export type TransactionScalarWhereInput = {
+    AND?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+    OR?: TransactionScalarWhereInput[]
+    NOT?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+    id?: StringFilter<"Transaction"> | string
+    amount?: FloatFilter<"Transaction"> | number
+    currency?: StringFilter<"Transaction"> | string
+    type?: EnumTransactionTypeFilter<"Transaction"> | $Enums.TransactionType
+    status?: EnumTransactionStatusFilter<"Transaction"> | $Enums.TransactionStatus
+    referenceNo?: StringNullableFilter<"Transaction"> | string | null
+    note?: StringNullableFilter<"Transaction"> | string | null
+    evidenceUrl?: StringNullableFilter<"Transaction"> | string | null
+    jobId?: StringFilter<"Transaction"> | string
+    clientId?: StringNullableFilter<"Transaction"> | string | null
+    assignmentId?: StringNullableFilter<"Transaction"> | string | null
+    paymentChannelId?: StringNullableFilter<"Transaction"> | string | null
+    createdById?: StringFilter<"Transaction"> | string
+    createdAt?: DateTimeFilter<"Transaction"> | Date | string
+    updatedAt?: DateTimeFilter<"Transaction"> | Date | string
+  }
+
   export type UserCreateWithoutSecurityLogsInput = {
     id?: string
     code: string
@@ -59371,6 +67496,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentCreateNestedManyWithoutUserInput
     role?: RoleCreateNestedOneWithoutUsersInput
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutSecurityLogsInput = {
@@ -59413,6 +67541,9 @@ export namespace Prisma {
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
     jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutSecurityLogsInput = {
@@ -59471,6 +67602,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUpdateManyWithoutUserNestedInput
     role?: RoleUpdateOneWithoutUsersNestedInput
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSecurityLogsInput = {
@@ -59513,6 +67647,9 @@ export namespace Prisma {
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
     jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type PermissionCreateWithoutRolesInput = {
@@ -59584,6 +67721,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentCreateNestedManyWithoutUserInput
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutRoleInput = {
@@ -59626,6 +67766,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutRoleInput = {
@@ -59865,6 +68008,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentCreateNestedManyWithoutUserInput
     role?: RoleCreateNestedOneWithoutUsersInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutUserPermissionsInput = {
@@ -59907,6 +68053,9 @@ export namespace Prisma {
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
     jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutUserPermissionsInput = {
@@ -59994,6 +68143,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUpdateManyWithoutUserNestedInput
     role?: RoleUpdateOneWithoutUsersNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUserPermissionsInput = {
@@ -60036,6 +68188,9 @@ export namespace Prisma {
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
     jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type PermissionUpsertWithoutUserPermissionsInput = {
@@ -60163,6 +68318,9 @@ export namespace Prisma {
     role?: RoleCreateNestedOneWithoutUsersInput
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -60205,6 +68363,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -60263,6 +68424,9 @@ export namespace Prisma {
     role?: RoleUpdateOneWithoutUsersNestedInput
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -60305,6 +68469,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -60347,6 +68514,9 @@ export namespace Prisma {
     role?: RoleCreateNestedOneWithoutUsersInput
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -60389,6 +68559,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -60447,6 +68620,9 @@ export namespace Prisma {
     role?: RoleUpdateOneWithoutUsersNestedInput
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -60489,6 +68665,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateWithoutGalleryInput = {
@@ -60531,6 +68710,9 @@ export namespace Prisma {
     role?: RoleCreateNestedOneWithoutUsersInput
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutGalleryInput = {
@@ -60573,6 +68755,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutGalleryInput = {
@@ -60631,6 +68816,9 @@ export namespace Prisma {
     role?: RoleUpdateOneWithoutUsersNestedInput
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutGalleryInput = {
@@ -60673,6 +68861,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type JobCreateWithoutCommentsInput = {
@@ -60681,22 +68872,22 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     type: JobTypeCreateNestedOneWithoutJobsInput
     client?: ClientCreateNestedOneWithoutJobsInput
+    sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
@@ -60707,6 +68898,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
     folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+    transactions?: TransactionCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutCommentsInput = {
@@ -60716,9 +68908,9 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     paymentChannelId?: string | null
@@ -60726,11 +68918,11 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -60741,6 +68933,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutCommentsInput = {
@@ -60788,6 +68981,9 @@ export namespace Prisma {
     role?: RoleCreateNestedOneWithoutUsersInput
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutJobCommentsInput = {
@@ -60830,6 +69026,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutJobCommentsInput = {
@@ -60909,22 +69108,22 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     type?: JobTypeUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneWithoutJobsNestedInput
+    sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
@@ -60935,6 +69134,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
     folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+    transactions?: TransactionUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutCommentsInput = {
@@ -60944,9 +69144,9 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -60954,11 +69154,11 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -60969,6 +69169,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type UserUpsertWithoutJobCommentsInput = {
@@ -61022,6 +69223,9 @@ export namespace Prisma {
     role?: RoleUpdateOneWithoutUsersNestedInput
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJobCommentsInput = {
@@ -61064,6 +69268,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type JobCommentUpsertWithoutRepliesInput = {
@@ -61153,6 +69360,9 @@ export namespace Prisma {
     role?: RoleCreateNestedOneWithoutUsersInput
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutJobTitleInput = {
@@ -61195,6 +69405,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutJobTitleInput = {
@@ -61263,6 +69476,9 @@ export namespace Prisma {
     role?: RoleCreateNestedOneWithoutUsersInput
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutDepartmentInput = {
@@ -61305,6 +69521,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutDepartmentInput = {
@@ -61373,6 +69592,9 @@ export namespace Prisma {
     role?: RoleCreateNestedOneWithoutUsersInput
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutConfigsInput = {
@@ -61415,6 +69637,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutConfigsInput = {
@@ -61473,6 +69698,9 @@ export namespace Prisma {
     role?: RoleUpdateOneWithoutUsersNestedInput
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutConfigsInput = {
@@ -61515,6 +69743,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateWithoutFilesCreatedInput = {
@@ -61557,6 +69788,9 @@ export namespace Prisma {
     role?: RoleCreateNestedOneWithoutUsersInput
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutFilesCreatedInput = {
@@ -61599,6 +69833,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutFilesCreatedInput = {
@@ -61646,6 +69883,9 @@ export namespace Prisma {
     role?: RoleCreateNestedOneWithoutUsersInput
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutFilesInput = {
@@ -61688,6 +69928,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutFilesInput = {
@@ -61701,22 +69944,22 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     type: JobTypeCreateNestedOneWithoutJobsInput
     client?: ClientCreateNestedOneWithoutJobsInput
+    sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
@@ -61727,6 +69970,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
     folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+    transactions?: TransactionCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutFilesInput = {
@@ -61736,9 +69980,9 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     paymentChannelId?: string | null
@@ -61746,11 +69990,11 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -61761,6 +70005,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutFilesInput = {
@@ -61819,6 +70064,9 @@ export namespace Prisma {
     role?: RoleUpdateOneWithoutUsersNestedInput
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFilesCreatedInput = {
@@ -61861,6 +70109,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUpsertWithWhereUniqueWithoutFilesInput = {
@@ -61896,22 +70147,22 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     type?: JobTypeUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneWithoutJobsNestedInput
+    sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
@@ -61922,6 +70173,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
     folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+    transactions?: TransactionUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutFilesInput = {
@@ -61931,9 +70183,9 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -61941,11 +70193,11 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -61956,6 +70208,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobTypeCreateWithoutJobsInput = {
@@ -62000,6 +70253,7 @@ export namespace Prisma {
     paymentTerms?: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    transactions?: TransactionCreateNestedManyWithoutClientInput
   }
 
   export type ClientUncheckedCreateWithoutJobsInput = {
@@ -62019,6 +70273,7 @@ export namespace Prisma {
     paymentTerms?: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    transactions?: TransactionUncheckedCreateNestedManyWithoutClientInput
   }
 
   export type ClientCreateOrConnectWithoutJobsInput = {
@@ -62026,11 +70281,39 @@ export namespace Prisma {
     create: XOR<ClientCreateWithoutJobsInput, ClientUncheckedCreateWithoutJobsInput>
   }
 
+  export type SharepointItemCreateWithoutJobsInput = {
+    id?: string
+    itemId: string
+    displayName?: string | null
+    isFolder?: boolean
+    size?: number | null
+    webUrl?: string | null
+    createdDateTime?: string | null
+    createdBy?: string | null
+  }
+
+  export type SharepointItemUncheckedCreateWithoutJobsInput = {
+    id?: string
+    itemId: string
+    displayName?: string | null
+    isFolder?: boolean
+    size?: number | null
+    webUrl?: string | null
+    createdDateTime?: string | null
+    createdBy?: string | null
+  }
+
+  export type SharepointItemCreateOrConnectWithoutJobsInput = {
+    where: SharepointItemWhereUniqueInput
+    create: XOR<SharepointItemCreateWithoutJobsInput, SharepointItemUncheckedCreateWithoutJobsInput>
+  }
+
   export type JobAssignmentCreateWithoutJobInput = {
     id?: string
     staffCost?: number
     assignedAt?: Date | string
     user: UserCreateNestedOneWithoutJobAssignmentsInput
+    transactions?: TransactionCreateNestedManyWithoutAssignmentInput
   }
 
   export type JobAssignmentUncheckedCreateWithoutJobInput = {
@@ -62038,6 +70321,7 @@ export namespace Prisma {
     userId: string
     staffCost?: number
     assignedAt?: Date | string
+    transactions?: TransactionUncheckedCreateNestedManyWithoutAssignmentInput
   }
 
   export type JobAssignmentCreateOrConnectWithoutJobInput = {
@@ -62090,6 +70374,9 @@ export namespace Prisma {
     role?: RoleCreateNestedOneWithoutUsersInput
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutJobsCreatedInput = {
@@ -62132,6 +70419,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutJobsCreatedInput = {
@@ -62143,22 +70433,38 @@ export namespace Prisma {
     id?: string
     displayName: string
     hexColor?: string | null
+    type?: $Enums.PaymentChannelType
+    accountDetails?: string | null
+    feeRate?: number | null
+    fixedFee?: number | null
+    totalVolume?: number | null
+    totalFees?: number | null
     logoUrl?: string | null
     ownerName?: string | null
     cardNumber?: string | null
+    isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    transactions?: TransactionCreateNestedManyWithoutPaymentChannelInput
   }
 
   export type PaymentChannelUncheckedCreateWithoutJobsInput = {
     id?: string
     displayName: string
     hexColor?: string | null
+    type?: $Enums.PaymentChannelType
+    accountDetails?: string | null
+    feeRate?: number | null
+    fixedFee?: number | null
+    totalVolume?: number | null
+    totalFees?: number | null
     logoUrl?: string | null
     ownerName?: string | null
     cardNumber?: string | null
+    isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    transactions?: TransactionUncheckedCreateNestedManyWithoutPaymentChannelInput
   }
 
   export type PaymentChannelCreateOrConnectWithoutJobsInput = {
@@ -62420,6 +70726,50 @@ export namespace Prisma {
     create: XOR<JobFolderTemplateCreateWithoutJobsInput, JobFolderTemplateUncheckedCreateWithoutJobsInput>
   }
 
+  export type TransactionCreateWithoutJobInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    client?: ClientCreateNestedOneWithoutTransactionsInput
+    assignment?: JobAssignmentCreateNestedOneWithoutTransactionsInput
+    paymentChannel?: PaymentChannelCreateNestedOneWithoutTransactionsInput
+    createdBy: UserCreateNestedOneWithoutTransactionsInput
+  }
+
+  export type TransactionUncheckedCreateWithoutJobInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    clientId?: string | null
+    assignmentId?: string | null
+    paymentChannelId?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransactionCreateOrConnectWithoutJobInput = {
+    where: TransactionWhereUniqueInput
+    create: XOR<TransactionCreateWithoutJobInput, TransactionUncheckedCreateWithoutJobInput>
+  }
+
+  export type TransactionCreateManyJobInputEnvelope = {
+    data: TransactionCreateManyJobInput | TransactionCreateManyJobInput[]
+    skipDuplicates?: boolean
+  }
+
   export type JobTypeUpsertWithoutJobsInput = {
     update: XOR<JobTypeUpdateWithoutJobsInput, JobTypeUncheckedUpdateWithoutJobsInput>
     create: XOR<JobTypeCreateWithoutJobsInput, JobTypeUncheckedCreateWithoutJobsInput>
@@ -62479,6 +70829,7 @@ export namespace Prisma {
     paymentTerms?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transactions?: TransactionUpdateManyWithoutClientNestedInput
   }
 
   export type ClientUncheckedUpdateWithoutJobsInput = {
@@ -62498,6 +70849,40 @@ export namespace Prisma {
     paymentTerms?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transactions?: TransactionUncheckedUpdateManyWithoutClientNestedInput
+  }
+
+  export type SharepointItemUpsertWithoutJobsInput = {
+    update: XOR<SharepointItemUpdateWithoutJobsInput, SharepointItemUncheckedUpdateWithoutJobsInput>
+    create: XOR<SharepointItemCreateWithoutJobsInput, SharepointItemUncheckedCreateWithoutJobsInput>
+    where?: SharepointItemWhereInput
+  }
+
+  export type SharepointItemUpdateToOneWithWhereWithoutJobsInput = {
+    where?: SharepointItemWhereInput
+    data: XOR<SharepointItemUpdateWithoutJobsInput, SharepointItemUncheckedUpdateWithoutJobsInput>
+  }
+
+  export type SharepointItemUpdateWithoutJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    itemId?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    isFolder?: BoolFieldUpdateOperationsInput | boolean
+    size?: NullableIntFieldUpdateOperationsInput | number | null
+    webUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdDateTime?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type SharepointItemUncheckedUpdateWithoutJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    itemId?: StringFieldUpdateOperationsInput | string
+    displayName?: NullableStringFieldUpdateOperationsInput | string | null
+    isFolder?: BoolFieldUpdateOperationsInput | boolean
+    size?: NullableIntFieldUpdateOperationsInput | number | null
+    webUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdDateTime?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type JobAssignmentUpsertWithWhereUniqueWithoutJobInput = {
@@ -62567,6 +70952,9 @@ export namespace Prisma {
     role?: RoleUpdateOneWithoutUsersNestedInput
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJobsCreatedInput = {
@@ -62609,6 +70997,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type PaymentChannelUpsertWithoutJobsInput = {
@@ -62626,22 +71017,38 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     displayName?: StringFieldUpdateOperationsInput | string
     hexColor?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumPaymentChannelTypeFieldUpdateOperationsInput | $Enums.PaymentChannelType
+    accountDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    feeRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    fixedFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalVolume?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalFees?: NullableFloatFieldUpdateOperationsInput | number | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     ownerName?: NullableStringFieldUpdateOperationsInput | string | null
     cardNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transactions?: TransactionUpdateManyWithoutPaymentChannelNestedInput
   }
 
   export type PaymentChannelUncheckedUpdateWithoutJobsInput = {
     id?: StringFieldUpdateOperationsInput | string
     displayName?: StringFieldUpdateOperationsInput | string
     hexColor?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumPaymentChannelTypeFieldUpdateOperationsInput | $Enums.PaymentChannelType
+    accountDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    feeRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    fixedFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalVolume?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalFees?: NullableFloatFieldUpdateOperationsInput | number | null
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     ownerName?: NullableStringFieldUpdateOperationsInput | string | null
     cardNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transactions?: TransactionUncheckedUpdateManyWithoutPaymentChannelNestedInput
   }
 
   export type JobStatusUpsertWithoutJobsInput = {
@@ -62818,28 +71225,44 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type JobCreateWithoutAssignmentsInput = {
+  export type TransactionUpsertWithWhereUniqueWithoutJobInput = {
+    where: TransactionWhereUniqueInput
+    update: XOR<TransactionUpdateWithoutJobInput, TransactionUncheckedUpdateWithoutJobInput>
+    create: XOR<TransactionCreateWithoutJobInput, TransactionUncheckedCreateWithoutJobInput>
+  }
+
+  export type TransactionUpdateWithWhereUniqueWithoutJobInput = {
+    where: TransactionWhereUniqueInput
+    data: XOR<TransactionUpdateWithoutJobInput, TransactionUncheckedUpdateWithoutJobInput>
+  }
+
+  export type TransactionUpdateManyWithWhereWithoutJobInput = {
+    where: TransactionScalarWhereInput
+    data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyWithoutJobInput>
+  }
+
+  export type JobCreateWithoutSharepointFolderInput = {
     id?: string
     no: string
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     type: JobTypeCreateNestedOneWithoutJobsInput
     client?: ClientCreateNestedOneWithoutJobsInput
+    assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
     status: JobStatusCreateNestedOneWithoutJobsInput
@@ -62850,16 +71273,16 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
     folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+    transactions?: TransactionCreateNestedManyWithoutJobInput
   }
 
-  export type JobUncheckedCreateWithoutAssignmentsInput = {
+  export type JobUncheckedCreateWithoutSharepointFolderInput = {
     id?: string
     no: string
     typeId: string
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
     totalStaffCost?: number
@@ -62869,11 +71292,108 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    folderTemplateId?: string | null
+    assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
+    activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
+    files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
+    comments?: JobCommentUncheckedCreateNestedManyWithoutJobInput
+    statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
+    pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
+    jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutJobInput
+  }
+
+  export type JobCreateOrConnectWithoutSharepointFolderInput = {
+    where: JobWhereUniqueInput
+    create: XOR<JobCreateWithoutSharepointFolderInput, JobUncheckedCreateWithoutSharepointFolderInput>
+  }
+
+  export type JobCreateManySharepointFolderInputEnvelope = {
+    data: JobCreateManySharepointFolderInput | JobCreateManySharepointFolderInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type JobUpsertWithWhereUniqueWithoutSharepointFolderInput = {
+    where: JobWhereUniqueInput
+    update: XOR<JobUpdateWithoutSharepointFolderInput, JobUncheckedUpdateWithoutSharepointFolderInput>
+    create: XOR<JobCreateWithoutSharepointFolderInput, JobUncheckedCreateWithoutSharepointFolderInput>
+  }
+
+  export type JobUpdateWithWhereUniqueWithoutSharepointFolderInput = {
+    where: JobWhereUniqueInput
+    data: XOR<JobUpdateWithoutSharepointFolderInput, JobUncheckedUpdateWithoutSharepointFolderInput>
+  }
+
+  export type JobUpdateManyWithWhereWithoutSharepointFolderInput = {
+    where: JobScalarWhereInput
+    data: XOR<JobUpdateManyMutationInput, JobUncheckedUpdateManyWithoutSharepointFolderInput>
+  }
+
+  export type JobCreateWithoutAssignmentsInput = {
+    id?: string
+    no: string
+    displayName: string
+    description?: string | null
+    attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    incomeCost: number
+    totalStaffCost?: number
+    startedAt?: Date | string
+    priority?: $Enums.JobPriority
+    isPublished?: boolean
+    dueAt: Date | string
+    completedAt?: Date | string | null
+    finishedAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    type: JobTypeCreateNestedOneWithoutJobsInput
+    client?: ClientCreateNestedOneWithoutJobsInput
+    sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
+    createdBy: UserCreateNestedOneWithoutJobsCreatedInput
+    paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
+    status: JobStatusCreateNestedOneWithoutJobsInput
+    activityLog?: JobActivityLogCreateNestedManyWithoutJobInput
+    files?: FileSystemCreateNestedManyWithoutJobInput
+    comments?: JobCommentCreateNestedManyWithoutJobInput
+    statusHistory?: JobStatusHistoryCreateNestedManyWithoutJobInput
+    pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
+    jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
+    folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+    transactions?: TransactionCreateNestedManyWithoutJobInput
+  }
+
+  export type JobUncheckedCreateWithoutAssignmentsInput = {
+    id?: string
+    no: string
+    typeId: string
+    displayName: string
+    description?: string | null
+    attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    clientId?: string | null
+    incomeCost: number
+    sharepointFolderId?: string | null
+    totalStaffCost?: number
+    createdById: string
+    paymentChannelId?: string | null
+    statusId: string
+    startedAt?: Date | string
+    priority?: $Enums.JobPriority
+    isPublished?: boolean
+    dueAt: Date | string
+    completedAt?: Date | string | null
+    finishedAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -62884,6 +71404,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutAssignmentsInput = {
@@ -62931,6 +71452,9 @@ export namespace Prisma {
     role?: RoleCreateNestedOneWithoutUsersInput
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutJobAssignmentsInput = {
@@ -62973,11 +71497,58 @@ export namespace Prisma {
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutJobAssignmentsInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutJobAssignmentsInput, UserUncheckedCreateWithoutJobAssignmentsInput>
+  }
+
+  export type TransactionCreateWithoutAssignmentInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutTransactionsInput
+    client?: ClientCreateNestedOneWithoutTransactionsInput
+    paymentChannel?: PaymentChannelCreateNestedOneWithoutTransactionsInput
+    createdBy: UserCreateNestedOneWithoutTransactionsInput
+  }
+
+  export type TransactionUncheckedCreateWithoutAssignmentInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    jobId: string
+    clientId?: string | null
+    paymentChannelId?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransactionCreateOrConnectWithoutAssignmentInput = {
+    where: TransactionWhereUniqueInput
+    create: XOR<TransactionCreateWithoutAssignmentInput, TransactionUncheckedCreateWithoutAssignmentInput>
+  }
+
+  export type TransactionCreateManyAssignmentInputEnvelope = {
+    data: TransactionCreateManyAssignmentInput | TransactionCreateManyAssignmentInput[]
+    skipDuplicates?: boolean
   }
 
   export type JobUpsertWithoutAssignmentsInput = {
@@ -62997,22 +71568,22 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     type?: JobTypeUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneWithoutJobsNestedInput
+    sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
     status?: JobStatusUpdateOneRequiredWithoutJobsNestedInput
@@ -63023,6 +71594,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
     folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+    transactions?: TransactionUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutAssignmentsInput = {
@@ -63032,9 +71604,9 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -63042,11 +71614,11 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -63057,6 +71629,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type UserUpsertWithoutJobAssignmentsInput = {
@@ -63110,6 +71683,9 @@ export namespace Prisma {
     role?: RoleUpdateOneWithoutUsersNestedInput
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJobAssignmentsInput = {
@@ -63152,6 +71728,25 @@ export namespace Prisma {
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type TransactionUpsertWithWhereUniqueWithoutAssignmentInput = {
+    where: TransactionWhereUniqueInput
+    update: XOR<TransactionUpdateWithoutAssignmentInput, TransactionUncheckedUpdateWithoutAssignmentInput>
+    create: XOR<TransactionCreateWithoutAssignmentInput, TransactionUncheckedCreateWithoutAssignmentInput>
+  }
+
+  export type TransactionUpdateWithWhereUniqueWithoutAssignmentInput = {
+    where: TransactionWhereUniqueInput
+    data: XOR<TransactionUpdateWithoutAssignmentInput, TransactionUncheckedUpdateWithoutAssignmentInput>
+  }
+
+  export type TransactionUpdateManyWithWhereWithoutAssignmentInput = {
+    where: TransactionScalarWhereInput
+    data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyWithoutAssignmentInput>
   }
 
   export type JobCreateWithoutFolderTemplateInput = {
@@ -63160,22 +71755,22 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     type: JobTypeCreateNestedOneWithoutJobsInput
     client?: ClientCreateNestedOneWithoutJobsInput
+    sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
@@ -63186,6 +71781,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
+    transactions?: TransactionCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutFolderTemplateInput = {
@@ -63195,9 +71791,9 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     paymentChannelId?: string | null
@@ -63205,11 +71801,11 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -63220,6 +71816,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutFolderTemplateInput = {
@@ -63254,21 +71851,21 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     type: JobTypeCreateNestedOneWithoutJobsInput
+    sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
@@ -63280,6 +71877,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
     folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+    transactions?: TransactionCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutClientInput = {
@@ -63289,8 +71887,8 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     paymentChannelId?: string | null
@@ -63298,11 +71896,11 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -63314,6 +71912,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutClientInput = {
@@ -63323,6 +71922,50 @@ export namespace Prisma {
 
   export type JobCreateManyClientInputEnvelope = {
     data: JobCreateManyClientInput | JobCreateManyClientInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TransactionCreateWithoutClientInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutTransactionsInput
+    assignment?: JobAssignmentCreateNestedOneWithoutTransactionsInput
+    paymentChannel?: PaymentChannelCreateNestedOneWithoutTransactionsInput
+    createdBy: UserCreateNestedOneWithoutTransactionsInput
+  }
+
+  export type TransactionUncheckedCreateWithoutClientInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    jobId: string
+    assignmentId?: string | null
+    paymentChannelId?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransactionCreateOrConnectWithoutClientInput = {
+    where: TransactionWhereUniqueInput
+    create: XOR<TransactionCreateWithoutClientInput, TransactionUncheckedCreateWithoutClientInput>
+  }
+
+  export type TransactionCreateManyClientInputEnvelope = {
+    data: TransactionCreateManyClientInput | TransactionCreateManyClientInput[]
     skipDuplicates?: boolean
   }
 
@@ -63340,6 +71983,22 @@ export namespace Prisma {
   export type JobUpdateManyWithWhereWithoutClientInput = {
     where: JobScalarWhereInput
     data: XOR<JobUpdateManyMutationInput, JobUncheckedUpdateManyWithoutClientInput>
+  }
+
+  export type TransactionUpsertWithWhereUniqueWithoutClientInput = {
+    where: TransactionWhereUniqueInput
+    update: XOR<TransactionUpdateWithoutClientInput, TransactionUncheckedUpdateWithoutClientInput>
+    create: XOR<TransactionCreateWithoutClientInput, TransactionUncheckedCreateWithoutClientInput>
+  }
+
+  export type TransactionUpdateWithWhereUniqueWithoutClientInput = {
+    where: TransactionWhereUniqueInput
+    data: XOR<TransactionUpdateWithoutClientInput, TransactionUncheckedUpdateWithoutClientInput>
+  }
+
+  export type TransactionUpdateManyWithWhereWithoutClientInput = {
+    where: TransactionScalarWhereInput
+    data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyWithoutClientInput>
   }
 
   export type UserCreateWithoutPinnedJobsInput = {
@@ -63382,6 +72041,9 @@ export namespace Prisma {
     role?: RoleCreateNestedOneWithoutUsersInput
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutPinnedJobsInput = {
@@ -63424,6 +72086,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutPinnedJobsInput = {
@@ -63437,22 +72102,22 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     type: JobTypeCreateNestedOneWithoutJobsInput
     client?: ClientCreateNestedOneWithoutJobsInput
+    sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
@@ -63463,6 +72128,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
     folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+    transactions?: TransactionCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutPinnedByUsersInput = {
@@ -63472,9 +72138,9 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     paymentChannelId?: string | null
@@ -63482,11 +72148,11 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -63497,6 +72163,7 @@ export namespace Prisma {
     comments?: JobCommentUncheckedCreateNestedManyWithoutJobInput
     statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutPinnedByUsersInput = {
@@ -63555,6 +72222,9 @@ export namespace Prisma {
     role?: RoleUpdateOneWithoutUsersNestedInput
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPinnedJobsInput = {
@@ -63597,6 +72267,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type JobUpsertWithoutPinnedByUsersInput = {
@@ -63616,22 +72289,22 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     type?: JobTypeUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneWithoutJobsNestedInput
+    sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
@@ -63642,6 +72315,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
     folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+    transactions?: TransactionUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutPinnedByUsersInput = {
@@ -63651,9 +72325,9 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -63661,11 +72335,11 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -63676,6 +72350,7 @@ export namespace Prisma {
     comments?: JobCommentUncheckedUpdateManyWithoutJobNestedInput
     statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobCreateWithoutPaymentChannelInput = {
@@ -63684,22 +72359,22 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     type: JobTypeCreateNestedOneWithoutJobsInput
     client?: ClientCreateNestedOneWithoutJobsInput
+    sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
     status: JobStatusCreateNestedOneWithoutJobsInput
@@ -63710,6 +72385,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
     folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+    transactions?: TransactionCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutPaymentChannelInput = {
@@ -63719,20 +72395,20 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     statusId: string
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -63744,6 +72420,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutPaymentChannelInput = {
@@ -63753,6 +72430,50 @@ export namespace Prisma {
 
   export type JobCreateManyPaymentChannelInputEnvelope = {
     data: JobCreateManyPaymentChannelInput | JobCreateManyPaymentChannelInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TransactionCreateWithoutPaymentChannelInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutTransactionsInput
+    client?: ClientCreateNestedOneWithoutTransactionsInput
+    assignment?: JobAssignmentCreateNestedOneWithoutTransactionsInput
+    createdBy: UserCreateNestedOneWithoutTransactionsInput
+  }
+
+  export type TransactionUncheckedCreateWithoutPaymentChannelInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    jobId: string
+    clientId?: string | null
+    assignmentId?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransactionCreateOrConnectWithoutPaymentChannelInput = {
+    where: TransactionWhereUniqueInput
+    create: XOR<TransactionCreateWithoutPaymentChannelInput, TransactionUncheckedCreateWithoutPaymentChannelInput>
+  }
+
+  export type TransactionCreateManyPaymentChannelInputEnvelope = {
+    data: TransactionCreateManyPaymentChannelInput | TransactionCreateManyPaymentChannelInput[]
     skipDuplicates?: boolean
   }
 
@@ -63772,27 +72493,43 @@ export namespace Prisma {
     data: XOR<JobUpdateManyMutationInput, JobUncheckedUpdateManyWithoutPaymentChannelInput>
   }
 
+  export type TransactionUpsertWithWhereUniqueWithoutPaymentChannelInput = {
+    where: TransactionWhereUniqueInput
+    update: XOR<TransactionUpdateWithoutPaymentChannelInput, TransactionUncheckedUpdateWithoutPaymentChannelInput>
+    create: XOR<TransactionCreateWithoutPaymentChannelInput, TransactionUncheckedCreateWithoutPaymentChannelInput>
+  }
+
+  export type TransactionUpdateWithWhereUniqueWithoutPaymentChannelInput = {
+    where: TransactionWhereUniqueInput
+    data: XOR<TransactionUpdateWithoutPaymentChannelInput, TransactionUncheckedUpdateWithoutPaymentChannelInput>
+  }
+
+  export type TransactionUpdateManyWithWhereWithoutPaymentChannelInput = {
+    where: TransactionScalarWhereInput
+    data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyWithoutPaymentChannelInput>
+  }
+
   export type JobCreateWithoutTypeInput = {
     id?: string
     no: string
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     client?: ClientCreateNestedOneWithoutJobsInput
+    sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
@@ -63804,6 +72541,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
     folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+    transactions?: TransactionCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutTypeInput = {
@@ -63812,9 +72550,9 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     paymentChannelId?: string | null
@@ -63822,11 +72560,11 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -63838,6 +72576,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutTypeInput = {
@@ -63872,22 +72611,22 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     type: JobTypeCreateNestedOneWithoutJobsInput
     client?: ClientCreateNestedOneWithoutJobsInput
+    sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
@@ -63898,6 +72637,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
     folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+    transactions?: TransactionCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutStatusInput = {
@@ -63907,20 +72647,20 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     paymentChannelId?: string | null
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -63932,6 +72672,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutStatusInput = {
@@ -64078,22 +72819,22 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     type: JobTypeCreateNestedOneWithoutJobsInput
     client?: ClientCreateNestedOneWithoutJobsInput
+    sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
@@ -64104,6 +72845,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+    transactions?: TransactionCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutJobDeliveriesInput = {
@@ -64113,9 +72855,9 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     paymentChannelId?: string | null
@@ -64123,11 +72865,11 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -64138,6 +72880,7 @@ export namespace Prisma {
     comments?: JobCommentUncheckedCreateNestedManyWithoutJobInput
     statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutJobDeliveriesInput = {
@@ -64185,6 +72928,9 @@ export namespace Prisma {
     role?: RoleCreateNestedOneWithoutUsersInput
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutJobDeliveriesInput = {
@@ -64227,6 +72973,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutJobDeliveriesInput = {
@@ -64279,22 +73028,22 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     type?: JobTypeUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneWithoutJobsNestedInput
+    sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
@@ -64305,6 +73054,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+    transactions?: TransactionUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutJobDeliveriesInput = {
@@ -64314,9 +73064,9 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -64324,11 +73074,11 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -64339,6 +73089,7 @@ export namespace Prisma {
     comments?: JobCommentUncheckedUpdateManyWithoutJobNestedInput
     statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type UserUpsertWithoutJobDeliveriesInput = {
@@ -64392,6 +73143,9 @@ export namespace Prisma {
     role?: RoleUpdateOneWithoutUsersNestedInput
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJobDeliveriesInput = {
@@ -64434,6 +73188,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type JobDeliverFileUpsertWithWhereUniqueWithoutJobDeliveryInput = {
@@ -64471,22 +73228,22 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     type: JobTypeCreateNestedOneWithoutJobsInput
     client?: ClientCreateNestedOneWithoutJobsInput
+    sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
@@ -64497,6 +73254,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
     folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+    transactions?: TransactionCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutStatusHistoryInput = {
@@ -64506,9 +73264,9 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     paymentChannelId?: string | null
@@ -64516,11 +73274,11 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -64531,6 +73289,7 @@ export namespace Prisma {
     comments?: JobCommentUncheckedCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutStatusHistoryInput = {
@@ -64617,6 +73376,9 @@ export namespace Prisma {
     role?: RoleCreateNestedOneWithoutUsersInput
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutStatusChangesInput = {
@@ -64659,6 +73421,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutStatusChangesInput = {
@@ -64683,22 +73448,22 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     type?: JobTypeUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneWithoutJobsNestedInput
+    sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
@@ -64709,6 +73474,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
     folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+    transactions?: TransactionUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutStatusHistoryInput = {
@@ -64718,9 +73484,9 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -64728,11 +73494,11 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -64743,6 +73509,7 @@ export namespace Prisma {
     comments?: JobCommentUncheckedUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobStatusUpsertWithoutHistoryInput = {
@@ -64841,6 +73608,9 @@ export namespace Prisma {
     role?: RoleUpdateOneWithoutUsersNestedInput
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutStatusChangesInput = {
@@ -64883,6 +73653,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type JobCreateWithoutActivityLogInput = {
@@ -64891,22 +73664,22 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
     totalStaffCost?: number
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     type: JobTypeCreateNestedOneWithoutJobsInput
     client?: ClientCreateNestedOneWithoutJobsInput
+    sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
@@ -64917,6 +73690,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
     folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+    transactions?: TransactionCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutActivityLogInput = {
@@ -64926,9 +73700,9 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     paymentChannelId?: string | null
@@ -64936,11 +73710,11 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -64951,6 +73725,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutActivityLogInput = {
@@ -64998,6 +73773,9 @@ export namespace Prisma {
     role?: RoleCreateNestedOneWithoutUsersInput
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutJobActivityLogInput = {
@@ -65040,6 +73818,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutJobActivityLogInput = {
@@ -65064,22 +73845,22 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     type?: JobTypeUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneWithoutJobsNestedInput
+    sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
@@ -65090,6 +73871,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
     folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+    transactions?: TransactionUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutActivityLogInput = {
@@ -65099,9 +73881,9 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -65109,11 +73891,11 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -65124,6 +73906,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type UserUpsertWithoutJobActivityLogInput = {
@@ -65177,6 +73960,9 @@ export namespace Prisma {
     role?: RoleUpdateOneWithoutUsersNestedInput
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJobActivityLogInput = {
@@ -65219,6 +74005,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateWithoutNotificationsInput = {
@@ -65261,6 +74050,9 @@ export namespace Prisma {
     role?: RoleCreateNestedOneWithoutUsersInput
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -65303,6 +74095,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -65350,6 +74145,9 @@ export namespace Prisma {
     role?: RoleCreateNestedOneWithoutUsersInput
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutSendedNotificationsInput = {
@@ -65392,6 +74190,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutSendedNotificationsInput = {
@@ -65450,6 +74251,9 @@ export namespace Prisma {
     role?: RoleUpdateOneWithoutUsersNestedInput
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -65492,6 +74296,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUpsertWithoutSendedNotificationsInput = {
@@ -65545,6 +74352,9 @@ export namespace Prisma {
     role?: RoleUpdateOneWithoutUsersNestedInput
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSendedNotificationsInput = {
@@ -65587,6 +74397,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type TopicCreateWithoutCommunityInput = {
@@ -65734,6 +74547,9 @@ export namespace Prisma {
     role?: RoleCreateNestedOneWithoutUsersInput
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCommunitiesInput = {
@@ -65776,6 +74592,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCommunitiesInput = {
@@ -65865,6 +74684,9 @@ export namespace Prisma {
     role?: RoleUpdateOneWithoutUsersNestedInput
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCommunitiesInput = {
@@ -65907,6 +74729,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type CommunityUpsertWithoutMembersInput = {
@@ -66106,6 +74931,9 @@ export namespace Prisma {
     role?: RoleCreateNestedOneWithoutUsersInput
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutPostsInput = {
@@ -66148,6 +74976,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutPostsInput = {
@@ -66258,6 +75089,9 @@ export namespace Prisma {
     role?: RoleUpdateOneWithoutUsersNestedInput
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPostsInput = {
@@ -66300,6 +75134,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type TopicUpsertWithoutPostsInput = {
@@ -66434,6 +75271,790 @@ export namespace Prisma {
     eventId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
+  export type UserCreateWithoutSystemSettingsInput = {
+    id?: string
+    code: string
+    email: string
+    personalEmail?: string | null
+    username: string
+    displayName: string
+    avatar: string
+    password: string
+    emailVerified?: boolean
+    phoneNumber?: string | null
+    isActive?: boolean
+    deletedAt?: Date | string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    jobTitle?: JobTitleCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    jobsCreated?: JobCreateNestedManyWithoutCreatedByInput
+    filesCreated?: FileSystemCreateNestedManyWithoutCreatedByInput
+    files?: FileSystemCreateNestedManyWithoutVisibleToUsersInput
+    sendedNotifications?: NotificationCreateNestedManyWithoutSenderInput
+    jobActivityLog?: JobActivityLogCreateNestedManyWithoutModifiedByInput
+    configs?: UserConfigCreateNestedManyWithoutUserInput
+    jobComments?: JobCommentCreateNestedManyWithoutUserInput
+    gallery?: GalleryCreateNestedManyWithoutUserInput
+    userDevices?: UserDevicesCreateNestedManyWithoutUserInput
+    statusChanges?: JobStatusHistoryCreateNestedManyWithoutChangedByInput
+    pinnedJobs?: PinnedJobCreateNestedManyWithoutUserInput
+    manager?: UserCreateNestedOneWithoutReportsInput
+    reports?: UserCreateNestedManyWithoutManagerInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    jobDeliveries?: JobDeliveryCreateNestedManyWithoutUserInput
+    communities?: CommunityMemberCreateNestedManyWithoutUserInput
+    posts?: PostCreateNestedManyWithoutAuthorInput
+    jobAssignments?: JobAssignmentCreateNestedManyWithoutUserInput
+    role?: RoleCreateNestedOneWithoutUsersInput
+    userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
+    securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserUncheckedCreateWithoutSystemSettingsInput = {
+    id?: string
+    code: string
+    email: string
+    personalEmail?: string | null
+    username: string
+    displayName: string
+    avatar: string
+    jobTitleId?: string | null
+    password: string
+    emailVerified?: boolean
+    departmentId?: string | null
+    phoneNumber?: string | null
+    isActive?: boolean
+    managerId?: string | null
+    roleId?: string | null
+    deletedAt?: Date | string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    jobsCreated?: JobUncheckedCreateNestedManyWithoutCreatedByInput
+    filesCreated?: FileSystemUncheckedCreateNestedManyWithoutCreatedByInput
+    files?: FileSystemUncheckedCreateNestedManyWithoutVisibleToUsersInput
+    sendedNotifications?: NotificationUncheckedCreateNestedManyWithoutSenderInput
+    jobActivityLog?: JobActivityLogUncheckedCreateNestedManyWithoutModifiedByInput
+    configs?: UserConfigUncheckedCreateNestedManyWithoutUserInput
+    jobComments?: JobCommentUncheckedCreateNestedManyWithoutUserInput
+    gallery?: GalleryUncheckedCreateNestedManyWithoutUserInput
+    userDevices?: UserDevicesUncheckedCreateNestedManyWithoutUserInput
+    statusChanges?: JobStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
+    pinnedJobs?: PinnedJobUncheckedCreateNestedManyWithoutUserInput
+    reports?: UserUncheckedCreateNestedManyWithoutManagerInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutUserInput
+    communities?: CommunityMemberUncheckedCreateNestedManyWithoutUserInput
+    posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
+    userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
+    securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserCreateOrConnectWithoutSystemSettingsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutSystemSettingsInput, UserUncheckedCreateWithoutSystemSettingsInput>
+  }
+
+  export type UserUpsertWithoutSystemSettingsInput = {
+    update: XOR<UserUpdateWithoutSystemSettingsInput, UserUncheckedUpdateWithoutSystemSettingsInput>
+    create: XOR<UserCreateWithoutSystemSettingsInput, UserUncheckedCreateWithoutSystemSettingsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutSystemSettingsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutSystemSettingsInput, UserUncheckedUpdateWithoutSystemSettingsInput>
+  }
+
+  export type UserUpdateWithoutSystemSettingsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    jobTitle?: JobTitleUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    jobsCreated?: JobUpdateManyWithoutCreatedByNestedInput
+    filesCreated?: FileSystemUpdateManyWithoutCreatedByNestedInput
+    files?: FileSystemUpdateManyWithoutVisibleToUsersNestedInput
+    sendedNotifications?: NotificationUpdateManyWithoutSenderNestedInput
+    jobActivityLog?: JobActivityLogUpdateManyWithoutModifiedByNestedInput
+    configs?: UserConfigUpdateManyWithoutUserNestedInput
+    jobComments?: JobCommentUpdateManyWithoutUserNestedInput
+    gallery?: GalleryUpdateManyWithoutUserNestedInput
+    userDevices?: UserDevicesUpdateManyWithoutUserNestedInput
+    statusChanges?: JobStatusHistoryUpdateManyWithoutChangedByNestedInput
+    pinnedJobs?: PinnedJobUpdateManyWithoutUserNestedInput
+    manager?: UserUpdateOneWithoutReportsNestedInput
+    reports?: UserUpdateManyWithoutManagerNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    jobDeliveries?: JobDeliveryUpdateManyWithoutUserNestedInput
+    communities?: CommunityMemberUpdateManyWithoutUserNestedInput
+    posts?: PostUpdateManyWithoutAuthorNestedInput
+    jobAssignments?: JobAssignmentUpdateManyWithoutUserNestedInput
+    role?: RoleUpdateOneWithoutUsersNestedInput
+    userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
+    securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutSystemSettingsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
+    jobTitleId?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    managerId?: NullableStringFieldUpdateOperationsInput | string | null
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    jobsCreated?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
+    filesCreated?: FileSystemUncheckedUpdateManyWithoutCreatedByNestedInput
+    files?: FileSystemUncheckedUpdateManyWithoutVisibleToUsersNestedInput
+    sendedNotifications?: NotificationUncheckedUpdateManyWithoutSenderNestedInput
+    jobActivityLog?: JobActivityLogUncheckedUpdateManyWithoutModifiedByNestedInput
+    configs?: UserConfigUncheckedUpdateManyWithoutUserNestedInput
+    jobComments?: JobCommentUncheckedUpdateManyWithoutUserNestedInput
+    gallery?: GalleryUncheckedUpdateManyWithoutUserNestedInput
+    userDevices?: UserDevicesUncheckedUpdateManyWithoutUserNestedInput
+    statusChanges?: JobStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+    pinnedJobs?: PinnedJobUncheckedUpdateManyWithoutUserNestedInput
+    reports?: UserUncheckedUpdateManyWithoutManagerNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutUserNestedInput
+    communities?: CommunityMemberUncheckedUpdateManyWithoutUserNestedInput
+    posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
+    userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
+    securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type JobCreateWithoutTransactionsInput = {
+    id?: string
+    no: string
+    displayName: string
+    description?: string | null
+    attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    incomeCost: number
+    totalStaffCost?: number
+    startedAt?: Date | string
+    priority?: $Enums.JobPriority
+    isPublished?: boolean
+    dueAt: Date | string
+    completedAt?: Date | string | null
+    finishedAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    type: JobTypeCreateNestedOneWithoutJobsInput
+    client?: ClientCreateNestedOneWithoutJobsInput
+    sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
+    assignments?: JobAssignmentCreateNestedManyWithoutJobInput
+    createdBy: UserCreateNestedOneWithoutJobsCreatedInput
+    paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
+    status: JobStatusCreateNestedOneWithoutJobsInput
+    activityLog?: JobActivityLogCreateNestedManyWithoutJobInput
+    files?: FileSystemCreateNestedManyWithoutJobInput
+    comments?: JobCommentCreateNestedManyWithoutJobInput
+    statusHistory?: JobStatusHistoryCreateNestedManyWithoutJobInput
+    pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
+    jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
+    folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+  }
+
+  export type JobUncheckedCreateWithoutTransactionsInput = {
+    id?: string
+    no: string
+    typeId: string
+    displayName: string
+    description?: string | null
+    attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    clientId?: string | null
+    incomeCost: number
+    sharepointFolderId?: string | null
+    totalStaffCost?: number
+    createdById: string
+    paymentChannelId?: string | null
+    statusId: string
+    startedAt?: Date | string
+    priority?: $Enums.JobPriority
+    isPublished?: boolean
+    dueAt: Date | string
+    completedAt?: Date | string | null
+    finishedAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    folderTemplateId?: string | null
+    assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
+    activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
+    files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
+    comments?: JobCommentUncheckedCreateNestedManyWithoutJobInput
+    statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
+    pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
+    jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+  }
+
+  export type JobCreateOrConnectWithoutTransactionsInput = {
+    where: JobWhereUniqueInput
+    create: XOR<JobCreateWithoutTransactionsInput, JobUncheckedCreateWithoutTransactionsInput>
+  }
+
+  export type ClientCreateWithoutTransactionsInput = {
+    id?: string
+    name: string
+    code: string
+    type?: $Enums.ClientType
+    region?: string | null
+    country?: string | null
+    address?: string | null
+    timezone?: string | null
+    email?: string | null
+    phoneNumber?: string | null
+    billingEmail?: string | null
+    taxId?: string | null
+    currency?: string
+    paymentTerms?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    jobs?: JobCreateNestedManyWithoutClientInput
+  }
+
+  export type ClientUncheckedCreateWithoutTransactionsInput = {
+    id?: string
+    name: string
+    code: string
+    type?: $Enums.ClientType
+    region?: string | null
+    country?: string | null
+    address?: string | null
+    timezone?: string | null
+    email?: string | null
+    phoneNumber?: string | null
+    billingEmail?: string | null
+    taxId?: string | null
+    currency?: string
+    paymentTerms?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    jobs?: JobUncheckedCreateNestedManyWithoutClientInput
+  }
+
+  export type ClientCreateOrConnectWithoutTransactionsInput = {
+    where: ClientWhereUniqueInput
+    create: XOR<ClientCreateWithoutTransactionsInput, ClientUncheckedCreateWithoutTransactionsInput>
+  }
+
+  export type JobAssignmentCreateWithoutTransactionsInput = {
+    id?: string
+    staffCost?: number
+    assignedAt?: Date | string
+    job: JobCreateNestedOneWithoutAssignmentsInput
+    user: UserCreateNestedOneWithoutJobAssignmentsInput
+  }
+
+  export type JobAssignmentUncheckedCreateWithoutTransactionsInput = {
+    id?: string
+    jobId: string
+    userId: string
+    staffCost?: number
+    assignedAt?: Date | string
+  }
+
+  export type JobAssignmentCreateOrConnectWithoutTransactionsInput = {
+    where: JobAssignmentWhereUniqueInput
+    create: XOR<JobAssignmentCreateWithoutTransactionsInput, JobAssignmentUncheckedCreateWithoutTransactionsInput>
+  }
+
+  export type PaymentChannelCreateWithoutTransactionsInput = {
+    id?: string
+    displayName: string
+    hexColor?: string | null
+    type?: $Enums.PaymentChannelType
+    accountDetails?: string | null
+    feeRate?: number | null
+    fixedFee?: number | null
+    totalVolume?: number | null
+    totalFees?: number | null
+    logoUrl?: string | null
+    ownerName?: string | null
+    cardNumber?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    jobs?: JobCreateNestedManyWithoutPaymentChannelInput
+  }
+
+  export type PaymentChannelUncheckedCreateWithoutTransactionsInput = {
+    id?: string
+    displayName: string
+    hexColor?: string | null
+    type?: $Enums.PaymentChannelType
+    accountDetails?: string | null
+    feeRate?: number | null
+    fixedFee?: number | null
+    totalVolume?: number | null
+    totalFees?: number | null
+    logoUrl?: string | null
+    ownerName?: string | null
+    cardNumber?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    jobs?: JobUncheckedCreateNestedManyWithoutPaymentChannelInput
+  }
+
+  export type PaymentChannelCreateOrConnectWithoutTransactionsInput = {
+    where: PaymentChannelWhereUniqueInput
+    create: XOR<PaymentChannelCreateWithoutTransactionsInput, PaymentChannelUncheckedCreateWithoutTransactionsInput>
+  }
+
+  export type UserCreateWithoutTransactionsInput = {
+    id?: string
+    code: string
+    email: string
+    personalEmail?: string | null
+    username: string
+    displayName: string
+    avatar: string
+    password: string
+    emailVerified?: boolean
+    phoneNumber?: string | null
+    isActive?: boolean
+    deletedAt?: Date | string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    jobTitle?: JobTitleCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    jobsCreated?: JobCreateNestedManyWithoutCreatedByInput
+    filesCreated?: FileSystemCreateNestedManyWithoutCreatedByInput
+    files?: FileSystemCreateNestedManyWithoutVisibleToUsersInput
+    sendedNotifications?: NotificationCreateNestedManyWithoutSenderInput
+    jobActivityLog?: JobActivityLogCreateNestedManyWithoutModifiedByInput
+    configs?: UserConfigCreateNestedManyWithoutUserInput
+    jobComments?: JobCommentCreateNestedManyWithoutUserInput
+    gallery?: GalleryCreateNestedManyWithoutUserInput
+    userDevices?: UserDevicesCreateNestedManyWithoutUserInput
+    statusChanges?: JobStatusHistoryCreateNestedManyWithoutChangedByInput
+    pinnedJobs?: PinnedJobCreateNestedManyWithoutUserInput
+    manager?: UserCreateNestedOneWithoutReportsInput
+    reports?: UserCreateNestedManyWithoutManagerInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    jobDeliveries?: JobDeliveryCreateNestedManyWithoutUserInput
+    communities?: CommunityMemberCreateNestedManyWithoutUserInput
+    posts?: PostCreateNestedManyWithoutAuthorInput
+    jobAssignments?: JobAssignmentCreateNestedManyWithoutUserInput
+    role?: RoleCreateNestedOneWithoutUsersInput
+    userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
+    securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+  }
+
+  export type UserUncheckedCreateWithoutTransactionsInput = {
+    id?: string
+    code: string
+    email: string
+    personalEmail?: string | null
+    username: string
+    displayName: string
+    avatar: string
+    jobTitleId?: string | null
+    password: string
+    emailVerified?: boolean
+    departmentId?: string | null
+    phoneNumber?: string | null
+    isActive?: boolean
+    managerId?: string | null
+    roleId?: string | null
+    deletedAt?: Date | string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    jobsCreated?: JobUncheckedCreateNestedManyWithoutCreatedByInput
+    filesCreated?: FileSystemUncheckedCreateNestedManyWithoutCreatedByInput
+    files?: FileSystemUncheckedCreateNestedManyWithoutVisibleToUsersInput
+    sendedNotifications?: NotificationUncheckedCreateNestedManyWithoutSenderInput
+    jobActivityLog?: JobActivityLogUncheckedCreateNestedManyWithoutModifiedByInput
+    configs?: UserConfigUncheckedCreateNestedManyWithoutUserInput
+    jobComments?: JobCommentUncheckedCreateNestedManyWithoutUserInput
+    gallery?: GalleryUncheckedCreateNestedManyWithoutUserInput
+    userDevices?: UserDevicesUncheckedCreateNestedManyWithoutUserInput
+    statusChanges?: JobStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
+    pinnedJobs?: PinnedJobUncheckedCreateNestedManyWithoutUserInput
+    reports?: UserUncheckedCreateNestedManyWithoutManagerInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutUserInput
+    communities?: CommunityMemberUncheckedCreateNestedManyWithoutUserInput
+    posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
+    userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
+    securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+  }
+
+  export type UserCreateOrConnectWithoutTransactionsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutTransactionsInput, UserUncheckedCreateWithoutTransactionsInput>
+  }
+
+  export type JobUpsertWithoutTransactionsInput = {
+    update: XOR<JobUpdateWithoutTransactionsInput, JobUncheckedUpdateWithoutTransactionsInput>
+    create: XOR<JobCreateWithoutTransactionsInput, JobUncheckedCreateWithoutTransactionsInput>
+    where?: JobWhereInput
+  }
+
+  export type JobUpdateToOneWithWhereWithoutTransactionsInput = {
+    where?: JobWhereInput
+    data: XOR<JobUpdateWithoutTransactionsInput, JobUncheckedUpdateWithoutTransactionsInput>
+  }
+
+  export type JobUpdateWithoutTransactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    no?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    incomeCost?: FloatFieldUpdateOperationsInput | number
+    totalStaffCost?: FloatFieldUpdateOperationsInput | number
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
+    isPublished?: BoolFieldUpdateOperationsInput | boolean
+    dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    type?: JobTypeUpdateOneRequiredWithoutJobsNestedInput
+    client?: ClientUpdateOneWithoutJobsNestedInput
+    sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
+    assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
+    paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
+    status?: JobStatusUpdateOneRequiredWithoutJobsNestedInput
+    activityLog?: JobActivityLogUpdateManyWithoutJobNestedInput
+    files?: FileSystemUpdateManyWithoutJobNestedInput
+    comments?: JobCommentUpdateManyWithoutJobNestedInput
+    statusHistory?: JobStatusHistoryUpdateManyWithoutJobNestedInput
+    pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
+    jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
+    folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+  }
+
+  export type JobUncheckedUpdateWithoutTransactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    no?: StringFieldUpdateOperationsInput | string
+    typeId?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalStaffCost?: FloatFieldUpdateOperationsInput | number
+    createdById?: StringFieldUpdateOperationsInput | string
+    paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
+    statusId?: StringFieldUpdateOperationsInput | string
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
+    isPublished?: BoolFieldUpdateOperationsInput | boolean
+    dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
+    activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
+    files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
+    comments?: JobCommentUncheckedUpdateManyWithoutJobNestedInput
+    statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
+    pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
+    jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+  }
+
+  export type ClientUpsertWithoutTransactionsInput = {
+    update: XOR<ClientUpdateWithoutTransactionsInput, ClientUncheckedUpdateWithoutTransactionsInput>
+    create: XOR<ClientCreateWithoutTransactionsInput, ClientUncheckedCreateWithoutTransactionsInput>
+    where?: ClientWhereInput
+  }
+
+  export type ClientUpdateToOneWithWhereWithoutTransactionsInput = {
+    where?: ClientWhereInput
+    data: XOR<ClientUpdateWithoutTransactionsInput, ClientUncheckedUpdateWithoutTransactionsInput>
+  }
+
+  export type ClientUpdateWithoutTransactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    type?: EnumClientTypeFieldUpdateOperationsInput | $Enums.ClientType
+    region?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    timezone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    billingEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    taxId?: NullableStringFieldUpdateOperationsInput | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentTerms?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    jobs?: JobUpdateManyWithoutClientNestedInput
+  }
+
+  export type ClientUncheckedUpdateWithoutTransactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    type?: EnumClientTypeFieldUpdateOperationsInput | $Enums.ClientType
+    region?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    timezone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    billingEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    taxId?: NullableStringFieldUpdateOperationsInput | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentTerms?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    jobs?: JobUncheckedUpdateManyWithoutClientNestedInput
+  }
+
+  export type JobAssignmentUpsertWithoutTransactionsInput = {
+    update: XOR<JobAssignmentUpdateWithoutTransactionsInput, JobAssignmentUncheckedUpdateWithoutTransactionsInput>
+    create: XOR<JobAssignmentCreateWithoutTransactionsInput, JobAssignmentUncheckedCreateWithoutTransactionsInput>
+    where?: JobAssignmentWhereInput
+  }
+
+  export type JobAssignmentUpdateToOneWithWhereWithoutTransactionsInput = {
+    where?: JobAssignmentWhereInput
+    data: XOR<JobAssignmentUpdateWithoutTransactionsInput, JobAssignmentUncheckedUpdateWithoutTransactionsInput>
+  }
+
+  export type JobAssignmentUpdateWithoutTransactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    staffCost?: FloatFieldUpdateOperationsInput | number
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutAssignmentsNestedInput
+    user?: UserUpdateOneRequiredWithoutJobAssignmentsNestedInput
+  }
+
+  export type JobAssignmentUncheckedUpdateWithoutTransactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    staffCost?: FloatFieldUpdateOperationsInput | number
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentChannelUpsertWithoutTransactionsInput = {
+    update: XOR<PaymentChannelUpdateWithoutTransactionsInput, PaymentChannelUncheckedUpdateWithoutTransactionsInput>
+    create: XOR<PaymentChannelCreateWithoutTransactionsInput, PaymentChannelUncheckedCreateWithoutTransactionsInput>
+    where?: PaymentChannelWhereInput
+  }
+
+  export type PaymentChannelUpdateToOneWithWhereWithoutTransactionsInput = {
+    where?: PaymentChannelWhereInput
+    data: XOR<PaymentChannelUpdateWithoutTransactionsInput, PaymentChannelUncheckedUpdateWithoutTransactionsInput>
+  }
+
+  export type PaymentChannelUpdateWithoutTransactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    hexColor?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumPaymentChannelTypeFieldUpdateOperationsInput | $Enums.PaymentChannelType
+    accountDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    feeRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    fixedFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalVolume?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalFees?: NullableFloatFieldUpdateOperationsInput | number | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerName?: NullableStringFieldUpdateOperationsInput | string | null
+    cardNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    jobs?: JobUpdateManyWithoutPaymentChannelNestedInput
+  }
+
+  export type PaymentChannelUncheckedUpdateWithoutTransactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    hexColor?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumPaymentChannelTypeFieldUpdateOperationsInput | $Enums.PaymentChannelType
+    accountDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    feeRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    fixedFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalVolume?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalFees?: NullableFloatFieldUpdateOperationsInput | number | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerName?: NullableStringFieldUpdateOperationsInput | string | null
+    cardNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    jobs?: JobUncheckedUpdateManyWithoutPaymentChannelNestedInput
+  }
+
+  export type UserUpsertWithoutTransactionsInput = {
+    update: XOR<UserUpdateWithoutTransactionsInput, UserUncheckedUpdateWithoutTransactionsInput>
+    create: XOR<UserCreateWithoutTransactionsInput, UserUncheckedCreateWithoutTransactionsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutTransactionsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutTransactionsInput, UserUncheckedUpdateWithoutTransactionsInput>
+  }
+
+  export type UserUpdateWithoutTransactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    jobTitle?: JobTitleUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    jobsCreated?: JobUpdateManyWithoutCreatedByNestedInput
+    filesCreated?: FileSystemUpdateManyWithoutCreatedByNestedInput
+    files?: FileSystemUpdateManyWithoutVisibleToUsersNestedInput
+    sendedNotifications?: NotificationUpdateManyWithoutSenderNestedInput
+    jobActivityLog?: JobActivityLogUpdateManyWithoutModifiedByNestedInput
+    configs?: UserConfigUpdateManyWithoutUserNestedInput
+    jobComments?: JobCommentUpdateManyWithoutUserNestedInput
+    gallery?: GalleryUpdateManyWithoutUserNestedInput
+    userDevices?: UserDevicesUpdateManyWithoutUserNestedInput
+    statusChanges?: JobStatusHistoryUpdateManyWithoutChangedByNestedInput
+    pinnedJobs?: PinnedJobUpdateManyWithoutUserNestedInput
+    manager?: UserUpdateOneWithoutReportsNestedInput
+    reports?: UserUpdateManyWithoutManagerNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    jobDeliveries?: JobDeliveryUpdateManyWithoutUserNestedInput
+    communities?: CommunityMemberUpdateManyWithoutUserNestedInput
+    posts?: PostUpdateManyWithoutAuthorNestedInput
+    jobAssignments?: JobAssignmentUpdateManyWithoutUserNestedInput
+    role?: RoleUpdateOneWithoutUsersNestedInput
+    userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
+    securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutTransactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
+    jobTitleId?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    managerId?: NullableStringFieldUpdateOperationsInput | string | null
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    jobsCreated?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
+    filesCreated?: FileSystemUncheckedUpdateManyWithoutCreatedByNestedInput
+    files?: FileSystemUncheckedUpdateManyWithoutVisibleToUsersNestedInput
+    sendedNotifications?: NotificationUncheckedUpdateManyWithoutSenderNestedInput
+    jobActivityLog?: JobActivityLogUncheckedUpdateManyWithoutModifiedByNestedInput
+    configs?: UserConfigUncheckedUpdateManyWithoutUserNestedInput
+    jobComments?: JobCommentUncheckedUpdateManyWithoutUserNestedInput
+    gallery?: GalleryUncheckedUpdateManyWithoutUserNestedInput
+    userDevices?: UserDevicesUncheckedUpdateManyWithoutUserNestedInput
+    statusChanges?: JobStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+    pinnedJobs?: PinnedJobUncheckedUpdateManyWithoutUserNestedInput
+    reports?: UserUncheckedUpdateManyWithoutManagerNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutUserNestedInput
+    communities?: CommunityMemberUncheckedUpdateManyWithoutUserNestedInput
+    posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
+    userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
+    securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+  }
+
   export type NotificationCreateManyUserInput = {
     id?: string
     title?: string | null
@@ -66454,20 +76075,20 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     paymentChannelId?: string | null
     statusId: string
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -66661,6 +76282,43 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type SystemAuditLogCreateManyActorInput = {
+    id?: string
+    action: string
+    module: $Enums.SystemModule
+    targetId?: string | null
+    targetDisplay: string
+    oldValues?: NullableJsonNullValueInput | InputJsonValue
+    newValues?: NullableJsonNullValueInput | InputJsonValue
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: string | null
+    userAgent?: string | null
+    createdAt?: Date | string
+  }
+
+  export type SystemSettingCreateManyModifierByInput = {
+    key: string
+    value: string
+    updatedAt?: Date | string
+  }
+
+  export type TransactionCreateManyCreatedByInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    jobId: string
+    clientId?: string | null
+    assignmentId?: string | null
+    paymentChannelId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type NotificationUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
@@ -66706,22 +76364,22 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     type?: JobTypeUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneWithoutJobsNestedInput
+    sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
     status?: JobStatusUpdateOneRequiredWithoutJobsNestedInput
@@ -66732,6 +76390,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
     folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+    transactions?: TransactionUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutCreatedByInput = {
@@ -66741,20 +76400,20 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: StringFieldUpdateOperationsInput | string
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -66766,6 +76425,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateManyWithoutCreatedByInput = {
@@ -66775,20 +76435,20 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
     statusId?: StringFieldUpdateOperationsInput | string
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -67151,6 +76811,9 @@ export namespace Prisma {
     role?: RoleUpdateOneWithoutUsersNestedInput
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutManagerInput = {
@@ -67193,6 +76856,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutManagerInput = {
@@ -67381,6 +77047,7 @@ export namespace Prisma {
     staffCost?: FloatFieldUpdateOperationsInput | number
     assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     job?: JobUpdateOneRequiredWithoutAssignmentsNestedInput
+    transactions?: TransactionUpdateManyWithoutAssignmentNestedInput
   }
 
   export type JobAssignmentUncheckedUpdateWithoutUserInput = {
@@ -67388,6 +77055,7 @@ export namespace Prisma {
     jobId?: StringFieldUpdateOperationsInput | string
     staffCost?: FloatFieldUpdateOperationsInput | number
     assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transactions?: TransactionUncheckedUpdateManyWithoutAssignmentNestedInput
   }
 
   export type JobAssignmentUncheckedUpdateManyWithoutUserInput = {
@@ -67446,6 +77114,117 @@ export namespace Prisma {
     ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     userAgent?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SystemAuditLogUpdateWithoutActorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    module?: EnumSystemModuleFieldUpdateOperationsInput | $Enums.SystemModule
+    targetId?: NullableStringFieldUpdateOperationsInput | string | null
+    targetDisplay?: StringFieldUpdateOperationsInput | string
+    oldValues?: NullableJsonNullValueInput | InputJsonValue
+    newValues?: NullableJsonNullValueInput | InputJsonValue
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SystemAuditLogUncheckedUpdateWithoutActorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    module?: EnumSystemModuleFieldUpdateOperationsInput | $Enums.SystemModule
+    targetId?: NullableStringFieldUpdateOperationsInput | string | null
+    targetDisplay?: StringFieldUpdateOperationsInput | string
+    oldValues?: NullableJsonNullValueInput | InputJsonValue
+    newValues?: NullableJsonNullValueInput | InputJsonValue
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SystemAuditLogUncheckedUpdateManyWithoutActorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    module?: EnumSystemModuleFieldUpdateOperationsInput | $Enums.SystemModule
+    targetId?: NullableStringFieldUpdateOperationsInput | string | null
+    targetDisplay?: StringFieldUpdateOperationsInput | string
+    oldValues?: NullableJsonNullValueInput | InputJsonValue
+    newValues?: NullableJsonNullValueInput | InputJsonValue
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SystemSettingUpdateWithoutModifierByInput = {
+    key?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SystemSettingUncheckedUpdateWithoutModifierByInput = {
+    key?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SystemSettingUncheckedUpdateManyWithoutModifierByInput = {
+    key?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransactionUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutTransactionsNestedInput
+    client?: ClientUpdateOneWithoutTransactionsNestedInput
+    assignment?: JobAssignmentUpdateOneWithoutTransactionsNestedInput
+    paymentChannel?: PaymentChannelUpdateOneWithoutTransactionsNestedInput
+  }
+
+  export type TransactionUncheckedUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    jobId?: StringFieldUpdateOperationsInput | string
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransactionUncheckedUpdateManyWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    jobId?: StringFieldUpdateOperationsInput | string
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserCreateManyRoleInput = {
@@ -67544,6 +77323,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUpdateManyWithoutUserNestedInput
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRoleInput = {
@@ -67586,6 +77368,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutRoleInput = {
@@ -67807,6 +77592,9 @@ export namespace Prisma {
     role?: RoleUpdateOneWithoutUsersNestedInput
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJobTitleInput = {
@@ -67849,6 +77637,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutJobTitleInput = {
@@ -67933,6 +77724,9 @@ export namespace Prisma {
     role?: RoleUpdateOneWithoutUsersNestedInput
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDepartmentInput = {
@@ -67975,6 +77769,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutDepartmentInput = {
@@ -68038,6 +77835,9 @@ export namespace Prisma {
     role?: RoleUpdateOneWithoutUsersNestedInput
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFilesInput = {
@@ -68080,6 +77880,9 @@ export namespace Prisma {
     jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutFilesInput = {
@@ -68172,11 +77975,29 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type TransactionCreateManyJobInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    clientId?: string | null
+    assignmentId?: string | null
+    paymentChannelId?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type JobAssignmentUpdateWithoutJobInput = {
     id?: StringFieldUpdateOperationsInput | string
     staffCost?: FloatFieldUpdateOperationsInput | number
     assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutJobAssignmentsNestedInput
+    transactions?: TransactionUpdateManyWithoutAssignmentNestedInput
   }
 
   export type JobAssignmentUncheckedUpdateWithoutJobInput = {
@@ -68184,6 +78005,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     staffCost?: FloatFieldUpdateOperationsInput | number
     assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transactions?: TransactionUncheckedUpdateManyWithoutAssignmentNestedInput
   }
 
   export type JobAssignmentUncheckedUpdateManyWithoutJobInput = {
@@ -68382,14 +78204,64 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type JobCreateManyFolderTemplateInput = {
+  export type TransactionUpdateWithoutJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    client?: ClientUpdateOneWithoutTransactionsNestedInput
+    assignment?: JobAssignmentUpdateOneWithoutTransactionsNestedInput
+    paymentChannel?: PaymentChannelUpdateOneWithoutTransactionsNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutTransactionsNestedInput
+  }
+
+  export type TransactionUncheckedUpdateWithoutJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransactionUncheckedUpdateManyWithoutJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobCreateManySharepointFolderInput = {
     id?: string
     no: string
     typeId: string
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
     totalStaffCost?: number
@@ -68399,33 +78271,33 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    folderTemplateId?: string | null
   }
 
-  export type JobUpdateWithoutFolderTemplateInput = {
+  export type JobUpdateWithoutSharepointFolderInput = {
     id?: StringFieldUpdateOperationsInput | string
     no?: StringFieldUpdateOperationsInput | string
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -68441,16 +78313,17 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
+    folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+    transactions?: TransactionUpdateManyWithoutJobNestedInput
   }
 
-  export type JobUncheckedUpdateWithoutFolderTemplateInput = {
+  export type JobUncheckedUpdateWithoutSharepointFolderInput = {
     id?: StringFieldUpdateOperationsInput | string
     no?: StringFieldUpdateOperationsInput | string
     typeId?: StringFieldUpdateOperationsInput | string
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
@@ -68460,11 +78333,204 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
+    activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
+    files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
+    comments?: JobCommentUncheckedUpdateManyWithoutJobNestedInput
+    statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
+    pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
+    jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutJobNestedInput
+  }
+
+  export type JobUncheckedUpdateManyWithoutSharepointFolderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    no?: StringFieldUpdateOperationsInput | string
+    typeId?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    incomeCost?: FloatFieldUpdateOperationsInput | number
+    totalStaffCost?: FloatFieldUpdateOperationsInput | number
+    createdById?: StringFieldUpdateOperationsInput | string
+    paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
+    statusId?: StringFieldUpdateOperationsInput | string
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
+    isPublished?: BoolFieldUpdateOperationsInput | boolean
+    dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type TransactionCreateManyAssignmentInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    jobId: string
+    clientId?: string | null
+    paymentChannelId?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransactionUpdateWithoutAssignmentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutTransactionsNestedInput
+    client?: ClientUpdateOneWithoutTransactionsNestedInput
+    paymentChannel?: PaymentChannelUpdateOneWithoutTransactionsNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutTransactionsNestedInput
+  }
+
+  export type TransactionUncheckedUpdateWithoutAssignmentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    jobId?: StringFieldUpdateOperationsInput | string
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransactionUncheckedUpdateManyWithoutAssignmentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    jobId?: StringFieldUpdateOperationsInput | string
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobCreateManyFolderTemplateInput = {
+    id?: string
+    no: string
+    typeId: string
+    displayName: string
+    description?: string | null
+    attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    clientId?: string | null
+    incomeCost: number
+    sharepointFolderId?: string | null
+    totalStaffCost?: number
+    createdById: string
+    paymentChannelId?: string | null
+    statusId: string
+    startedAt?: Date | string
+    priority?: $Enums.JobPriority
+    isPublished?: boolean
+    dueAt: Date | string
+    completedAt?: Date | string | null
+    finishedAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+  }
+
+  export type JobUpdateWithoutFolderTemplateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    no?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    incomeCost?: FloatFieldUpdateOperationsInput | number
+    totalStaffCost?: FloatFieldUpdateOperationsInput | number
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
+    isPublished?: BoolFieldUpdateOperationsInput | boolean
+    dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    type?: JobTypeUpdateOneRequiredWithoutJobsNestedInput
+    client?: ClientUpdateOneWithoutJobsNestedInput
+    sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
+    assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
+    paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
+    status?: JobStatusUpdateOneRequiredWithoutJobsNestedInput
+    activityLog?: JobActivityLogUpdateManyWithoutJobNestedInput
+    files?: FileSystemUpdateManyWithoutJobNestedInput
+    comments?: JobCommentUpdateManyWithoutJobNestedInput
+    statusHistory?: JobStatusHistoryUpdateManyWithoutJobNestedInput
+    pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
+    jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUpdateManyWithoutJobNestedInput
+  }
+
+  export type JobUncheckedUpdateWithoutFolderTemplateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    no?: StringFieldUpdateOperationsInput | string
+    typeId?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalStaffCost?: FloatFieldUpdateOperationsInput | number
+    createdById?: StringFieldUpdateOperationsInput | string
+    paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
+    statusId?: StringFieldUpdateOperationsInput | string
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
+    isPublished?: BoolFieldUpdateOperationsInput | boolean
+    dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -68475,6 +78541,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateManyWithoutFolderTemplateInput = {
@@ -68484,9 +78551,9 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -68494,11 +78561,11 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -68511,8 +78578,8 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     paymentChannelId?: string | null
@@ -68520,15 +78587,32 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     folderTemplateId?: string | null
+  }
+
+  export type TransactionCreateManyClientInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    jobId: string
+    assignmentId?: string | null
+    paymentChannelId?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type JobUpdateWithoutClientInput = {
@@ -68537,21 +78621,21 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     type?: JobTypeUpdateOneRequiredWithoutJobsNestedInput
+    sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
@@ -68563,6 +78647,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
     folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+    transactions?: TransactionUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutClientInput = {
@@ -68572,8 +78657,8 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -68581,11 +78666,11 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -68597,6 +78682,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateManyWithoutClientInput = {
@@ -68606,8 +78692,8 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -68615,15 +78701,66 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type TransactionUpdateWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutTransactionsNestedInput
+    assignment?: JobAssignmentUpdateOneWithoutTransactionsNestedInput
+    paymentChannel?: PaymentChannelUpdateOneWithoutTransactionsNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutTransactionsNestedInput
+  }
+
+  export type TransactionUncheckedUpdateWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    jobId?: StringFieldUpdateOperationsInput | string
+    assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransactionUncheckedUpdateManyWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    jobId?: StringFieldUpdateOperationsInput | string
+    assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type JobCreateManyPaymentChannelInput = {
@@ -68633,24 +78770,41 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     statusId: string
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     folderTemplateId?: string | null
+  }
+
+  export type TransactionCreateManyPaymentChannelInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    jobId: string
+    clientId?: string | null
+    assignmentId?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type JobUpdateWithoutPaymentChannelInput = {
@@ -68659,22 +78813,22 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     type?: JobTypeUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneWithoutJobsNestedInput
+    sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
     status?: JobStatusUpdateOneRequiredWithoutJobsNestedInput
@@ -68685,6 +78839,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
     folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+    transactions?: TransactionUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutPaymentChannelInput = {
@@ -68694,20 +78849,20 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     statusId?: StringFieldUpdateOperationsInput | string
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -68719,6 +78874,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateManyWithoutPaymentChannelInput = {
@@ -68728,24 +78884,75 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     statusId?: StringFieldUpdateOperationsInput | string
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type TransactionUpdateWithoutPaymentChannelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutTransactionsNestedInput
+    client?: ClientUpdateOneWithoutTransactionsNestedInput
+    assignment?: JobAssignmentUpdateOneWithoutTransactionsNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutTransactionsNestedInput
+  }
+
+  export type TransactionUncheckedUpdateWithoutPaymentChannelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    jobId?: StringFieldUpdateOperationsInput | string
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransactionUncheckedUpdateManyWithoutPaymentChannelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    jobId?: StringFieldUpdateOperationsInput | string
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type JobCreateManyTypeInput = {
@@ -68754,9 +78961,9 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     paymentChannelId?: string | null
@@ -68764,11 +78971,11 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -68781,21 +78988,21 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     client?: ClientUpdateOneWithoutJobsNestedInput
+    sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
@@ -68807,6 +79014,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
     folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+    transactions?: TransactionUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutTypeInput = {
@@ -68815,9 +79023,9 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -68825,11 +79033,11 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -68841,6 +79049,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateManyWithoutTypeInput = {
@@ -68849,9 +79058,9 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -68859,11 +79068,11 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -68877,20 +79086,20 @@ export namespace Prisma {
     displayName: string
     description?: string | null
     attachmentUrls?: JobCreateattachmentUrlsInput | string[]
-    sharepointFolderId?: string | null
     clientId?: string | null
     incomeCost: number
+    sharepointFolderId?: string | null
     totalStaffCost?: number
     createdById: string
     paymentChannelId?: string | null
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
-    paidAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
@@ -68914,22 +79123,22 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     type?: JobTypeUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneWithoutJobsNestedInput
+    sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
@@ -68940,6 +79149,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
     folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+    transactions?: TransactionUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutStatusInput = {
@@ -68949,20 +79159,20 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -68974,6 +79184,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateManyWithoutStatusInput = {
@@ -68983,20 +79194,20 @@ export namespace Prisma {
     displayName?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
-    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableStringFieldUpdateOperationsInput | string | null
     incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
     totalStaffCost?: FloatFieldUpdateOperationsInput | number
     createdById?: StringFieldUpdateOperationsInput | string
     paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null

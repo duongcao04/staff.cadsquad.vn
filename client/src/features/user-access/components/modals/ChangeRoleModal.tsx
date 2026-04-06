@@ -1,4 +1,3 @@
-import { useUserAssignRoleMutation } from '@/lib'
 import {
     HeroModal,
     HeroModalBody,
@@ -8,8 +7,10 @@ import {
 } from '@/shared/components'
 import { TRole, TUser } from '@/shared/types'
 import { Button, Select, SelectItem } from '@heroui/react'
+import { useMutation } from '@tanstack/react-query'
 import { AlertTriangle, UserCog } from 'lucide-react'
 import { useState } from 'react'
+import { assignMemberRoleOptions } from '../../../../lib'
 
 interface ChangeRoleModalProps {
     isOpen: boolean
@@ -26,7 +27,7 @@ export const ChangeRoleModal = ({
     roles,
     user,
 }: ChangeRoleModalProps) => {
-    const userAssignRoleMutation = useUserAssignRoleMutation()
+    const userAssignRoleMutation = useMutation(assignMemberRoleOptions)
     const [selectedRole, setSelectedRole] = useState<string | null>(null)
 
     const handleConfirm = async () => {

@@ -4,7 +4,6 @@ import {
 	Controller,
 	Delete,
 	Get,
-	InternalServerErrorException,
 	Logger,
 	Param,
 	Patch,
@@ -13,28 +12,52 @@ import {
 	Req,
 	UseGuards,
 } from '@nestjs/common'
+import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
+import { APP_PERMISSIONS } from '@/utils'
+import { AuditLog } from '../../common/decorators/audit-log.decorator'
 import { RequirePermissions } from '../../common/decorators/require-permissions.decorator'
 import { ResponseMessage } from '../../common/decorators/responseMessage.decorator'
 import { PermissionsGuard } from '../../common/guards/permissions.guard'
-import { APP_PERMISSIONS } from '../../utils/_app-permissions'
+import { SystemModule } from '../../generated/prisma'
 import { TokenPayload } from '../auth/dto/token-payload.dto'
 import { JwtGuard } from '../auth/jwt.guard'
 import { JobTypeService } from '../job-type/job-type.service'
 import { SharePointService } from '../sharepoint/sharepoint.service'
 import { ActivityLogService } from './activity-log.service'
+import { AssignMemberCommand } from './commands/impl/assign-member.command'
+import { ConfirmPaymentCommand } from './commands/impl/confirm-payment.command'
+import { CreateJobCommand } from './commands/impl/create-job.command'
+import { ReviewDeliveryCommand } from './commands/impl/review-delivery.command'
+import { UpdateJobCommand } from './commands/impl/update-job.command'
 import { AssignMemberDto, UpdateAssignmentDto } from './dto/assign-member.dto'
 import { ChangeStatusDto } from './dto/change-status.dto'
 import { CreateJobDto } from './dto/create-job.dto'
 import { DeliverJobDto } from './dto/deliver-job.dto'
 import { CreateJobCommentDto } from './dto/job-comment/create-comment.dto'
 import { JobQueryDto } from './dto/job-query.dto'
+import { UpdateAttachmentsDto } from './dto/update-attachments.dto'
 import { UpdateGeneralJobDto } from './dto/update-general.dto'
 import { UpdateRevenueDto } from './dto/update-revenue.dto'
 import { JobCommentService } from './job-comment.service'
-import { JobService } from './job.service'
-import { UpdateAttachmentsDto } from './dto/update-attachments.dto'
 import { JobDeliverService } from './job-deliver.service'
+import { JobService } from './job.service'
+import { FindJobsPendingPayoutsQuery } from './queries/impl/find-jobs-pending-payouts'
+import { FindJobsToDeliverQuery } from './queries/impl/find-jobs-to-deliver'
+import { FindJobsByDeadlineQuery } from './queries/impl/find-jobs-by-deadline.query'
+import { FindJobByNoQuery } from './queries/impl/find-job-by-no.query'
+import { FindAllJobsQuery } from './queries/impl/find-all-jobs.query'
+import { SoftDeleteJobCommand } from './commands/impl/soft-delete-job.command'
+import { ForceChangeStatusCommand } from './commands/impl/force-change-status.command'
+import { UpdateFinancialDetailsCommand } from './commands/impl/update-financial-details.command'
+import { RemoveMemberCommand } from './commands/impl/remove-member.command'
+import { UpdateAssignmentCostCommand } from './commands/impl/update-assignment-cost.command'
+import { RestoreJobCommand } from './commands/impl/restore-job.command'
+import {
+	GetPayoutDetailsHandler,
+	GetPayoutDetailsQuery,
+} from './queries/impl/get-payout-details'
+import { GetJobFinancialDetailsQuery } from './queries/impl/get-job-financial-details.query'
 
 @ApiTags('Jobs')
 @Controller('jobs')
@@ -48,8 +71,10 @@ export class JobController {
 		private readonly jobTypeService: JobTypeService,
 		private readonly activityLogService: ActivityLogService,
 		private readonly commentService: JobCommentService,
-		private readonly sharepointService: SharePointService
-	) { }
+		private readonly sharepointService: SharePointService,
+		private readonly commandBus: CommandBus,
+		private readonly queryBus: QueryBus
+	) {}
 
 	// -------------------------------------------------------------------------
 	// READ OPERATIONS
@@ -100,11 +125,19 @@ export class JobController {
 		return comment
 	}
 
+	@Get(':id/financials')
+	@ApiOperation({ summary: 'Get job financial details' })
+	async getJobFinancials(@Param('id') id: string) {
+		return this.queryBus.execute(new GetJobFinancialDetailsQuery(id))
+	}
+
 	@Get()
 	@ApiOperation({ summary: 'Get list of jobs with pagination' })
 	async findAll(@Req() request: Request, @Query() query: JobQueryDto) {
 		const user: TokenPayload = request['user']
-		return this.jobService.findAll(user.sub, user.permissions, query)
+		return this.queryBus.execute(
+			new FindAllJobsQuery(user.sub, user.permissions, query)
+		)
 	}
 
 	@Get('workbench')
@@ -114,10 +147,8 @@ export class JobController {
 		@Query() query: JobQueryDto
 	) {
 		const user: TokenPayload = request['user']
-		return this.jobService.getWorkbenchData(
-			user.sub,
-			user.permissions,
-			query
+		return this.queryBus.execute(
+			new FindAllJobsQuery(user.sub, user.permissions, query)
 		)
 	}
 
@@ -125,7 +156,9 @@ export class JobController {
 	@ApiOperation({ summary: 'Get a job by its job number' })
 	async findByNo(@Req() request: Request, @Param('jobNo') jobNo: string) {
 		const user: TokenPayload = request['user']
-		return this.jobService.findByJobNo(user.sub, user.permissions, jobNo)
+		return this.queryBus.execute(
+			new FindJobByNoQuery(user.sub, user.permissions, jobNo)
+		)
 	}
 
 	@Get('due-at/:isoDate')
@@ -135,39 +168,37 @@ export class JobController {
 		@Param('isoDate') isoDate: string
 	) {
 		const user: TokenPayload = request['user']
-		return this.jobService.findJobsDueAt(
-			user.sub,
-			user.permissions,
-			isoDate
-		)
-	}
-
-	@Get('due-monthly')
-	async getDueInMonth(
-		@Query('month') month: string,
-		@Query('year') year: string,
-		@Req() request: Request
-	) {
-		const user: TokenPayload = request['user']
-		return this.jobService.getDueInMonth(
-			Number(month),
-			Number(year),
-			user.sub,
-			user.permissions
+		return this.queryBus.execute(
+			new FindJobsByDeadlineQuery(user.sub, user.permissions, isoDate)
 		)
 	}
 
 	@Get('pending-deliver')
 	async getPendingDeliver(@Req() request: Request) {
 		const user: TokenPayload = request['user']
-		return this.jobService.getPendingDeliverJobs(user.sub, user.permissions)
+		return this.queryBus.execute(
+			new FindJobsToDeliverQuery(user.sub, user.permissions)
+		)
 	}
 
 	@Get('pending-payouts')
 	@UseGuards(PermissionsGuard)
 	@RequirePermissions(APP_PERMISSIONS.JOB.PAID)
 	async getPendingPayouts() {
-		return this.jobService.getPendingPaymentJobs()
+		return this.queryBus.execute(new FindJobsPendingPayoutsQuery())
+	}
+
+	@Get('payouts/:no')
+	@UseGuards(PermissionsGuard)
+	@RequirePermissions(APP_PERMISSIONS.JOB.PAID)
+	async getPayoutDetails(
+		@Req() request: Request,
+		@Param('no') jobNo: string
+	) {
+		const user: TokenPayload = request['user']
+		return this.queryBus.execute(
+			new GetPayoutDetailsQuery(user.sub, user.permissions, jobNo)
+		)
 	}
 
 	// -------------------------------------------------------------------------
@@ -178,10 +209,15 @@ export class JobController {
 	@UseGuards(PermissionsGuard)
 	@RequirePermissions(APP_PERMISSIONS.JOB.CREATE)
 	@ResponseMessage('The job has been successfully created.')
-	async create(@Req() request: Request, @Body() createJobDto: CreateJobDto) {
+	@AuditLog('Create new job', SystemModule.JOB)
+	async createJob(
+		@Req() request: Request,
+		@Body() createJobDto: CreateJobDto
+	) {
 		const user: TokenPayload = request['user']
-		const created = await this.jobService.create(user.sub, createJobDto)
-		return created
+		return this.commandBus.execute(
+			new CreateJobCommand(user.sub, createJobDto)
+		)
 	}
 
 	@Post(':id/toggle-pin')
@@ -193,6 +229,7 @@ export class JobController {
 	@Post(':id/deliver')
 	@UseGuards(PermissionsGuard)
 	@RequirePermissions(APP_PERMISSIONS.JOB.DELIVER)
+	@AuditLog('Delivered job', SystemModule.DELIVERY)
 	async deliverJob(
 		@Req() request: Request,
 		@Param('id') id: string,
@@ -215,67 +252,65 @@ export class JobController {
 		if (action !== 'approve' && action !== 'reject') {
 			throw new BadRequestException('Action must be approve or reject')
 		}
-		return this.jobService.reviewDeliveryActions(
-			user.sub,
-			deliveryId,
-			action === 'approve',
-			data.feedback
+		return this.commandBus.execute(
+			new ReviewDeliveryCommand(
+				user.sub,
+				deliveryId,
+				action === 'approve',
+				data.feedback
+			)
 		)
 	}
 
 	@Post(':id/mark-paid')
 	@UseGuards(PermissionsGuard)
 	@RequirePermissions(APP_PERMISSIONS.JOB.PAID)
-	async markPaid(@Req() request: Request, @Param('id') id: string) {
+	@AuditLog('Paid for job', SystemModule.FINANCIAL)
+	async confirmPayment(@Req() request: Request, @Param('id') jobId: string) {
 		const user: TokenPayload = request['user']
-		return this.jobService.markPaid(id, user.sub)
+		return this.commandBus.execute(
+			new ConfirmPaymentCommand(jobId, user.sub)
+		)
 	}
 
 	// -------------------------------------------------------------------------
 	// UPDATE / PATCH OPERATIONS
 	// -------------------------------------------------------------------------
-
 	@Patch(':id/general')
 	@UseGuards(PermissionsGuard)
 	@RequirePermissions(APP_PERMISSIONS.JOB.UPDATE)
-	@ResponseMessage('Update general information successfully')
-	async updateGeneralInfo(
+	@ResponseMessage('Update job successfully')
+	async updateJob(
 		@Req() request: Request,
-		@Param('id') id: string,
-		@Body() dto: UpdateGeneralJobDto
-	) {
-		const user: TokenPayload = request['user']
-		return this.jobService.updateGeneralInfo(user.sub, id, dto)
-	}
-
-	@Patch(':id/attachments')
-	@ApiOperation({ summary: 'Add or remove file attachments from a job' })
-	async updateAttachments(
 		@Param('id') jobId: string,
-		@Body() dto: UpdateAttachmentsDto,
-		@Req() request: Request
+		@Body()
+		dto: UpdateGeneralJobDto & { attachments?: UpdateAttachmentsDto }
 	) {
 		const user: TokenPayload = request['user']
-		// req.user.id acts as the modifierId
-		return this.jobService.updateAttachments(user.sub, jobId, dto)
+		return this.commandBus.execute(
+			new UpdateJobCommand(user.sub, jobId, dto)
+		)
 	}
 
 	@Patch(':id/assign')
 	@UseGuards(PermissionsGuard)
-	@RequirePermissions(APP_PERMISSIONS.JOB.ASSIGN_MEMBER)
+	@RequirePermissions(APP_PERMISSIONS.JOB.ASSIGNMENT)
 	@ResponseMessage('Member assigned successfully')
+	@AuditLog('Assign new member for job', SystemModule.JOB)
 	async assignMember(
 		@Req() request: Request,
 		@Param('id') id: string,
 		@Body() dto: AssignMemberDto
 	) {
 		const user: TokenPayload = request['user']
-		return this.jobService.assignMember(user.sub, id, dto)
+		return this.commandBus.execute(
+			new AssignMemberCommand(user.sub, id, dto)
+		)
 	}
 
 	@Patch(':id/assignments/:memberId')
 	@UseGuards(PermissionsGuard)
-	@RequirePermissions(APP_PERMISSIONS.JOB.ASSIGN_MEMBER)
+	@RequirePermissions(APP_PERMISSIONS.JOB.ASSIGNMENT)
 	@ResponseMessage('Assignment cost updated')
 	async updateAssignment(
 		@Req() request: Request,
@@ -284,48 +319,55 @@ export class JobController {
 		@Body() dto: UpdateAssignmentDto
 	) {
 		const user: TokenPayload = request['user']
-		return this.jobService.updateAssignmentCost(
-			user.sub,
-			jobId,
-			memberId,
-			dto
+		return this.commandBus.execute(
+			new UpdateAssignmentCostCommand(user.sub, jobId, memberId, dto)
 		)
 	}
 
 	@Delete(':id/assignments/:memberId')
 	@UseGuards(PermissionsGuard)
-	@RequirePermissions(APP_PERMISSIONS.JOB.ASSIGN_MEMBER)
+	@RequirePermissions(APP_PERMISSIONS.JOB.ASSIGNMENT)
+	@AuditLog('Remove assignment member from job', SystemModule.JOB)
 	async unassignMember(
 		@Req() request: Request,
 		@Param('id') jobId: string,
 		@Param('memberId') memberId: string
 	) {
 		const user: TokenPayload = request['user']
-		return this.jobService.removeMember(user.sub, jobId, memberId)
+		return this.commandBus.execute(
+			new RemoveMemberCommand(user.sub, jobId, memberId)
+		)
 	}
 
 	@Patch(':id/update-revenue')
 	@UseGuards(PermissionsGuard)
 	@RequirePermissions(APP_PERMISSIONS.JOB.UPDATE)
+	@AuditLog('Update revenue', SystemModule.FINANCIAL)
 	async updateRevenue(
 		@Req() request: Request,
 		@Param('id') id: string,
 		@Body() updateRevenueDto: UpdateRevenueDto
 	) {
 		const user: TokenPayload = request['user']
-		return this.jobService.updateRevenue(user.sub, id, updateRevenueDto)
+		return this.commandBus.execute(
+			new UpdateFinancialDetailsCommand(user.sub, id, updateRevenueDto)
+		)
 	}
 
 	@Patch(':id/change-status')
 	@UseGuards(PermissionsGuard)
 	@RequirePermissions(APP_PERMISSIONS.JOB.UPDATE)
+	@AuditLog('Force update job status', SystemModule.JOB)
 	async changeStatus(
 		@Req() request: Request,
 		@Param('id') id: string,
 		@Body() data: ChangeStatusDto
 	) {
 		const user: TokenPayload = request['user']
-		return this.jobService.changeStatus(id, user.sub, data)
+		const updated = this.commandBus.execute(
+			new ForceChangeStatusCommand(id, user.sub, data)
+		)
+		return updated
 	}
 
 	// -------------------------------------------------------------------------
@@ -342,8 +384,26 @@ export class JobController {
 	@Delete(':id')
 	@UseGuards(PermissionsGuard)
 	@RequirePermissions(APP_PERMISSIONS.JOB.DELETE)
+	@AuditLog('Cancelled job', SystemModule.JOB)
 	async remove(@Req() request: Request, @Param('id') id: string) {
 		const user: TokenPayload = request['user']
-		return this.jobService.softDelete(id, user.sub)
+		request['auditTargetId'] = id
+		const jobDetails = await this.jobService.findOne(id)
+		request['auditTargetDisplay'] =
+			`${jobDetails?.no}- ${jobDetails?.displayName}`
+		return this.commandBus.execute(new SoftDeleteJobCommand(id, user.sub))
+	}
+
+	@Patch(':id/restore')
+	@UseGuards(PermissionsGuard)
+	@RequirePermissions(APP_PERMISSIONS.JOB.DELETE)
+	@AuditLog('Restored job', SystemModule.JOB)
+	async restore(@Req() request: Request, @Param('id') id: string) {
+		const user: TokenPayload = request['user']
+		request['auditTargetId'] = id
+		const jobDetails = await this.jobService.findOne(id)
+		request['auditTargetDisplay'] =
+			`${jobDetails?.no}- ${jobDetails?.displayName}`
+		return this.commandBus.execute(new RestoreJobCommand(id, user.sub))
 	}
 }

@@ -1,6 +1,6 @@
 import { ablyClient } from '@/lib/ably'
 import { queryClient } from '@/main'
-import AppLoading from '@/shared/components/app/AppLoading'
+import { AppLoading } from '@/shared/components'
 import {
     AppThemeProvider,
     useAppTheme,
@@ -16,9 +16,7 @@ import {
 import { AblyProvider } from 'ably/react'
 import { ConfigProvider } from 'antd'
 import { ThemeProvider } from 'antd-style'
-import { AlertCircle, CheckCircle2, Info, Loader2, XCircle } from 'lucide-react'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
-import { Toaster } from 'sonner'
 
 // 1. Định nghĩa Interface cho Context
 interface AppRouterContext {
@@ -48,7 +46,7 @@ export const Route = createRootRouteWithContext<AppRouterContext>()({
                                             toastOffset={20}
                                             toastProps={{
                                                 radius: 'sm',
-                                                timeout: 2200,
+                                                timeout: 4000,
                                                 variant: 'bordered',
                                                 classNames: {
                                                     closeButton:
@@ -59,46 +57,6 @@ export const Route = createRootRouteWithContext<AppRouterContext>()({
                                                 classNames: {
                                                     base: '!z-[10000]',
                                                 },
-                                            }}
-                                        />
-                                        <Toaster
-                                            position="top-right"
-                                            icons={{
-                                                success: (
-                                                    <CheckCircle2
-                                                        size={18}
-                                                        className="text-success"
-                                                    />
-                                                ),
-                                                info: (
-                                                    <Info
-                                                        size={18}
-                                                        className="text-primary"
-                                                    />
-                                                ),
-                                                warning: (
-                                                    <AlertCircle
-                                                        size={18}
-                                                        className="text-warning"
-                                                    />
-                                                ),
-                                                error: (
-                                                    <XCircle
-                                                        size={18}
-                                                        className="text-danger"
-                                                    />
-                                                ),
-                                                loading: (
-                                                    <Loader2
-                                                        size={18}
-                                                        className="animate-spin text-primary"
-                                                    />
-                                                ),
-                                            }}
-                                            toastOptions={{
-                                                // Default HeroUI-like styling
-                                                className:
-                                                    'rounded-2xl border-small border-default-100 bg-background text-foreground shadow-xl',
                                             }}
                                         />
                                         <div

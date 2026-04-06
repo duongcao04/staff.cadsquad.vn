@@ -1,3 +1,4 @@
+export * from './_audit-log.type';
 export * from './_client.type';
 export * from './_community.type';
 export * from './_department.type';

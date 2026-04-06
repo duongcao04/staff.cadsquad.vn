@@ -1,11 +1,20 @@
-import { queryOptions } from '@tanstack/react-query'
+import { mutationOptions, queryOptions } from '@tanstack/react-query'
 import { roleApi } from '../../api'
-import { PermissionSchema, RoleSchema } from '../../validationSchemas'
+import { RoleSchema, TCreateRoleInput } from '../../validationSchemas'
 import { parseData, parseList } from '../../zod'
+import { onErrorToast } from '../helper'
 
+// 1. Keys Factory
+export const roleQueryKeys = {
+    resource: ['roles'] as const,
+    lists: () => [...roleQueryKeys.resource, 'lists'] as const,
+    detail: (id: string) => [...roleQueryKeys.resource, 'identify', id] as const,
+}
+
+// 2. Fetch Options
 export const rolesListOptions = () => {
     return queryOptions({
-        queryKey: ['roles'],
+        queryKey: roleQueryKeys.lists(),
         queryFn: () => roleApi.findAll(),
         select: (res) => {
             const rolesData = res?.result?.roles
@@ -19,7 +28,7 @@ export const rolesListOptions = () => {
 
 export const roleOptions = (identify: string) => {
     return queryOptions({
-        queryKey: ['roles', 'identify', identify],
+        queryKey: roleQueryKeys.detail(identify),
         queryFn: () => roleApi.findOneRole(identify),
         select: (res) => {
             const role = parseData(RoleSchema, res.result)
@@ -32,26 +41,22 @@ export const roleOptions = (identify: string) => {
     })
 }
 
-export const permissionGroupsListOptions = () => {
-    return queryOptions({
-        queryKey: ['group-permissions'],
-        queryFn: () => roleApi.findAllPermissionGrouped(),
-        select: (res) => {
-            return Array.isArray(res.result?.groups) ? res.result?.groups : []
-        },
-    })
-}
+// 3. Mutation Options
+export const createRoleOptions = mutationOptions({
+    mutationFn: (data: TCreateRoleInput) => roleApi.createRole(data),
+    onError: (err: any) =>
+        onErrorToast(err, 'Assign member to role failed'),
+})
 
-export const permissionsListOptions = () => {
-    return queryOptions({
-        queryKey: ['permissions'],
-        queryFn: () => roleApi.findAllPermission(),
-        select: (res) => {
-            const permissionData = res?.result?.permissions
-            return {
-                permissions: parseList(PermissionSchema, permissionData),
-                total: res.result?.total ?? 0,
-            }
-        },
-    })
-}
+export const assignMemberRoleOptions = mutationOptions({
+    mutationFn: ({ roleId, userId }: { roleId: string; userId: string }) =>
+        roleApi.addMember(roleId, userId),
+    onError: (err: any) =>
+        onErrorToast(err, 'Assign member to role failed'),
+})
+
+export const removeMemberRoleOptions = mutationOptions({
+    mutationFn: (userId: string) => roleApi.removeMember(userId),
+    onError: (err: any) =>
+        onErrorToast(err, 'Remove member to role failed'),
+})

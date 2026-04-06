@@ -13,7 +13,7 @@ dotenv.config({ path: envPath })
 const configService = new ConfigService(process.env)
 
 export default {
-	schema: path.join('src', 'providers', 'prisma', 'schema.prisma'),
+	schema: path.join('src', 'providers', 'prisma', 'schema'),
 	migrations: {
 		path: path.join('src', 'providers', 'prisma', 'migrations'),
 	},

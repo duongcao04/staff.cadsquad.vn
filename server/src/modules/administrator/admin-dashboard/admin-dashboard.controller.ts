@@ -19,4 +19,9 @@ export class AdminDashboardController {
 	async getDbStats() {
 		return this.dashboardService.getDatabaseStats();
 	}
+
+	@Get('db-overview')
+	async getDbOverviews() {
+		return this.dashboardService.getDatabaseOverview();
+	}
 }

@@ -82,7 +82,7 @@ export default function NotificationDropdown() {
                             size="sm"
                             variant="light"
                         >
-                            Maybe Later
+                            Dismiss
                         </Button>
                     </div>
                 ),

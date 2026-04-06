@@ -10,27 +10,22 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SettingsRouteImport } from './routes/settings'
-import { Route as CommunitiesRouteImport } from './routes/communities'
 import { Route as WorkspaceRouteImport } from './routes/_workspace'
 import { Route as PublicRouteImport } from './routes/_public'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as AdministratorRouteImport } from './routes/_administrator'
 import { Route as SettingsIndexRouteImport } from './routes/settings/index'
-import { Route as CommunitiesIndexRouteImport } from './routes/communities/index'
 import { Route as SettingsNotificationsRouteImport } from './routes/settings/notifications'
 import { Route as SettingsMyProfileRouteImport } from './routes/settings/my-profile'
 import { Route as SettingsLoginAndSecurityRouteImport } from './routes/settings/login-and-security'
 import { Route as SettingsLanguageAndRegionRouteImport } from './routes/settings/language-and-region'
 import { Route as SettingsAppearanceRouteImport } from './routes/settings/appearance'
-import { Route as WorkspaceTaskSummaryRouteImport } from './routes/_workspace/task-summary'
 import { Route as WorkspaceScheduleRouteImport } from './routes/_workspace/schedule'
 import { Route as WorkspaceProjectCenterRouteImport } from './routes/_workspace/project-center'
 import { Route as WorkspaceProfileRouteImport } from './routes/_workspace/profile'
 import { Route as WorkspaceOverviewRouteImport } from './routes/_workspace/overview'
 import { Route as PublicHelpCenterRouteImport } from './routes/_public/help-center'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
-import { Route as AdministratorFinancialRouteImport } from './routes/_administrator/financial'
-import { Route as CommunitiesCodeIndexRouteImport } from './routes/communities/$code/index'
 import { Route as WorkspaceProjectCenterIndexRouteImport } from './routes/_workspace/project-center/index'
 import { Route as WorkspaceNotificationsIndexRouteImport } from './routes/_workspace/notifications/index'
 import { Route as WorkspaceJobsIndexRouteImport } from './routes/_workspace/jobs/index'
@@ -41,48 +36,42 @@ import { Route as WorkspaceProjectCenterTabRouteImport } from './routes/_workspa
 import { Route as WorkspaceJobsNoRouteImport } from './routes/_workspace/jobs/$no'
 import { Route as AuthAuthResetPasswordRouteImport } from './routes/_auth/auth/reset-password'
 import { Route as AdministratorMgmtRevenueRouteImport } from './routes/_administrator/mgmt/revenue'
-import { Route as AdministratorMgmtInviteMemberRouteImport } from './routes/_administrator/mgmt/invite-member'
 import { Route as AdministratorMgmtAccessControlRouteImport } from './routes/_administrator/mgmt/access-control'
 import { Route as AdministratorFinancialSettingRouteImport } from './routes/_administrator/financial/setting'
 import { Route as AdministratorFinancialReceivablesRouteImport } from './routes/_administrator/financial/receivables'
 import { Route as AdministratorFinancialPaymentChannelsRouteImport } from './routes/_administrator/financial/payment-channels'
-import { Route as AdministratorFinancialLedgerRouteImport } from './routes/_administrator/financial/ledger'
 import { Route as AdministratorFinancialInvoiceTemplatesRouteImport } from './routes/_administrator/financial/invoice-templates'
 import { Route as AdministratorAdminSettingsRouteImport } from './routes/_administrator/admin/settings'
 import { Route as AdministratorAdminScheduleRouteImport } from './routes/_administrator/admin/schedule'
 import { Route as AdministratorAdminInboxRouteImport } from './routes/_administrator/admin/inbox'
-import { Route as CommunitiesCodeTopicCodeIndexRouteImport } from './routes/communities/$code/$topicCode/index'
 import { Route as AdministratorMgmtStaffDirectoryIndexRouteImport } from './routes/_administrator/mgmt/staff-directory/index'
 import { Route as AdministratorMgmtJobsIndexRouteImport } from './routes/_administrator/mgmt/jobs/index'
+import { Route as AdministratorMgmtJobTypesIndexRouteImport } from './routes/_administrator/mgmt/job-types/index'
+import { Route as AdministratorMgmtJobTitlesIndexRouteImport } from './routes/_administrator/mgmt/job-titles/index'
 import { Route as AdministratorMgmtFileDocsIndexRouteImport } from './routes/_administrator/mgmt/file-docs/index'
 import { Route as AdministratorMgmtDepartmentsIndexRouteImport } from './routes/_administrator/mgmt/departments/index'
 import { Route as AdministratorMgmtClientsIndexRouteImport } from './routes/_administrator/mgmt/clients/index'
 import { Route as AdministratorMgmtAccessControlIndexRouteImport } from './routes/_administrator/mgmt/access-control/index'
 import { Route as AdministratorFinancialPayoutsIndexRouteImport } from './routes/_administrator/financial/payouts/index'
-import { Route as CommunitiesCodeTopicCodePostSlugRouteImport } from './routes/communities/$code/$topicCode/$postSlug'
+import { Route as AdministratorFinancialLedgerIndexRouteImport } from './routes/_administrator/financial/ledger/index'
 import { Route as AdministratorMgmtStaffDirectoryCodeRouteImport } from './routes/_administrator/mgmt/staff-directory/$code'
+import { Route as AdministratorMgmtJobsCreateRouteImport } from './routes/_administrator/mgmt/jobs/create'
 import { Route as AdministratorMgmtJobsNoRouteImport } from './routes/_administrator/mgmt/jobs/$no'
+import { Route as AdministratorMgmtJobTypesIdRouteImport } from './routes/_administrator/mgmt/job-types/$id'
+import { Route as AdministratorMgmtJobTitlesCodeRouteImport } from './routes/_administrator/mgmt/job-titles/$code'
 import { Route as AdministratorMgmtDepartmentsCodeRouteImport } from './routes/_administrator/mgmt/departments/$code'
 import { Route as AdministratorMgmtClientsCodeRouteImport } from './routes/_administrator/mgmt/clients/$code'
 import { Route as AdministratorMgmtAccessControlPermissionsRouteImport } from './routes/_administrator/mgmt/access-control/permissions'
-import { Route as AdministratorMgmtAccessControlMatrixRouteImport } from './routes/_administrator/mgmt/access-control/matrix'
 import { Route as AdministratorFinancialPayoutsNoRouteImport } from './routes/_administrator/financial/payouts/$no'
+import { Route as AdministratorFinancialLedgerIdRouteImport } from './routes/_administrator/financial/ledger/$id'
 import { Route as AdministratorMgmtJobsFolderTemplatesIndexRouteImport } from './routes/_administrator/mgmt/jobs/folder-templates/index'
-import { Route as AdministratorMgmtAccessControlUsersIndexRouteImport } from './routes/_administrator/mgmt/access-control/users/index'
-import { Route as AdministratorMgmtAccessControlRolesIndexRouteImport } from './routes/_administrator/mgmt/access-control/roles/index'
 import { Route as AdministratorMgmtJobsFolderTemplatesIdRouteImport } from './routes/_administrator/mgmt/jobs/folder-templates/$id'
-import { Route as AdministratorMgmtAccessControlUsersUsernameRouteImport } from './routes/_administrator/mgmt/access-control/users/$username'
 import { Route as AdministratorMgmtAccessControlRolesCodeIndexRouteImport } from './routes/_administrator/mgmt/access-control/roles/$code/index'
 import { Route as AdministratorMgmtAccessControlRolesCodePermMatrixRouteImport } from './routes/_administrator/mgmt/access-control/roles/$code/perm-matrix'
 
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CommunitiesRoute = CommunitiesRouteImport.update({
-  id: '/communities',
-  path: '/communities',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WorkspaceRoute = WorkspaceRouteImport.update({
@@ -105,11 +94,6 @@ const SettingsIndexRoute = SettingsIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => SettingsRoute,
-} as any)
-const CommunitiesIndexRoute = CommunitiesIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => CommunitiesRoute,
 } as any)
 const SettingsNotificationsRoute = SettingsNotificationsRouteImport.update({
   id: '/notifications',
@@ -137,11 +121,6 @@ const SettingsAppearanceRoute = SettingsAppearanceRouteImport.update({
   id: '/appearance',
   path: '/appearance',
   getParentRoute: () => SettingsRoute,
-} as any)
-const WorkspaceTaskSummaryRoute = WorkspaceTaskSummaryRouteImport.update({
-  id: '/task-summary',
-  path: '/task-summary',
-  getParentRoute: () => WorkspaceRoute,
 } as any)
 const WorkspaceScheduleRoute = WorkspaceScheduleRouteImport.update({
   id: '/schedule',
@@ -173,16 +152,6 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => AuthRoute,
 } as any)
-const AdministratorFinancialRoute = AdministratorFinancialRouteImport.update({
-  id: '/financial',
-  path: '/financial',
-  getParentRoute: () => AdministratorRoute,
-} as any)
-const CommunitiesCodeIndexRoute = CommunitiesCodeIndexRouteImport.update({
-  id: '/$code/',
-  path: '/$code/',
-  getParentRoute: () => CommunitiesRoute,
-} as any)
 const WorkspaceProjectCenterIndexRoute =
   WorkspaceProjectCenterIndexRouteImport.update({
     id: '/',
@@ -207,9 +176,9 @@ const WorkspaceWorkbenchIndexRoute = WorkspaceWorkbenchIndexRouteImport.update({
 } as any)
 const AdministratorFinancialIndexRoute =
   AdministratorFinancialIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => AdministratorFinancialRoute,
+    id: '/financial/',
+    path: '/financial/',
+    getParentRoute: () => AdministratorRoute,
   } as any)
 const AdministratorAdminIndexRoute = AdministratorAdminIndexRouteImport.update({
   id: '/admin/',
@@ -238,12 +207,6 @@ const AdministratorMgmtRevenueRoute =
     path: '/mgmt/revenue',
     getParentRoute: () => AdministratorRoute,
   } as any)
-const AdministratorMgmtInviteMemberRoute =
-  AdministratorMgmtInviteMemberRouteImport.update({
-    id: '/mgmt/invite-member',
-    path: '/mgmt/invite-member',
-    getParentRoute: () => AdministratorRoute,
-  } as any)
 const AdministratorMgmtAccessControlRoute =
   AdministratorMgmtAccessControlRouteImport.update({
     id: '/mgmt/access-control',
@@ -252,33 +215,27 @@ const AdministratorMgmtAccessControlRoute =
   } as any)
 const AdministratorFinancialSettingRoute =
   AdministratorFinancialSettingRouteImport.update({
-    id: '/setting',
-    path: '/setting',
-    getParentRoute: () => AdministratorFinancialRoute,
+    id: '/financial/setting',
+    path: '/financial/setting',
+    getParentRoute: () => AdministratorRoute,
   } as any)
 const AdministratorFinancialReceivablesRoute =
   AdministratorFinancialReceivablesRouteImport.update({
-    id: '/receivables',
-    path: '/receivables',
-    getParentRoute: () => AdministratorFinancialRoute,
+    id: '/financial/receivables',
+    path: '/financial/receivables',
+    getParentRoute: () => AdministratorRoute,
   } as any)
 const AdministratorFinancialPaymentChannelsRoute =
   AdministratorFinancialPaymentChannelsRouteImport.update({
-    id: '/payment-channels',
-    path: '/payment-channels',
-    getParentRoute: () => AdministratorFinancialRoute,
-  } as any)
-const AdministratorFinancialLedgerRoute =
-  AdministratorFinancialLedgerRouteImport.update({
-    id: '/ledger',
-    path: '/ledger',
-    getParentRoute: () => AdministratorFinancialRoute,
+    id: '/financial/payment-channels',
+    path: '/financial/payment-channels',
+    getParentRoute: () => AdministratorRoute,
   } as any)
 const AdministratorFinancialInvoiceTemplatesRoute =
   AdministratorFinancialInvoiceTemplatesRouteImport.update({
-    id: '/invoice-templates',
-    path: '/invoice-templates',
-    getParentRoute: () => AdministratorFinancialRoute,
+    id: '/financial/invoice-templates',
+    path: '/financial/invoice-templates',
+    getParentRoute: () => AdministratorRoute,
   } as any)
 const AdministratorAdminSettingsRoute =
   AdministratorAdminSettingsRouteImport.update({
@@ -297,12 +254,6 @@ const AdministratorAdminInboxRoute = AdministratorAdminInboxRouteImport.update({
   path: '/admin/inbox',
   getParentRoute: () => AdministratorRoute,
 } as any)
-const CommunitiesCodeTopicCodeIndexRoute =
-  CommunitiesCodeTopicCodeIndexRouteImport.update({
-    id: '/$code/$topicCode/',
-    path: '/$code/$topicCode/',
-    getParentRoute: () => CommunitiesRoute,
-  } as any)
 const AdministratorMgmtStaffDirectoryIndexRoute =
   AdministratorMgmtStaffDirectoryIndexRouteImport.update({
     id: '/mgmt/staff-directory/',
@@ -313,6 +264,18 @@ const AdministratorMgmtJobsIndexRoute =
   AdministratorMgmtJobsIndexRouteImport.update({
     id: '/mgmt/jobs/',
     path: '/mgmt/jobs/',
+    getParentRoute: () => AdministratorRoute,
+  } as any)
+const AdministratorMgmtJobTypesIndexRoute =
+  AdministratorMgmtJobTypesIndexRouteImport.update({
+    id: '/mgmt/job-types/',
+    path: '/mgmt/job-types/',
+    getParentRoute: () => AdministratorRoute,
+  } as any)
+const AdministratorMgmtJobTitlesIndexRoute =
+  AdministratorMgmtJobTitlesIndexRouteImport.update({
+    id: '/mgmt/job-titles/',
+    path: '/mgmt/job-titles/',
     getParentRoute: () => AdministratorRoute,
   } as any)
 const AdministratorMgmtFileDocsIndexRoute =
@@ -341,15 +304,15 @@ const AdministratorMgmtAccessControlIndexRoute =
   } as any)
 const AdministratorFinancialPayoutsIndexRoute =
   AdministratorFinancialPayoutsIndexRouteImport.update({
-    id: '/payouts/',
-    path: '/payouts/',
-    getParentRoute: () => AdministratorFinancialRoute,
+    id: '/financial/payouts/',
+    path: '/financial/payouts/',
+    getParentRoute: () => AdministratorRoute,
   } as any)
-const CommunitiesCodeTopicCodePostSlugRoute =
-  CommunitiesCodeTopicCodePostSlugRouteImport.update({
-    id: '/$code/$topicCode/$postSlug',
-    path: '/$code/$topicCode/$postSlug',
-    getParentRoute: () => CommunitiesRoute,
+const AdministratorFinancialLedgerIndexRoute =
+  AdministratorFinancialLedgerIndexRouteImport.update({
+    id: '/financial/ledger/',
+    path: '/financial/ledger/',
+    getParentRoute: () => AdministratorRoute,
   } as any)
 const AdministratorMgmtStaffDirectoryCodeRoute =
   AdministratorMgmtStaffDirectoryCodeRouteImport.update({
@@ -357,11 +320,29 @@ const AdministratorMgmtStaffDirectoryCodeRoute =
     path: '/mgmt/staff-directory/$code',
     getParentRoute: () => AdministratorRoute,
   } as any)
+const AdministratorMgmtJobsCreateRoute =
+  AdministratorMgmtJobsCreateRouteImport.update({
+    id: '/mgmt/jobs/create',
+    path: '/mgmt/jobs/create',
+    getParentRoute: () => AdministratorRoute,
+  } as any)
 const AdministratorMgmtJobsNoRoute = AdministratorMgmtJobsNoRouteImport.update({
   id: '/mgmt/jobs/$no',
   path: '/mgmt/jobs/$no',
   getParentRoute: () => AdministratorRoute,
 } as any)
+const AdministratorMgmtJobTypesIdRoute =
+  AdministratorMgmtJobTypesIdRouteImport.update({
+    id: '/mgmt/job-types/$id',
+    path: '/mgmt/job-types/$id',
+    getParentRoute: () => AdministratorRoute,
+  } as any)
+const AdministratorMgmtJobTitlesCodeRoute =
+  AdministratorMgmtJobTitlesCodeRouteImport.update({
+    id: '/mgmt/job-titles/$code',
+    path: '/mgmt/job-titles/$code',
+    getParentRoute: () => AdministratorRoute,
+  } as any)
 const AdministratorMgmtDepartmentsCodeRoute =
   AdministratorMgmtDepartmentsCodeRouteImport.update({
     id: '/mgmt/departments/$code',
@@ -380,17 +361,17 @@ const AdministratorMgmtAccessControlPermissionsRoute =
     path: '/permissions',
     getParentRoute: () => AdministratorMgmtAccessControlRoute,
   } as any)
-const AdministratorMgmtAccessControlMatrixRoute =
-  AdministratorMgmtAccessControlMatrixRouteImport.update({
-    id: '/matrix',
-    path: '/matrix',
-    getParentRoute: () => AdministratorMgmtAccessControlRoute,
-  } as any)
 const AdministratorFinancialPayoutsNoRoute =
   AdministratorFinancialPayoutsNoRouteImport.update({
-    id: '/payouts/$no',
-    path: '/payouts/$no',
-    getParentRoute: () => AdministratorFinancialRoute,
+    id: '/financial/payouts/$no',
+    path: '/financial/payouts/$no',
+    getParentRoute: () => AdministratorRoute,
+  } as any)
+const AdministratorFinancialLedgerIdRoute =
+  AdministratorFinancialLedgerIdRouteImport.update({
+    id: '/financial/ledger/$id',
+    path: '/financial/ledger/$id',
+    getParentRoute: () => AdministratorRoute,
   } as any)
 const AdministratorMgmtJobsFolderTemplatesIndexRoute =
   AdministratorMgmtJobsFolderTemplatesIndexRouteImport.update({
@@ -398,29 +379,11 @@ const AdministratorMgmtJobsFolderTemplatesIndexRoute =
     path: '/mgmt/jobs/folder-templates/',
     getParentRoute: () => AdministratorRoute,
   } as any)
-const AdministratorMgmtAccessControlUsersIndexRoute =
-  AdministratorMgmtAccessControlUsersIndexRouteImport.update({
-    id: '/users/',
-    path: '/users/',
-    getParentRoute: () => AdministratorMgmtAccessControlRoute,
-  } as any)
-const AdministratorMgmtAccessControlRolesIndexRoute =
-  AdministratorMgmtAccessControlRolesIndexRouteImport.update({
-    id: '/roles/',
-    path: '/roles/',
-    getParentRoute: () => AdministratorMgmtAccessControlRoute,
-  } as any)
 const AdministratorMgmtJobsFolderTemplatesIdRoute =
   AdministratorMgmtJobsFolderTemplatesIdRouteImport.update({
     id: '/mgmt/jobs/folder-templates/$id',
     path: '/mgmt/jobs/folder-templates/$id',
     getParentRoute: () => AdministratorRoute,
-  } as any)
-const AdministratorMgmtAccessControlUsersUsernameRoute =
-  AdministratorMgmtAccessControlUsersUsernameRouteImport.update({
-    id: '/users/$username',
-    path: '/users/$username',
-    getParentRoute: () => AdministratorMgmtAccessControlRoute,
   } as any)
 const AdministratorMgmtAccessControlRolesCodeIndexRoute =
   AdministratorMgmtAccessControlRolesCodeIndexRouteImport.update({
@@ -436,122 +399,112 @@ const AdministratorMgmtAccessControlRolesCodePermMatrixRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/communities': typeof CommunitiesRouteWithChildren
+  '/': typeof WorkspaceWorkbenchIndexRoute
   '/settings': typeof SettingsRouteWithChildren
-  '/financial': typeof AdministratorFinancialRouteWithChildren
   '/login': typeof AuthLoginRoute
   '/help-center': typeof PublicHelpCenterRoute
   '/overview': typeof WorkspaceOverviewRoute
   '/profile': typeof WorkspaceProfileRoute
   '/project-center': typeof WorkspaceProjectCenterRouteWithChildren
   '/schedule': typeof WorkspaceScheduleRoute
-  '/task-summary': typeof WorkspaceTaskSummaryRoute
   '/settings/appearance': typeof SettingsAppearanceRoute
   '/settings/language-and-region': typeof SettingsLanguageAndRegionRoute
   '/settings/login-and-security': typeof SettingsLoginAndSecurityRoute
   '/settings/my-profile': typeof SettingsMyProfileRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
-  '/communities/': typeof CommunitiesIndexRoute
   '/settings/': typeof SettingsIndexRoute
   '/admin/inbox': typeof AdministratorAdminInboxRoute
   '/admin/schedule': typeof AdministratorAdminScheduleRoute
   '/admin/settings': typeof AdministratorAdminSettingsRoute
   '/financial/invoice-templates': typeof AdministratorFinancialInvoiceTemplatesRoute
-  '/financial/ledger': typeof AdministratorFinancialLedgerRoute
   '/financial/payment-channels': typeof AdministratorFinancialPaymentChannelsRoute
   '/financial/receivables': typeof AdministratorFinancialReceivablesRoute
   '/financial/setting': typeof AdministratorFinancialSettingRoute
   '/mgmt/access-control': typeof AdministratorMgmtAccessControlRouteWithChildren
-  '/mgmt/invite-member': typeof AdministratorMgmtInviteMemberRoute
   '/mgmt/revenue': typeof AdministratorMgmtRevenueRoute
   '/auth/reset-password': typeof AuthAuthResetPasswordRoute
   '/jobs/$no': typeof WorkspaceJobsNoRoute
   '/project-center/$tab': typeof WorkspaceProjectCenterTabRoute
-  '/admin': typeof AdministratorAdminIndexRoute
+  '/admin/': typeof AdministratorAdminIndexRoute
   '/financial/': typeof AdministratorFinancialIndexRoute
-  '/': typeof WorkspaceWorkbenchIndexRoute
-  '/jobs': typeof WorkspaceJobsIndexRoute
-  '/notifications': typeof WorkspaceNotificationsIndexRoute
+  '/jobs/': typeof WorkspaceJobsIndexRoute
+  '/notifications/': typeof WorkspaceNotificationsIndexRoute
   '/project-center/': typeof WorkspaceProjectCenterIndexRoute
-  '/communities/$code': typeof CommunitiesCodeIndexRoute
+  '/financial/ledger/$id': typeof AdministratorFinancialLedgerIdRoute
   '/financial/payouts/$no': typeof AdministratorFinancialPayoutsNoRoute
-  '/mgmt/access-control/matrix': typeof AdministratorMgmtAccessControlMatrixRoute
   '/mgmt/access-control/permissions': typeof AdministratorMgmtAccessControlPermissionsRoute
   '/mgmt/clients/$code': typeof AdministratorMgmtClientsCodeRoute
   '/mgmt/departments/$code': typeof AdministratorMgmtDepartmentsCodeRoute
+  '/mgmt/job-titles/$code': typeof AdministratorMgmtJobTitlesCodeRoute
+  '/mgmt/job-types/$id': typeof AdministratorMgmtJobTypesIdRoute
   '/mgmt/jobs/$no': typeof AdministratorMgmtJobsNoRoute
+  '/mgmt/jobs/create': typeof AdministratorMgmtJobsCreateRoute
   '/mgmt/staff-directory/$code': typeof AdministratorMgmtStaffDirectoryCodeRoute
-  '/communities/$code/$topicCode/$postSlug': typeof CommunitiesCodeTopicCodePostSlugRoute
-  '/financial/payouts': typeof AdministratorFinancialPayoutsIndexRoute
+  '/financial/ledger/': typeof AdministratorFinancialLedgerIndexRoute
+  '/financial/payouts/': typeof AdministratorFinancialPayoutsIndexRoute
   '/mgmt/access-control/': typeof AdministratorMgmtAccessControlIndexRoute
-  '/mgmt/clients': typeof AdministratorMgmtClientsIndexRoute
-  '/mgmt/departments': typeof AdministratorMgmtDepartmentsIndexRoute
-  '/mgmt/file-docs': typeof AdministratorMgmtFileDocsIndexRoute
-  '/mgmt/jobs': typeof AdministratorMgmtJobsIndexRoute
-  '/mgmt/staff-directory': typeof AdministratorMgmtStaffDirectoryIndexRoute
-  '/communities/$code/$topicCode': typeof CommunitiesCodeTopicCodeIndexRoute
-  '/mgmt/access-control/users/$username': typeof AdministratorMgmtAccessControlUsersUsernameRoute
+  '/mgmt/clients/': typeof AdministratorMgmtClientsIndexRoute
+  '/mgmt/departments/': typeof AdministratorMgmtDepartmentsIndexRoute
+  '/mgmt/file-docs/': typeof AdministratorMgmtFileDocsIndexRoute
+  '/mgmt/job-titles/': typeof AdministratorMgmtJobTitlesIndexRoute
+  '/mgmt/job-types/': typeof AdministratorMgmtJobTypesIndexRoute
+  '/mgmt/jobs/': typeof AdministratorMgmtJobsIndexRoute
+  '/mgmt/staff-directory/': typeof AdministratorMgmtStaffDirectoryIndexRoute
   '/mgmt/jobs/folder-templates/$id': typeof AdministratorMgmtJobsFolderTemplatesIdRoute
-  '/mgmt/access-control/roles': typeof AdministratorMgmtAccessControlRolesIndexRoute
-  '/mgmt/access-control/users': typeof AdministratorMgmtAccessControlUsersIndexRoute
-  '/mgmt/jobs/folder-templates': typeof AdministratorMgmtJobsFolderTemplatesIndexRoute
+  '/mgmt/jobs/folder-templates/': typeof AdministratorMgmtJobsFolderTemplatesIndexRoute
   '/mgmt/access-control/roles/$code/perm-matrix': typeof AdministratorMgmtAccessControlRolesCodePermMatrixRoute
-  '/mgmt/access-control/roles/$code': typeof AdministratorMgmtAccessControlRolesCodeIndexRoute
+  '/mgmt/access-control/roles/$code/': typeof AdministratorMgmtAccessControlRolesCodeIndexRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof WorkspaceWorkbenchIndexRoute
   '/login': typeof AuthLoginRoute
   '/help-center': typeof PublicHelpCenterRoute
   '/overview': typeof WorkspaceOverviewRoute
   '/profile': typeof WorkspaceProfileRoute
   '/schedule': typeof WorkspaceScheduleRoute
-  '/task-summary': typeof WorkspaceTaskSummaryRoute
   '/settings/appearance': typeof SettingsAppearanceRoute
   '/settings/language-and-region': typeof SettingsLanguageAndRegionRoute
   '/settings/login-and-security': typeof SettingsLoginAndSecurityRoute
   '/settings/my-profile': typeof SettingsMyProfileRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
-  '/communities': typeof CommunitiesIndexRoute
   '/settings': typeof SettingsIndexRoute
   '/admin/inbox': typeof AdministratorAdminInboxRoute
   '/admin/schedule': typeof AdministratorAdminScheduleRoute
   '/admin/settings': typeof AdministratorAdminSettingsRoute
   '/financial/invoice-templates': typeof AdministratorFinancialInvoiceTemplatesRoute
-  '/financial/ledger': typeof AdministratorFinancialLedgerRoute
   '/financial/payment-channels': typeof AdministratorFinancialPaymentChannelsRoute
   '/financial/receivables': typeof AdministratorFinancialReceivablesRoute
   '/financial/setting': typeof AdministratorFinancialSettingRoute
-  '/mgmt/invite-member': typeof AdministratorMgmtInviteMemberRoute
   '/mgmt/revenue': typeof AdministratorMgmtRevenueRoute
   '/auth/reset-password': typeof AuthAuthResetPasswordRoute
   '/jobs/$no': typeof WorkspaceJobsNoRoute
   '/project-center/$tab': typeof WorkspaceProjectCenterTabRoute
   '/admin': typeof AdministratorAdminIndexRoute
   '/financial': typeof AdministratorFinancialIndexRoute
-  '/': typeof WorkspaceWorkbenchIndexRoute
   '/jobs': typeof WorkspaceJobsIndexRoute
   '/notifications': typeof WorkspaceNotificationsIndexRoute
   '/project-center': typeof WorkspaceProjectCenterIndexRoute
-  '/communities/$code': typeof CommunitiesCodeIndexRoute
+  '/financial/ledger/$id': typeof AdministratorFinancialLedgerIdRoute
   '/financial/payouts/$no': typeof AdministratorFinancialPayoutsNoRoute
-  '/mgmt/access-control/matrix': typeof AdministratorMgmtAccessControlMatrixRoute
   '/mgmt/access-control/permissions': typeof AdministratorMgmtAccessControlPermissionsRoute
   '/mgmt/clients/$code': typeof AdministratorMgmtClientsCodeRoute
   '/mgmt/departments/$code': typeof AdministratorMgmtDepartmentsCodeRoute
+  '/mgmt/job-titles/$code': typeof AdministratorMgmtJobTitlesCodeRoute
+  '/mgmt/job-types/$id': typeof AdministratorMgmtJobTypesIdRoute
   '/mgmt/jobs/$no': typeof AdministratorMgmtJobsNoRoute
+  '/mgmt/jobs/create': typeof AdministratorMgmtJobsCreateRoute
   '/mgmt/staff-directory/$code': typeof AdministratorMgmtStaffDirectoryCodeRoute
-  '/communities/$code/$topicCode/$postSlug': typeof CommunitiesCodeTopicCodePostSlugRoute
+  '/financial/ledger': typeof AdministratorFinancialLedgerIndexRoute
   '/financial/payouts': typeof AdministratorFinancialPayoutsIndexRoute
   '/mgmt/access-control': typeof AdministratorMgmtAccessControlIndexRoute
   '/mgmt/clients': typeof AdministratorMgmtClientsIndexRoute
   '/mgmt/departments': typeof AdministratorMgmtDepartmentsIndexRoute
   '/mgmt/file-docs': typeof AdministratorMgmtFileDocsIndexRoute
+  '/mgmt/job-titles': typeof AdministratorMgmtJobTitlesIndexRoute
+  '/mgmt/job-types': typeof AdministratorMgmtJobTypesIndexRoute
   '/mgmt/jobs': typeof AdministratorMgmtJobsIndexRoute
   '/mgmt/staff-directory': typeof AdministratorMgmtStaffDirectoryIndexRoute
-  '/communities/$code/$topicCode': typeof CommunitiesCodeTopicCodeIndexRoute
-  '/mgmt/access-control/users/$username': typeof AdministratorMgmtAccessControlUsersUsernameRoute
   '/mgmt/jobs/folder-templates/$id': typeof AdministratorMgmtJobsFolderTemplatesIdRoute
-  '/mgmt/access-control/roles': typeof AdministratorMgmtAccessControlRolesIndexRoute
-  '/mgmt/access-control/users': typeof AdministratorMgmtAccessControlUsersIndexRoute
   '/mgmt/jobs/folder-templates': typeof AdministratorMgmtJobsFolderTemplatesIndexRoute
   '/mgmt/access-control/roles/$code/perm-matrix': typeof AdministratorMgmtAccessControlRolesCodePermMatrixRoute
   '/mgmt/access-control/roles/$code': typeof AdministratorMgmtAccessControlRolesCodeIndexRoute
@@ -562,33 +515,27 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteWithChildren
   '/_public': typeof PublicRouteWithChildren
   '/_workspace': typeof WorkspaceRouteWithChildren
-  '/communities': typeof CommunitiesRouteWithChildren
   '/settings': typeof SettingsRouteWithChildren
-  '/_administrator/financial': typeof AdministratorFinancialRouteWithChildren
   '/_auth/login': typeof AuthLoginRoute
   '/_public/help-center': typeof PublicHelpCenterRoute
   '/_workspace/overview': typeof WorkspaceOverviewRoute
   '/_workspace/profile': typeof WorkspaceProfileRoute
   '/_workspace/project-center': typeof WorkspaceProjectCenterRouteWithChildren
   '/_workspace/schedule': typeof WorkspaceScheduleRoute
-  '/_workspace/task-summary': typeof WorkspaceTaskSummaryRoute
   '/settings/appearance': typeof SettingsAppearanceRoute
   '/settings/language-and-region': typeof SettingsLanguageAndRegionRoute
   '/settings/login-and-security': typeof SettingsLoginAndSecurityRoute
   '/settings/my-profile': typeof SettingsMyProfileRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
-  '/communities/': typeof CommunitiesIndexRoute
   '/settings/': typeof SettingsIndexRoute
   '/_administrator/admin/inbox': typeof AdministratorAdminInboxRoute
   '/_administrator/admin/schedule': typeof AdministratorAdminScheduleRoute
   '/_administrator/admin/settings': typeof AdministratorAdminSettingsRoute
   '/_administrator/financial/invoice-templates': typeof AdministratorFinancialInvoiceTemplatesRoute
-  '/_administrator/financial/ledger': typeof AdministratorFinancialLedgerRoute
   '/_administrator/financial/payment-channels': typeof AdministratorFinancialPaymentChannelsRoute
   '/_administrator/financial/receivables': typeof AdministratorFinancialReceivablesRoute
   '/_administrator/financial/setting': typeof AdministratorFinancialSettingRoute
   '/_administrator/mgmt/access-control': typeof AdministratorMgmtAccessControlRouteWithChildren
-  '/_administrator/mgmt/invite-member': typeof AdministratorMgmtInviteMemberRoute
   '/_administrator/mgmt/revenue': typeof AdministratorMgmtRevenueRoute
   '/_auth/auth/reset-password': typeof AuthAuthResetPasswordRoute
   '/_workspace/jobs/$no': typeof WorkspaceJobsNoRoute
@@ -599,27 +546,27 @@ export interface FileRoutesById {
   '/_workspace/jobs/': typeof WorkspaceJobsIndexRoute
   '/_workspace/notifications/': typeof WorkspaceNotificationsIndexRoute
   '/_workspace/project-center/': typeof WorkspaceProjectCenterIndexRoute
-  '/communities/$code/': typeof CommunitiesCodeIndexRoute
+  '/_administrator/financial/ledger/$id': typeof AdministratorFinancialLedgerIdRoute
   '/_administrator/financial/payouts/$no': typeof AdministratorFinancialPayoutsNoRoute
-  '/_administrator/mgmt/access-control/matrix': typeof AdministratorMgmtAccessControlMatrixRoute
   '/_administrator/mgmt/access-control/permissions': typeof AdministratorMgmtAccessControlPermissionsRoute
   '/_administrator/mgmt/clients/$code': typeof AdministratorMgmtClientsCodeRoute
   '/_administrator/mgmt/departments/$code': typeof AdministratorMgmtDepartmentsCodeRoute
+  '/_administrator/mgmt/job-titles/$code': typeof AdministratorMgmtJobTitlesCodeRoute
+  '/_administrator/mgmt/job-types/$id': typeof AdministratorMgmtJobTypesIdRoute
   '/_administrator/mgmt/jobs/$no': typeof AdministratorMgmtJobsNoRoute
+  '/_administrator/mgmt/jobs/create': typeof AdministratorMgmtJobsCreateRoute
   '/_administrator/mgmt/staff-directory/$code': typeof AdministratorMgmtStaffDirectoryCodeRoute
-  '/communities/$code/$topicCode/$postSlug': typeof CommunitiesCodeTopicCodePostSlugRoute
+  '/_administrator/financial/ledger/': typeof AdministratorFinancialLedgerIndexRoute
   '/_administrator/financial/payouts/': typeof AdministratorFinancialPayoutsIndexRoute
   '/_administrator/mgmt/access-control/': typeof AdministratorMgmtAccessControlIndexRoute
   '/_administrator/mgmt/clients/': typeof AdministratorMgmtClientsIndexRoute
   '/_administrator/mgmt/departments/': typeof AdministratorMgmtDepartmentsIndexRoute
   '/_administrator/mgmt/file-docs/': typeof AdministratorMgmtFileDocsIndexRoute
+  '/_administrator/mgmt/job-titles/': typeof AdministratorMgmtJobTitlesIndexRoute
+  '/_administrator/mgmt/job-types/': typeof AdministratorMgmtJobTypesIndexRoute
   '/_administrator/mgmt/jobs/': typeof AdministratorMgmtJobsIndexRoute
   '/_administrator/mgmt/staff-directory/': typeof AdministratorMgmtStaffDirectoryIndexRoute
-  '/communities/$code/$topicCode/': typeof CommunitiesCodeTopicCodeIndexRoute
-  '/_administrator/mgmt/access-control/users/$username': typeof AdministratorMgmtAccessControlUsersUsernameRoute
   '/_administrator/mgmt/jobs/folder-templates/$id': typeof AdministratorMgmtJobsFolderTemplatesIdRoute
-  '/_administrator/mgmt/access-control/roles/': typeof AdministratorMgmtAccessControlRolesIndexRoute
-  '/_administrator/mgmt/access-control/users/': typeof AdministratorMgmtAccessControlUsersIndexRoute
   '/_administrator/mgmt/jobs/folder-templates/': typeof AdministratorMgmtJobsFolderTemplatesIndexRoute
   '/_administrator/mgmt/access-control/roles/$code/perm-matrix': typeof AdministratorMgmtAccessControlRolesCodePermMatrixRoute
   '/_administrator/mgmt/access-control/roles/$code/': typeof AdministratorMgmtAccessControlRolesCodeIndexRoute
@@ -627,122 +574,112 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/communities'
+    | '/'
     | '/settings'
-    | '/financial'
     | '/login'
     | '/help-center'
     | '/overview'
     | '/profile'
     | '/project-center'
     | '/schedule'
-    | '/task-summary'
     | '/settings/appearance'
     | '/settings/language-and-region'
     | '/settings/login-and-security'
     | '/settings/my-profile'
     | '/settings/notifications'
-    | '/communities/'
     | '/settings/'
     | '/admin/inbox'
     | '/admin/schedule'
     | '/admin/settings'
     | '/financial/invoice-templates'
-    | '/financial/ledger'
     | '/financial/payment-channels'
     | '/financial/receivables'
     | '/financial/setting'
     | '/mgmt/access-control'
-    | '/mgmt/invite-member'
     | '/mgmt/revenue'
     | '/auth/reset-password'
     | '/jobs/$no'
     | '/project-center/$tab'
-    | '/admin'
+    | '/admin/'
     | '/financial/'
-    | '/'
-    | '/jobs'
-    | '/notifications'
+    | '/jobs/'
+    | '/notifications/'
     | '/project-center/'
-    | '/communities/$code'
+    | '/financial/ledger/$id'
     | '/financial/payouts/$no'
-    | '/mgmt/access-control/matrix'
     | '/mgmt/access-control/permissions'
     | '/mgmt/clients/$code'
     | '/mgmt/departments/$code'
+    | '/mgmt/job-titles/$code'
+    | '/mgmt/job-types/$id'
     | '/mgmt/jobs/$no'
+    | '/mgmt/jobs/create'
     | '/mgmt/staff-directory/$code'
-    | '/communities/$code/$topicCode/$postSlug'
-    | '/financial/payouts'
+    | '/financial/ledger/'
+    | '/financial/payouts/'
     | '/mgmt/access-control/'
-    | '/mgmt/clients'
-    | '/mgmt/departments'
-    | '/mgmt/file-docs'
-    | '/mgmt/jobs'
-    | '/mgmt/staff-directory'
-    | '/communities/$code/$topicCode'
-    | '/mgmt/access-control/users/$username'
+    | '/mgmt/clients/'
+    | '/mgmt/departments/'
+    | '/mgmt/file-docs/'
+    | '/mgmt/job-titles/'
+    | '/mgmt/job-types/'
+    | '/mgmt/jobs/'
+    | '/mgmt/staff-directory/'
     | '/mgmt/jobs/folder-templates/$id'
-    | '/mgmt/access-control/roles'
-    | '/mgmt/access-control/users'
-    | '/mgmt/jobs/folder-templates'
+    | '/mgmt/jobs/folder-templates/'
     | '/mgmt/access-control/roles/$code/perm-matrix'
-    | '/mgmt/access-control/roles/$code'
+    | '/mgmt/access-control/roles/$code/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/login'
     | '/help-center'
     | '/overview'
     | '/profile'
     | '/schedule'
-    | '/task-summary'
     | '/settings/appearance'
     | '/settings/language-and-region'
     | '/settings/login-and-security'
     | '/settings/my-profile'
     | '/settings/notifications'
-    | '/communities'
     | '/settings'
     | '/admin/inbox'
     | '/admin/schedule'
     | '/admin/settings'
     | '/financial/invoice-templates'
-    | '/financial/ledger'
     | '/financial/payment-channels'
     | '/financial/receivables'
     | '/financial/setting'
-    | '/mgmt/invite-member'
     | '/mgmt/revenue'
     | '/auth/reset-password'
     | '/jobs/$no'
     | '/project-center/$tab'
     | '/admin'
     | '/financial'
-    | '/'
     | '/jobs'
     | '/notifications'
     | '/project-center'
-    | '/communities/$code'
+    | '/financial/ledger/$id'
     | '/financial/payouts/$no'
-    | '/mgmt/access-control/matrix'
     | '/mgmt/access-control/permissions'
     | '/mgmt/clients/$code'
     | '/mgmt/departments/$code'
+    | '/mgmt/job-titles/$code'
+    | '/mgmt/job-types/$id'
     | '/mgmt/jobs/$no'
+    | '/mgmt/jobs/create'
     | '/mgmt/staff-directory/$code'
-    | '/communities/$code/$topicCode/$postSlug'
+    | '/financial/ledger'
     | '/financial/payouts'
     | '/mgmt/access-control'
     | '/mgmt/clients'
     | '/mgmt/departments'
     | '/mgmt/file-docs'
+    | '/mgmt/job-titles'
+    | '/mgmt/job-types'
     | '/mgmt/jobs'
     | '/mgmt/staff-directory'
-    | '/communities/$code/$topicCode'
-    | '/mgmt/access-control/users/$username'
     | '/mgmt/jobs/folder-templates/$id'
-    | '/mgmt/access-control/roles'
-    | '/mgmt/access-control/users'
     | '/mgmt/jobs/folder-templates'
     | '/mgmt/access-control/roles/$code/perm-matrix'
     | '/mgmt/access-control/roles/$code'
@@ -752,33 +689,27 @@ export interface FileRouteTypes {
     | '/_auth'
     | '/_public'
     | '/_workspace'
-    | '/communities'
     | '/settings'
-    | '/_administrator/financial'
     | '/_auth/login'
     | '/_public/help-center'
     | '/_workspace/overview'
     | '/_workspace/profile'
     | '/_workspace/project-center'
     | '/_workspace/schedule'
-    | '/_workspace/task-summary'
     | '/settings/appearance'
     | '/settings/language-and-region'
     | '/settings/login-and-security'
     | '/settings/my-profile'
     | '/settings/notifications'
-    | '/communities/'
     | '/settings/'
     | '/_administrator/admin/inbox'
     | '/_administrator/admin/schedule'
     | '/_administrator/admin/settings'
     | '/_administrator/financial/invoice-templates'
-    | '/_administrator/financial/ledger'
     | '/_administrator/financial/payment-channels'
     | '/_administrator/financial/receivables'
     | '/_administrator/financial/setting'
     | '/_administrator/mgmt/access-control'
-    | '/_administrator/mgmt/invite-member'
     | '/_administrator/mgmt/revenue'
     | '/_auth/auth/reset-password'
     | '/_workspace/jobs/$no'
@@ -789,27 +720,27 @@ export interface FileRouteTypes {
     | '/_workspace/jobs/'
     | '/_workspace/notifications/'
     | '/_workspace/project-center/'
-    | '/communities/$code/'
+    | '/_administrator/financial/ledger/$id'
     | '/_administrator/financial/payouts/$no'
-    | '/_administrator/mgmt/access-control/matrix'
     | '/_administrator/mgmt/access-control/permissions'
     | '/_administrator/mgmt/clients/$code'
     | '/_administrator/mgmt/departments/$code'
+    | '/_administrator/mgmt/job-titles/$code'
+    | '/_administrator/mgmt/job-types/$id'
     | '/_administrator/mgmt/jobs/$no'
+    | '/_administrator/mgmt/jobs/create'
     | '/_administrator/mgmt/staff-directory/$code'
-    | '/communities/$code/$topicCode/$postSlug'
+    | '/_administrator/financial/ledger/'
     | '/_administrator/financial/payouts/'
     | '/_administrator/mgmt/access-control/'
     | '/_administrator/mgmt/clients/'
     | '/_administrator/mgmt/departments/'
     | '/_administrator/mgmt/file-docs/'
+    | '/_administrator/mgmt/job-titles/'
+    | '/_administrator/mgmt/job-types/'
     | '/_administrator/mgmt/jobs/'
     | '/_administrator/mgmt/staff-directory/'
-    | '/communities/$code/$topicCode/'
-    | '/_administrator/mgmt/access-control/users/$username'
     | '/_administrator/mgmt/jobs/folder-templates/$id'
-    | '/_administrator/mgmt/access-control/roles/'
-    | '/_administrator/mgmt/access-control/users/'
     | '/_administrator/mgmt/jobs/folder-templates/'
     | '/_administrator/mgmt/access-control/roles/$code/perm-matrix'
     | '/_administrator/mgmt/access-control/roles/$code/'
@@ -820,7 +751,6 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   PublicRoute: typeof PublicRouteWithChildren
   WorkspaceRoute: typeof WorkspaceRouteWithChildren
-  CommunitiesRoute: typeof CommunitiesRouteWithChildren
   SettingsRoute: typeof SettingsRouteWithChildren
 }
 
@@ -833,38 +763,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/communities': {
-      id: '/communities'
-      path: '/communities'
-      fullPath: '/communities'
-      preLoaderRoute: typeof CommunitiesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_workspace': {
       id: '/_workspace'
       path: ''
-      fullPath: ''
+      fullPath: '/'
       preLoaderRoute: typeof WorkspaceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_public': {
       id: '/_public'
       path: ''
-      fullPath: ''
+      fullPath: '/'
       preLoaderRoute: typeof PublicRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_auth': {
       id: '/_auth'
       path: ''
-      fullPath: ''
+      fullPath: '/'
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_administrator': {
       id: '/_administrator'
       path: ''
-      fullPath: ''
+      fullPath: '/'
       preLoaderRoute: typeof AdministratorRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -874,13 +797,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/settings/'
       preLoaderRoute: typeof SettingsIndexRouteImport
       parentRoute: typeof SettingsRoute
-    }
-    '/communities/': {
-      id: '/communities/'
-      path: '/'
-      fullPath: '/communities/'
-      preLoaderRoute: typeof CommunitiesIndexRouteImport
-      parentRoute: typeof CommunitiesRoute
     }
     '/settings/notifications': {
       id: '/settings/notifications'
@@ -916,13 +832,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/settings/appearance'
       preLoaderRoute: typeof SettingsAppearanceRouteImport
       parentRoute: typeof SettingsRoute
-    }
-    '/_workspace/task-summary': {
-      id: '/_workspace/task-summary'
-      path: '/task-summary'
-      fullPath: '/task-summary'
-      preLoaderRoute: typeof WorkspaceTaskSummaryRouteImport
-      parentRoute: typeof WorkspaceRoute
     }
     '/_workspace/schedule': {
       id: '/_workspace/schedule'
@@ -966,20 +875,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/_administrator/financial': {
-      id: '/_administrator/financial'
-      path: '/financial'
-      fullPath: '/financial'
-      preLoaderRoute: typeof AdministratorFinancialRouteImport
-      parentRoute: typeof AdministratorRoute
-    }
-    '/communities/$code/': {
-      id: '/communities/$code/'
-      path: '/$code'
-      fullPath: '/communities/$code'
-      preLoaderRoute: typeof CommunitiesCodeIndexRouteImport
-      parentRoute: typeof CommunitiesRoute
-    }
     '/_workspace/project-center/': {
       id: '/_workspace/project-center/'
       path: '/'
@@ -990,14 +885,14 @@ declare module '@tanstack/react-router' {
     '/_workspace/notifications/': {
       id: '/_workspace/notifications/'
       path: '/notifications'
-      fullPath: '/notifications'
+      fullPath: '/notifications/'
       preLoaderRoute: typeof WorkspaceNotificationsIndexRouteImport
       parentRoute: typeof WorkspaceRoute
     }
     '/_workspace/jobs/': {
       id: '/_workspace/jobs/'
       path: '/jobs'
-      fullPath: '/jobs'
+      fullPath: '/jobs/'
       preLoaderRoute: typeof WorkspaceJobsIndexRouteImport
       parentRoute: typeof WorkspaceRoute
     }
@@ -1010,15 +905,15 @@ declare module '@tanstack/react-router' {
     }
     '/_administrator/financial/': {
       id: '/_administrator/financial/'
-      path: '/'
+      path: '/financial'
       fullPath: '/financial/'
       preLoaderRoute: typeof AdministratorFinancialIndexRouteImport
-      parentRoute: typeof AdministratorFinancialRoute
+      parentRoute: typeof AdministratorRoute
     }
     '/_administrator/admin/': {
       id: '/_administrator/admin/'
       path: '/admin'
-      fullPath: '/admin'
+      fullPath: '/admin/'
       preLoaderRoute: typeof AdministratorAdminIndexRouteImport
       parentRoute: typeof AdministratorRoute
     }
@@ -1050,13 +945,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdministratorMgmtRevenueRouteImport
       parentRoute: typeof AdministratorRoute
     }
-    '/_administrator/mgmt/invite-member': {
-      id: '/_administrator/mgmt/invite-member'
-      path: '/mgmt/invite-member'
-      fullPath: '/mgmt/invite-member'
-      preLoaderRoute: typeof AdministratorMgmtInviteMemberRouteImport
-      parentRoute: typeof AdministratorRoute
-    }
     '/_administrator/mgmt/access-control': {
       id: '/_administrator/mgmt/access-control'
       path: '/mgmt/access-control'
@@ -1066,38 +954,31 @@ declare module '@tanstack/react-router' {
     }
     '/_administrator/financial/setting': {
       id: '/_administrator/financial/setting'
-      path: '/setting'
+      path: '/financial/setting'
       fullPath: '/financial/setting'
       preLoaderRoute: typeof AdministratorFinancialSettingRouteImport
-      parentRoute: typeof AdministratorFinancialRoute
+      parentRoute: typeof AdministratorRoute
     }
     '/_administrator/financial/receivables': {
       id: '/_administrator/financial/receivables'
-      path: '/receivables'
+      path: '/financial/receivables'
       fullPath: '/financial/receivables'
       preLoaderRoute: typeof AdministratorFinancialReceivablesRouteImport
-      parentRoute: typeof AdministratorFinancialRoute
+      parentRoute: typeof AdministratorRoute
     }
     '/_administrator/financial/payment-channels': {
       id: '/_administrator/financial/payment-channels'
-      path: '/payment-channels'
+      path: '/financial/payment-channels'
       fullPath: '/financial/payment-channels'
       preLoaderRoute: typeof AdministratorFinancialPaymentChannelsRouteImport
-      parentRoute: typeof AdministratorFinancialRoute
-    }
-    '/_administrator/financial/ledger': {
-      id: '/_administrator/financial/ledger'
-      path: '/ledger'
-      fullPath: '/financial/ledger'
-      preLoaderRoute: typeof AdministratorFinancialLedgerRouteImport
-      parentRoute: typeof AdministratorFinancialRoute
+      parentRoute: typeof AdministratorRoute
     }
     '/_administrator/financial/invoice-templates': {
       id: '/_administrator/financial/invoice-templates'
-      path: '/invoice-templates'
+      path: '/financial/invoice-templates'
       fullPath: '/financial/invoice-templates'
       preLoaderRoute: typeof AdministratorFinancialInvoiceTemplatesRouteImport
-      parentRoute: typeof AdministratorFinancialRoute
+      parentRoute: typeof AdministratorRoute
     }
     '/_administrator/admin/settings': {
       id: '/_administrator/admin/settings'
@@ -1120,45 +1001,52 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdministratorAdminInboxRouteImport
       parentRoute: typeof AdministratorRoute
     }
-    '/communities/$code/$topicCode/': {
-      id: '/communities/$code/$topicCode/'
-      path: '/$code/$topicCode'
-      fullPath: '/communities/$code/$topicCode'
-      preLoaderRoute: typeof CommunitiesCodeTopicCodeIndexRouteImport
-      parentRoute: typeof CommunitiesRoute
-    }
     '/_administrator/mgmt/staff-directory/': {
       id: '/_administrator/mgmt/staff-directory/'
       path: '/mgmt/staff-directory'
-      fullPath: '/mgmt/staff-directory'
+      fullPath: '/mgmt/staff-directory/'
       preLoaderRoute: typeof AdministratorMgmtStaffDirectoryIndexRouteImport
       parentRoute: typeof AdministratorRoute
     }
     '/_administrator/mgmt/jobs/': {
       id: '/_administrator/mgmt/jobs/'
       path: '/mgmt/jobs'
-      fullPath: '/mgmt/jobs'
+      fullPath: '/mgmt/jobs/'
       preLoaderRoute: typeof AdministratorMgmtJobsIndexRouteImport
+      parentRoute: typeof AdministratorRoute
+    }
+    '/_administrator/mgmt/job-types/': {
+      id: '/_administrator/mgmt/job-types/'
+      path: '/mgmt/job-types'
+      fullPath: '/mgmt/job-types/'
+      preLoaderRoute: typeof AdministratorMgmtJobTypesIndexRouteImport
+      parentRoute: typeof AdministratorRoute
+    }
+    '/_administrator/mgmt/job-titles/': {
+      id: '/_administrator/mgmt/job-titles/'
+      path: '/mgmt/job-titles'
+      fullPath: '/mgmt/job-titles/'
+      preLoaderRoute: typeof AdministratorMgmtJobTitlesIndexRouteImport
       parentRoute: typeof AdministratorRoute
     }
     '/_administrator/mgmt/file-docs/': {
       id: '/_administrator/mgmt/file-docs/'
       path: '/mgmt/file-docs'
-      fullPath: '/mgmt/file-docs'
+      fullPath: '/mgmt/file-docs/'
       preLoaderRoute: typeof AdministratorMgmtFileDocsIndexRouteImport
       parentRoute: typeof AdministratorRoute
     }
     '/_administrator/mgmt/departments/': {
       id: '/_administrator/mgmt/departments/'
       path: '/mgmt/departments'
-      fullPath: '/mgmt/departments'
+      fullPath: '/mgmt/departments/'
       preLoaderRoute: typeof AdministratorMgmtDepartmentsIndexRouteImport
       parentRoute: typeof AdministratorRoute
     }
     '/_administrator/mgmt/clients/': {
       id: '/_administrator/mgmt/clients/'
       path: '/mgmt/clients'
-      fullPath: '/mgmt/clients'
+      fullPath: '/mgmt/clients/'
       preLoaderRoute: typeof AdministratorMgmtClientsIndexRouteImport
       parentRoute: typeof AdministratorRoute
     }
@@ -1171,17 +1059,17 @@ declare module '@tanstack/react-router' {
     }
     '/_administrator/financial/payouts/': {
       id: '/_administrator/financial/payouts/'
-      path: '/payouts'
-      fullPath: '/financial/payouts'
+      path: '/financial/payouts'
+      fullPath: '/financial/payouts/'
       preLoaderRoute: typeof AdministratorFinancialPayoutsIndexRouteImport
-      parentRoute: typeof AdministratorFinancialRoute
+      parentRoute: typeof AdministratorRoute
     }
-    '/communities/$code/$topicCode/$postSlug': {
-      id: '/communities/$code/$topicCode/$postSlug'
-      path: '/$code/$topicCode/$postSlug'
-      fullPath: '/communities/$code/$topicCode/$postSlug'
-      preLoaderRoute: typeof CommunitiesCodeTopicCodePostSlugRouteImport
-      parentRoute: typeof CommunitiesRoute
+    '/_administrator/financial/ledger/': {
+      id: '/_administrator/financial/ledger/'
+      path: '/financial/ledger'
+      fullPath: '/financial/ledger/'
+      preLoaderRoute: typeof AdministratorFinancialLedgerIndexRouteImport
+      parentRoute: typeof AdministratorRoute
     }
     '/_administrator/mgmt/staff-directory/$code': {
       id: '/_administrator/mgmt/staff-directory/$code'
@@ -1190,11 +1078,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdministratorMgmtStaffDirectoryCodeRouteImport
       parentRoute: typeof AdministratorRoute
     }
+    '/_administrator/mgmt/jobs/create': {
+      id: '/_administrator/mgmt/jobs/create'
+      path: '/mgmt/jobs/create'
+      fullPath: '/mgmt/jobs/create'
+      preLoaderRoute: typeof AdministratorMgmtJobsCreateRouteImport
+      parentRoute: typeof AdministratorRoute
+    }
     '/_administrator/mgmt/jobs/$no': {
       id: '/_administrator/mgmt/jobs/$no'
       path: '/mgmt/jobs/$no'
       fullPath: '/mgmt/jobs/$no'
       preLoaderRoute: typeof AdministratorMgmtJobsNoRouteImport
+      parentRoute: typeof AdministratorRoute
+    }
+    '/_administrator/mgmt/job-types/$id': {
+      id: '/_administrator/mgmt/job-types/$id'
+      path: '/mgmt/job-types/$id'
+      fullPath: '/mgmt/job-types/$id'
+      preLoaderRoute: typeof AdministratorMgmtJobTypesIdRouteImport
+      parentRoute: typeof AdministratorRoute
+    }
+    '/_administrator/mgmt/job-titles/$code': {
+      id: '/_administrator/mgmt/job-titles/$code'
+      path: '/mgmt/job-titles/$code'
+      fullPath: '/mgmt/job-titles/$code'
+      preLoaderRoute: typeof AdministratorMgmtJobTitlesCodeRouteImport
       parentRoute: typeof AdministratorRoute
     }
     '/_administrator/mgmt/departments/$code': {
@@ -1218,40 +1127,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdministratorMgmtAccessControlPermissionsRouteImport
       parentRoute: typeof AdministratorMgmtAccessControlRoute
     }
-    '/_administrator/mgmt/access-control/matrix': {
-      id: '/_administrator/mgmt/access-control/matrix'
-      path: '/matrix'
-      fullPath: '/mgmt/access-control/matrix'
-      preLoaderRoute: typeof AdministratorMgmtAccessControlMatrixRouteImport
-      parentRoute: typeof AdministratorMgmtAccessControlRoute
-    }
     '/_administrator/financial/payouts/$no': {
       id: '/_administrator/financial/payouts/$no'
-      path: '/payouts/$no'
+      path: '/financial/payouts/$no'
       fullPath: '/financial/payouts/$no'
       preLoaderRoute: typeof AdministratorFinancialPayoutsNoRouteImport
-      parentRoute: typeof AdministratorFinancialRoute
+      parentRoute: typeof AdministratorRoute
+    }
+    '/_administrator/financial/ledger/$id': {
+      id: '/_administrator/financial/ledger/$id'
+      path: '/financial/ledger/$id'
+      fullPath: '/financial/ledger/$id'
+      preLoaderRoute: typeof AdministratorFinancialLedgerIdRouteImport
+      parentRoute: typeof AdministratorRoute
     }
     '/_administrator/mgmt/jobs/folder-templates/': {
       id: '/_administrator/mgmt/jobs/folder-templates/'
       path: '/mgmt/jobs/folder-templates'
-      fullPath: '/mgmt/jobs/folder-templates'
+      fullPath: '/mgmt/jobs/folder-templates/'
       preLoaderRoute: typeof AdministratorMgmtJobsFolderTemplatesIndexRouteImport
       parentRoute: typeof AdministratorRoute
-    }
-    '/_administrator/mgmt/access-control/users/': {
-      id: '/_administrator/mgmt/access-control/users/'
-      path: '/users'
-      fullPath: '/mgmt/access-control/users'
-      preLoaderRoute: typeof AdministratorMgmtAccessControlUsersIndexRouteImport
-      parentRoute: typeof AdministratorMgmtAccessControlRoute
-    }
-    '/_administrator/mgmt/access-control/roles/': {
-      id: '/_administrator/mgmt/access-control/roles/'
-      path: '/roles'
-      fullPath: '/mgmt/access-control/roles'
-      preLoaderRoute: typeof AdministratorMgmtAccessControlRolesIndexRouteImport
-      parentRoute: typeof AdministratorMgmtAccessControlRoute
     }
     '/_administrator/mgmt/jobs/folder-templates/$id': {
       id: '/_administrator/mgmt/jobs/folder-templates/$id'
@@ -1260,17 +1155,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdministratorMgmtJobsFolderTemplatesIdRouteImport
       parentRoute: typeof AdministratorRoute
     }
-    '/_administrator/mgmt/access-control/users/$username': {
-      id: '/_administrator/mgmt/access-control/users/$username'
-      path: '/users/$username'
-      fullPath: '/mgmt/access-control/users/$username'
-      preLoaderRoute: typeof AdministratorMgmtAccessControlUsersUsernameRouteImport
-      parentRoute: typeof AdministratorMgmtAccessControlRoute
-    }
     '/_administrator/mgmt/access-control/roles/$code/': {
       id: '/_administrator/mgmt/access-control/roles/$code/'
       path: '/roles/$code'
-      fullPath: '/mgmt/access-control/roles/$code'
+      fullPath: '/mgmt/access-control/roles/$code/'
       preLoaderRoute: typeof AdministratorMgmtAccessControlRolesCodeIndexRouteImport
       parentRoute: typeof AdministratorMgmtAccessControlRoute
     }
@@ -1284,63 +1172,19 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface AdministratorFinancialRouteChildren {
-  AdministratorFinancialInvoiceTemplatesRoute: typeof AdministratorFinancialInvoiceTemplatesRoute
-  AdministratorFinancialLedgerRoute: typeof AdministratorFinancialLedgerRoute
-  AdministratorFinancialPaymentChannelsRoute: typeof AdministratorFinancialPaymentChannelsRoute
-  AdministratorFinancialReceivablesRoute: typeof AdministratorFinancialReceivablesRoute
-  AdministratorFinancialSettingRoute: typeof AdministratorFinancialSettingRoute
-  AdministratorFinancialIndexRoute: typeof AdministratorFinancialIndexRoute
-  AdministratorFinancialPayoutsNoRoute: typeof AdministratorFinancialPayoutsNoRoute
-  AdministratorFinancialPayoutsIndexRoute: typeof AdministratorFinancialPayoutsIndexRoute
-}
-
-const AdministratorFinancialRouteChildren: AdministratorFinancialRouteChildren =
-  {
-    AdministratorFinancialInvoiceTemplatesRoute:
-      AdministratorFinancialInvoiceTemplatesRoute,
-    AdministratorFinancialLedgerRoute: AdministratorFinancialLedgerRoute,
-    AdministratorFinancialPaymentChannelsRoute:
-      AdministratorFinancialPaymentChannelsRoute,
-    AdministratorFinancialReceivablesRoute:
-      AdministratorFinancialReceivablesRoute,
-    AdministratorFinancialSettingRoute: AdministratorFinancialSettingRoute,
-    AdministratorFinancialIndexRoute: AdministratorFinancialIndexRoute,
-    AdministratorFinancialPayoutsNoRoute: AdministratorFinancialPayoutsNoRoute,
-    AdministratorFinancialPayoutsIndexRoute:
-      AdministratorFinancialPayoutsIndexRoute,
-  }
-
-const AdministratorFinancialRouteWithChildren =
-  AdministratorFinancialRoute._addFileChildren(
-    AdministratorFinancialRouteChildren,
-  )
-
 interface AdministratorMgmtAccessControlRouteChildren {
-  AdministratorMgmtAccessControlMatrixRoute: typeof AdministratorMgmtAccessControlMatrixRoute
   AdministratorMgmtAccessControlPermissionsRoute: typeof AdministratorMgmtAccessControlPermissionsRoute
   AdministratorMgmtAccessControlIndexRoute: typeof AdministratorMgmtAccessControlIndexRoute
-  AdministratorMgmtAccessControlUsersUsernameRoute: typeof AdministratorMgmtAccessControlUsersUsernameRoute
-  AdministratorMgmtAccessControlRolesIndexRoute: typeof AdministratorMgmtAccessControlRolesIndexRoute
-  AdministratorMgmtAccessControlUsersIndexRoute: typeof AdministratorMgmtAccessControlUsersIndexRoute
   AdministratorMgmtAccessControlRolesCodePermMatrixRoute: typeof AdministratorMgmtAccessControlRolesCodePermMatrixRoute
   AdministratorMgmtAccessControlRolesCodeIndexRoute: typeof AdministratorMgmtAccessControlRolesCodeIndexRoute
 }
 
 const AdministratorMgmtAccessControlRouteChildren: AdministratorMgmtAccessControlRouteChildren =
   {
-    AdministratorMgmtAccessControlMatrixRoute:
-      AdministratorMgmtAccessControlMatrixRoute,
     AdministratorMgmtAccessControlPermissionsRoute:
       AdministratorMgmtAccessControlPermissionsRoute,
     AdministratorMgmtAccessControlIndexRoute:
       AdministratorMgmtAccessControlIndexRoute,
-    AdministratorMgmtAccessControlUsersUsernameRoute:
-      AdministratorMgmtAccessControlUsersUsernameRoute,
-    AdministratorMgmtAccessControlRolesIndexRoute:
-      AdministratorMgmtAccessControlRolesIndexRoute,
-    AdministratorMgmtAccessControlUsersIndexRoute:
-      AdministratorMgmtAccessControlUsersIndexRoute,
     AdministratorMgmtAccessControlRolesCodePermMatrixRoute:
       AdministratorMgmtAccessControlRolesCodePermMatrixRoute,
     AdministratorMgmtAccessControlRolesCodeIndexRoute:
@@ -1353,21 +1197,33 @@ const AdministratorMgmtAccessControlRouteWithChildren =
   )
 
 interface AdministratorRouteChildren {
-  AdministratorFinancialRoute: typeof AdministratorFinancialRouteWithChildren
   AdministratorAdminInboxRoute: typeof AdministratorAdminInboxRoute
   AdministratorAdminScheduleRoute: typeof AdministratorAdminScheduleRoute
   AdministratorAdminSettingsRoute: typeof AdministratorAdminSettingsRoute
+  AdministratorFinancialInvoiceTemplatesRoute: typeof AdministratorFinancialInvoiceTemplatesRoute
+  AdministratorFinancialPaymentChannelsRoute: typeof AdministratorFinancialPaymentChannelsRoute
+  AdministratorFinancialReceivablesRoute: typeof AdministratorFinancialReceivablesRoute
+  AdministratorFinancialSettingRoute: typeof AdministratorFinancialSettingRoute
   AdministratorMgmtAccessControlRoute: typeof AdministratorMgmtAccessControlRouteWithChildren
-  AdministratorMgmtInviteMemberRoute: typeof AdministratorMgmtInviteMemberRoute
   AdministratorMgmtRevenueRoute: typeof AdministratorMgmtRevenueRoute
   AdministratorAdminIndexRoute: typeof AdministratorAdminIndexRoute
+  AdministratorFinancialIndexRoute: typeof AdministratorFinancialIndexRoute
+  AdministratorFinancialLedgerIdRoute: typeof AdministratorFinancialLedgerIdRoute
+  AdministratorFinancialPayoutsNoRoute: typeof AdministratorFinancialPayoutsNoRoute
   AdministratorMgmtClientsCodeRoute: typeof AdministratorMgmtClientsCodeRoute
   AdministratorMgmtDepartmentsCodeRoute: typeof AdministratorMgmtDepartmentsCodeRoute
+  AdministratorMgmtJobTitlesCodeRoute: typeof AdministratorMgmtJobTitlesCodeRoute
+  AdministratorMgmtJobTypesIdRoute: typeof AdministratorMgmtJobTypesIdRoute
   AdministratorMgmtJobsNoRoute: typeof AdministratorMgmtJobsNoRoute
+  AdministratorMgmtJobsCreateRoute: typeof AdministratorMgmtJobsCreateRoute
   AdministratorMgmtStaffDirectoryCodeRoute: typeof AdministratorMgmtStaffDirectoryCodeRoute
+  AdministratorFinancialLedgerIndexRoute: typeof AdministratorFinancialLedgerIndexRoute
+  AdministratorFinancialPayoutsIndexRoute: typeof AdministratorFinancialPayoutsIndexRoute
   AdministratorMgmtClientsIndexRoute: typeof AdministratorMgmtClientsIndexRoute
   AdministratorMgmtDepartmentsIndexRoute: typeof AdministratorMgmtDepartmentsIndexRoute
   AdministratorMgmtFileDocsIndexRoute: typeof AdministratorMgmtFileDocsIndexRoute
+  AdministratorMgmtJobTitlesIndexRoute: typeof AdministratorMgmtJobTitlesIndexRoute
+  AdministratorMgmtJobTypesIndexRoute: typeof AdministratorMgmtJobTypesIndexRoute
   AdministratorMgmtJobsIndexRoute: typeof AdministratorMgmtJobsIndexRoute
   AdministratorMgmtStaffDirectoryIndexRoute: typeof AdministratorMgmtStaffDirectoryIndexRoute
   AdministratorMgmtJobsFolderTemplatesIdRoute: typeof AdministratorMgmtJobsFolderTemplatesIdRoute
@@ -1375,24 +1231,41 @@ interface AdministratorRouteChildren {
 }
 
 const AdministratorRouteChildren: AdministratorRouteChildren = {
-  AdministratorFinancialRoute: AdministratorFinancialRouteWithChildren,
   AdministratorAdminInboxRoute: AdministratorAdminInboxRoute,
   AdministratorAdminScheduleRoute: AdministratorAdminScheduleRoute,
   AdministratorAdminSettingsRoute: AdministratorAdminSettingsRoute,
+  AdministratorFinancialInvoiceTemplatesRoute:
+    AdministratorFinancialInvoiceTemplatesRoute,
+  AdministratorFinancialPaymentChannelsRoute:
+    AdministratorFinancialPaymentChannelsRoute,
+  AdministratorFinancialReceivablesRoute:
+    AdministratorFinancialReceivablesRoute,
+  AdministratorFinancialSettingRoute: AdministratorFinancialSettingRoute,
   AdministratorMgmtAccessControlRoute:
     AdministratorMgmtAccessControlRouteWithChildren,
-  AdministratorMgmtInviteMemberRoute: AdministratorMgmtInviteMemberRoute,
   AdministratorMgmtRevenueRoute: AdministratorMgmtRevenueRoute,
   AdministratorAdminIndexRoute: AdministratorAdminIndexRoute,
+  AdministratorFinancialIndexRoute: AdministratorFinancialIndexRoute,
+  AdministratorFinancialLedgerIdRoute: AdministratorFinancialLedgerIdRoute,
+  AdministratorFinancialPayoutsNoRoute: AdministratorFinancialPayoutsNoRoute,
   AdministratorMgmtClientsCodeRoute: AdministratorMgmtClientsCodeRoute,
   AdministratorMgmtDepartmentsCodeRoute: AdministratorMgmtDepartmentsCodeRoute,
+  AdministratorMgmtJobTitlesCodeRoute: AdministratorMgmtJobTitlesCodeRoute,
+  AdministratorMgmtJobTypesIdRoute: AdministratorMgmtJobTypesIdRoute,
   AdministratorMgmtJobsNoRoute: AdministratorMgmtJobsNoRoute,
+  AdministratorMgmtJobsCreateRoute: AdministratorMgmtJobsCreateRoute,
   AdministratorMgmtStaffDirectoryCodeRoute:
     AdministratorMgmtStaffDirectoryCodeRoute,
+  AdministratorFinancialLedgerIndexRoute:
+    AdministratorFinancialLedgerIndexRoute,
+  AdministratorFinancialPayoutsIndexRoute:
+    AdministratorFinancialPayoutsIndexRoute,
   AdministratorMgmtClientsIndexRoute: AdministratorMgmtClientsIndexRoute,
   AdministratorMgmtDepartmentsIndexRoute:
     AdministratorMgmtDepartmentsIndexRoute,
   AdministratorMgmtFileDocsIndexRoute: AdministratorMgmtFileDocsIndexRoute,
+  AdministratorMgmtJobTitlesIndexRoute: AdministratorMgmtJobTitlesIndexRoute,
+  AdministratorMgmtJobTypesIndexRoute: AdministratorMgmtJobTypesIndexRoute,
   AdministratorMgmtJobsIndexRoute: AdministratorMgmtJobsIndexRoute,
   AdministratorMgmtStaffDirectoryIndexRoute:
     AdministratorMgmtStaffDirectoryIndexRoute,
@@ -1450,7 +1323,6 @@ interface WorkspaceRouteChildren {
   WorkspaceProfileRoute: typeof WorkspaceProfileRoute
   WorkspaceProjectCenterRoute: typeof WorkspaceProjectCenterRouteWithChildren
   WorkspaceScheduleRoute: typeof WorkspaceScheduleRoute
-  WorkspaceTaskSummaryRoute: typeof WorkspaceTaskSummaryRoute
   WorkspaceJobsNoRoute: typeof WorkspaceJobsNoRoute
   WorkspaceWorkbenchIndexRoute: typeof WorkspaceWorkbenchIndexRoute
   WorkspaceJobsIndexRoute: typeof WorkspaceJobsIndexRoute
@@ -1462,7 +1334,6 @@ const WorkspaceRouteChildren: WorkspaceRouteChildren = {
   WorkspaceProfileRoute: WorkspaceProfileRoute,
   WorkspaceProjectCenterRoute: WorkspaceProjectCenterRouteWithChildren,
   WorkspaceScheduleRoute: WorkspaceScheduleRoute,
-  WorkspaceTaskSummaryRoute: WorkspaceTaskSummaryRoute,
   WorkspaceJobsNoRoute: WorkspaceJobsNoRoute,
   WorkspaceWorkbenchIndexRoute: WorkspaceWorkbenchIndexRoute,
   WorkspaceJobsIndexRoute: WorkspaceJobsIndexRoute,
@@ -1471,24 +1342,6 @@ const WorkspaceRouteChildren: WorkspaceRouteChildren = {
 
 const WorkspaceRouteWithChildren = WorkspaceRoute._addFileChildren(
   WorkspaceRouteChildren,
-)
-
-interface CommunitiesRouteChildren {
-  CommunitiesIndexRoute: typeof CommunitiesIndexRoute
-  CommunitiesCodeIndexRoute: typeof CommunitiesCodeIndexRoute
-  CommunitiesCodeTopicCodePostSlugRoute: typeof CommunitiesCodeTopicCodePostSlugRoute
-  CommunitiesCodeTopicCodeIndexRoute: typeof CommunitiesCodeTopicCodeIndexRoute
-}
-
-const CommunitiesRouteChildren: CommunitiesRouteChildren = {
-  CommunitiesIndexRoute: CommunitiesIndexRoute,
-  CommunitiesCodeIndexRoute: CommunitiesCodeIndexRoute,
-  CommunitiesCodeTopicCodePostSlugRoute: CommunitiesCodeTopicCodePostSlugRoute,
-  CommunitiesCodeTopicCodeIndexRoute: CommunitiesCodeTopicCodeIndexRoute,
-}
-
-const CommunitiesRouteWithChildren = CommunitiesRoute._addFileChildren(
-  CommunitiesRouteChildren,
 )
 
 interface SettingsRouteChildren {
@@ -1518,7 +1371,6 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   PublicRoute: PublicRouteWithChildren,
   WorkspaceRoute: WorkspaceRouteWithChildren,
-  CommunitiesRoute: CommunitiesRouteWithChildren,
   SettingsRoute: SettingsRouteWithChildren,
 }
 export const routeTree = rootRouteImport

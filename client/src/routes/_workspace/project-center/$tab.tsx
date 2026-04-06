@@ -72,7 +72,6 @@ export const Route = createFileRoute('/_workspace/project-center/$tab')({
             jobsListOptions({
                 ...deps.search,
                 tab: params.tab,
-                hideFinishItems,
             })
         )
     },

@@ -1,16 +1,24 @@
+import { APP_PERMISSIONS, INTERNAL_URLS, profileOptions } from '@/lib'
+import { jobsPendingPayoutsOptions, logoutOptions } from '@/lib/queries'
 import {
+    addToast,
     Avatar,
     Divider,
     User as HeroUser,
+    Listbox,
+    ListboxItem,
+    ListboxSection,
     Popover,
     PopoverContent,
     PopoverTrigger,
+    Tooltip,
 } from '@heroui/react'
-import { useSuspenseQuery } from '@tanstack/react-query'
-import { Link, useRouterState } from '@tanstack/react-router'
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query'
+import { Link, useRouter, useRouterState } from '@tanstack/react-router'
 import {
     BadgeDollarSignIcon,
     BanknoteArrowUpIcon,
+    BriefcaseBusiness,
     BriefcaseIcon,
     Building2Icon,
     CalendarRangeIcon,
@@ -18,26 +26,22 @@ import {
     ChevronLeft,
     ChevronRight,
     CogIcon,
-    CreditCard,
+    ComponentIcon,
     FolderGit2Icon,
     HandshakeIcon,
     LandmarkIcon,
     LayoutGridIcon,
-    LogOut,
-    Search,
+    LogOutIcon,
     Settings as SettingsIcon,
     ShieldUser,
-    User,
+    User2Icon,
     UsersRoundIcon,
     WalletIcon,
 } from 'lucide-react'
 import React from 'react'
-
-import { INTERNAL_URLS, profileOptions } from '@/lib'
-import { jobsPendingPayoutsOptions } from '../../../../lib/queries'
+import { usePermission } from '../../../hooks'
 import { toggleAdminLeftSidebar } from '../../../stores'
 import CadsquadLogo from '../../CadsquadLogo'
-import { HeroTooltip } from '../../ui/hero-tooltip'
 import { ScrollArea, ScrollBar } from '../../ui/scroll-area'
 
 // --- Sidebar Item Component ---
@@ -64,11 +68,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
     const isActive = defaultActive || pathname === url
 
     return (
-        <HeroTooltip
-            isDisabled={!isCollapsed}
-            content={label}
-            placement="right"
-        >
+        <Tooltip isDisabled={!isCollapsed} content={label} placement="right">
             <Link to={url} className="block group">
                 <div
                     className={`
@@ -105,7 +105,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                         ))}
                 </div>
             </Link>
-        </HeroTooltip>
+        </Tooltip>
     )
 }
 
@@ -115,13 +115,31 @@ export const AdminSidebar = ({
 }: {
     isCollapsed?: boolean
 }) => {
-    const { data: pendingPayoutJobs } = useSuspenseQuery({
+    const router = useRouter()
+    const logout = useMutation(logoutOptions)
+    const {
+        data: { pendingPayouts },
+    } = useSuspenseQuery({
         ...jobsPendingPayoutsOptions(),
     })
 
     const {
         data: { profile },
     } = useSuspenseQuery(profileOptions())
+
+    const { hasPermission, hasSomePermissions } = usePermission()
+
+    const handleLogout = async () => {
+        logout.mutateAsync().then(() => {
+            addToast({
+                title: 'Logout successfully!',
+                color: 'success',
+            })
+            router.navigate({
+                href: INTERNAL_URLS.login,
+            })
+        })
+    }
 
     return (
         <aside
@@ -137,7 +155,7 @@ export const AdminSidebar = ({
                         canRedirect={false}
                     />
                     {!isCollapsed && (
-                        <p className="font-quicksand text-xl text-text-default group-hover:underline">
+                        <p className="text-xl font-quicksand text-text-default group-hover:underline">
                             Admin
                         </p>
                     )}
@@ -164,10 +182,10 @@ export const AdminSidebar = ({
                             <Avatar src={profile?.avatar} />
                             {!isCollapsed && (
                                 <div className="flex-1 overflow-hidden">
-                                    <p className="font-medium text-text-default truncate leading-tight">
+                                    <p className="font-medium leading-tight truncate text-text-default">
                                         {profile?.displayName}
                                     </p>
-                                    <p className="text-xs text-text-subdued truncate tracking-wide">
+                                    <p className="text-xs tracking-wide truncate text-text-subdued">
                                         {profile?.department?.displayName}
                                     </p>
                                 </div>
@@ -193,42 +211,40 @@ export const AdminSidebar = ({
                                     }}
                                 />
                             </div>
-                            <Divider className="bg-border-muted my-1" />
-                            <div className="p-1 space-y-0.5">
-                                <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-text-default hover:bg-background-hovered transition-colors text-sm cursor-pointer">
-                                    <User size={16} /> My Profile
-                                </button>
-                                <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-text-default hover:bg-background-hovered transition-colors text-sm cursor-pointer">
-                                    <SettingsIcon size={16} /> Settings
-                                </button>
-                                <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-text-default hover:bg-background-hovered transition-colors text-sm cursor-pointer">
-                                    <CreditCard size={16} /> Billing
-                                </button>
-                            </div>
-                            <Divider className="bg-border-muted my-1" />
-                            <div className="p-1">
-                                <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-red-400 hover:bg-red-500/10 transition-colors text-sm cursor-pointer">
-                                    <LogOut size={16} /> Log Out
-                                </button>
-                            </div>
+                            <Divider className="my-1 bg-border-muted" />
+
+                            <Listbox>
+                                <ListboxSection showDivider>
+                                    <ListboxItem
+                                        startContent={<User2Icon size={16} />}
+                                        as={Link}
+                                        href={INTERNAL_URLS.profile}
+                                    >
+                                        My profile
+                                    </ListboxItem>
+                                    <ListboxItem
+                                        startContent={
+                                            <SettingsIcon size={16} />
+                                        }
+                                        as={Link}
+                                        href={INTERNAL_URLS.settings.overview}
+                                    >
+                                        Settings
+                                    </ListboxItem>
+                                </ListboxSection>
+                                <ListboxSection>
+                                    <ListboxItem
+                                        color="danger"
+                                        startContent={<LogOutIcon size={16} />}
+                                        onPress={handleLogout}
+                                    >
+                                        Logout
+                                    </ListboxItem>
+                                </ListboxSection>
+                            </Listbox>
                         </div>
                     </PopoverContent>
                 </Popover>
-            </div>
-
-            {/* 3. SEARCH BAR */}
-            <div className="px-6 mb-4">
-                <div
-                    className={`flex items-center gap-2 bg-[#1a1a1e] border border-[#2d2d33] rounded-xl px-3 h-9 ${isCollapsed ? 'justify-center cursor-pointer hover:bg-background-hovered' : ''}`}
-                >
-                    <Search size={15} className="text-[#62626c] shrink-0" />
-                    {!isCollapsed && (
-                        <input
-                            className="bg-transparent text-xs text-white outline-none w-full placeholder-[#62626c]"
-                            placeholder="Search..."
-                        />
-                    )}
-                </div>
             </div>
 
             {/* 4. NAVIGATION SECTION */}
@@ -236,142 +252,222 @@ export const AdminSidebar = ({
                 <ScrollBar orientation="horizontal" />
                 <ScrollBar orientation="vertical" />
                 <div className="px-2 space-y-5">
-                    <div>
-                        {!isCollapsed && (
-                            <p className="px-4 mb-2 text-[8px] font-medium text-text-subdued uppercase tracking-widest">
-                                Menu
-                            </p>
-                        )}
-                        <div className="space-y-1">
-                            <SidebarItem
-                                icon={LayoutGridIcon}
-                                label="Home"
-                                url={INTERNAL_URLS.admin.overview}
-                                isCollapsed={isCollapsed}
-                            />
-                            <SidebarItem
-                                icon={CalendarRangeIcon}
-                                label="Schedule"
-                                url={INTERNAL_URLS.admin.schedule}
-                                isCollapsed={isCollapsed}
-                            />
-                            <SidebarItem
-                                icon={ShieldUser}
-                                label="Permissions"
-                                url={INTERNAL_URLS.management.accessControl}
-                                isCollapsed={isCollapsed}
-                            />
+                    {hasSomePermissions([
+                        APP_PERMISSIONS.SYSTEM.MANAGE,
+                        APP_PERMISSIONS.ROLE.MANAGE,
+                    ]) && (
+                        <div>
+                            {!isCollapsed && (
+                                <p className="px-4 mb-2 text-[8px] font-medium text-text-subdued uppercase tracking-widest">
+                                    Menu
+                                </p>
+                            )}
+                            <div className="space-y-1">
+                                {APP_PERMISSIONS.SYSTEM.MANAGE && (
+                                    <SidebarItem
+                                        icon={LayoutGridIcon}
+                                        label="Home"
+                                        url={INTERNAL_URLS.admin.overview}
+                                        isCollapsed={isCollapsed}
+                                    />
+                                )}
+                                <SidebarItem
+                                    icon={CalendarRangeIcon}
+                                    label="Schedule"
+                                    url={INTERNAL_URLS.admin.schedule}
+                                    isCollapsed={isCollapsed}
+                                />
+                                {hasPermission(APP_PERMISSIONS.ROLE.MANAGE) && (
+                                    <SidebarItem
+                                        icon={ShieldUser}
+                                        label="Permissions"
+                                        url={
+                                            INTERNAL_URLS.management
+                                                .accessControl
+                                        }
+                                        isCollapsed={isCollapsed}
+                                    />
+                                )}
+                            </div>
                         </div>
-                    </div>
+                    )}
 
-                    <div>
-                        {!isCollapsed && (
-                            <p className="px-4 mb-2 text-[8px] font-medium text-text-subdued uppercase tracking-widest">
-                                Job
-                            </p>
-                        )}
-                        <div className="space-y-1">
-                            <SidebarItem
-                                icon={BriefcaseIcon}
-                                label="All Job"
-                                url={INTERNAL_URLS.management.jobs}
-                                isCollapsed={isCollapsed}
-                            />
-                            <SidebarItem
-                                icon={FolderGit2Icon}
-                                label="Folder Templates"
-                                url={
-                                    INTERNAL_URLS.management.jobFolderTemplates
-                                }
-                                isCollapsed={isCollapsed}
-                            />
+                    {hasSomePermissions([
+                        APP_PERMISSIONS.JOB.MANAGE,
+                        APP_PERMISSIONS.FOLDER_TEMPLATE.MANAGE,
+                    ]) && (
+                        <div>
+                            {!isCollapsed && (
+                                <p className="px-4 mb-2 text-[8px] font-medium text-text-subdued uppercase tracking-widest">
+                                    Job
+                                </p>
+                            )}
+                            <div className="space-y-1">
+                                {hasPermission(APP_PERMISSIONS.JOB.MANAGE) && (
+                                    <SidebarItem
+                                        icon={BriefcaseIcon}
+                                        label="All Job"
+                                        url={INTERNAL_URLS.management.jobs}
+                                        isCollapsed={isCollapsed}
+                                    />
+                                )}
+                                {hasPermission(
+                                    APP_PERMISSIONS.JOB_TYPE.MANAGE
+                                ) && (
+                                    <SidebarItem
+                                        icon={ComponentIcon}
+                                        label="Job Types"
+                                        url={INTERNAL_URLS.management.jobTypes}
+                                        isCollapsed={isCollapsed}
+                                    />
+                                )}
+                                {hasPermission(
+                                    APP_PERMISSIONS.FOLDER_TEMPLATE.MANAGE
+                                ) && (
+                                    <SidebarItem
+                                        icon={FolderGit2Icon}
+                                        label="Folder Templates"
+                                        url={
+                                            INTERNAL_URLS.management
+                                                .jobFolderTemplates
+                                        }
+                                        isCollapsed={isCollapsed}
+                                    />
+                                )}
+                            </div>
                         </div>
-                    </div>
+                    )}
 
-                    <div>
-                        {!isCollapsed && (
-                            <p className="px-4 mb-2 text-[8px] font-medium text-text-subdued uppercase tracking-widest">
-                                Financial
-                            </p>
-                        )}
-                        <div className="space-y-1">
-                            <SidebarItem
-                                icon={ChartCandlestickIcon}
-                                label="Overview"
-                                url={INTERNAL_URLS.financial.overview}
-                                isCollapsed={isCollapsed}
-                            />
-                            <SidebarItem
-                                icon={BadgeDollarSignIcon}
-                                label="Payouts"
-                                url={INTERNAL_URLS.financial.payouts}
-                                isCollapsed={isCollapsed}
-                                badge={pendingPayoutJobs.length}
-                            />
-                            <SidebarItem
-                                icon={BanknoteArrowUpIcon}
-                                label="Receivable"
-                                url={INTERNAL_URLS.financial.receivables}
-                                isCollapsed={isCollapsed}
-                            />
-                            <SidebarItem
-                                icon={LandmarkIcon}
-                                label="Payment Channels"
-                                url={INTERNAL_URLS.financial.paymentChannels}
-                                isCollapsed={isCollapsed}
-                            />
-                            <SidebarItem
-                                icon={WalletIcon}
-                                label="Master Ledger"
-                                url={INTERNAL_URLS.financial.ledger}
-                                isCollapsed={isCollapsed}
-                            />
+                    {hasSomePermissions([
+                        APP_PERMISSIONS.JOB.PAID,
+                        APP_PERMISSIONS.PAYMENT_CHANNEL.MANAGE,
+                    ]) && (
+                        <div>
+                            {!isCollapsed && (
+                                <p className="px-4 mb-2 text-[8px] font-medium text-text-subdued uppercase tracking-widest">
+                                    Financial
+                                </p>
+                            )}
+                            <div className="space-y-1">
+                                <SidebarItem
+                                    icon={ChartCandlestickIcon}
+                                    label="Overview"
+                                    url={INTERNAL_URLS.financial.overview}
+                                    isCollapsed={isCollapsed}
+                                />
+                                {hasSomePermissions(
+                                    APP_PERMISSIONS.JOB.PAID
+                                ) && (
+                                    <SidebarItem
+                                        icon={BadgeDollarSignIcon}
+                                        label="Payouts"
+                                        url={INTERNAL_URLS.financial.payouts}
+                                        isCollapsed={isCollapsed}
+                                        badge={pendingPayouts.length}
+                                    />
+                                )}
+                                <SidebarItem
+                                    icon={BanknoteArrowUpIcon}
+                                    label="Receivable"
+                                    url={INTERNAL_URLS.financial.receivables}
+                                    isCollapsed={isCollapsed}
+                                />
+                                {hasPermission(
+                                    APP_PERMISSIONS.PAYMENT_CHANNEL.MANAGE
+                                ) && (
+                                    <SidebarItem
+                                        icon={LandmarkIcon}
+                                        label="Payment Channels"
+                                        url={
+                                            INTERNAL_URLS.financial
+                                                .paymentChannels
+                                        }
+                                        isCollapsed={isCollapsed}
+                                    />
+                                )}
+                                <SidebarItem
+                                    icon={WalletIcon}
+                                    label="Master Ledger"
+                                    url={INTERNAL_URLS.financial.ledger}
+                                    isCollapsed={isCollapsed}
+                                />
+                            </div>
                         </div>
-                    </div>
+                    )}
 
-                    <div>
-                        {!isCollapsed && (
-                            <p className="px-4 mb-2 text-[8px] font-medium text-text-subdued uppercase tracking-widest">
-                                Organization
-                            </p>
-                        )}
-                        <div className="space-y-1">
-                            <SidebarItem
-                                icon={UsersRoundIcon}
-                                label="Team"
-                                url={INTERNAL_URLS.management.team}
-                                isCollapsed={isCollapsed}
-                            />
-                            <SidebarItem
-                                icon={HandshakeIcon}
-                                label="Clients"
-                                url={INTERNAL_URLS.management.clients}
-                                isCollapsed={isCollapsed}
-                            />
-                            <SidebarItem
-                                icon={Building2Icon}
-                                label="Department"
-                                url={INTERNAL_URLS.management.departments}
-                                isCollapsed={isCollapsed}
-                            />
+                    {hasSomePermissions([
+                        APP_PERMISSIONS.USER.MANAGE,
+                        APP_PERMISSIONS.CLIENT.MANAGE,
+                        APP_PERMISSIONS.DEPARTMENT.MANAGE,
+                    ]) && (
+                        <div>
+                            {!isCollapsed && (
+                                <p className="px-4 mb-2 text-[8px] font-medium text-text-subdued uppercase tracking-widest">
+                                    Organization
+                                </p>
+                            )}
+                            <div className="space-y-1">
+                                {hasPermission(APP_PERMISSIONS.USER.MANAGE) && (
+                                    <SidebarItem
+                                        icon={UsersRoundIcon}
+                                        label="Team"
+                                        url={INTERNAL_URLS.management.team}
+                                        isCollapsed={isCollapsed}
+                                    />
+                                )}
+                                {hasPermission(
+                                    APP_PERMISSIONS.CLIENT.MANAGE
+                                ) && (
+                                    <SidebarItem
+                                        icon={HandshakeIcon}
+                                        label="Client"
+                                        url={INTERNAL_URLS.management.clients}
+                                        isCollapsed={isCollapsed}
+                                    />
+                                )}
+                                {hasPermission(
+                                    APP_PERMISSIONS.DEPARTMENT.MANAGE
+                                ) && (
+                                    <SidebarItem
+                                        icon={Building2Icon}
+                                        label="Department"
+                                        url={
+                                            INTERNAL_URLS.management.departments
+                                        }
+                                        isCollapsed={isCollapsed}
+                                    />
+                                )}
+                                {hasPermission(
+                                    APP_PERMISSIONS.JOB_TITLE.MANAGE
+                                ) && (
+                                    <SidebarItem
+                                        icon={BriefcaseBusiness}
+                                        label="Job Title"
+                                        url={INTERNAL_URLS.management.jobTitles}
+                                        isCollapsed={isCollapsed}
+                                    />
+                                )}
+                            </div>
                         </div>
-                    </div>
+                    )}
 
-                    <div>
-                        {!isCollapsed && (
-                            <p className="px-4 mb-2 text-[8px] font-medium text-text-subdued uppercase tracking-widest">
-                                System
-                            </p>
-                        )}
-                        <div className="space-y-0.5">
-                            <SidebarItem
-                                icon={CogIcon}
-                                label="Settings"
-                                url={INTERNAL_URLS.admin.settings}
-                                isCollapsed={isCollapsed}
-                            />
+                    {hasPermission(APP_PERMISSIONS.SYSTEM.MANAGE) && (
+                        <div>
+                            {!isCollapsed && (
+                                <p className="px-4 mb-2 text-[8px] font-medium text-text-subdued uppercase tracking-widest">
+                                    System
+                                </p>
+                            )}
+                            <div className="space-y-0.5">
+                                <SidebarItem
+                                    icon={CogIcon}
+                                    label="Settings"
+                                    url={INTERNAL_URLS.admin.settings}
+                                    isCollapsed={isCollapsed}
+                                />
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
             </ScrollArea>
 

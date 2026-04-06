@@ -7,7 +7,7 @@ export class UpdateGeneralJobDto {
 
     @IsOptional()
     @IsString()
-    clientName?: string
+    clientId?: string
 
     @IsOptional()
     @IsDateString()

@@ -1,3 +1,7 @@
+import { createRoleOptions } from '@/lib'
+import { createRoleSchema } from '@/lib/validationSchemas'
+import { ScrollArea, ScrollBar } from '@/shared/components/ui/scroll-area'
+import { TGroupPermission } from '@/shared/types'
 import {
     Accordion,
     AccordionItem,
@@ -7,21 +11,16 @@ import {
     CheckboxGroup,
     Divider,
     Input,
+    Modal,
+    ModalBody,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
     Skeleton,
 } from '@heroui/react'
+import { useMutation } from '@tanstack/react-query'
 import { useFormik } from 'formik'
 import { ListChecks, Palette, ShieldCheck } from 'lucide-react'
-import { createRoleSchema } from '../../../../lib/validationSchemas'
-import { TGroupPermission } from '../../../../shared/types/_role.type'
-import {
-    HeroModal,
-    HeroModalBody,
-    HeroModalContent,
-    HeroModalFooter,
-    HeroModalHeader,
-} from '../../../../shared/components/ui/hero-modal'
-import { ScrollArea, ScrollBar } from '../../../../shared/components/ui/scroll-area'
-import { useCreateRoleMutation } from '../../../../lib/queries/useRole'
 
 type CreateRoleModalProps = {
     isOpen: boolean
@@ -42,7 +41,7 @@ export default function CreateRoleModal({
     isLoading = false,
     onSave,
 }: CreateRoleModalProps) {
-    const createRoleMutation = useCreateRoleMutation()
+    const createRole = useMutation(createRoleOptions)
     // 2. Initialize Formik
     const formik = useFormik({
         initialValues: {
@@ -57,7 +56,7 @@ export default function CreateRoleModal({
             } else {
                 console.log(values)
 
-                createRoleMutation.mutateAsync(values, {
+                createRole.mutateAsync(values, {
                     onSuccess: () => {
                         formik.resetForm()
                         onClose()
@@ -73,11 +72,11 @@ export default function CreateRoleModal({
     }
 
     return (
-        <HeroModal isOpen={isOpen} onClose={handleClose} size="2xl">
-            <HeroModalContent>
+        <Modal isOpen={isOpen} onClose={handleClose} size="2xl">
+            <ModalContent>
                 {() => (
                     <form onSubmit={formik.handleSubmit}>
-                        <HeroModalHeader className="flex flex-col gap-1 pt-8">
+                        <ModalHeader className="flex flex-col gap-1 pt-8">
                             <h2 className="text-2xl font-black flex items-center gap-3">
                                 <ShieldCheck
                                     className="text-primary"
@@ -89,9 +88,9 @@ export default function CreateRoleModal({
                                 Define identity and access levels for the
                                 system.
                             </p>
-                        </HeroModalHeader>
+                        </ModalHeader>
 
-                        <HeroModalBody className="pb-8 px-0">
+                        <ModalBody className="pb-8 px-0">
                             <ScrollArea className="h-125 px-6">
                                 <ScrollBar orientation="vertical" />
 
@@ -259,9 +258,9 @@ export default function CreateRoleModal({
                                     </>
                                 )}
                             </ScrollArea>
-                        </HeroModalBody>
+                        </ModalBody>
 
-                        <HeroModalFooter className="border-t border-border-default bg-default-50/50 p-6">
+                        <ModalFooter className="border-t border-border-default bg-default-50/50 p-6">
                             <Button
                                 variant="light"
                                 onPress={handleClose}
@@ -274,23 +273,23 @@ export default function CreateRoleModal({
                                 color="primary"
                                 className="font-bold shadow-xl shadow-primary/30 px-10 h-12"
                                 isLoading={
-                                    createRoleMutation.isPending ||
+                                    createRole.isPending ||
                                     formik.isSubmitting ||
                                     isLoading
                                 }
                                 isDisabled={
-                                    createRoleMutation.isPending ||
+                                    createRole.isPending ||
                                     !formik.isValid ||
                                     !formik.dirty
                                 }
                             >
                                 Save Role Configuration
                             </Button>
-                        </HeroModalFooter>
+                        </ModalFooter>
                     </form>
                 )}
-            </HeroModalContent>
-        </HeroModal>
+            </ModalContent>
+        </Modal>
     )
 }
 

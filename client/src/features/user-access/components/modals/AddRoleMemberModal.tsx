@@ -9,12 +9,12 @@ import {
     ModalHeader,
     SelectItem,
 } from '@heroui/react'
-import { Search, ShieldCheck, UserPlus, X } from 'lucide-react'
+import { useSuspenseQuery } from '@tanstack/react-query'
+import { Search, UserPlus, X } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { optimizeCloudinary } from '../../../../lib'
-import { TRole, TUser } from '../../../../shared/types'
-import { useSuspenseQuery } from '@tanstack/react-query'
 import { usersListOptions } from '../../../../lib/queries'
+import { TRole, TUser } from '../../../../shared/types'
 
 interface Props {
     isOpen: boolean
@@ -61,21 +61,11 @@ export const AddRoleMemberModal = ({
         if (selectedUser) {
             onConfirm(selectedUser.id, role.id)
             setSelectedUser(null)
-            onClose()
         }
     }
 
     return (
-        <Modal
-            isOpen={isOpen}
-            onClose={onClose}
-            size="lg"
-            backdrop="blur"
-            classNames={{
-                header: 'border-b border-divider',
-                footer: 'border-t border-divider',
-            }}
-        >
+        <Modal isOpen={isOpen} onClose={onClose} size="lg">
             <ModalContent>
                 {(onClose) => (
                     <>
@@ -99,20 +89,6 @@ export const AddRoleMemberModal = ({
                         </ModalHeader>
 
                         <ModalBody className="py-6 space-y-6">
-                            <div className="p-4 bg-default-50 rounded-2xl border border-divider flex items-start gap-4">
-                                <ShieldCheck
-                                    className="text-primary mt-0.5"
-                                    size={20}
-                                />
-                                <p className="text-xs text-default-600 leading-snug">
-                                    You are assigning <b>one</b> user to the{' '}
-                                    <b>{role.displayName}</b> role. This user
-                                    will receive all associated permissions
-                                    immediately.
-                                </p>
-                            </div>
-
-                            {/* Autocomplete Search: Disable nếu đã chọn xong */}
                             <Autocomplete
                                 label="Search Staff Member"
                                 placeholder={

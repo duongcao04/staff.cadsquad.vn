@@ -1,0 +1,19 @@
+import { FindAllJobsHandler } from './impl/find-all-jobs.query'
+import { FindJobByNoHandler } from './impl/find-job-by-no.query'
+import { FindJobsByDeadlineHandler } from './impl/find-jobs-by-deadline.query'
+import { FindJobsPendingPayoutsHandler } from './impl/find-jobs-pending-payouts'
+import { FindJobsToDeliverHandler } from './impl/find-jobs-to-deliver'
+import { GetJobFinancialDetailsHandler } from './impl/get-job-financial-details.query'
+import { GetMonthlyDeadlinesHandler } from './impl/get-monthly-deadlines.query'
+import { GetPayoutDetailsHandler } from './impl/get-payout-details'
+
+export const QueryHandlers = [
+	FindAllJobsHandler,
+	FindJobsByDeadlineHandler,
+	FindJobByNoHandler,
+	FindJobsPendingPayoutsHandler,
+	FindJobsToDeliverHandler,
+	GetMonthlyDeadlinesHandler,
+	GetPayoutDetailsHandler,
+	GetJobFinancialDetailsHandler,
+]

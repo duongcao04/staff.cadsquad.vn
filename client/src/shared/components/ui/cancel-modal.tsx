@@ -12,7 +12,7 @@ type CancelModalProps = {
     onClose: () => void
     onConfirm: () => void
     title?: string
-    message?: string
+    message?: React.ReactNode | string
     confirmText?: string
     cancelText?: string
     confirmColor?:
@@ -23,7 +23,7 @@ type CancelModalProps = {
         | 'success'
         | 'warning'
 }
-export default function CancelModal({
+export function CancelModal({
     isOpen,
     onClose,
     onConfirm,
@@ -35,7 +35,14 @@ export default function CancelModal({
     confirmColor = 'danger', // Allows you to change the button color (e.g., "primary", "warning")
 }: CancelModalProps) {
     return (
-        <HeroModal isOpen={isOpen} onClose={onClose} backdrop="blur">
+        <HeroModal
+            isOpen={isOpen}
+            onClose={onClose}
+            backdrop="opaque"
+            classNames={{
+                backdrop: 'bg-black/90 backdrop-opacity-20',
+            }}
+        >
             <HeroModalContent>
                 {(onClose) => (
                     <>

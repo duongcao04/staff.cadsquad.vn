@@ -1,11 +1,21 @@
-import { queryOptions } from '@tanstack/react-query';
+import { queryOptions, mutationOptions } from '@tanstack/react-query';
 import { departmentApi } from '../../api';
-import { DepartmentSchema } from '../../validationSchemas';
+import { DepartmentSchema, TCreateDepartmentInput, TUpdateDepartmentInput } from '../../validationSchemas';
 import { parseData, parseList } from '../../zod';
+import { onErrorToast } from '../helper';
 
+// 1. Keys factory
+export const departmentQueryKeys = {
+    resource: ['departments'] as const,
+    lists: () => [...departmentQueryKeys.resource, 'lists'] as const,
+    detail: (id: string) => [...departmentQueryKeys.resource, 'identify', id] as const,
+    detailByName: (name: string) => [...departmentQueryKeys.resource, 'detail', name] as const
+}
+
+// 2. Fetch options
 export const departmentsListOptions = () => {
     return queryOptions({
-        queryKey: ['departments'],
+        queryKey: departmentQueryKeys.lists(),
         queryFn: async () => {
             const res = await departmentApi.findAll();
             // Parse danh sách: result từ API -> mảng TDepartment[]
@@ -19,7 +29,7 @@ export const departmentsListOptions = () => {
 
 export const departmentOptions = (identify: string) => {
     return queryOptions({
-        queryKey: ['departments', 'identify', identify],
+        queryKey: departmentQueryKeys.detail(identify),
         queryFn: async () => {
             const res = await departmentApi.findOne(identify);
             // Parse object đơn lẻ
@@ -31,3 +41,26 @@ export const departmentOptions = (identify: string) => {
         }),
     });
 };
+
+// 3. Mutation options
+export const createDepartmentOptions = mutationOptions({
+    mutationFn: (data: TCreateDepartmentInput) =>
+        departmentApi.create(data),
+    onError: (err) => onErrorToast(err, 'Create failed'),
+})
+
+export const updateDepartmentOption = mutationOptions({
+    mutationFn: ({
+        id,
+        data,
+    }: {
+        id: string
+        data: TUpdateDepartmentInput
+    }) => departmentApi.update(id, data),
+    onError: (err) => onErrorToast(err, 'Update failed'),
+})
+
+export const deleteDepartmentOptions = mutationOptions({
+    mutationFn: (id: string) => departmentApi.remove(id),
+    onError: (err) => onErrorToast(err, 'Delete failed'),
+})

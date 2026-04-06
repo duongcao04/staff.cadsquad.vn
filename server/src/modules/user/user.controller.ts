@@ -4,7 +4,6 @@ import { ResponseMessage } from '@/common/decorators/responseMessage.decorator'
 import { PermissionsGuard } from '@/common/guards/permissions.guard'
 import { TokenPayload } from '@/modules/auth/dto/token-payload.dto'
 import { JwtGuard } from '@/modules/auth/jwt.guard'
-import { APP_PERMISSIONS } from '@/utils/_app-permissions'
 import {
 	Body,
 	Controller,
@@ -19,13 +18,17 @@ import {
 	Req,
 	UseGuards,
 } from '@nestjs/common'
+import { QueryBus } from '@nestjs/cqrs'
 import {
 	ApiBearerAuth,
 	ApiOperation,
 	ApiResponse,
 	ApiTags,
 } from '@nestjs/swagger'
+import { APP_PERMISSIONS } from '@/utils'
 import { isUUID } from 'class-validator'
+import { AuditLog } from '../../common/decorators/audit-log.decorator'
+import { SystemModule } from '../../generated/prisma'
 import { AssignUserPermissionDto } from './dto/assign-user-permission.dto'
 import { CreateUserDto } from './dto/create-user.dto'
 import { ProtectUserResponseDto } from './dto/protect-user-response.dto'
@@ -34,6 +37,7 @@ import { UpdatePasswordDto } from './dto/update-password.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { UserQueryDto } from './dto/user-query.dto'
 import { UserResponseDto } from './dto/user-response.dto'
+import { GetScheduleQuery } from './queries/impl/get-schedule.query'
 import { UserSecurityService } from './user-security.service'
 import { UserService } from './user.service'
 
@@ -43,7 +47,8 @@ import { UserService } from './user.service'
 export class UserController {
 	constructor(
 		private readonly userService: UserService,
-		private readonly userSecurityService: UserSecurityService
+		private readonly userSecurityService: UserSecurityService,
+		private readonly queryBus: QueryBus
 	) { }
 
 	@Get('search')
@@ -65,12 +70,15 @@ export class UserController {
 	) {
 		const userPayload: TokenPayload = await request['user']
 		if (!month && !year) return []
-		return this.userService.getUserSchedule(
-			userPayload.sub,
-			userPayload.permissions,
-			month,
-			year,
-			day
+
+		return this.queryBus.execute(
+			new GetScheduleQuery(
+				userPayload.sub,
+				userPayload.permissions,
+				month,
+				year,
+				day
+			)
 		)
 	}
 
@@ -84,12 +92,22 @@ export class UserController {
 		description: 'The user has been successfully created.',
 		type: UserResponseDto,
 	})
+	@AuditLog('Created new User', SystemModule.USER_MANAGEMENT)
 	async create(
+		@Req() request: Request,
 		@Body() createUserDto: CreateUserDto,
 		@Query() sendInviteEmail: '0' | '1'
 	) {
 		const isSendInviteEmail = Boolean(sendInviteEmail)
-		return this.userService.create(createUserDto, isSendInviteEmail)
+		const result = await this.userService.create(
+			createUserDto,
+			isSendInviteEmail
+		)
+
+		request['auditTargetDisplay'] = `${result.code}- ${result.displayName}`
+		request['auditTargetId'] = result.id
+
+		return result
 	}
 
 	@Get('security-logs')

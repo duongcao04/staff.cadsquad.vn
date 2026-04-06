@@ -1,4 +1,9 @@
-import { jobByNoOptions, paymentChannelsListOptions } from '@/lib/queries'
+import {
+    jobByNoOptions,
+    paymentChannelsListOptions,
+    updateAssignmentCostOptions,
+    updateJobRevenueOptions,
+} from '@/lib/queries'
 import {
     addToast,
     Avatar,
@@ -12,7 +17,7 @@ import {
     Tab,
     Tabs,
 } from '@heroui/react'
-import { useSuspenseQueries } from '@tanstack/react-query'
+import { useMutation, useSuspenseQueries } from '@tanstack/react-query'
 import { Image } from 'antd'
 import {
     CheckCircle2,
@@ -36,15 +41,13 @@ import {
     useState,
 } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
-import {
-    optimizeCloudinary,
-    TUpdateJobRevenue,
-    useUpdateAssignmentCostMutation,
-    useUpdateJobRevenueMutation,
-} from '../../../../lib'
+import { optimizeCloudinary, TUpdateJobRevenue } from '../../../../lib'
 import { TJob, TPaymentChannel } from '../../../../shared/types'
 import { HeroButton } from '../../../../shared/components/ui/hero-button'
-import { HeroCard, HeroCardBody } from '../../../../shared/components/ui/hero-card'
+import {
+    HeroCard,
+    HeroCardBody,
+} from '../../../../shared/components/ui/hero-card'
 import {
     HeroModal,
     HeroModalBody,
@@ -54,7 +57,10 @@ import {
 } from '../../../../shared/components/ui/hero-modal'
 import HeroNumberInput from '../../../../shared/components/ui/hero-number-input'
 import { HeroTooltip } from '../../../../shared/components/ui/hero-tooltip'
-import { ScrollArea, ScrollBar } from '../../../../shared/components/ui/scroll-area'
+import {
+    ScrollArea,
+    ScrollBar,
+} from '../../../../shared/components/ui/scroll-area'
 
 type AssignedMember = {
     userId: string
@@ -130,7 +136,7 @@ function UpdateCostContent({
     onClose: () => void
     paymentChannels: TPaymentChannel[]
 }) {
-    const updateJobRevenue = useUpdateJobRevenueMutation()
+    const updateJobRevenue = useMutation(updateJobRevenueOptions)
     const [selectedTab, setSelectedTab] = useState<string>('revenue')
 
     // Revenue States
@@ -142,7 +148,7 @@ function UpdateCostContent({
 
     useEffect(() => {
         if (isOpen && job) {
-            setIncomeCost(job.incomeCost || 25000000)
+            setIncomeCost(job.incomeCost || undefined)
             setPaymentChannelId(job?.paymentChannel?.id || 'ch_1')
             if (job.assignments) {
                 setAssignedMembers(
@@ -193,8 +199,10 @@ function UpdateCostContent({
             },
             {
                 onSuccess() {
-                    ;(setIncomeCost(undefined), setPaymentChannelId(''))
+                    addToast({ title: 'Update successfully', color: 'success' })
                     onClose()
+                    setIncomeCost(undefined)
+                    setPaymentChannelId('')
                 },
             }
         )
@@ -204,7 +212,7 @@ function UpdateCostContent({
         <>
             <HeroModalHeader className="flex flex-col gap-1 py-4">
                 <div className="flex items-center gap-3">
-                    <div className="p-2 bg-primary/10 rounded-lg">
+                    <div className="p-2 rounded-lg bg-primary/10">
                         <TrendingUp size={22} className="text-primary" />
                     </div>
                     <div>
@@ -216,7 +224,7 @@ function UpdateCostContent({
                 </div>
             </HeroModalHeader>
 
-            <HeroModalBody className="py-0 px-8">
+            <HeroModalBody className="px-8 py-0">
                 <Tabs
                     fullWidth
                     aria-label="Financial Tabs"
@@ -259,7 +267,7 @@ function UpdateCostContent({
                                         setIncomeCost(val ?? undefined)
                                     }}
                                     startContent={
-                                        <span className="text-text-subdued font-medium">
+                                        <span className="font-medium text-text-subdued">
                                             $
                                         </span>
                                     }
@@ -299,7 +307,7 @@ function UpdateCostContent({
                                                 <Image
                                                     src={c.logoUrl}
                                                     rootClassName="size-8! rounded-full"
-                                                    className="size-full rounded-full object-cover"
+                                                    className="object-cover rounded-full size-full"
                                                     preview={false}
                                                 />
                                                 {c.displayName}
@@ -339,15 +347,15 @@ function UpdateCostContent({
                             </div>
                         }
                     >
-                        <ScrollArea className="size-full h-100 py-6">
+                        <ScrollArea className="py-6 size-full h-100">
                             <ScrollBar orientation="horizontal" />
                             <ScrollBar orientation="vertical" />
                             <Card
-                                className="bg-background-hovered border-none shadow-none"
+                                className="border-none shadow-none bg-background-hovered"
                                 radius="lg"
                             >
                                 <CardBody className="flex-row items-center gap-3 py-3">
-                                    <div className="p-2 bg-primary rounded-full">
+                                    <div className="p-2 rounded-full bg-primary">
                                         <ReceiptText
                                             size={16}
                                             className="text-white"
@@ -379,10 +387,10 @@ function UpdateCostContent({
             </HeroModalBody>
 
             <HeroModalFooter className="flex-col items-stretch gap-3 px-8">
-                <div className="flex items-center justify-between bg-primary/5 px-4 py-2 rounded-xl gap-1 border border-primary/10">
-                    <div className="flex items-center gap-2 text-primary-500 mb-1">
+                <div className="flex items-center justify-between gap-1 px-4 py-2 border bg-primary/5 rounded-xl border-primary/10">
+                    <div className="flex items-center gap-2 mb-1 text-primary-500">
                         <Wallet size={22} />
-                        <span className="text-xs uppercase font-black tracking-wider">
+                        <span className="text-xs font-black tracking-wider uppercase">
                             Total Expenses
                         </span>
                     </div>
@@ -390,7 +398,7 @@ function UpdateCostContent({
                         {totalStaffCost.toLocaleString()}
                     </div>
                 </div>
-                <div className="flex justify-between items-center">
+                <div className="flex items-center justify-between">
                     <p className="text-xs text-text-subdued max-w-[60%]">
                         * All changes are logged for auditing purposes and will
                         impact the monthly balance sheet.
@@ -408,7 +416,7 @@ export function UpdateCostSkeleton() {
     return (
         <>
             {/* Header Skeleton */}
-            <div className="p-4 border-b border-divider flex items-center gap-3">
+            <div className="flex items-center gap-3 p-4 border-b border-divider">
                 <Skeleton className="w-10 h-10 rounded-lg" />
                 <div className="space-y-2">
                     <Skeleton className="w-32 h-5 rounded-md" />
@@ -434,28 +442,28 @@ export function UpdateCostSkeleton() {
                     </div>
 
                     <div className="flex justify-end">
-                        <Skeleton className="w-36 h-10 rounded-xl" />
+                        <Skeleton className="h-10 w-36 rounded-xl" />
                     </div>
                 </div>
             </div>
 
             {/* Footer Stats Skeleton */}
-            <div className="p-8 border-t border-divider space-y-6">
+            <div className="p-8 space-y-6 border-t border-divider">
                 <div className="grid grid-cols-2 gap-4">
-                    <HeroCard className="shadow-none border border-divider">
-                        <HeroCardBody className="p-4 gap-2">
+                    <HeroCard className="border shadow-none border-divider">
+                        <HeroCardBody className="gap-2 p-4">
                             <Skeleton className="w-16 h-3 rounded-md" />
                             <Skeleton className="w-24 h-8 rounded-md" />
                         </HeroCardBody>
                     </HeroCard>
-                    <HeroCard className="shadow-none border border-divider">
-                        <HeroCardBody className="p-4 gap-2">
+                    <HeroCard className="border shadow-none border-divider">
+                        <HeroCardBody className="gap-2 p-4">
                             <Skeleton className="w-16 h-3 rounded-md" />
                             <Skeleton className="w-24 h-8 rounded-md" />
                         </HeroCardBody>
                     </HeroCard>
                 </div>
-                <div className="flex justify-between items-center">
+                <div className="flex items-center justify-between">
                     <Skeleton className="w-1/2 h-3 rounded-md" />
                     <Skeleton className="w-24 h-10 rounded-xl" />
                 </div>
@@ -473,7 +481,9 @@ function AssignedMemberCard({
     member: AssignedMember
     onAssignedMembersChange: Dispatch<SetStateAction<AssignedMember[]>>
 }) {
-    const updateAssignmentCostMutation = useUpdateAssignmentCostMutation()
+    const updateAssignmentCostMutation = useMutation(
+        updateAssignmentCostOptions
+    )
 
     const [editable, setEditable] = useState(false)
     const handleUpdateCost = (userId: string, value: string) => {
@@ -501,7 +511,7 @@ function AssignedMemberCard({
     }
 
     return (
-        <div className="flex items-center justify-between p-4 bg-default-50 rounded-2xl border border-transparent hover:border-primary-200 hover:bg-white dark:hover:bg-zinc-900 transition-all">
+        <div className="flex items-center justify-between p-4 transition-all border border-transparent bg-default-50 rounded-2xl hover:border-primary-200 hover:bg-white dark:hover:bg-zinc-900">
             <div className="flex items-center gap-3">
                 <Avatar
                     src={optimizeCloudinary(member.avatar)}

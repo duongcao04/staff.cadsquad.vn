@@ -22,7 +22,7 @@ import { UpdateJobTypeDto } from './dto/update-job-type.dto'
 import { JobTypeService } from './job-type.service'
 import { PermissionsGuard } from '../../common/guards/permissions.guard'
 import { RequirePermissions } from '../../common/decorators/require-permissions.decorator'
-import { APP_PERMISSIONS } from '../../utils/_app-permissions'
+import { APP_PERMISSIONS } from '@/utils'
 import { JwtGuard } from '../auth/jwt.guard'
 
 @ApiTags('Job Types')

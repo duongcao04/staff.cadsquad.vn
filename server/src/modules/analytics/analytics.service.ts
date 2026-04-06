@@ -9,7 +9,7 @@ dayjs.extend(isSameOrBefore)
 
 @Injectable()
 export class AnalyticsService {
-	constructor(private prisma: PrismaService) {}
+	constructor(private prisma: PrismaService) { }
 
 	async getUserDashboard(
 		userId: string,
@@ -86,7 +86,7 @@ export class AnalyticsService {
 				this.prisma.job.count({
 					where: {
 						status: { systemType: 'COMPLETED' },
-						isPaid: false,
+						paymentStatus: 'PENDING',
 					},
 				}),
 			])

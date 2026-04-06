@@ -1,6 +1,6 @@
-export * from './administrator.api';
 export * from './_ably.api';
 export * from './_analytics.api';
+export * from './_audit-log.api';
 export * from './_auth.api';
 export * from './_client.api';
 export * from './_community.api';
@@ -17,6 +17,9 @@ export * from './_notification.api';
 export * from './_payment-channel.api';
 export * from './_role.api';
 export * from './_sharepoint.api';
+export * from './_system-setting.api';
 export * from './_user-config.api';
 export * from './_user-device.api';
 export * from './_user.api';
+export * from './administrator.api';
+export * from './financial.api';

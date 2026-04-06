@@ -7,17 +7,17 @@ import {
     type TUpdateProfileInput,
 } from '@/lib/validationSchemas'
 import type { TUser } from '@/shared/types'
-import { addToast } from '@heroui/react'
+import { addToast, toast } from '@heroui/react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import { queryClient } from '../../main'
 import { ApiResponse } from '../axios'
+import { parseData } from '../zod'
 import { onErrorToast } from './helper'
 import {
     activeSessionsListOptions,
     profileOptions,
 } from './options/user-queries'
-import { parseData } from '../zod'
 
 function parseExpires(expiresAt: string | number) {
     if (typeof expiresAt === 'number') {
@@ -113,7 +113,7 @@ export const useRevokeAllSessionMutation = (
             if (onSuccess) {
                 onSuccess(res)
             } else {
-                addToast({ title: res.message, color: 'success' })
+                toast.danger(res.message)
             }
             queryClient.refetchQueries({
                 queryKey: profileOptions().queryKey,
@@ -194,10 +194,7 @@ export const useUpdateProfileMutation = (
             if (onSuccess) {
                 onSuccess(res)
             } else {
-                addToast({
-                    title: res.message,
-                    color: 'success',
-                })
+                toast.danger(res.message)
             }
         },
         onError: (err) => onErrorToast(err, 'Failed to update profile'),
@@ -214,10 +211,7 @@ export const useForgotPasswordMutation = (
             if (onSuccess) {
                 onSuccess(res)
             } else {
-                addToast({
-                    title: res.message,
-                    color: 'success',
-                })
+                toast.danger(res.message)
             }
         },
         onError: (err) => onErrorToast(err, 'Failed to forgot password'),
@@ -234,10 +228,7 @@ export const useResetPasswordWithTokenMutation = (
             if (onSuccess) {
                 onSuccess(res)
             } else {
-                addToast({
-                    title: res.message,
-                    color: 'success',
-                })
+                toast.danger(res.message)
             }
         },
         onError: (err) => onErrorToast(err, 'Failed to reset password'),

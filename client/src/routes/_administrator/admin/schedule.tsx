@@ -3,13 +3,13 @@ import ScheduleCalendarView, {
     CalendarSkeleton,
 } from '@/features/schedules/components/views/ScheduleCalendarView'
 import ScheduleListView from '@/features/schedules/components/views/ScheduleListView'
-import { getPageTitle } from '@/lib'
-import { jobScheduleOptions } from '@/lib/queries/options/job-queries'
+import { profileScheduleOptions, RouteUtil } from '@/lib'
 import { AdminPageHeading } from '@/shared/components'
+import { ErrorPageContent } from '@/shared/components/admin'
 import AdminContentContainer from '@/shared/components/admin/AdminContentContainer'
 import { Button, Divider, Tab, Tabs, useDisclosure } from '@heroui/react'
 import { useSuspenseQuery } from '@tanstack/react-query'
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import { addMonths, format, subMonths } from 'date-fns'
 import {
     Calendar as CalendarIcon,
@@ -21,12 +21,12 @@ import {
 import { useState } from 'react'
 import { z } from 'zod'
 
-// --- 1. DEFINE SEARCH PARAMS SCHEMA ---
 const scheduleSearchSchema = z.object({
     month: z.number().catch(() => new Date().getMonth() + 1),
     year: z.number().catch(() => new Date().getFullYear()),
-    view: z.enum(['calendar', 'list']).catch('calendar'), // New 'view' param
+    view: z.enum(['calendar', 'list']).catch('calendar'),
 })
+export type TScheduleSearchValues = z.infer<typeof scheduleSearchSchema>
 
 export const Route = createFileRoute('/_administrator/admin/schedule')({
     validateSearch: (search) => scheduleSearchSchema.parse(search),
@@ -35,11 +35,11 @@ export const Route = createFileRoute('/_administrator/admin/schedule')({
         year: search.year,
     }),
     head: () => ({
-        meta: [{ title: getPageTitle('Schedule') }],
+        meta: [{ title: 'Schedule Calendar' }],
     }),
     loader: async ({ context, deps }) => {
-        return context.queryClient.ensureQueryData(
-            jobScheduleOptions(deps.month, deps.year)
+        context.queryClient.ensureQueryData(
+            profileScheduleOptions(deps.year, deps.month)
         )
     },
     pendingComponent: () => (
@@ -47,10 +47,10 @@ export const Route = createFileRoute('/_administrator/admin/schedule')({
             <CalendarSkeleton />
         </ScheduleLayout>
     ),
-    errorComponent: ({ error }) => (
-        <div className="p-10 text-center text-danger">
-            Error loading schedule: {error.message}
-        </div>
+    errorComponent: ({ error, reset }) => (
+        <ScheduleLayout>
+            <ErrorPageContent error={error} refresh={reset} />
+        </ScheduleLayout>
     ),
     component: () => (
         <ScheduleLayout>
@@ -61,24 +61,15 @@ export const Route = createFileRoute('/_administrator/admin/schedule')({
 
 function ScheduleLayout({ children }: { children: React.ReactNode }) {
     const searchParams = Route.useSearch()
-    const navigate = useNavigate({ from: Route.fullPath })
-    // Derived Date State
     const currentDate = new Date(searchParams.year, searchParams.month - 1, 1)
 
-    // Helper: Update URL Params
-    const updateParams = (updates: Partial<typeof searchParams>) => {
-        navigate({
-            search: (old) => ({ ...old, ...updates }),
-            replace: true,
-        })
-    }
-
     const handleDateChange = (newDate: Date) => {
-        updateParams({
+        RouteUtil.updateParams<TScheduleSearchValues>({
             month: newDate.getMonth() + 1,
             year: newDate.getFullYear(),
         })
     }
+
     return (
         <>
             <AdminPageHeading
@@ -89,7 +80,6 @@ function ScheduleLayout({ children }: { children: React.ReactNode }) {
                 actions={
                     <>
                         <div className="flex flex-wrap items-center justify-center gap-3">
-                            {/* Month Navigator */}
                             <div className="flex items-center bg-background-hovered rounded-xl border border-border-default p-1 shadow-sm">
                                 <Button
                                     isIconOnly
@@ -134,9 +124,11 @@ function ScheduleLayout({ children }: { children: React.ReactNode }) {
                                 aria-label="View options"
                                 selectedKey={searchParams.view}
                                 onSelectionChange={(key) =>
-                                    updateParams({
-                                        view: key as 'calendar' | 'list',
-                                    })
+                                    RouteUtil.updateParams<TScheduleSearchValues>(
+                                        {
+                                            view: key as 'calendar' | 'list',
+                                        }
+                                    )
                                 }
                                 size="sm"
                                 radius="sm"
@@ -187,8 +179,11 @@ function SchedulePage() {
     // Derived Date State
     const currentDate = new Date(searchParams.year, searchParams.month - 1, 1)
 
-    const { data: jobsSchedule, isFetching } = useSuspenseQuery(
-        jobScheduleOptions(searchParams.month, searchParams.year)
+    const {
+        data: { jobsSchedule },
+        isFetching,
+    } = useSuspenseQuery(
+        profileScheduleOptions(searchParams.year, searchParams.month)
     )
 
     // Modal State
@@ -204,7 +199,6 @@ function SchedulePage() {
         <div
             className={`flex flex-col h-full ${isFetching ? 'opacity-70 pointer-events-none' : ''}`}
         >
-            {/* --- Content Views --- */}
             <div className="flex-1 overflow-hidden flex flex-col relative">
                 {searchParams.view === 'calendar' ? (
                     <ScheduleCalendarView

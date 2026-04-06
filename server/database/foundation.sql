@@ -394,6 +394,7 @@ INSERT INTO
 		id,
 		"displayName",
 		"logoUrl",
+		"type",
 		"hexColor",
 		"createdAt",
 		"updatedAt"
@@ -403,6 +404,7 @@ VALUES
 		'2f8a5a4d-6c4e-4f90-8f64-94bde3acbd2d',
 		'FV.PTP',
 		'https://netolink.com/wp-content/uploads/2024/10/Fiverr.png',
+		'E_WALLET',
 		'#4A90E2',
 		NOW (),
 		NOW ()
@@ -411,6 +413,7 @@ VALUES
 		'c9f134a5-3a72-42e1-b9fa-4f2b3b2b85a9',
 		'FV.CSD',
 		'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpf1zBSVqPp4vBNY8zpzqNs7UH_4kd7SvdvQ&s',
+		'E_WALLET',
 		'#50E3C2',
 		NOW (),
 		NOW ()
@@ -419,6 +422,7 @@ VALUES
 		'4e6c64c7-08fb-46df-83aa-49c2bb91f9db',
 		'CSD.PAYPAL',
 		'https://cdn-1.webcatalog.io/catalog/paypal/paypal-icon-filled-256.png?v=1759711656953',
+		'CRYPTO',
 		'#003087',
 		NOW (),
 		NOW ()
@@ -427,6 +431,7 @@ VALUES
 		'7f2e2b76-16e0-4e0c-83b7-91a924f1ef62',
 		'CSD.PAYONEER',
 		'https://clemta.com/wp-content/uploads/2023/05/Payoneer.png',
+		'CRYPTO',
 		'#FF4800',
 		NOW (),
 		NOW ()
@@ -435,6 +440,7 @@ VALUES
 		'5b7d2d1f-2c9a-4f4b-a38d-7fbb3f0797d6',
 		'CSD.BINANCE',
 		'https://public.bnbstatic.com/20190405/eb2349c3-b2f8-4a93-a286-8f86a62ea9d8.png',
+		'CRYPTO',
 		'#F0B90B',
 		NOW (),
 		NOW ()
@@ -443,6 +449,7 @@ VALUES
 		'a18d5a9b-d067-493f-a7d7-2fb6b31d54de',
 		'CSD.ACB',
 		'https://cdn.tgdd.vn/2020/04/GameApp/unnamed-200x200-18.png',
+		'BANK',
 		'#00509B',
 		NOW (),
 		NOW ()
@@ -463,7 +470,7 @@ INSERT INTO
 		"phoneNumber",
 		"roleId",
 		"departmentId",
-		"emailVerified", -- Required for Better Auth
+		"emailVerified",
 		"password",
 		"createdAt",
 		"updatedAt"
@@ -795,7 +802,7 @@ INSERT INTO
 	)
 VALUES
 	(
-		'c1b2a3d4-e5f6-7890-abcd-111111111111',
+		'dace5f12-1c3e-46bd-aa04-e942e22f5786',
 		'CL-AUTO-001',
 		'Tesla Motors',
 		'billing@tesla.com',
@@ -809,7 +816,7 @@ VALUES
 		NOW ()
 	),
 	(
-		'c2b3a4d5-e6f7-8901-bcde-222222222222',
+		'633815cd-3039-43c1-b92e-48df6082cf32',
 		'CL-TECH-002',
 		'Samsung Electronics',
 		'accounts@samsung.com',
@@ -823,7 +830,7 @@ VALUES
 		NOW ()
 	),
 	(
-		'c3b4a5d6-e7f8-9012-cdef-333333333333',
+		'37ad6f9b-d585-4dd9-af67-bda0bfbccbca',
 		'CL-VN-003',
 		'VinFast Vietnam',
 		'contact@vinfast.vn',
@@ -837,7 +844,7 @@ VALUES
 		NOW ()
 	),
 	(
-		'c4b5a6d7-e8f9-0123-defg-444444444444',
+		'c124991f-94b3-40e7-aaa3-efb76817a157',
 		'CL-EU-004',
 		'Siemens AG',
 		'finance@siemens.de',

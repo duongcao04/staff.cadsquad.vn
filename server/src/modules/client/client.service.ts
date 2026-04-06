@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common'
 import { PrismaService } from '../../providers/prisma/prisma.service'
 import { UpdateClientDto } from './dto/update-client.dto'
+import { CreateClientDto } from './dto/create-client.dto'
 
 @Injectable()
 export class ClientService {
@@ -44,7 +45,7 @@ export class ClientService {
             where: {
                 code: {
                     equals: code.trim(),
-                    mode: 'insensitive', // Chống trùng lặp Apple/apple/APPLE
+                    mode: 'insensitive',
                 },
             },
             include: {
@@ -70,6 +71,14 @@ export class ClientService {
                     }
                 }
             },
+        })
+    }
+
+    async create(dto: CreateClientDto) {
+        return this.prisma.client.create({
+            data: {
+                ...dto
+            }
         })
     }
 

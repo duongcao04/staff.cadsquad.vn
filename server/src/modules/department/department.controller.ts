@@ -1,3 +1,4 @@
+import { APP_PERMISSIONS } from '@/utils'
 import {
     Body,
     Controller,
@@ -7,6 +8,7 @@ import {
     Param,
     Patch,
     Post,
+    Req,
     UseGuards,
 } from '@nestjs/common'
 import {
@@ -19,18 +21,19 @@ import { isUUID } from 'class-validator'
 import { RequirePermissions } from '../../common/decorators/require-permissions.decorator'
 import { ResponseMessage } from '../../common/decorators/responseMessage.decorator'
 import { PermissionsGuard } from '../../common/guards/permissions.guard'
-import { APP_PERMISSIONS } from '../../utils/_app-permissions'
 import { JwtGuard } from '../auth/jwt.guard'
 import { DepartmentService } from './department.service'
 import { CreateDepartmentDto } from './dto/create-department.dto'
 import { DepartmentResponseDto } from './dto/department-response.dto'
 import { UpdateDepartmentDto } from './dto/update-department.dto'
+import { AuditLog } from '../../common/decorators/audit-log.decorator'
+import { SystemModule } from '../../generated/prisma'
 
 @ApiTags('Departments')
 @Controller('departments')
 @UseGuards(JwtGuard)
 export class DepartmentController {
-    constructor(private readonly departmentService: DepartmentService) {}
+    constructor(private readonly departmentService: DepartmentService) { }
 
     @Post()
     @HttpCode(201)
@@ -44,8 +47,12 @@ export class DepartmentController {
     })
     @UseGuards(PermissionsGuard)
     @RequirePermissions(APP_PERMISSIONS.DEPARTMENT.CREATE)
-    async create(@Body() createDepartmentDto: CreateDepartmentDto) {
-        return this.departmentService.create(createDepartmentDto)
+    @AuditLog("Create new department", SystemModule.SYSTEM)
+    async create(@Req() request: Request, @Body() createDepartmentDto: CreateDepartmentDto) {
+        const created = await this.departmentService.create(createDepartmentDto)
+        request['auditTargetId'] = created.id
+        request['auditTargetDisplay'] = created.displayName
+        return created
     }
 
     @Get()

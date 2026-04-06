@@ -1,4 +1,5 @@
-import { TClient, TJob } from '../../shared/types'
+import queryString from 'query-string'
+import { TClient, TJob, TJobStatus } from '../../shared/types'
 import { ApiResponse, axiosClient } from '../axios'
 
 export interface IAdminDashboardKpis {
@@ -15,12 +16,16 @@ export interface IAdminDashboardKpis {
 	}
 }
 
+export type ICountByStatus = Pick<TJobStatus, 'displayName' | 'hexColor'> & {
+	_count: { jobs: number }
+}
 export interface IAdminDbStats {
 	auth: { users: number; roles: number }
 	jobs: {
 		total: number
 		actives: number
 		pendingReviews: number, pendingPayouts: number
+		countByStatus: ICountByStatus[]
 	}
 	clients: {
 		total: number
@@ -51,6 +56,12 @@ export const administratorApi = {
 			)
 			return data
 		},
+		getDbOverview: async (): Promise<ApiResponse<any>> => {
+			const { data } = await axiosClient.get(
+				'/v1/admin/dashboard/db-overview'
+			)
+			return data
+		},
 	},
 
 	users: {
@@ -76,6 +87,13 @@ export const administratorApi = {
 	},
 
 	jobs: {
+		getStats: async ({ from, to }: { from?: string, to?: string }) => {
+			const queryStringFormatter = queryString.stringify({ from, to })
+			const { data } = await axiosClient.get(
+				`/v1/admin/jobs/stats?${queryStringFormatter}`,
+			)
+			return data
+		},
 		bulkUpdateStatus: async (payload: IBulkUpdateJobStatusPayload) => {
 			const { data } = await axiosClient.post(
 				'/v1/admin/jobs/bulk-status',

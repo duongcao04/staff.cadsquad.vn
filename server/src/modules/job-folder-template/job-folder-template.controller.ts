@@ -18,7 +18,7 @@ import {
 import { RequirePermissions } from '../../common/decorators/require-permissions.decorator'
 import { ResponseMessage } from '../../common/decorators/responseMessage.decorator'
 import { PermissionsGuard } from '../../common/guards/permissions.guard'
-import { APP_PERMISSIONS } from '../../utils/_app-permissions'
+import { APP_PERMISSIONS } from '@/utils'
 import { CreateJobFolderTemplateDto } from './dto/create-job-folder-template.dto'
 import { JobFolderTemplateResponseDto } from './dto/job-folder-template-response.dto'
 import { UpdateJobFolderTemplateDto } from './dto/update-job-folder-template.dto'
@@ -86,7 +86,7 @@ export class JobFolderTemplateController {
         type: JobFolderTemplateResponseDto,
     })
     @UseGuards(PermissionsGuard)
-    @RequirePermissions(APP_PERMISSIONS.JOB_FOLDER_TEMPLATE.UPDATE)
+    // @RequirePermissions(APP_PERMISSIONS.JOB_FOLDER_TEMPLATE.UPDATE)
     async update(
         @Param('id') id: string,
         @Body() updateJobFolderTemplateDto: UpdateJobFolderTemplateDto
@@ -104,7 +104,7 @@ export class JobFolderTemplateController {
         description: 'The job folder template has been successfully deleted.',
     })
     @UseGuards(PermissionsGuard)
-    @RequirePermissions(APP_PERMISSIONS.JOB_FOLDER_TEMPLATE.DELETE)
+    // @RequirePermissions(APP_PERMISSIONS.JOB_FOLDER_TEMPLATE.DELETE)
     async remove(@Param('id') id: string) {
         return this.jobFolderTemplateService.delete(id)
     }

@@ -1,10 +1,9 @@
 import { CreateJobModal } from '@/features/job-manage'
 import { DeliverJobModal } from '@/features/job-manage/components/modals/DeliverJobModal'
-import { CreateNotificationModal } from '@/features/notifications/components/modals/CreateNotificationModal'
 import CreateUserModal from '@/features/staff-directory/components/modals/CreateUserModal'
 import { MotionDiv } from '@/lib/motion'
 import { APP_PERMISSIONS } from '@/lib/utils'
-import { IconAlertColorful, IconPeopleColorful } from '@/shared/components'
+import { IconPeopleColorful } from '@/shared/components'
 import { appStore, ESidebarStatus } from '@/shared/stores'
 import {
     Button,
@@ -23,8 +22,6 @@ import { useEffect } from 'react'
 import { usePermission } from '../../hooks'
 import { FluentColorApprovalsApp20 } from '../icons/FluentColorApprovalsApp20'
 import { FluentColorBriefcase20 } from '../icons/FluentColorBriefcase20'
-import { FluentColorErrorCircle20 } from '../icons/FluentColorErrorCircle20'
-import { IssueReportModal } from '../modals/IssueReportModal'
 
 export function ActionButton({
     forceStatus,
@@ -51,22 +48,10 @@ export function ActionButton({
         id: 'UserModal',
     })
     const {
-        isOpen: isOpenNM,
-        onOpen: onOpenNM,
-        onClose: onCloseNM,
-    } = useDisclosure({
-        id: 'NotificationModal',
-    })
-    const {
         isOpen: isOpenDeliverJobModal,
         onOpen: onOpenDeliverJobModal,
         onClose: onCloseDeliverJobModal,
     } = useDisclosure({ id: 'DeliverJobModal' })
-    const {
-        isOpen: isOpenIssueReportModal,
-        onOpen: onOpenIssueReportModal,
-        onClose: onCloseIssueReportModal,
-    } = useDisclosure({ id: 'IssueReportModal' })
 
     useEffect(() => {
         hotkeys('alt+n,alt+u,alt+m', function (event, handler) {
@@ -76,9 +61,6 @@ export function ActionButton({
                     break
                 case 'alt+u':
                     onOpenUM()
-                    break
-                case 'alt+m':
-                    onOpenNM()
                     break
                 default:
                     alert(event)
@@ -113,22 +95,10 @@ export function ActionButton({
             {hasPermission(APP_PERMISSIONS.USER.CREATE) && isOpenUM && (
                 <CreateUserModal isOpen={isOpenUM} onClose={onCloseUm} />
             )}
-            {hasPermission(APP_PERMISSIONS.USER.CREATE) && isOpenNM && (
-                <CreateNotificationModal
-                    isOpen={isOpenNM}
-                    onClose={onCloseNM}
-                />
-            )}
             {isOpenDeliverJobModal && (
                 <DeliverJobModal
                     isOpen={isOpenDeliverJobModal}
                     onClose={onCloseDeliverJobModal}
-                />
-            )}
-            {isOpenIssueReportModal && (
-                <IssueReportModal
-                    isOpen={isOpenIssueReportModal}
-                    onClose={onCloseIssueReportModal}
                 />
             )}
 
@@ -189,16 +159,6 @@ export function ActionButton({
                             </DropdownItem>
                         ) : null}
                     </DropdownSection>
-                    <DropdownSection title="Support">
-                        <DropdownItem
-                            key="issueReport"
-                            shortcut="Alt + I"
-                            startContent={<FluentColorErrorCircle20 />}
-                            onPress={() => onOpenIssueReportModal()}
-                        >
-                            Issue Report
-                        </DropdownItem>
-                    </DropdownSection>
                     {hasPermission(APP_PERMISSIONS.USER.CREATE) ? (
                         <DropdownSection title="Team">
                             <DropdownItem
@@ -208,14 +168,6 @@ export function ActionButton({
                                 onPress={() => onOpenUM()}
                             >
                                 User
-                            </DropdownItem>
-                            <DropdownItem
-                                key="sendNotification"
-                                shortcut="Alt + M"
-                                startContent={<IconAlertColorful />}
-                                onPress={() => onOpenNM()}
-                            >
-                                Notifications
                             </DropdownItem>
                         </DropdownSection>
                     ) : null}

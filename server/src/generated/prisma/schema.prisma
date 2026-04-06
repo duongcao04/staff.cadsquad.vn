@@ -1,3 +1,48 @@
+model SystemAuditLog {
+  id String @id @default(uuid())
+
+  // 1. WHO did it? (Actor)
+  // If actorId is null, it represents a "System" action (e.g., auto-syncs, cron jobs)
+  actorId String?
+  actor   User?   @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  // 2. WHAT did they do? (Action & Module)
+  action String // Maps to UI "ACTION" column (e.g., "Created new Job", "Processed Bulk Payout")
+  module SystemModule // Maps to UI "MODULE" badge
+
+  // 3. TO WHAT entity? (Target)
+  targetId      String? // The actual UUID of the modified record (allows deep linking)
+  targetDisplay String // Maps to UI "TARGET" column (e.g., "#JOB-2026-088", "Folder Templates", "$4,320.00")
+
+  // 4. THE DATA (For the "View Full Audit Log" detail page)
+  oldValues Json? // Snapshot of data BEFORE the change
+  newValues Json? // Snapshot of data AFTER the change
+  metadata  Json? // Extra context (e.g., {"reason": "Client requested change"})
+
+  // 5. SECURITY CONTEXT
+  ipAddress String?
+  userAgent String?
+
+  createdAt DateTime @default(now())
+
+  // Indexes for fast filtering and searching in the admin dashboard
+  @@index([actorId])
+  @@index([module])
+  @@index([targetId])
+  @@index([createdAt])
+}
+
+enum SystemModule {
+  JOB
+  DELIVERY
+  FINANCIAL
+  SYSTEM
+  SECURITY
+  USER_MANAGEMENT
+  CLIENT
+  ASSET
+}
+
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
@@ -7,7 +52,7 @@
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
-  output        = "../../../src/generated/prisma"
+  output        = "../../../../src/generated/prisma"
 }
 
 datasource db {
@@ -81,10 +126,14 @@ model User {
   userPermissions UserPermission[]
   securityLogs    UserSecurityLog[]
 
-  deletedAt   DateTime?
-  lastLoginAt DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  deletedAt       DateTime?
+  lastLoginAt     DateTime?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  systemAuditLogs SystemAuditLog[]
+
+  systemSettings SystemSetting[]
+  transactions   Transaction[]
 }
 
 model UserSecurityLog {
@@ -361,18 +410,20 @@ model FileSystem {
 
 model Job {
   id String @id @default(uuid())
-  no String @unique // Job No. example FV-0001
+  no String @unique // Job No. example F260001
 
   type   JobType @relation(fields: [typeId], references: [id])
   typeId String
 
-  displayName        String
-  description        String?
-  attachmentUrls     String[] @default([])
-  sharepointFolderId String? // optionally store linked existing SharePoint folder ID
-  client             Client?  @relation(fields: [clientId], references: [id])
-  clientId           String?
-  incomeCost         Float
+  displayName    String
+  description    String?
+  attachmentUrls String[] @default([])
+  client         Client?  @relation(fields: [clientId], references: [id])
+  clientId       String?
+  incomeCost     Float
+
+  sharepointFolderId String?
+  sharepointFolder   SharepointItem? @relation(fields: [sharepointFolderId], references: [id])
 
   totalStaffCost Float @default(0)
 
@@ -388,13 +439,12 @@ model Job {
   startedAt        DateTime           @default(now())
   priority         JobPriority        @default(MEDIUM)
   files            FileSystem[]
-  // isPinned         Boolean            @default(false)
   isPublished      Boolean            @default(false)
-  isPaid           Boolean            @default(false)
   dueAt            DateTime
   completedAt      DateTime?
   finishedAt       DateTime?
-  paidAt           DateTime?
+  paymentStatus    JOB_PAYMENT_STATUS @default(UNPAID)
+  payoutDate       DateTime?
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
   deletedAt        DateTime?
@@ -406,20 +456,44 @@ model Job {
   folderTemplateId String?
   folderTemplate   JobFolderTemplate? @relation(fields: [folderTemplateId], references: [id])
 
+  transactions Transaction[]
+
   @@index([no])
   @@index([statusId])
   @@index([createdById])
   @@index([priority])
 }
 
+model SharepointItem {
+  id              String  @id @default(uuid())
+  itemId          String
+  displayName     String?
+  isFolder        Boolean @default(false)
+  size            Int?
+  webUrl          String?
+  createdDateTime String?
+  createdBy       String?
+  jobs            Job[]
+
+  @@unique([itemId, id])
+}
+
+enum JOB_PAYMENT_STATUS {
+  PAID
+  PENDING
+  UNPAID
+  FAILED
+}
+
 model JobAssignment {
-  id         String   @id @default(uuid())
-  job        Job      @relation(fields: [jobId], references: [id])
-  jobId      String
-  user       User     @relation(fields: [userId], references: [id])
-  userId     String
-  staffCost  Float    @default(0) // Specific cost for THIS staff on THIS job
-  assignedAt DateTime @default(now())
+  id           String        @id @default(uuid())
+  job          Job           @relation(fields: [jobId], references: [id])
+  jobId        String
+  user         User          @relation(fields: [userId], references: [id])
+  userId       String
+  staffCost    Float         @default(0)
+  assignedAt   DateTime      @default(now())
+  transactions Transaction[]
 
   @@unique([jobId, userId]) // Prevents assigning the same person twice
 }
@@ -443,18 +517,18 @@ model JobFolderTemplate {
 
 model Client {
   id   String     @id @default(uuid())
-  name String     @unique // Company name
-  code String     @unique // e.g. "CUST-001"
-  type ClientType @default(COMPANY)
+  name String     @unique
+  code String     @unique
+  type ClientType @default(INDIVIDUAL)
 
   // Regional Info
-  region   String? // e.g. "North"
+  region   String?
   country  String?
   address  String?
   timezone String? @default("UTC")
 
   // Contact Info
-  email        String? @unique
+  email        String?
   phoneNumber  String?
   billingEmail String?
 
@@ -466,8 +540,9 @@ model Client {
   // Relations
   jobs Job[] // Links back to your Job model
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  transactions Transaction[]
 }
 
 enum ClientType {
@@ -495,16 +570,31 @@ enum JobPriority {
 }
 
 model PaymentChannel {
-  id          String   @id @default(uuid())
-  displayName String
-  hexColor    String?
-  logoUrl     String?
-  ownerName   String?
-  cardNumber  String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id             String             @id @default(uuid())
+  displayName    String
+  hexColor       String?
+  type           PaymentChannelType @default(BANK)
+  accountDetails String?
+  feeRate        Float?
+  fixedFee       Float?
+  totalVolume    Float?
+  totalFees      Float?
+  logoUrl        String?
+  ownerName      String?
+  cardNumber     String?
+  isActive       Boolean            @default(true)
 
-  jobs Job[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  jobs         Job[]
+  transactions Transaction[]
+}
+
+enum PaymentChannelType {
+  BANK
+  E_WALLET
+  CRYPTO
 }
 
 model JobType {
@@ -858,4 +948,69 @@ model PostEvent {
   // Quan hệ với Post
   postId String @unique
   post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model SystemSetting {
+  key       String   @id // e.g., "maintenanceMode"
+  value     String   @db.Text // Store everything as a stringified JSON
+  updatedAt DateTime @updatedAt
+
+  modifierBy   User?   @relation(fields: [modifierById], references: [id])
+  modifierById String?
+}
+
+// --- ENUMS CHO TÀI CHÍNH ---
+enum TransactionType {
+  INCOME // Tiền từ Client nạp vào cho Job
+  PAYOUT // Tiền hệ thống chi trả cho Staff (từ JobAssignment)
+  REFUND // Hoàn tiền nếu có sự cố
+}
+
+enum TransactionStatus {
+  PENDING // Đang chờ xác nhận (Ví dụ: Staff tạo yêu cầu thanh toán)
+  COMPLETED // Đã xong (Kế toán đã chuyển khoản/nhận tiền)
+  FAILED // Giao dịch lỗi
+  CANCELLED // Hủy giao dịch
+}
+
+// --- MODEL TRANSACTION CHÍNH ---
+model Transaction {
+  id       String            @id @default(uuid())
+  amount   Float // Số tiền giao dịch
+  currency String            @default("VND")
+  type     TransactionType
+  status   TransactionStatus @default(COMPLETED)
+
+  // Thông tin đối soát thực tế
+  referenceNo String? @unique // Mã giao dịch ngân hàng / Số hóa đơn
+  note        String? // Nội dung chuyển khoản hoặc ghi chú thêm
+  evidenceUrl String? // Link ảnh chụp bill chuyển khoản thành công
+
+  // Quan hệ với Job (Giao dịch luôn thuộc về 1 Job)
+  jobId String
+  job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  // Nguồn thu (Nếu type là INCOME)
+  clientId String?
+  client   Client? @relation(fields: [clientId], references: [id])
+
+  // Đích chi (Nếu type là PAYOUT - Trả cho ai trong Job đó)
+  assignmentId String?
+  assignment   JobAssignment? @relation(fields: [assignmentId], references: [id])
+
+  // Cổng thanh toán (Bank, MoMo, Crypto...)
+  paymentChannelId String?
+  paymentChannel   PaymentChannel? @relation(fields: [paymentChannelId], references: [id])
+
+  // Người thực hiện/xác nhận giao dịch (Admin/Accounting)
+  createdById String
+  createdBy   User   @relation(fields: [createdById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([jobId])
+  @@index([type])
+  @@index([status])
+  @@index([createdAt])
 }

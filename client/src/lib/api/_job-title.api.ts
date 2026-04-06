@@ -12,8 +12,8 @@ export const jobTitleApi = {
         ),
     findAll: async () =>
         axiosClient.get<ApiResponse<any[]>>('/v1/job-titles').then(res => res.data),
-    findOne: async (id: string) =>
-        axiosClient.get<ApiResponse<any>>(`/v1/job-titles/${id}`).then(res => res.data),
+    findOne: async (identify: string) =>
+        axiosClient.get<ApiResponse<any>>(`/v1/job-titles/${identify}`).then(res => res.data),
     update: (id: string, data: TUpdateJobTitleInput) =>
         axiosClient.patch<ApiResponse<{ id: string }>>(
             `/v1/job-titles/${id}`,

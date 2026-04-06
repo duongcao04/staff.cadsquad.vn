@@ -21,7 +21,7 @@ declare module '@tanstack/react-router' {
 }
 
 // 3. Create the router instance
-const router = createRouter({
+export const router = createRouter({
     routeTree,
     defaultPendingMs: 0,
     context: {

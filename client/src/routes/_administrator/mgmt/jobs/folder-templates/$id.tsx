@@ -1,13 +1,20 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
-import { dateFormatter, INTERNAL_URLS, jobFolderTemplateOptions } from '@/lib'
 import {
-    AdminPageHeading,
-    HeroBreadcrumbItem,
-    HeroBreadcrumbs,
-} from '@/shared/components'
+    convertStorage,
+    dateFormatter,
+    deleteJobFolderTemplateOptions,
+    INTERNAL_URLS,
+    jobFolderTemplateOptions,
+    jobFolderTemplateQueryKeys,
+    sharepointApi,
+    updateJobFolderTemplateOptions,
+} from '@/lib'
+import { AdminPageHeading } from '@/shared/components'
 import AdminContentContainer from '@/shared/components/admin/AdminContentContainer'
 import { JobStatusSystemTypeEnum } from '@/shared/enums'
 import {
+    addToast,
+    BreadcrumbItem,
+    Breadcrumbs,
     Button,
     Card,
     CardBody,
@@ -21,9 +28,10 @@ import {
     TableColumn,
     TableHeader,
     TableRow,
+    useDisclosure,
 } from '@heroui/react'
-import { useSuspenseQuery } from '@tanstack/react-query'
-import { useRouter } from '@tanstack/react-router'
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query'
+import { createFileRoute, Link, useRouter } from '@tanstack/react-router'
 import { useFormik } from 'formik'
 import {
     ArrowLeft,
@@ -32,15 +40,65 @@ import {
     ExternalLink,
     RefreshCw,
     Save,
+    Trash2Icon,
 } from 'lucide-react'
+import { queryClient } from '../../../../../main'
+import { CancelModal } from '../../../../../shared/components/ui/cancel-modal'
 
 export const Route = createFileRoute(
     '/_administrator/mgmt/jobs/folder-templates/$id'
 )({
     component: () => {
         const router = useRouter()
+
+        const { id } = Route.useParams()
+        const { data: template } = useSuspenseQuery(
+            jobFolderTemplateOptions(id)
+        )
+
+        const deleteTemplate = useMutation(deleteJobFolderTemplateOptions())
+
+        const deleteTemplateDisclosure = useDisclosure()
+
+        const handleDeleteTemplate = async () => {
+            deleteTemplate.mutateAsync(
+                {
+                    id,
+                },
+                {
+                    onSuccess() {
+                        addToast({
+                            title: 'Delete successfully',
+                            color: 'success',
+                        })
+                        router.navigate({
+                            href: INTERNAL_URLS.management.jobFolderTemplates,
+                        })
+                    },
+                }
+            )
+            deleteTemplateDisclosure.onClose()
+        }
+
         return (
             <>
+                <CancelModal
+                    isOpen={deleteTemplateDisclosure.isOpen}
+                    onClose={deleteTemplateDisclosure.onClose}
+                    onConfirm={handleDeleteTemplate}
+                    title="Delete Folder Template"
+                    message={
+                        <span>
+                            Are you sure you want to delete the{' '}
+                            <strong>{template.displayName}</strong> template?
+                            <br /> This action cannot be undone, and the
+                            template will no longer be available for new jobs.
+                        </span>
+                    }
+                    confirmText="Delete Template"
+                    cancelText="Cancel"
+                    confirmColor="danger" // Assuming your modal accepts color variants for the confirm button
+                />
                 <AdminPageHeading
                     title={
                         <div className="flex items-center gap-4">
@@ -56,10 +114,19 @@ export const Route = createFileRoute(
                                     Edit Template
                                 </h1>
                                 <p className="text-sm text-default-500">
-                                    ID: tpl-001
+                                    ID: {template.id.slice(-8)}
                                 </p>
                             </div>
                         </div>
+                    }
+                    actions={
+                        <Button
+                            startContent={<Trash2Icon size={16} />}
+                            color="danger"
+                            onPress={deleteTemplateDisclosure.onOpen}
+                        >
+                            Delete
+                        </Button>
                     }
                 />
                 <JobFolderTemplateDetailPage />
@@ -73,50 +140,89 @@ export default function JobFolderTemplateDetailPage() {
 
     const { data: template } = useSuspenseQuery(jobFolderTemplateOptions(id))
 
+    const updateFolderTemplate = useMutation({
+        ...updateJobFolderTemplateOptions,
+        onSuccess() {
+            queryClient.refetchQueries({
+                queryKey: jobFolderTemplateQueryKeys.detailById(id),
+            })
+            addToast({
+                title: 'Update successfully',
+                color: 'success',
+            })
+        },
+    })
+
     const formik = useFormik({
         initialValues: {
             displayName: template.displayName,
         },
         onSubmit: async (values) => {
-            console.log('Updating Template:', values)
-            // API Call: Update JobFolderTemplate -> displayName
+            updateFolderTemplate.mutateAsync({
+                data: { displayName: values.displayName },
+                id,
+            })
         },
     })
 
     const handleSync = async () => {
+        const res = await sharepointApi.folderDetail(template.folderId)
+
+        const data = res.result as unknown as {
+            size: number
+            name: string
+            webUrl: string
+        }
+
+        updateFolderTemplate.mutateAsync(
+            {
+                data: {
+                    size: data.size || 0,
+                    folderName: data.name,
+                    webUrl: data.webUrl,
+                },
+                id,
+            },
+            {
+                onSuccess() {
+                    queryClient.refetchQueries({
+                        queryKey: jobFolderTemplateQueryKeys.detailById(id),
+                    })
+                    addToast({
+                        title: 'Sync successfully',
+                        description: 'Sync Sharepoint status successfully',
+                        color: 'success',
+                    })
+                },
+            }
+        )
+
         console.log('Triggering Graph API to resync folder sizes and names...')
         // Call your backend SharepointService to update the details based on folderId
     }
 
-    const formatBytes = (bytes: number) => {
-        const k = 1024
-        const sizes = ['Bytes', 'KB', 'MB', 'GB']
-        const i = Math.floor(Math.log(bytes) / Math.log(k))
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-    }
-
     return (
         <AdminContentContainer className="pt-0 space-y-4">
-            <HeroBreadcrumbs className="text-xs">
-                <HeroBreadcrumbItem>
+            <Breadcrumbs className="text-xs">
+                <BreadcrumbItem>
                     <Link
                         to={INTERNAL_URLS.admin.overview}
                         className="text-text-subdued!"
                     >
                         Management
                     </Link>
-                </HeroBreadcrumbItem>
-                <HeroBreadcrumbItem>Job</HeroBreadcrumbItem>
-                <HeroBreadcrumbItem>
+                </BreadcrumbItem>
+                <BreadcrumbItem>Jobs</BreadcrumbItem>
+                <BreadcrumbItem>
                     <Link
                         to={INTERNAL_URLS.management.jobFolderTemplates}
                         className="text-text-subdued!"
                     >
                         Folder Templates
                     </Link>
-                </HeroBreadcrumbItem>
-                <HeroBreadcrumbItem>Standard 3D Project</HeroBreadcrumbItem>
-            </HeroBreadcrumbs>
+                </BreadcrumbItem>
+                <BreadcrumbItem>{template.displayName}</BreadcrumbItem>
+            </Breadcrumbs>
 
             <div className="space-y-6">
                 {/* TOP SECTION: Details Grid */}
@@ -143,6 +249,9 @@ export default function JobFolderTemplateDetailPage() {
                                         labelPlacement="outside"
                                         value={formik.values.displayName}
                                         onChange={formik.handleChange}
+                                        classNames={{
+                                            label: 'font-medium',
+                                        }}
                                     />
 
                                     <Divider className="my-2" />
@@ -162,7 +271,7 @@ export default function JobFolderTemplateDetailPage() {
                         </Card>
 
                         {/* BOTTOM SECTION: Usage Table */}
-                        <Card shadow="sm" className="border border-default-200">
+                        <Card shadow="sm">
                             <CardHeader className="px-6 py-4 border-b border-divider bg-default-50 flex justify-between items-center">
                                 <div className="flex items-center gap-2">
                                     <Briefcase
@@ -177,69 +286,71 @@ export default function JobFolderTemplateDetailPage() {
                                     {template.jobs.length} Jobs
                                 </Chip>
                             </CardHeader>
-                            <Table
-                                aria-label="Template Usage Table"
-                                removeWrapper
-                                className="bg-transparent"
-                            >
-                                <TableHeader>
-                                    <TableColumn>JOB REF</TableColumn>
-                                    <TableColumn>PROJECT NAME</TableColumn>
-                                    <TableColumn>CLIENT</TableColumn>
-                                    <TableColumn>CREATED AT</TableColumn>
-                                    <TableColumn>STATUS</TableColumn>
-                                </TableHeader>
-                                <TableBody emptyContent="This template has not been used yet.">
-                                    {template.jobs.map((job) => (
-                                        <TableRow
-                                            key={job.id}
-                                            className="hover:bg-default-50 transition-colors"
-                                        >
-                                            <TableCell>
-                                                <span className="font-bold text-sm text-default-900">
-                                                    #{job.no}
-                                                </span>
-                                            </TableCell>
-                                            <TableCell>
-                                                <span className="text-sm font-medium text-default-800">
-                                                    {job.displayName}
-                                                </span>
-                                            </TableCell>
-                                            <TableCell>
-                                                <span className="text-sm text-default-600">
-                                                    {job.client?.name}
-                                                </span>
-                                            </TableCell>
-                                            <TableCell>
-                                                <span className="text-sm text-default-500">
-                                                    {dateFormatter(
-                                                        job.createdAt
-                                                    )}
-                                                </span>
-                                            </TableCell>
-                                            <TableCell>
-                                                <Chip
-                                                    size="sm"
-                                                    variant="flat"
-                                                    color={
-                                                        job.status
-                                                            .systemType ===
-                                                        JobStatusSystemTypeEnum.COMPLETED
-                                                            ? 'primary'
-                                                            : job.status
-                                                                    .systemType ===
-                                                                JobStatusSystemTypeEnum.TERMINATED
-                                                              ? 'success'
-                                                              : 'default'
-                                                    }
-                                                >
-                                                    {job.status.displayName}
-                                                </Chip>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
+                            <CardBody>
+                                <Table
+                                    aria-label="Template Usage Table"
+                                    removeWrapper
+                                    className="bg-transparent"
+                                >
+                                    <TableHeader>
+                                        <TableColumn>JOB REF</TableColumn>
+                                        <TableColumn>PROJECT NAME</TableColumn>
+                                        <TableColumn>CLIENT</TableColumn>
+                                        <TableColumn>CREATED AT</TableColumn>
+                                        <TableColumn>STATUS</TableColumn>
+                                    </TableHeader>
+                                    <TableBody emptyContent="This template has not been used yet.">
+                                        {template.jobs.map((job) => (
+                                            <TableRow
+                                                key={job.id}
+                                                className="hover:bg-default-50 transition-colors"
+                                            >
+                                                <TableCell>
+                                                    <span className="font-bold text-sm text-default-900">
+                                                        #{job.no}
+                                                    </span>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <span className="text-sm font-medium text-default-800">
+                                                        {job.displayName}
+                                                    </span>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <span className="text-sm text-default-600">
+                                                        {job.client?.name}
+                                                    </span>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <span className="text-sm text-default-500">
+                                                        {dateFormatter(
+                                                            job.createdAt
+                                                        )}
+                                                    </span>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Chip
+                                                        size="sm"
+                                                        variant="flat"
+                                                        color={
+                                                            job.status
+                                                                .systemType ===
+                                                            JobStatusSystemTypeEnum.COMPLETED
+                                                                ? 'primary'
+                                                                : job.status
+                                                                        .systemType ===
+                                                                    JobStatusSystemTypeEnum.TERMINATED
+                                                                  ? 'success'
+                                                                  : 'default'
+                                                        }
+                                                    >
+                                                        {job.status.displayName}
+                                                    </Chip>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </CardBody>
                         </Card>
                     </div>
 
@@ -259,6 +370,7 @@ export default function JobFolderTemplateDetailPage() {
                                 variant="flat"
                                 startContent={<RefreshCw size={14} />}
                                 onPress={handleSync}
+                                isLoading={updateFolderTemplate.isPending}
                             >
                                 Sync Now
                             </Button>
@@ -281,7 +393,13 @@ export default function JobFolderTemplateDetailPage() {
                                         Total Template Size
                                     </p>
                                     <p className="text-lg font-bold text-default-900">
-                                        {formatBytes(template.size)}
+                                        {convertStorage(
+                                            template.size,
+                                            'B',
+                                            'KB',
+                                            2
+                                        )}{' '}
+                                        KB
                                     </p>
                                 </div>
                                 <div>

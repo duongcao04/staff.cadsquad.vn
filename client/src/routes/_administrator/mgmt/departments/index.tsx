@@ -1,94 +1,173 @@
 import {
-    CreateDepartmentSchema,
-    INTERNAL_URLS,
-    TCreateDepartmentInput,
-} from '@/lib'
+    ConfirmDeleteDeptModal,
+    ModifyDepartmentModal,
+} from '@/features/department-manage'
+import { deleteDepartmentOptions, INTERNAL_URLS, RouteUtil } from '@/lib'
 import { departmentsListOptions } from '@/lib/queries'
-import {
-    AdminPageHeading,
-    HeroModal,
-    HeroModalBody,
-    HeroModalContent,
-    HeroModalFooter,
-    HeroModalHeader,
-} from '@/shared/components'
+import { AdminPageHeading, AppLoading } from '@/shared/components'
 import AdminContentContainer from '@/shared/components/admin/AdminContentContainer'
 import { TDepartment } from '@/shared/types'
 import {
-    Badge,
+    addToast,
     Button,
     Card,
     CardBody,
+    CardHeader,
+    Divider,
     Input,
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
+    Tab,
     Table,
     TableBody,
     TableCell,
     TableColumn,
     TableHeader,
     TableRow,
-    Textarea,
+    Tabs,
     useDisclosure,
 } from '@heroui/react'
-import { useSuspenseQuery } from '@tanstack/react-query'
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
-import { useFormik } from 'formik'
 import {
     Edit,
     Eye,
+    GridIcon,
     Hash,
+    ListIcon,
     Palette,
-    Plus,
+    PlusIcon,
     Search,
     Trash2,
     Users,
 } from 'lucide-react'
 import { useMemo, useState } from 'react'
+import { z } from 'zod'
 
+enum ViewOptions {
+    TABLE = 'table',
+    GRID = 'grid',
+}
+export const departmentManageSchema = z.object({
+    tab: z.nativeEnum(ViewOptions).default(ViewOptions.TABLE),
+})
+export type TDepartmentManageSchema = z.infer<typeof departmentManageSchema>
 export const Route = createFileRoute('/_administrator/mgmt/departments/')({
+    validateSearch: (search) => departmentManageSchema.parse(search),
+    loaderDeps: ({ search }) => ({ search }),
+    head: () => ({ meta: [{ title: 'Department Management' }] }),
     loader: ({ context }) => {
         return context.queryClient.ensureQueryData(departmentsListOptions())
     },
-    component: DepartmentsSettingsPage,
+    pendingComponent: AppLoading,
+    component: () => {
+        const [selectedDept, setSeletectedDept] = useState<TDepartment | null>(
+            null
+        )
+
+        const {
+            data: { departments },
+            refetch,
+        } = useSuspenseQuery({ ...departmentsListOptions() })
+
+        const createDepartmentModalState = useDisclosure({
+            id: 'CreateDepartmentModal',
+        })
+
+        const handleCreate = () => {
+            setSeletectedDept(null)
+            createDepartmentModalState.onOpen()
+        }
+
+        const handleEdit = (dept: TDepartment) => {
+            setSeletectedDept(dept)
+            createDepartmentModalState.onOpen()
+        }
+
+        return (
+            <>
+                <ModifyDepartmentModal
+                    isOpen={createDepartmentModalState.isOpen}
+                    onClose={createDepartmentModalState.onClose}
+                    deptId={selectedDept?.id}
+                    onRefresh={refetch}
+                />
+
+                <AdminPageHeading
+                    title="Departments"
+                    showBadge
+                    badgeCount={departments.length}
+                    actions={
+                        <Button
+                            startContent={<PlusIcon size={16} />}
+                            color="primary"
+                            onPress={handleCreate}
+                        >
+                            Create new
+                        </Button>
+                    }
+                />
+                <DepartmentsManagePage
+                    depts={departments}
+                    onEdit={handleEdit}
+                    onRefresh={refetch}
+                />
+            </>
+        )
+    },
 })
 
-// --- Color Palette Options ---
-const PRESET_COLORS = [
-    '#3B82F6', // Blue
-    '#8B5CF6', // Violet
-    '#10B981', // Emerald
-    '#F59E0B', // Amber
-    '#EF4444', // Red
-    '#EC4899', // Pink
-    '#6366F1', // Indigo
-    '#14B8A6', // Teal
-    '#F97316', // Orange
-    '#64748B', // Slate
-]
-
-function DepartmentsSettingsPage() {
+function DepartmentsManagePage({
+    depts: departments,
+    onEdit,
+    onRefresh,
+}: {
+    depts: TDepartment[]
+    onEdit: (dept: TDepartment) => void
+    onRefresh: () => void
+}) {
+    const searchParams = Route.useSearch()
     const router = useRouter()
-    const {
-        data: { departments },
-    } = useSuspenseQuery({
-        ...departmentsListOptions(),
-    })
+
+    const [selectedDept, setSelectedDept] = useState<TDepartment | null>(null)
+
+    const deleteDeptAction = useMutation(deleteDepartmentOptions)
+
+    const confirmDeleteModalState = useDisclosure()
+
+    // States
     const [searchQuery, setSearchQuery] = useState('')
-    const [editingDept, setEditingDept] = useState<TDepartment | null>(null)
-    const [formValues, setFormValues] = useState<TCreateDepartmentInput>({
-        code: '',
-        displayName: '',
-        hexColor: '#EF4444',
-        notes: '',
-    })
 
-    console.log(departments)
-
-    const createDepartmentDisclosure = useDisclosure({
-        id: 'CreateDepartmentModal',
-    })
+    // --- Statistics Logic ---
+    const stats = useMemo(() => {
+        const totalDepts = departments.length
+        const totalMembers = departments.reduce(
+            (acc, curr) => acc + (curr._count?.users || 0),
+            0
+        )
+        return [
+            {
+                label: 'Total Depts',
+                value: totalDepts,
+                icon: <Hash size={18} />,
+                color: 'text-blue-500',
+                bg: 'bg-blue-500/10',
+            },
+            {
+                label: 'Total Members',
+                value: totalMembers,
+                icon: <Users size={18} />,
+                color: 'text-purple-500',
+                bg: 'bg-purple-500/10',
+            },
+            {
+                label: 'Active Teams',
+                value: departments.filter((d) => (d?._count?.users || 0) > 0)
+                    .length,
+                icon: <Palette size={18} />,
+                color: 'text-orange-500',
+                bg: 'bg-orange-500/10',
+            },
+        ]
+    }, [departments])
 
     // --- Filtering ---
     const filteredDepts = useMemo(() => {
@@ -101,190 +180,261 @@ function DepartmentsSettingsPage() {
         )
     }, [departments, searchQuery])
 
-    // --- Handlers ---
-    const handleOpenAdd = () => {
-        setEditingDept(null)
-        setFormValues({
-            code: '',
-            displayName: '',
-            hexColor: '#EF4444',
-            notes: '',
+    const handleDelete = (dept: TDepartment) => {
+        deleteDeptAction.mutateAsync(dept.id, {
+            onSuccess() {
+                onRefresh()
+                setSelectedDept(null)
+                confirmDeleteModalState.onClose()
+                addToast({
+                    title: 'Delete successfully',
+                    color: 'success',
+                })
+            },
         })
-        createDepartmentDisclosure.onOpen()
     }
-
-    const handleOpenEdit = (dept: TDepartment) => {
-        setEditingDept(dept)
-        setFormValues({
-            code: dept.code,
-            displayName: dept.displayName,
-            hexColor: dept.hexColor,
-            notes: dept.notes ?? undefined,
-        })
-        createDepartmentDisclosure.onOpen()
-    }
-
-    // const handleSave = () => {
-    //     if (editingDept) {
-    //         // Edit Logic
-    //         setDepartments(
-    //             departments.map((d) =>
-    //                 d.id === editingDept.id
-    //                     ? ({ ...d, ...formData } as TDepartment)
-    //                     : d
-    //             )
-    //         )
-    //     } else {
-    //         // Create Logic
-    //         const newDept = {
-    //             ...formData,
-    //             id: Math.random().toString(36).substr(2, 9),
-    //             memberCount: 0,
-    //         } as unknown as TDepartment
-    //         setDepartments([...departments, newDept])
-    //     }
-    //     onOpenChange()
-    // }
-
-    // const handleDelete = (id: string) => {
-    //     if (
-    //         window.confirm(
-    //             'Are you sure? This will remove the department tag from all users.'
-    //         )
-    //     ) {
-    //         setDepartments(departments.filter((d) => d.id !== id))
-    //     }
-    // }
 
     return (
         <>
-            {/* --- Add/Edit Modal --- */}
-            {createDepartmentDisclosure.isOpen && (
-                <CreateDepartmentModal
-                    isOpen={createDepartmentDisclosure.isOpen}
-                    onClose={createDepartmentDisclosure.onClose}
-                    isEditing={Boolean(editingDept)}
-                    initialValues={formValues}
+            {confirmDeleteModalState.isOpen && (
+                <ConfirmDeleteDeptModal
+                    isOpen={confirmDeleteModalState.isOpen}
+                    onClose={confirmDeleteModalState.onClose}
+                    onConfirm={handleDelete}
+                    department={selectedDept}
                 />
             )}
-            <AdminPageHeading
-                title={
-                    <Badge
-                        content={0}
-                        size="sm"
-                        color="danger"
-                        variant="solid"
-                        classNames={{
-                            badge: '-right-1 top-1 text-[10px]! font-bold!',
-                        }}
-                    >
-                        Departments
-                    </Badge>
-                }
-            />
-
             <AdminContentContainer className="mt-2">
-                {/* --- Header --- */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <Button
-                        color="primary"
-                        startContent={<Plus size={18} />}
-                        onPress={handleOpenAdd}
-                        className="font-medium shadow-md shadow-blue-500/20"
-                    >
-                        Add Department
-                    </Button>
+                {/* --- Stats Row --- */}
+                <div className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-3">
+                    {stats.map((stat, i) => (
+                        <Card
+                            key={i}
+                            className="border shadow-none border-border-default bg-background/50 backdrop-blur-sm"
+                        >
+                            <CardBody className="flex flex-row items-center gap-4 p-4">
+                                <div
+                                    className={`p-3 rounded-xl ${stat.bg} ${stat.color}`}
+                                >
+                                    {stat.icon}
+                                </div>
+                                <div>
+                                    <p className="text-[10px] uppercase font-bold text-text-subdued tracking-wider">
+                                        {stat.label}
+                                    </p>
+                                    <p className="text-xl font-bold">
+                                        {stat.value}
+                                    </p>
+                                </div>
+                            </CardBody>
+                        </Card>
+                    ))}
                 </div>
 
-                {/* --- Content Card --- */}
-                <Card className="mt-5 shadow-sm border border-border-default">
-                    <CardBody className="p-0">
-                        {/* Toolbar */}
-                        <div className="p-4 border-b border-border-default flex justify-between items-center bg-background-muted rounded-t-lg">
+                <Card shadow="none" className="border border-border-default">
+                    {/* Toolbar */}
+                    <CardHeader>
+                        <div className="flex items-center justify-between w-full">
                             <Input
-                                placeholder="Search departments..."
+                                placeholder="Search by name..."
                                 startContent={
                                     <Search
                                         size={16}
                                         className="text-text-subdued"
                                     />
                                 }
-                                className="max-w-xs"
+                                className="max-w-lg"
                                 size="sm"
                                 variant="bordered"
                                 value={searchQuery}
                                 onValueChange={setSearchQuery}
-                                isClearable
-                                onClear={() => setSearchQuery('')}
+                                classNames={{
+                                    inputWrapper: 'border-1',
+                                }}
                             />
-                            <span className="text-xs text-text-subdued font-medium">
-                                {filteredDepts.length} Groups
-                            </span>
+                            <Tabs
+                                aria-label="View options"
+                                selectedKey={searchParams.tab}
+                                onSelectionChange={(key) =>
+                                    RouteUtil.updateParams({ tab: key })
+                                }
+                            >
+                                <Tab
+                                    key="table"
+                                    title={<ListIcon size={16} />}
+                                />
+                                <Tab
+                                    key="grid"
+                                    title={<GridIcon size={16} />}
+                                />
+                            </Tabs>
                         </div>
+                    </CardHeader>
 
-                        {/* Table */}
-                        <Table
-                            aria-label="Departments List"
-                            shadow="none"
-                            removeWrapper
-                            className="min-w-full"
-                        >
-                            <TableHeader>
-                                <TableColumn>DEPARTMENT NAME</TableColumn>
-                                <TableColumn>CODE</TableColumn>
-                                <TableColumn>COLOR TAG</TableColumn>
-                                <TableColumn>MEMBERS</TableColumn>
-                                <TableColumn align="end">ACTIONS</TableColumn>
-                            </TableHeader>
-                            <TableBody emptyContent="No departments found.">
+                    <Divider className="bg-border-default" />
+
+                    <CardBody>
+                        {/* --- Main Content --- */}
+                        {searchParams.tab === 'table' ? (
+                            <Table
+                                aria-label="Departments List"
+                                shadow="none"
+                                removeWrapper
+                                className="min-w-full"
+                            >
+                                <TableHeader>
+                                    <TableColumn>Display name</TableColumn>
+                                    <TableColumn>Code</TableColumn>
+                                    <TableColumn>Color</TableColumn>
+                                    <TableColumn>Members</TableColumn>
+                                    <TableColumn align="end">
+                                        Actions
+                                    </TableColumn>
+                                </TableHeader>
+                                <TableBody emptyContent="No departments found.">
+                                    {filteredDepts.map((dept) => (
+                                        <TableRow
+                                            key={dept.id}
+                                            className="border-b hover:bg-background-hovered border-border-default last:border-none group"
+                                        >
+                                            <TableCell>
+                                                <div>
+                                                    <p className="font-bold text-text-default">
+                                                        {dept.displayName}
+                                                    </p>
+                                                    {dept.notes && (
+                                                        <p className="text-xs truncate text-text-subdued max-w-50">
+                                                            {dept.notes}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <span className="px-2 py-1 font-mono text-xs font-bold rounded bg-background-hovered text-text-subdued">
+                                                    {dept.code}
+                                                </span>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex items-center gap-2">
+                                                    <div
+                                                        className="w-5 h-5 border rounded-full border-white/20"
+                                                        style={{
+                                                            backgroundColor:
+                                                                dept.hexColor ||
+                                                                '',
+                                                        }}
+                                                    ></div>
+                                                    <span className="font-mono text-xs uppercase text-text-subdued">
+                                                        {dept.hexColor}
+                                                    </span>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex items-center gap-2 text-sm font-medium text-text-subdued">
+                                                    <Users size={14} />{' '}
+                                                    {dept._count.users}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex justify-end gap-1">
+                                                    <Button
+                                                        isIconOnly
+                                                        size="sm"
+                                                        variant="light"
+                                                        onPress={() =>
+                                                            router.navigate({
+                                                                href: INTERNAL_URLS.management.departmentsDetail(
+                                                                    dept.code
+                                                                ),
+                                                            })
+                                                        }
+                                                    >
+                                                        <Eye size={16} />
+                                                    </Button>
+                                                    <Button
+                                                        isIconOnly
+                                                        size="sm"
+                                                        variant="light"
+                                                        onPress={() =>
+                                                            onEdit(dept)
+                                                        }
+                                                    >
+                                                        <Edit size={16} />
+                                                    </Button>
+                                                    <Button
+                                                        isIconOnly
+                                                        size="sm"
+                                                        variant="light"
+                                                        color="danger"
+                                                        onPress={() => {
+                                                            setSelectedDept(
+                                                                dept
+                                                            )
+                                                            confirmDeleteModalState.onOpen()
+                                                        }}
+                                                    >
+                                                        <Trash2 size={16} />
+                                                    </Button>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        ) : (
+                            <div className="p-2 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                                 {filteredDepts.map((dept) => (
-                                    <TableRow
+                                    <Card
+                                        shadow="none"
                                         key={dept.id}
-                                        className="hover:bg-background-hovered border-b border-border-default last:border-none group"
+                                        className="transition-all border border-border-default hover:border-primary/40 group"
                                     >
-                                        <TableCell>
-                                            <div>
-                                                <p className="font-bold text-text-default">
-                                                    {dept.displayName}
-                                                </p>
-                                                <p className="text-xs text-text-subdued truncate max-w-50">
-                                                    {dept.notes ||
-                                                        'No description'}
-                                                </p>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <span className="font-mono text-xs font-bold bg-background-hovered px-2 py-1 rounded text-text-subdued">
-                                                {dept.code}
-                                            </span>
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex items-center gap-2">
+                                        <CardBody className="flex flex-col gap-4 p-4">
+                                            <div className="flex items-start justify-between">
                                                 <div
-                                                    className="w-6 h-6 rounded-full border-2 border-white shadow-sm"
+                                                    className="flex items-center justify-center w-12 h-12 text-lg font-black text-white shadow-lg rounded-2xl"
                                                     style={{
                                                         backgroundColor:
-                                                            dept.hexColor,
+                                                            dept.hexColor || '',
+                                                        boxShadow: `0 10px 20px -10px ${dept.hexColor}`,
                                                     }}
-                                                ></div>
-                                                <span className="text-xs text-text-subdued font-mono">
-                                                    {dept.hexColor}
-                                                </span>
+                                                >
+                                                    {dept.code
+                                                        .substring(0, 2)
+                                                        .toUpperCase()}
+                                                </div>
+                                                <div className="flex gap-1 transition-opacity opacity-0 group-hover:opacity-100">
+                                                    <Button
+                                                        isIconOnly
+                                                        size="sm"
+                                                        variant="flat"
+                                                        onPress={() =>
+                                                            onEdit(dept)
+                                                        }
+                                                    >
+                                                        <Edit size={14} />
+                                                    </Button>
+                                                </div>
                                             </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex items-center gap-2 text-text-subdued text-sm">
-                                                <Users
-                                                    size={16}
-                                                    className="text-text-subdued"
-                                                />
-                                                {dept._count.users}
+                                            <div className="space-y-2">
+                                                <h4 className="text-base font-bold leading-tight">
+                                                    {dept.displayName}
+                                                </h4>
+                                                <p className="px-2 py-1 font-mono text-xs font-semibold rounded bg-background-hovered text-text-subdued w-fit">
+                                                    {dept.code}
+                                                </p>
                                             </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex justify-end gap-2">
+                                            {dept.notes && (
+                                                <p className="h-8 text-xs text-text-subdued line-clamp-2">
+                                                    {dept.notes}
+                                                </p>
+                                            )}
+                                            <div className="flex items-center justify-between pt-3 mt-auto border-t border-border-default">
+                                                <div className="flex items-center gap-1.5 text-text-subdued text-xs font-bold">
+                                                    <Users size={14} />{' '}
+                                                    {dept._count.users} members
+                                                </div>
                                                 <Button
-                                                    isIconOnly
                                                     size="sm"
                                                     variant="light"
                                                     onPress={() =>
@@ -295,231 +445,17 @@ function DepartmentsSettingsPage() {
                                                         })
                                                     }
                                                 >
-                                                    <Eye size={16} />
-                                                </Button>
-                                                <Button
-                                                    isIconOnly
-                                                    size="sm"
-                                                    variant="light"
-                                                    onPress={() =>
-                                                        handleOpenEdit(dept)
-                                                    }
-                                                >
-                                                    <Edit size={16} />
-                                                </Button>
-                                                <Button
-                                                    isIconOnly
-                                                    size="sm"
-                                                    variant="light"
-                                                    color="danger"
-                                                    // onPress={() =>
-                                                    //     handleDelete(dept.id)
-                                                    // }
-                                                >
-                                                    <Trash2 size={16} />
+                                                    Details
                                                 </Button>
                                             </div>
-                                        </TableCell>
-                                    </TableRow>
+                                        </CardBody>
+                                    </Card>
                                 ))}
-                            </TableBody>
-                        </Table>
+                            </div>
+                        )}
                     </CardBody>
                 </Card>
             </AdminContentContainer>
         </>
-    )
-}
-
-type CreateDepartmentModalProps = {
-    isOpen: boolean
-    onClose: () => void
-    isEditing: boolean
-    initialValues?: TCreateDepartmentInput
-}
-function CreateDepartmentModal({
-    isOpen,
-    onClose,
-    isEditing,
-    initialValues = {
-        displayName: '',
-        code: '',
-        hexColor: '#3B82F6',
-        notes: '',
-    },
-}: CreateDepartmentModalProps) {
-    // Form State
-    const [formData, setFormData] = useState<Partial<TDepartment>>()
-    const formik = useFormik<TCreateDepartmentInput>({
-        initialValues: initialValues,
-        enableReinitialize: true,
-        validationSchema: CreateDepartmentSchema,
-        onSubmit: async (values) => {
-            console.log(values)
-        },
-    })
-
-    return (
-        <HeroModal
-            isOpen={isOpen}
-            onClose={onClose}
-            placement="center"
-            size="lg"
-        >
-            <HeroModalContent>
-                {(onClose) => (
-                    <>
-                        <HeroModalHeader className="flex flex-col gap-1">
-                            {isEditing ? 'Edit Department' : 'New Department'}
-                        </HeroModalHeader>
-                        <HeroModalBody>
-                            <form
-                                onSubmit={formik.handleSubmit}
-                                className="space-y-4"
-                            >
-                                {/* Name & Code Row */}
-                                <div className="flex gap-4">
-                                    <Input
-                                        name="displayName"
-                                        label="Display name"
-                                        placeholder="e.g. Design Team"
-                                        labelPlacement="outside-top"
-                                        variant="bordered"
-                                        className="flex-1"
-                                        value={formik.values.displayName}
-                                        onChange={formik.handleChange}
-                                    />
-                                    <Input
-                                        name="code"
-                                        label="Code"
-                                        placeholder="e.g. DES"
-                                        labelPlacement="outside-top"
-                                        variant="bordered"
-                                        className="w-32"
-                                        startContent={
-                                            <Hash
-                                                size={14}
-                                                className="text-text-subdued"
-                                            />
-                                        }
-                                        value={formik.values.code}
-                                        onChange={formik.handleChange}
-                                    />
-                                </div>
-
-                                {/* Description */}
-                                <Textarea
-                                    name="notes"
-                                    label="Description"
-                                    placeholder="What does this team do?"
-                                    labelPlacement="outside-top"
-                                    variant="bordered"
-                                    minRows={2}
-                                    classNames={{
-                                        input: 'py-2',
-                                    }}
-                                    value={formik.values.notes}
-                                    onChange={formik.handleChange}
-                                />
-
-                                {/* Color Picker */}
-                                <div>
-                                    <label className="text-small font-medium text-foreground mb-2 block">
-                                        Theme Color
-                                    </label>
-                                    <Popover
-                                        placement="bottom"
-                                        showArrow={true}
-                                    >
-                                        <PopoverTrigger>
-                                            <Button
-                                                variant="bordered"
-                                                className="w-full justify-start"
-                                                startContent={
-                                                    <div
-                                                        className="w-5 h-5 rounded-full border border-border-default"
-                                                        style={{
-                                                            backgroundColor:
-                                                                formik.values
-                                                                    .hexColor,
-                                                        }}
-                                                    ></div>
-                                                }
-                                            >
-                                                {formik.values.hexColor}
-                                            </Button>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="w-64">
-                                            <div className="px-1 py-2 w-full">
-                                                <p className="text-small font-bold text-foreground mb-2">
-                                                    Select Color
-                                                </p>
-                                                <div className="grid grid-cols-5 gap-2">
-                                                    {PRESET_COLORS.map(
-                                                        (color) => (
-                                                            <button
-                                                                key={color}
-                                                                className={`w-8 h-8 rounded-full border-2 transition-transform hover:scale-110 ${formik.values.hexColor === color ? 'border-slate-800' : 'border-transparent'}`}
-                                                                style={{
-                                                                    backgroundColor:
-                                                                        color,
-                                                                }}
-                                                                onClick={() =>
-                                                                    setFormData(
-                                                                        {
-                                                                            ...formData,
-                                                                            hexColor:
-                                                                                color,
-                                                                        }
-                                                                    )
-                                                                }
-                                                            />
-                                                        )
-                                                    )}
-                                                </div>
-                                                <div className="mt-3 pt-3 border-t border-border-default">
-                                                    <Input
-                                                        size="sm"
-                                                        label="Custom Hex"
-                                                        variant="flat"
-                                                        value={
-                                                            formik.values
-                                                                .hexColor
-                                                        }
-                                                        onValueChange={(v) =>
-                                                            setFormData({
-                                                                ...formData,
-                                                                hexColor: v,
-                                                            })
-                                                        }
-                                                        startContent={
-                                                            <Palette
-                                                                size={14}
-                                                            />
-                                                        }
-                                                    />
-                                                </div>
-                                            </div>
-                                        </PopoverContent>
-                                    </Popover>
-                                </div>
-                            </form>
-                        </HeroModalBody>
-                        <HeroModalFooter>
-                            <Button
-                                color="danger"
-                                variant="light"
-                                onPress={onClose}
-                            >
-                                Cancel
-                            </Button>
-                            <Button color="primary" type="submit">
-                                Save Department
-                            </Button>
-                        </HeroModalFooter>
-                    </>
-                )}
-            </HeroModalContent>
-        </HeroModal>
     )
 }

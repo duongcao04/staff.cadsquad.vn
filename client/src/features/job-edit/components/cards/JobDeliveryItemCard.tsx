@@ -57,6 +57,7 @@ export default function JobDeliveryItemCard({
 
     const handleApprove = () => {
         onApprove(delivery.id)
+        onCloseApproveDeliveryModal()
     }
 
     return (

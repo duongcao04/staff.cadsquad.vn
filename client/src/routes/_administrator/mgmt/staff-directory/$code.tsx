@@ -12,16 +12,15 @@ import {
     optimizeCloudinary,
     TEditUser,
     toFormikValidate,
-    useUpdateAvatarMutation,
-    useUpdateUserMutation,
     useUploadImageMutation,
 } from '@/lib'
 import {
     departmentsListOptions,
     jobTitlesListOptions,
     rolesListOptions,
+    toggleUserStatusOptions,
+    updateUserOptions,
     userOptions,
-    useToggleUserStatusMutation,
 } from '@/lib/queries'
 import {
     AdminPageHeading,
@@ -52,7 +51,11 @@ import {
     Tabs,
     useDisclosure,
 } from '@heroui/react'
-import { useSuspenseQueries, useSuspenseQuery } from '@tanstack/react-query'
+import {
+    useMutation,
+    useSuspenseQueries,
+    useSuspenseQuery,
+} from '@tanstack/react-query'
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router'
 import { useFormik } from 'formik'
 import {
@@ -152,9 +155,9 @@ export const Route = createFileRoute(
 })
 
 function EditStaffPage({ data: user }: { data: TUser }) {
-    const toggleUserStatusMutation = useToggleUserStatusMutation()
+    const toggleUserStatusMutation = useMutation(toggleUserStatusOptions)
     const uploadImageMutation = useUploadImageMutation()
-    const updateAvatarMutation = useUpdateAvatarMutation()
+    const updateUser = useMutation(updateUserOptions)
 
     const [activeTab, setActiveTab] = useState('profile')
     const [toggleUserActive, setToggleUserActive] = useState<
@@ -199,9 +202,11 @@ function EditStaffPage({ data: user }: { data: TUser }) {
             const newAvatarUrl =
                 await uploadImageMutation.mutateAsync(imageFile)
             if (!newAvatarUrl) throw new Error('Failed to get image URL')
-            await updateAvatarMutation.mutateAsync({
+            await updateUser.mutateAsync({
                 username: user.username,
-                avatarUrl: newAvatarUrl,
+                data: {
+                    avatar: newAvatarUrl,
+                },
             })
         } catch (error) {
             console.error(error)
@@ -508,7 +513,7 @@ function EditStaffPage({ data: user }: { data: TUser }) {
 // ============================================================================
 function EditProfileTab({ user }: { user: TUser }) {
     const router = useRouter()
-    const updateUserMutation = useUpdateUserMutation()
+    const updateUserMutation = useMutation(updateUserOptions)
 
     const formik = useFormik<TEditUser & { code?: string }>({
         initialValues: {
@@ -680,7 +685,7 @@ function EditProfileTab({ user }: { user: TUser }) {
 // TAB 2: ORGANIZATION & FINANCE
 // ============================================================================
 function OrganizationDepartment({ user }: { user: TUser }) {
-    const updateUserMutation = useUpdateUserMutation()
+    const updateUserMutation = useMutation(updateUserOptions)
     const [
         {
             data: { departments },

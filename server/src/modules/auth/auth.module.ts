@@ -1,6 +1,5 @@
 import { authConfig } from '@/config'
 import { UserModule } from '@/modules/user/user.module'
-import { BetterAuthModule } from '@/providers/better-auth/better-auth.module'
 import { MailModule } from '@/providers/mail/mail.module'
 import { RedisModule } from '@/providers/redis/redis.module'
 import { forwardRef, Global, Module } from '@nestjs/common'
@@ -20,7 +19,6 @@ import { WsJwtGuard } from './ws-jwt.guard'
 	imports: [
 		RedisModule,
 		MailModule,
-		BetterAuthModule,
 		forwardRef(() => UserModule),
 		JwtModule.registerAsync({
 			inject: [authConfig.KEY],

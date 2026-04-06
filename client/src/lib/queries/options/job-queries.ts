@@ -1,10 +1,50 @@
 import { jobApi } from '@/lib/api'
-import { JobActivityLogSchema, JobSchema, TJobQueryInput, UserSchema } from '@/lib/validationSchemas'
-import { queryOptions } from '@tanstack/react-query'
+import {
+    JobActivityLogSchema,
+    JobPayoutSchema,
+    JobSchema,
+    TAssignMember,
+    TBulkChangeStatusInput,
+    TChangeStatusInput,
+    TCreateJobFormValues,
+    TDeliverJobInput,
+    TJobQueryInput,
+    TRescheduleJob,
+    TUpdateJobInput,
+    TUpdateJobRevenue,
+    UserSchema,
+} from '@/lib/validationSchemas'
+import { mutationOptions, queryOptions } from '@tanstack/react-query'
 import lodash from 'lodash'
 import queryString from 'query-string'
 import { JobDeliverySchema } from '../../validationSchemas/_job-delivery.schema'
 import { parseData, parseList } from '../../zod'
+import { onErrorToast } from '../helper'
+
+export const jobQueryKeys = {
+    resource: ['jobs'] as const,
+    lists: (params: TJobQueryInput) => {
+        const { page, limit, search, tab, sort, ...filters } = params
+
+        return [
+            ...jobQueryKeys.resource,
+            'lists',
+            `tab=${tab}`,
+            `limit=${limit}`,
+            `page=${page}`,
+            `keywords=${search}`,
+            `sort=${sort}`,
+            `filters=${queryString.stringify(filters)}`,
+        ] as const
+    },
+    search: (keyword?: string) =>
+        [...jobQueryKeys.resource, 'search', keyword] as const,
+    detail: (id: string) => [...jobQueryKeys.resource, 'identify', id] as const,
+    jobFinancialDetails: (id: string) =>
+        [...jobQueryKeys.resource, 'financial-details', id] as const,
+    detailByNo: (no: string) =>
+        [...jobQueryKeys.resource, 'detail', no] as const,
+}
 
 // --- Query Options ---
 // 1. Danh sách Jobs
@@ -16,19 +56,8 @@ export const jobsListOptions = (
         sort: ['displayName:asc'],
     }
 ) => {
-    const { page, limit, search, tab, sort, ...filters } =
-        params
-
     return queryOptions({
-        queryKey: [
-            'jobs',
-            `tab=${tab}`,
-            `limit=${limit}`,
-            `page=${page}`,
-            `keywords=${search}`,
-            `sort=${sort}`,
-            `filters=${queryString.stringify(filters)}`,
-        ],
+        queryKey: jobQueryKeys.lists(params),
         queryFn: () => {
             const newParams = lodash.omitBy(params, lodash.isUndefined)
             return jobApi.findAll(newParams)
@@ -70,10 +99,10 @@ export const workbenchDataOptions = (
         },
         // ✅ Select & Map data ngay tại đây
         select: (res) => {
-            return ({
+            return {
                 jobs: parseList(JobSchema, res.result?.data),
                 paginate: res.result?.paginate,
-            })
+            }
         },
     })
 }
@@ -81,14 +110,13 @@ export const workbenchDataOptions = (
 // 2. Tìm kiếm Jobs
 export const jobsSearchOptions = (keywords?: string) =>
     queryOptions({
-        queryKey: ['jobs', 'search', keywords],
+        queryKey: jobQueryKeys.search(keywords),
         queryFn: () => {
             if (!keywords) return null
             return jobApi.searchJobs(keywords)
         },
         enabled: !!keywords,
-        select: (res) =>
-            parseList(JobSchema, res?.result),
+        select: (res) => parseList(JobSchema, res?.result),
     })
 
 export const jobDeliveriesListOptions = (jobId: string) =>
@@ -98,7 +126,7 @@ export const jobDeliveriesListOptions = (jobId: string) =>
         select: (res) => {
             const jobDeliveries = parseList(JobDeliverySchema, res?.result)
             return {
-                jobDeliveries
+                jobDeliveries,
             }
         },
     })
@@ -116,10 +144,20 @@ export const jobsPendingPayoutsOptions = () =>
         queryFn: () => jobApi.pendingPayouts(),
         select: (res) => {
             return {
-                pendingPayouts: parseList(JobSchema, res.result)
+                pendingPayouts: parseList(JobSchema, res.result),
             }
         },
     })
+
+export const jobPayoutDetailsOptions = (jobNo: string) =>
+    queryOptions({
+        queryKey: ['jobs', 'payouts', jobNo],
+        queryFn: () => jobApi.payoutDetails(jobNo),
+        select: (res) => {
+            return parseData(JobPayoutSchema, res.result)
+        },
+    })
+
 export const jobScheduleOptions = (month: number, year: number) =>
     queryOptions({
         queryKey: ['jobs', 'schedule', `${month}/${year}`],
@@ -141,12 +179,22 @@ export const jobsDueOnDateOptions = (isoDate: string) =>
 // 7. Job By No (Chi tiết theo mã)
 export const jobByNoOptions = (jobNo: string) =>
     queryOptions({
-        queryKey: ['jobs', 'no', jobNo],
+        queryKey: jobQueryKeys.detailByNo(jobNo),
         queryFn: () => jobApi.findByJobNo(jobNo),
         enabled: !!jobNo,
         select: (res) => {
             const jobData = res?.result
             return parseData(JobSchema, jobData)
+        },
+    })
+
+export const jobFinancialDetailOptions = (id: string) =>
+    queryOptions({
+        queryKey: jobQueryKeys.jobFinancialDetails(id),
+        queryFn: () => jobApi.jobFinancialDetail(id),
+        enabled: !!id,
+        select: (res) => {
+            return res?.result
         },
     })
 
@@ -183,3 +231,116 @@ export const jobActivityLogsOptions = (jobId: string) =>
             return parseList(JobActivityLogSchema, logs)
         },
     })
+
+export const createJobOptions = mutationOptions({
+    mutationFn: (
+        data: Omit<
+            TCreateJobFormValues,
+            | 'useExistingSharepointFolder'
+            | 'sharepointTemplateId'
+            | 'isCreateSharepointFolder'
+        >
+    ) => jobApi.create(data),
+    onError: (err) => onErrorToast(err, 'Create failed'),
+})
+
+export const updateJobStatusOptions = mutationOptions({
+    mutationFn: ({
+        jobId,
+        data,
+    }: {
+        jobId: string
+        data: TChangeStatusInput
+    }) => jobApi.changeStatus(jobId, data),
+    onError: (err) => onErrorToast(err, 'Update status Failed'),
+})
+
+export const bulkUpdateJobStatusOptions = mutationOptions({
+    mutationFn: ({ data }: { data: TBulkChangeStatusInput }) =>
+        jobApi.bulkChangeStatus(data),
+    onError: (err) => onErrorToast(err, 'Bulk update job status failed'),
+})
+
+export const rescheduleJobOptions = mutationOptions({
+    mutationFn: ({ jobId, data }: { jobId: string; data: TRescheduleJob }) =>
+        jobApi.reschedule(jobId, data),
+    onError: (err) => onErrorToast(err, 'Reschedule job failed'),
+})
+
+export const deliverJobOptions = mutationOptions({
+    mutationFn: ({
+        jobId,
+        data,
+    }: {
+        jobId: string
+        data: Omit<TDeliverJobInput, 'jobId'>
+    }) => jobApi.deliverJob(jobId, data),
+    onError: (err) => onErrorToast(err, 'Deliver job failed'),
+})
+
+export const markJobPaidOptions = mutationOptions({
+    mutationFn: (jobId: string) => jobApi.markPaid(jobId),
+    onError: (err) => onErrorToast(err, 'Mark job paid failed'),
+})
+
+export const cancelJobOptions = mutationOptions({
+    mutationFn: (jobId: string) => jobApi.remove(jobId),
+    onError: (err) => onErrorToast(err, 'Cancel job failed'),
+})
+
+export const restoreJobOptions = mutationOptions({
+    mutationFn: (jobId: string) => jobApi.restore(jobId),
+    onError: (err) => onErrorToast(err, 'Restore job failed'),
+})
+
+export const assignMemberToJobOptions = mutationOptions({
+    mutationFn: ({ jobId, data }: { jobId: string; data: TAssignMember }) =>
+        jobApi.assignMember(jobId, data),
+    onError: (err) => onErrorToast(err, 'Assign member failed'),
+})
+
+export const unassignMemberToJobOptions = mutationOptions({
+    mutationFn: ({ jobId, memberId }: { jobId: string; memberId: string }) =>
+        jobApi.removeMember(jobId, memberId),
+    onError: (err) => onErrorToast(err, 'Remove member failed'),
+})
+
+export const updateJobGeneralInfoOptions = mutationOptions({
+    mutationFn: ({ jobId, data }: { jobId: string; data: TUpdateJobInput }) =>
+        jobApi.updateGeneralInfo(jobId, data),
+    onError: (err) => onErrorToast(err, 'Update general information failed'),
+})
+
+export const updateAssignmentCostOptions = mutationOptions({
+    mutationFn: ({
+        jobId,
+        memberId,
+        staffCost,
+    }: {
+        jobId: string
+        memberId: string
+        staffCost: number
+    }) => jobApi.updateAssignmentCost(jobId, memberId, staffCost),
+    onError: (err) => onErrorToast(err, 'Update assignment cost failed'),
+})
+
+export const updateJobOptions = mutationOptions({
+    mutationFn: ({ jobId, data }: { jobId: string; data: TUpdateJobInput }) =>
+        jobApi.update(jobId, data),
+    onError: (err) => onErrorToast(err, 'Update job failed'),
+})
+
+export const updateJobRevenueOptions = mutationOptions({
+    mutationFn: ({ jobId, data }: { jobId: string; data: TUpdateJobRevenue }) =>
+        jobApi.updateRevenue(jobId, data),
+    onError: (err) => onErrorToast(err, 'Update revenue failed'),
+})
+
+export const updateAttachmentsMutationOptions = mutationOptions({
+    mutationFn: (data: {
+        jobId: string
+        action: 'add' | 'remove'
+        files: string[]
+    }) => jobApi.updateAttachments(data.jobId, data),
+    onError: (err) => onErrorToast(err, 'Update failed'),
+})

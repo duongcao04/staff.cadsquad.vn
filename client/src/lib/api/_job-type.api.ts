@@ -17,7 +17,7 @@ export const jobTypeApi = {
     findOne: (id: string) => {
         return axiosClient.get<ApiResponse<any>>(
             `/v1/job-types/${id}`
-        )
+        ).then(res => res.data)
     },
     update: (id: string, data: TUpdateJobTypeInput) => {
         return axiosClient.patch<ApiResponse<{ id: string }>>(

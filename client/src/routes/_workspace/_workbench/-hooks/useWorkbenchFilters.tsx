@@ -22,6 +22,7 @@ export function useWorkbenchFilters() {
     return {
         search,
         isPending,
+        updateParams,
         onSearchChange: (search?: string) =>
             updateParams({ search: search || undefined, page: 1 }),
         onSortChange: (sort: string) => updateParams({ sort, page: 1 }),
