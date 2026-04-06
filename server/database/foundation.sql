@@ -463,7 +463,7 @@ INSERT INTO
 	"User" (
 		id,
 		email,
-		"code",
+		code,
 		"username",
 		"displayName",
 		"avatar",
