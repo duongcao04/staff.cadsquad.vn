@@ -203,6 +203,11 @@ export type PostEvent = $Result.DefaultSelection<Prisma.$PostEventPayload>
  * 
  */
 export type SystemSetting = $Result.DefaultSelection<Prisma.$SystemSettingPayload>
+/**
+ * Model Transaction
+ * 
+ */
+export type Transaction = $Result.DefaultSelection<Prisma.$TransactionPayload>
 
 /**
  * Enums
@@ -411,6 +416,25 @@ export const TopicType: {
 
 export type TopicType = (typeof TopicType)[keyof typeof TopicType]
 
+
+export const TransactionType: {
+  INCOME: 'INCOME',
+  PAYOUT: 'PAYOUT',
+  REFUND: 'REFUND'
+};
+
+export type TransactionType = (typeof TransactionType)[keyof typeof TransactionType]
+
+
+export const TransactionStatus: {
+  PENDING: 'PENDING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED',
+  CANCELLED: 'CANCELLED'
+};
+
+export type TransactionStatus = (typeof TransactionStatus)[keyof typeof TransactionStatus]
+
 }
 
 export type SystemModule = $Enums.SystemModule
@@ -480,6 +504,14 @@ export const CommunityRole: typeof $Enums.CommunityRole
 export type TopicType = $Enums.TopicType
 
 export const TopicType: typeof $Enums.TopicType
+
+export type TransactionType = $Enums.TransactionType
+
+export const TransactionType: typeof $Enums.TransactionType
+
+export type TransactionStatus = $Enums.TransactionStatus
+
+export const TransactionStatus: typeof $Enums.TransactionStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -981,6 +1013,16 @@ export class PrismaClient<
     * ```
     */
   get systemSetting(): Prisma.SystemSettingDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.transaction`: Exposes CRUD operations for the **Transaction** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Transactions
+    * const transactions = await prisma.transaction.findMany()
+    * ```
+    */
+  get transaction(): Prisma.TransactionDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1452,7 +1494,8 @@ export namespace Prisma {
     Topic: 'Topic',
     Post: 'Post',
     PostEvent: 'PostEvent',
-    SystemSetting: 'SystemSetting'
+    SystemSetting: 'SystemSetting',
+    Transaction: 'Transaction'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1468,7 +1511,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "systemAuditLog" | "browserSubscribes" | "userDevices" | "user" | "userSecurityLog" | "role" | "permission" | "userPermission" | "permissionGroup" | "session" | "account" | "verification" | "gallery" | "jobComment" | "jobTitle" | "department" | "userConfig" | "fileSystem" | "job" | "sharepointItem" | "jobAssignment" | "jobFolderTemplate" | "client" | "pinnedJob" | "paymentChannel" | "jobType" | "jobStatus" | "jobDeliverFile" | "jobDelivery" | "jobStatusHistory" | "jobActivityLog" | "notification" | "community" | "communityMember" | "topic" | "post" | "postEvent" | "systemSetting"
+      modelProps: "systemAuditLog" | "browserSubscribes" | "userDevices" | "user" | "userSecurityLog" | "role" | "permission" | "userPermission" | "permissionGroup" | "session" | "account" | "verification" | "gallery" | "jobComment" | "jobTitle" | "department" | "userConfig" | "fileSystem" | "job" | "sharepointItem" | "jobAssignment" | "jobFolderTemplate" | "client" | "pinnedJob" | "paymentChannel" | "jobType" | "jobStatus" | "jobDeliverFile" | "jobDelivery" | "jobStatusHistory" | "jobActivityLog" | "notification" | "community" | "communityMember" | "topic" | "post" | "postEvent" | "systemSetting" | "transaction"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -4284,6 +4327,80 @@ export namespace Prisma {
           }
         }
       }
+      Transaction: {
+        payload: Prisma.$TransactionPayload<ExtArgs>
+        fields: Prisma.TransactionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TransactionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TransactionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>
+          }
+          findFirst: {
+            args: Prisma.TransactionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TransactionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>
+          }
+          findMany: {
+            args: Prisma.TransactionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>[]
+          }
+          create: {
+            args: Prisma.TransactionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>
+          }
+          createMany: {
+            args: Prisma.TransactionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TransactionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>[]
+          }
+          delete: {
+            args: Prisma.TransactionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>
+          }
+          update: {
+            args: Prisma.TransactionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>
+          }
+          deleteMany: {
+            args: Prisma.TransactionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TransactionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TransactionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>[]
+          }
+          upsert: {
+            args: Prisma.TransactionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>
+          }
+          aggregate: {
+            args: Prisma.TransactionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTransaction>
+          }
+          groupBy: {
+            args: Prisma.TransactionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TransactionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TransactionCountArgs<ExtArgs>
+            result: $Utils.Optional<TransactionCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -4430,6 +4547,7 @@ export namespace Prisma {
     post?: PostOmit
     postEvent?: PostEventOmit
     systemSetting?: SystemSettingOmit
+    transaction?: TransactionOmit
   }
 
   /* Types for Logging */
@@ -4533,6 +4651,7 @@ export namespace Prisma {
     securityLogs: number
     systemAuditLogs: number
     systemSettings: number
+    transactions: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4559,6 +4678,7 @@ export namespace Prisma {
     securityLogs?: boolean | UserCountOutputTypeCountSecurityLogsArgs
     systemAuditLogs?: boolean | UserCountOutputTypeCountSystemAuditLogsArgs
     systemSettings?: boolean | UserCountOutputTypeCountSystemSettingsArgs
+    transactions?: boolean | UserCountOutputTypeCountTransactionsArgs
   }
 
   // Custom InputTypes
@@ -4731,6 +4851,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountSystemSettingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SystemSettingWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountTransactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransactionWhereInput
   }
 
 
@@ -4981,6 +5108,7 @@ export namespace Prisma {
     statusHistory: number
     pinnedByUsers: number
     jobDeliveries: number
+    transactions: number
   }
 
   export type JobCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4991,6 +5119,7 @@ export namespace Prisma {
     statusHistory?: boolean | JobCountOutputTypeCountStatusHistoryArgs
     pinnedByUsers?: boolean | JobCountOutputTypeCountPinnedByUsersArgs
     jobDeliveries?: boolean | JobCountOutputTypeCountJobDeliveriesArgs
+    transactions?: boolean | JobCountOutputTypeCountTransactionsArgs
   }
 
   // Custom InputTypes
@@ -5053,6 +5182,13 @@ export namespace Prisma {
     where?: JobDeliveryWhereInput
   }
 
+  /**
+   * JobCountOutputType without action
+   */
+  export type JobCountOutputTypeCountTransactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransactionWhereInput
+  }
+
 
   /**
    * Count Type SharepointItemCountOutputType
@@ -5082,6 +5218,37 @@ export namespace Prisma {
    */
   export type SharepointItemCountOutputTypeCountJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: JobWhereInput
+  }
+
+
+  /**
+   * Count Type JobAssignmentCountOutputType
+   */
+
+  export type JobAssignmentCountOutputType = {
+    transactions: number
+  }
+
+  export type JobAssignmentCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    transactions?: boolean | JobAssignmentCountOutputTypeCountTransactionsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * JobAssignmentCountOutputType without action
+   */
+  export type JobAssignmentCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobAssignmentCountOutputType
+     */
+    select?: JobAssignmentCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * JobAssignmentCountOutputType without action
+   */
+  export type JobAssignmentCountOutputTypeCountTransactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransactionWhereInput
   }
 
 
@@ -5122,10 +5289,12 @@ export namespace Prisma {
 
   export type ClientCountOutputType = {
     jobs: number
+    transactions: number
   }
 
   export type ClientCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     jobs?: boolean | ClientCountOutputTypeCountJobsArgs
+    transactions?: boolean | ClientCountOutputTypeCountTransactionsArgs
   }
 
   // Custom InputTypes
@@ -5146,6 +5315,13 @@ export namespace Prisma {
     where?: JobWhereInput
   }
 
+  /**
+   * ClientCountOutputType without action
+   */
+  export type ClientCountOutputTypeCountTransactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransactionWhereInput
+  }
+
 
   /**
    * Count Type PaymentChannelCountOutputType
@@ -5153,10 +5329,12 @@ export namespace Prisma {
 
   export type PaymentChannelCountOutputType = {
     jobs: number
+    transactions: number
   }
 
   export type PaymentChannelCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     jobs?: boolean | PaymentChannelCountOutputTypeCountJobsArgs
+    transactions?: boolean | PaymentChannelCountOutputTypeCountTransactionsArgs
   }
 
   // Custom InputTypes
@@ -5175,6 +5353,13 @@ export namespace Prisma {
    */
   export type PaymentChannelCountOutputTypeCountJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: JobWhereInput
+  }
+
+  /**
+   * PaymentChannelCountOutputType without action
+   */
+  export type PaymentChannelCountOutputTypeCountTransactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransactionWhereInput
   }
 
 
@@ -8882,6 +9067,7 @@ export namespace Prisma {
     securityLogs?: boolean | User$securityLogsArgs<ExtArgs>
     systemAuditLogs?: boolean | User$systemAuditLogsArgs<ExtArgs>
     systemSettings?: boolean | User$systemSettingsArgs<ExtArgs>
+    transactions?: boolean | User$transactionsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -8988,6 +9174,7 @@ export namespace Prisma {
     securityLogs?: boolean | User$securityLogsArgs<ExtArgs>
     systemAuditLogs?: boolean | User$systemAuditLogsArgs<ExtArgs>
     systemSettings?: boolean | User$systemSettingsArgs<ExtArgs>
+    transactions?: boolean | User$transactionsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9033,6 +9220,7 @@ export namespace Prisma {
       securityLogs: Prisma.$UserSecurityLogPayload<ExtArgs>[]
       systemAuditLogs: Prisma.$SystemAuditLogPayload<ExtArgs>[]
       systemSettings: Prisma.$SystemSettingPayload<ExtArgs>[]
+      transactions: Prisma.$TransactionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -9475,6 +9663,7 @@ export namespace Prisma {
     securityLogs<T extends User$securityLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$securityLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserSecurityLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     systemAuditLogs<T extends User$systemAuditLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$systemAuditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SystemAuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     systemSettings<T extends User$systemSettingsArgs<ExtArgs> = {}>(args?: Subset<T, User$systemSettingsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SystemSettingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    transactions<T extends User$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, User$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10549,6 +10738,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: SystemSettingScalarFieldEnum | SystemSettingScalarFieldEnum[]
+  }
+
+  /**
+   * User.transactions
+   */
+  export type User$transactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    where?: TransactionWhereInput
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    cursor?: TransactionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
   }
 
   /**
@@ -26205,7 +26418,6 @@ export namespace Prisma {
     startedAt: Date | null
     priority: $Enums.JobPriority | null
     isPublished: boolean | null
-    isPaid: boolean | null
     dueAt: Date | null
     completedAt: Date | null
     finishedAt: Date | null
@@ -26233,7 +26445,6 @@ export namespace Prisma {
     startedAt: Date | null
     priority: $Enums.JobPriority | null
     isPublished: boolean | null
-    isPaid: boolean | null
     dueAt: Date | null
     completedAt: Date | null
     finishedAt: Date | null
@@ -26262,7 +26473,6 @@ export namespace Prisma {
     startedAt: number
     priority: number
     isPublished: number
-    isPaid: number
     dueAt: number
     completedAt: number
     finishedAt: number
@@ -26302,7 +26512,6 @@ export namespace Prisma {
     startedAt?: true
     priority?: true
     isPublished?: true
-    isPaid?: true
     dueAt?: true
     completedAt?: true
     finishedAt?: true
@@ -26330,7 +26539,6 @@ export namespace Prisma {
     startedAt?: true
     priority?: true
     isPublished?: true
-    isPaid?: true
     dueAt?: true
     completedAt?: true
     finishedAt?: true
@@ -26359,7 +26567,6 @@ export namespace Prisma {
     startedAt?: true
     priority?: true
     isPublished?: true
-    isPaid?: true
     dueAt?: true
     completedAt?: true
     finishedAt?: true
@@ -26475,7 +26682,6 @@ export namespace Prisma {
     startedAt: Date
     priority: $Enums.JobPriority
     isPublished: boolean
-    isPaid: boolean
     dueAt: Date
     completedAt: Date | null
     finishedAt: Date | null
@@ -26523,7 +26729,6 @@ export namespace Prisma {
     startedAt?: boolean
     priority?: boolean
     isPublished?: boolean
-    isPaid?: boolean
     dueAt?: boolean
     completedAt?: boolean
     finishedAt?: boolean
@@ -26547,6 +26752,7 @@ export namespace Prisma {
     pinnedByUsers?: boolean | Job$pinnedByUsersArgs<ExtArgs>
     jobDeliveries?: boolean | Job$jobDeliveriesArgs<ExtArgs>
     folderTemplate?: boolean | Job$folderTemplateArgs<ExtArgs>
+    transactions?: boolean | Job$transactionsArgs<ExtArgs>
     _count?: boolean | JobCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["job"]>
 
@@ -26567,7 +26773,6 @@ export namespace Prisma {
     startedAt?: boolean
     priority?: boolean
     isPublished?: boolean
-    isPaid?: boolean
     dueAt?: boolean
     completedAt?: boolean
     finishedAt?: boolean
@@ -26603,7 +26808,6 @@ export namespace Prisma {
     startedAt?: boolean
     priority?: boolean
     isPublished?: boolean
-    isPaid?: boolean
     dueAt?: boolean
     completedAt?: boolean
     finishedAt?: boolean
@@ -26639,7 +26843,6 @@ export namespace Prisma {
     startedAt?: boolean
     priority?: boolean
     isPublished?: boolean
-    isPaid?: boolean
     dueAt?: boolean
     completedAt?: boolean
     finishedAt?: boolean
@@ -26651,7 +26854,7 @@ export namespace Prisma {
     folderTemplateId?: boolean
   }
 
-  export type JobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "no" | "typeId" | "displayName" | "description" | "attachmentUrls" | "clientId" | "incomeCost" | "sharepointFolderId" | "totalStaffCost" | "createdById" | "paymentChannelId" | "statusId" | "startedAt" | "priority" | "isPublished" | "isPaid" | "dueAt" | "completedAt" | "finishedAt" | "paymentStatus" | "payoutDate" | "createdAt" | "updatedAt" | "deletedAt" | "folderTemplateId", ExtArgs["result"]["job"]>
+  export type JobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "no" | "typeId" | "displayName" | "description" | "attachmentUrls" | "clientId" | "incomeCost" | "sharepointFolderId" | "totalStaffCost" | "createdById" | "paymentChannelId" | "statusId" | "startedAt" | "priority" | "isPublished" | "dueAt" | "completedAt" | "finishedAt" | "paymentStatus" | "payoutDate" | "createdAt" | "updatedAt" | "deletedAt" | "folderTemplateId", ExtArgs["result"]["job"]>
   export type JobInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     type?: boolean | JobTypeDefaultArgs<ExtArgs>
     client?: boolean | Job$clientArgs<ExtArgs>
@@ -26667,6 +26870,7 @@ export namespace Prisma {
     pinnedByUsers?: boolean | Job$pinnedByUsersArgs<ExtArgs>
     jobDeliveries?: boolean | Job$jobDeliveriesArgs<ExtArgs>
     folderTemplate?: boolean | Job$folderTemplateArgs<ExtArgs>
+    transactions?: boolean | Job$transactionsArgs<ExtArgs>
     _count?: boolean | JobCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type JobIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -26705,6 +26909,7 @@ export namespace Prisma {
       pinnedByUsers: Prisma.$PinnedJobPayload<ExtArgs>[]
       jobDeliveries: Prisma.$JobDeliveryPayload<ExtArgs>[]
       folderTemplate: Prisma.$JobFolderTemplatePayload<ExtArgs> | null
+      transactions: Prisma.$TransactionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -26723,7 +26928,6 @@ export namespace Prisma {
       startedAt: Date
       priority: $Enums.JobPriority
       isPublished: boolean
-      isPaid: boolean
       dueAt: Date
       completedAt: Date | null
       finishedAt: Date | null
@@ -27141,6 +27345,7 @@ export namespace Prisma {
     pinnedByUsers<T extends Job$pinnedByUsersArgs<ExtArgs> = {}>(args?: Subset<T, Job$pinnedByUsersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PinnedJobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     jobDeliveries<T extends Job$jobDeliveriesArgs<ExtArgs> = {}>(args?: Subset<T, Job$jobDeliveriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobDeliveryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     folderTemplate<T extends Job$folderTemplateArgs<ExtArgs> = {}>(args?: Subset<T, Job$folderTemplateArgs<ExtArgs>>): Prisma__JobFolderTemplateClient<$Result.GetResult<Prisma.$JobFolderTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    transactions<T extends Job$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, Job$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -27186,7 +27391,6 @@ export namespace Prisma {
     readonly startedAt: FieldRef<"Job", 'DateTime'>
     readonly priority: FieldRef<"Job", 'JobPriority'>
     readonly isPublished: FieldRef<"Job", 'Boolean'>
-    readonly isPaid: FieldRef<"Job", 'Boolean'>
     readonly dueAt: FieldRef<"Job", 'DateTime'>
     readonly completedAt: FieldRef<"Job", 'DateTime'>
     readonly finishedAt: FieldRef<"Job", 'DateTime'>
@@ -27838,6 +28042,30 @@ export namespace Prisma {
      */
     include?: JobFolderTemplateInclude<ExtArgs> | null
     where?: JobFolderTemplateWhereInput
+  }
+
+  /**
+   * Job.transactions
+   */
+  export type Job$transactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    where?: TransactionWhereInput
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    cursor?: TransactionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
   }
 
   /**
@@ -29207,6 +29435,8 @@ export namespace Prisma {
     assignedAt?: boolean
     job?: boolean | JobDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    transactions?: boolean | JobAssignment$transactionsArgs<ExtArgs>
+    _count?: boolean | JobAssignmentCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["jobAssignment"]>
 
   export type JobAssignmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -29241,6 +29471,8 @@ export namespace Prisma {
   export type JobAssignmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    transactions?: boolean | JobAssignment$transactionsArgs<ExtArgs>
+    _count?: boolean | JobAssignmentCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type JobAssignmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobDefaultArgs<ExtArgs>
@@ -29256,6 +29488,7 @@ export namespace Prisma {
     objects: {
       job: Prisma.$JobPayload<ExtArgs>
       user: Prisma.$UserPayload<ExtArgs>
+      transactions: Prisma.$TransactionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -29659,6 +29892,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     job<T extends JobDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobDefaultArgs<ExtArgs>>): Prisma__JobClient<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    transactions<T extends JobAssignment$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, JobAssignment$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -30091,6 +30325,30 @@ export namespace Prisma {
      * Limit how many JobAssignments to delete.
      */
     limit?: number
+  }
+
+  /**
+   * JobAssignment.transactions
+   */
+  export type JobAssignment$transactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    where?: TransactionWhereInput
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    cursor?: TransactionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
   }
 
   /**
@@ -31547,6 +31805,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     jobs?: boolean | Client$jobsArgs<ExtArgs>
+    transactions?: boolean | Client$transactionsArgs<ExtArgs>
     _count?: boolean | ClientCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["client"]>
 
@@ -31610,6 +31869,7 @@ export namespace Prisma {
   export type ClientOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "code" | "type" | "region" | "country" | "address" | "timezone" | "email" | "phoneNumber" | "billingEmail" | "taxId" | "currency" | "paymentTerms" | "createdAt" | "updatedAt", ExtArgs["result"]["client"]>
   export type ClientInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     jobs?: boolean | Client$jobsArgs<ExtArgs>
+    transactions?: boolean | Client$transactionsArgs<ExtArgs>
     _count?: boolean | ClientCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ClientIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -31619,6 +31879,7 @@ export namespace Prisma {
     name: "Client"
     objects: {
       jobs: Prisma.$JobPayload<ExtArgs>[]
+      transactions: Prisma.$TransactionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -32032,6 +32293,7 @@ export namespace Prisma {
   export interface Prisma__ClientClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     jobs<T extends Client$jobsArgs<ExtArgs> = {}>(args?: Subset<T, Client$jobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    transactions<T extends Client$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, Client$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -32491,6 +32753,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: JobScalarFieldEnum | JobScalarFieldEnum[]
+  }
+
+  /**
+   * Client.transactions
+   */
+  export type Client$transactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    where?: TransactionWhereInput
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    cursor?: TransactionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
   }
 
   /**
@@ -33848,6 +34134,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     jobs?: boolean | PaymentChannel$jobsArgs<ExtArgs>
+    transactions?: boolean | PaymentChannel$transactionsArgs<ExtArgs>
     _count?: boolean | PaymentChannelCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["paymentChannel"]>
 
@@ -33908,6 +34195,7 @@ export namespace Prisma {
   export type PaymentChannelOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "displayName" | "hexColor" | "type" | "accountDetails" | "feeRate" | "fixedFee" | "totalVolume" | "totalFees" | "logoUrl" | "ownerName" | "cardNumber" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["paymentChannel"]>
   export type PaymentChannelInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     jobs?: boolean | PaymentChannel$jobsArgs<ExtArgs>
+    transactions?: boolean | PaymentChannel$transactionsArgs<ExtArgs>
     _count?: boolean | PaymentChannelCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type PaymentChannelIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -33917,6 +34205,7 @@ export namespace Prisma {
     name: "PaymentChannel"
     objects: {
       jobs: Prisma.$JobPayload<ExtArgs>[]
+      transactions: Prisma.$TransactionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -34329,6 +34618,7 @@ export namespace Prisma {
   export interface Prisma__PaymentChannelClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     jobs<T extends PaymentChannel$jobsArgs<ExtArgs> = {}>(args?: Subset<T, PaymentChannel$jobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    transactions<T extends PaymentChannel$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, PaymentChannel$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -34787,6 +35077,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: JobScalarFieldEnum | JobScalarFieldEnum[]
+  }
+
+  /**
+   * PaymentChannel.transactions
+   */
+  export type PaymentChannel$transactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    where?: TransactionWhereInput
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    cursor?: TransactionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
   }
 
   /**
@@ -49584,6 +49898,1322 @@ export namespace Prisma {
 
 
   /**
+   * Model Transaction
+   */
+
+  export type AggregateTransaction = {
+    _count: TransactionCountAggregateOutputType | null
+    _avg: TransactionAvgAggregateOutputType | null
+    _sum: TransactionSumAggregateOutputType | null
+    _min: TransactionMinAggregateOutputType | null
+    _max: TransactionMaxAggregateOutputType | null
+  }
+
+  export type TransactionAvgAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type TransactionSumAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type TransactionMinAggregateOutputType = {
+    id: string | null
+    amount: number | null
+    currency: string | null
+    type: $Enums.TransactionType | null
+    status: $Enums.TransactionStatus | null
+    referenceNo: string | null
+    note: string | null
+    evidenceUrl: string | null
+    jobId: string | null
+    clientId: string | null
+    assignmentId: string | null
+    paymentChannelId: string | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TransactionMaxAggregateOutputType = {
+    id: string | null
+    amount: number | null
+    currency: string | null
+    type: $Enums.TransactionType | null
+    status: $Enums.TransactionStatus | null
+    referenceNo: string | null
+    note: string | null
+    evidenceUrl: string | null
+    jobId: string | null
+    clientId: string | null
+    assignmentId: string | null
+    paymentChannelId: string | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TransactionCountAggregateOutputType = {
+    id: number
+    amount: number
+    currency: number
+    type: number
+    status: number
+    referenceNo: number
+    note: number
+    evidenceUrl: number
+    jobId: number
+    clientId: number
+    assignmentId: number
+    paymentChannelId: number
+    createdById: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type TransactionAvgAggregateInputType = {
+    amount?: true
+  }
+
+  export type TransactionSumAggregateInputType = {
+    amount?: true
+  }
+
+  export type TransactionMinAggregateInputType = {
+    id?: true
+    amount?: true
+    currency?: true
+    type?: true
+    status?: true
+    referenceNo?: true
+    note?: true
+    evidenceUrl?: true
+    jobId?: true
+    clientId?: true
+    assignmentId?: true
+    paymentChannelId?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TransactionMaxAggregateInputType = {
+    id?: true
+    amount?: true
+    currency?: true
+    type?: true
+    status?: true
+    referenceNo?: true
+    note?: true
+    evidenceUrl?: true
+    jobId?: true
+    clientId?: true
+    assignmentId?: true
+    paymentChannelId?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TransactionCountAggregateInputType = {
+    id?: true
+    amount?: true
+    currency?: true
+    type?: true
+    status?: true
+    referenceNo?: true
+    note?: true
+    evidenceUrl?: true
+    jobId?: true
+    clientId?: true
+    assignmentId?: true
+    paymentChannelId?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type TransactionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Transaction to aggregate.
+     */
+    where?: TransactionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Transactions to fetch.
+     */
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TransactionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Transactions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Transactions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Transactions
+    **/
+    _count?: true | TransactionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: TransactionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TransactionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TransactionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TransactionMaxAggregateInputType
+  }
+
+  export type GetTransactionAggregateType<T extends TransactionAggregateArgs> = {
+        [P in keyof T & keyof AggregateTransaction]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTransaction[P]>
+      : GetScalarType<T[P], AggregateTransaction[P]>
+  }
+
+
+
+
+  export type TransactionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransactionWhereInput
+    orderBy?: TransactionOrderByWithAggregationInput | TransactionOrderByWithAggregationInput[]
+    by: TransactionScalarFieldEnum[] | TransactionScalarFieldEnum
+    having?: TransactionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TransactionCountAggregateInputType | true
+    _avg?: TransactionAvgAggregateInputType
+    _sum?: TransactionSumAggregateInputType
+    _min?: TransactionMinAggregateInputType
+    _max?: TransactionMaxAggregateInputType
+  }
+
+  export type TransactionGroupByOutputType = {
+    id: string
+    amount: number
+    currency: string
+    type: $Enums.TransactionType
+    status: $Enums.TransactionStatus
+    referenceNo: string | null
+    note: string | null
+    evidenceUrl: string | null
+    jobId: string
+    clientId: string | null
+    assignmentId: string | null
+    paymentChannelId: string | null
+    createdById: string
+    createdAt: Date
+    updatedAt: Date
+    _count: TransactionCountAggregateOutputType | null
+    _avg: TransactionAvgAggregateOutputType | null
+    _sum: TransactionSumAggregateOutputType | null
+    _min: TransactionMinAggregateOutputType | null
+    _max: TransactionMaxAggregateOutputType | null
+  }
+
+  type GetTransactionGroupByPayload<T extends TransactionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TransactionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TransactionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TransactionGroupByOutputType[P]>
+            : GetScalarType<T[P], TransactionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TransactionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    amount?: boolean
+    currency?: boolean
+    type?: boolean
+    status?: boolean
+    referenceNo?: boolean
+    note?: boolean
+    evidenceUrl?: boolean
+    jobId?: boolean
+    clientId?: boolean
+    assignmentId?: boolean
+    paymentChannelId?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    client?: boolean | Transaction$clientArgs<ExtArgs>
+    assignment?: boolean | Transaction$assignmentArgs<ExtArgs>
+    paymentChannel?: boolean | Transaction$paymentChannelArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["transaction"]>
+
+  export type TransactionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    amount?: boolean
+    currency?: boolean
+    type?: boolean
+    status?: boolean
+    referenceNo?: boolean
+    note?: boolean
+    evidenceUrl?: boolean
+    jobId?: boolean
+    clientId?: boolean
+    assignmentId?: boolean
+    paymentChannelId?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    client?: boolean | Transaction$clientArgs<ExtArgs>
+    assignment?: boolean | Transaction$assignmentArgs<ExtArgs>
+    paymentChannel?: boolean | Transaction$paymentChannelArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["transaction"]>
+
+  export type TransactionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    amount?: boolean
+    currency?: boolean
+    type?: boolean
+    status?: boolean
+    referenceNo?: boolean
+    note?: boolean
+    evidenceUrl?: boolean
+    jobId?: boolean
+    clientId?: boolean
+    assignmentId?: boolean
+    paymentChannelId?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    client?: boolean | Transaction$clientArgs<ExtArgs>
+    assignment?: boolean | Transaction$assignmentArgs<ExtArgs>
+    paymentChannel?: boolean | Transaction$paymentChannelArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["transaction"]>
+
+  export type TransactionSelectScalar = {
+    id?: boolean
+    amount?: boolean
+    currency?: boolean
+    type?: boolean
+    status?: boolean
+    referenceNo?: boolean
+    note?: boolean
+    evidenceUrl?: boolean
+    jobId?: boolean
+    clientId?: boolean
+    assignmentId?: boolean
+    paymentChannelId?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type TransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "amount" | "currency" | "type" | "status" | "referenceNo" | "note" | "evidenceUrl" | "jobId" | "clientId" | "assignmentId" | "paymentChannelId" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["transaction"]>
+  export type TransactionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    client?: boolean | Transaction$clientArgs<ExtArgs>
+    assignment?: boolean | Transaction$assignmentArgs<ExtArgs>
+    paymentChannel?: boolean | Transaction$paymentChannelArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type TransactionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    client?: boolean | Transaction$clientArgs<ExtArgs>
+    assignment?: boolean | Transaction$assignmentArgs<ExtArgs>
+    paymentChannel?: boolean | Transaction$paymentChannelArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type TransactionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    client?: boolean | Transaction$clientArgs<ExtArgs>
+    assignment?: boolean | Transaction$assignmentArgs<ExtArgs>
+    paymentChannel?: boolean | Transaction$paymentChannelArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $TransactionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Transaction"
+    objects: {
+      job: Prisma.$JobPayload<ExtArgs>
+      client: Prisma.$ClientPayload<ExtArgs> | null
+      assignment: Prisma.$JobAssignmentPayload<ExtArgs> | null
+      paymentChannel: Prisma.$PaymentChannelPayload<ExtArgs> | null
+      createdBy: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      amount: number
+      currency: string
+      type: $Enums.TransactionType
+      status: $Enums.TransactionStatus
+      referenceNo: string | null
+      note: string | null
+      evidenceUrl: string | null
+      jobId: string
+      clientId: string | null
+      assignmentId: string | null
+      paymentChannelId: string | null
+      createdById: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["transaction"]>
+    composites: {}
+  }
+
+  type TransactionGetPayload<S extends boolean | null | undefined | TransactionDefaultArgs> = $Result.GetResult<Prisma.$TransactionPayload, S>
+
+  type TransactionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TransactionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TransactionCountAggregateInputType | true
+    }
+
+  export interface TransactionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Transaction'], meta: { name: 'Transaction' } }
+    /**
+     * Find zero or one Transaction that matches the filter.
+     * @param {TransactionFindUniqueArgs} args - Arguments to find a Transaction
+     * @example
+     * // Get one Transaction
+     * const transaction = await prisma.transaction.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TransactionFindUniqueArgs>(args: SelectSubset<T, TransactionFindUniqueArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Transaction that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TransactionFindUniqueOrThrowArgs} args - Arguments to find a Transaction
+     * @example
+     * // Get one Transaction
+     * const transaction = await prisma.transaction.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TransactionFindUniqueOrThrowArgs>(args: SelectSubset<T, TransactionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Transaction that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionFindFirstArgs} args - Arguments to find a Transaction
+     * @example
+     * // Get one Transaction
+     * const transaction = await prisma.transaction.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TransactionFindFirstArgs>(args?: SelectSubset<T, TransactionFindFirstArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Transaction that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionFindFirstOrThrowArgs} args - Arguments to find a Transaction
+     * @example
+     * // Get one Transaction
+     * const transaction = await prisma.transaction.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TransactionFindFirstOrThrowArgs>(args?: SelectSubset<T, TransactionFindFirstOrThrowArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Transactions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Transactions
+     * const transactions = await prisma.transaction.findMany()
+     * 
+     * // Get first 10 Transactions
+     * const transactions = await prisma.transaction.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const transactionWithIdOnly = await prisma.transaction.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TransactionFindManyArgs>(args?: SelectSubset<T, TransactionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Transaction.
+     * @param {TransactionCreateArgs} args - Arguments to create a Transaction.
+     * @example
+     * // Create one Transaction
+     * const Transaction = await prisma.transaction.create({
+     *   data: {
+     *     // ... data to create a Transaction
+     *   }
+     * })
+     * 
+     */
+    create<T extends TransactionCreateArgs>(args: SelectSubset<T, TransactionCreateArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Transactions.
+     * @param {TransactionCreateManyArgs} args - Arguments to create many Transactions.
+     * @example
+     * // Create many Transactions
+     * const transaction = await prisma.transaction.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TransactionCreateManyArgs>(args?: SelectSubset<T, TransactionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Transactions and returns the data saved in the database.
+     * @param {TransactionCreateManyAndReturnArgs} args - Arguments to create many Transactions.
+     * @example
+     * // Create many Transactions
+     * const transaction = await prisma.transaction.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Transactions and only return the `id`
+     * const transactionWithIdOnly = await prisma.transaction.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TransactionCreateManyAndReturnArgs>(args?: SelectSubset<T, TransactionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Transaction.
+     * @param {TransactionDeleteArgs} args - Arguments to delete one Transaction.
+     * @example
+     * // Delete one Transaction
+     * const Transaction = await prisma.transaction.delete({
+     *   where: {
+     *     // ... filter to delete one Transaction
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TransactionDeleteArgs>(args: SelectSubset<T, TransactionDeleteArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Transaction.
+     * @param {TransactionUpdateArgs} args - Arguments to update one Transaction.
+     * @example
+     * // Update one Transaction
+     * const transaction = await prisma.transaction.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TransactionUpdateArgs>(args: SelectSubset<T, TransactionUpdateArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Transactions.
+     * @param {TransactionDeleteManyArgs} args - Arguments to filter Transactions to delete.
+     * @example
+     * // Delete a few Transactions
+     * const { count } = await prisma.transaction.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TransactionDeleteManyArgs>(args?: SelectSubset<T, TransactionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Transactions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Transactions
+     * const transaction = await prisma.transaction.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TransactionUpdateManyArgs>(args: SelectSubset<T, TransactionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Transactions and returns the data updated in the database.
+     * @param {TransactionUpdateManyAndReturnArgs} args - Arguments to update many Transactions.
+     * @example
+     * // Update many Transactions
+     * const transaction = await prisma.transaction.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Transactions and only return the `id`
+     * const transactionWithIdOnly = await prisma.transaction.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TransactionUpdateManyAndReturnArgs>(args: SelectSubset<T, TransactionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Transaction.
+     * @param {TransactionUpsertArgs} args - Arguments to update or create a Transaction.
+     * @example
+     * // Update or create a Transaction
+     * const transaction = await prisma.transaction.upsert({
+     *   create: {
+     *     // ... data to create a Transaction
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Transaction we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TransactionUpsertArgs>(args: SelectSubset<T, TransactionUpsertArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Transactions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionCountArgs} args - Arguments to filter Transactions to count.
+     * @example
+     * // Count the number of Transactions
+     * const count = await prisma.transaction.count({
+     *   where: {
+     *     // ... the filter for the Transactions we want to count
+     *   }
+     * })
+    **/
+    count<T extends TransactionCountArgs>(
+      args?: Subset<T, TransactionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TransactionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Transaction.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TransactionAggregateArgs>(args: Subset<T, TransactionAggregateArgs>): Prisma.PrismaPromise<GetTransactionAggregateType<T>>
+
+    /**
+     * Group by Transaction.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TransactionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TransactionGroupByArgs['orderBy'] }
+        : { orderBy?: TransactionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TransactionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTransactionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Transaction model
+   */
+  readonly fields: TransactionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Transaction.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TransactionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    job<T extends JobDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobDefaultArgs<ExtArgs>>): Prisma__JobClient<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    client<T extends Transaction$clientArgs<ExtArgs> = {}>(args?: Subset<T, Transaction$clientArgs<ExtArgs>>): Prisma__ClientClient<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    assignment<T extends Transaction$assignmentArgs<ExtArgs> = {}>(args?: Subset<T, Transaction$assignmentArgs<ExtArgs>>): Prisma__JobAssignmentClient<$Result.GetResult<Prisma.$JobAssignmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    paymentChannel<T extends Transaction$paymentChannelArgs<ExtArgs> = {}>(args?: Subset<T, Transaction$paymentChannelArgs<ExtArgs>>): Prisma__PaymentChannelClient<$Result.GetResult<Prisma.$PaymentChannelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    createdBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Transaction model
+   */
+  interface TransactionFieldRefs {
+    readonly id: FieldRef<"Transaction", 'String'>
+    readonly amount: FieldRef<"Transaction", 'Float'>
+    readonly currency: FieldRef<"Transaction", 'String'>
+    readonly type: FieldRef<"Transaction", 'TransactionType'>
+    readonly status: FieldRef<"Transaction", 'TransactionStatus'>
+    readonly referenceNo: FieldRef<"Transaction", 'String'>
+    readonly note: FieldRef<"Transaction", 'String'>
+    readonly evidenceUrl: FieldRef<"Transaction", 'String'>
+    readonly jobId: FieldRef<"Transaction", 'String'>
+    readonly clientId: FieldRef<"Transaction", 'String'>
+    readonly assignmentId: FieldRef<"Transaction", 'String'>
+    readonly paymentChannelId: FieldRef<"Transaction", 'String'>
+    readonly createdById: FieldRef<"Transaction", 'String'>
+    readonly createdAt: FieldRef<"Transaction", 'DateTime'>
+    readonly updatedAt: FieldRef<"Transaction", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Transaction findUnique
+   */
+  export type TransactionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * Filter, which Transaction to fetch.
+     */
+    where: TransactionWhereUniqueInput
+  }
+
+  /**
+   * Transaction findUniqueOrThrow
+   */
+  export type TransactionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * Filter, which Transaction to fetch.
+     */
+    where: TransactionWhereUniqueInput
+  }
+
+  /**
+   * Transaction findFirst
+   */
+  export type TransactionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * Filter, which Transaction to fetch.
+     */
+    where?: TransactionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Transactions to fetch.
+     */
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Transactions.
+     */
+    cursor?: TransactionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Transactions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Transactions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Transactions.
+     */
+    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
+  }
+
+  /**
+   * Transaction findFirstOrThrow
+   */
+  export type TransactionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * Filter, which Transaction to fetch.
+     */
+    where?: TransactionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Transactions to fetch.
+     */
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Transactions.
+     */
+    cursor?: TransactionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Transactions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Transactions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Transactions.
+     */
+    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
+  }
+
+  /**
+   * Transaction findMany
+   */
+  export type TransactionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * Filter, which Transactions to fetch.
+     */
+    where?: TransactionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Transactions to fetch.
+     */
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Transactions.
+     */
+    cursor?: TransactionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Transactions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Transactions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Transactions.
+     */
+    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
+  }
+
+  /**
+   * Transaction create
+   */
+  export type TransactionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Transaction.
+     */
+    data: XOR<TransactionCreateInput, TransactionUncheckedCreateInput>
+  }
+
+  /**
+   * Transaction createMany
+   */
+  export type TransactionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Transactions.
+     */
+    data: TransactionCreateManyInput | TransactionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Transaction createManyAndReturn
+   */
+  export type TransactionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * The data used to create many Transactions.
+     */
+    data: TransactionCreateManyInput | TransactionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Transaction update
+   */
+  export type TransactionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Transaction.
+     */
+    data: XOR<TransactionUpdateInput, TransactionUncheckedUpdateInput>
+    /**
+     * Choose, which Transaction to update.
+     */
+    where: TransactionWhereUniqueInput
+  }
+
+  /**
+   * Transaction updateMany
+   */
+  export type TransactionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Transactions.
+     */
+    data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyInput>
+    /**
+     * Filter which Transactions to update
+     */
+    where?: TransactionWhereInput
+    /**
+     * Limit how many Transactions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Transaction updateManyAndReturn
+   */
+  export type TransactionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * The data used to update Transactions.
+     */
+    data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyInput>
+    /**
+     * Filter which Transactions to update
+     */
+    where?: TransactionWhereInput
+    /**
+     * Limit how many Transactions to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Transaction upsert
+   */
+  export type TransactionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Transaction to update in case it exists.
+     */
+    where: TransactionWhereUniqueInput
+    /**
+     * In case the Transaction found by the `where` argument doesn't exist, create a new Transaction with this data.
+     */
+    create: XOR<TransactionCreateInput, TransactionUncheckedCreateInput>
+    /**
+     * In case the Transaction was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TransactionUpdateInput, TransactionUncheckedUpdateInput>
+  }
+
+  /**
+   * Transaction delete
+   */
+  export type TransactionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * Filter which Transaction to delete.
+     */
+    where: TransactionWhereUniqueInput
+  }
+
+  /**
+   * Transaction deleteMany
+   */
+  export type TransactionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Transactions to delete
+     */
+    where?: TransactionWhereInput
+    /**
+     * Limit how many Transactions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Transaction.client
+   */
+  export type Transaction$clientArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Client
+     */
+    select?: ClientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Client
+     */
+    omit?: ClientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientInclude<ExtArgs> | null
+    where?: ClientWhereInput
+  }
+
+  /**
+   * Transaction.assignment
+   */
+  export type Transaction$assignmentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobAssignment
+     */
+    select?: JobAssignmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobAssignment
+     */
+    omit?: JobAssignmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobAssignmentInclude<ExtArgs> | null
+    where?: JobAssignmentWhereInput
+  }
+
+  /**
+   * Transaction.paymentChannel
+   */
+  export type Transaction$paymentChannelArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentChannel
+     */
+    select?: PaymentChannelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentChannel
+     */
+    omit?: PaymentChannelOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentChannelInclude<ExtArgs> | null
+    where?: PaymentChannelWhereInput
+  }
+
+  /**
+   * Transaction without action
+   */
+  export type TransactionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -49865,7 +51495,6 @@ export namespace Prisma {
     startedAt: 'startedAt',
     priority: 'priority',
     isPublished: 'isPublished',
-    isPaid: 'isPaid',
     dueAt: 'dueAt',
     completedAt: 'completedAt',
     finishedAt: 'finishedAt',
@@ -50157,6 +51786,27 @@ export namespace Prisma {
   };
 
   export type SystemSettingScalarFieldEnum = (typeof SystemSettingScalarFieldEnum)[keyof typeof SystemSettingScalarFieldEnum]
+
+
+  export const TransactionScalarFieldEnum: {
+    id: 'id',
+    amount: 'amount',
+    currency: 'currency',
+    type: 'type',
+    status: 'status',
+    referenceNo: 'referenceNo',
+    note: 'note',
+    evidenceUrl: 'evidenceUrl',
+    jobId: 'jobId',
+    clientId: 'clientId',
+    assignmentId: 'assignmentId',
+    paymentChannelId: 'paymentChannelId',
+    createdById: 'createdById',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type TransactionScalarFieldEnum = (typeof TransactionScalarFieldEnum)[keyof typeof TransactionScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -50511,6 +52161,34 @@ export namespace Prisma {
    */
   export type ListEnumTopicTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TopicType[]'>
     
+
+
+  /**
+   * Reference to a field of type 'TransactionType'
+   */
+  export type EnumTransactionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransactionType'>
+    
+
+
+  /**
+   * Reference to a field of type 'TransactionType[]'
+   */
+  export type ListEnumTransactionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransactionType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'TransactionStatus'
+   */
+  export type EnumTransactionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransactionStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'TransactionStatus[]'
+   */
+  export type ListEnumTransactionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransactionStatus[]'>
+    
   /**
    * Deep Input Types
    */
@@ -50764,6 +52442,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogListRelationFilter
     systemAuditLogs?: SystemAuditLogListRelationFilter
     systemSettings?: SystemSettingListRelationFilter
+    transactions?: TransactionListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -50813,6 +52492,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogOrderByRelationAggregateInput
     systemAuditLogs?: SystemAuditLogOrderByRelationAggregateInput
     systemSettings?: SystemSettingOrderByRelationAggregateInput
+    transactions?: TransactionOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -50865,6 +52545,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogListRelationFilter
     systemAuditLogs?: SystemAuditLogListRelationFilter
     systemSettings?: SystemSettingListRelationFilter
+    transactions?: TransactionListRelationFilter
   }, "id" | "code" | "email" | "username">
 
   export type UserOrderByWithAggregationInput = {
@@ -51898,7 +53579,6 @@ export namespace Prisma {
     startedAt?: DateTimeFilter<"Job"> | Date | string
     priority?: EnumJobPriorityFilter<"Job"> | $Enums.JobPriority
     isPublished?: BoolFilter<"Job"> | boolean
-    isPaid?: BoolFilter<"Job"> | boolean
     dueAt?: DateTimeFilter<"Job"> | Date | string
     completedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
     finishedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
@@ -51922,6 +53602,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobListRelationFilter
     jobDeliveries?: JobDeliveryListRelationFilter
     folderTemplate?: XOR<JobFolderTemplateNullableScalarRelationFilter, JobFolderTemplateWhereInput> | null
+    transactions?: TransactionListRelationFilter
   }
 
   export type JobOrderByWithRelationInput = {
@@ -51941,7 +53622,6 @@ export namespace Prisma {
     startedAt?: SortOrder
     priority?: SortOrder
     isPublished?: SortOrder
-    isPaid?: SortOrder
     dueAt?: SortOrder
     completedAt?: SortOrderInput | SortOrder
     finishedAt?: SortOrderInput | SortOrder
@@ -51965,6 +53645,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobOrderByRelationAggregateInput
     jobDeliveries?: JobDeliveryOrderByRelationAggregateInput
     folderTemplate?: JobFolderTemplateOrderByWithRelationInput
+    transactions?: TransactionOrderByRelationAggregateInput
   }
 
   export type JobWhereUniqueInput = Prisma.AtLeast<{
@@ -51987,7 +53668,6 @@ export namespace Prisma {
     startedAt?: DateTimeFilter<"Job"> | Date | string
     priority?: EnumJobPriorityFilter<"Job"> | $Enums.JobPriority
     isPublished?: BoolFilter<"Job"> | boolean
-    isPaid?: BoolFilter<"Job"> | boolean
     dueAt?: DateTimeFilter<"Job"> | Date | string
     completedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
     finishedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
@@ -52011,6 +53691,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobListRelationFilter
     jobDeliveries?: JobDeliveryListRelationFilter
     folderTemplate?: XOR<JobFolderTemplateNullableScalarRelationFilter, JobFolderTemplateWhereInput> | null
+    transactions?: TransactionListRelationFilter
   }, "id" | "no">
 
   export type JobOrderByWithAggregationInput = {
@@ -52030,7 +53711,6 @@ export namespace Prisma {
     startedAt?: SortOrder
     priority?: SortOrder
     isPublished?: SortOrder
-    isPaid?: SortOrder
     dueAt?: SortOrder
     completedAt?: SortOrderInput | SortOrder
     finishedAt?: SortOrderInput | SortOrder
@@ -52067,7 +53747,6 @@ export namespace Prisma {
     startedAt?: DateTimeWithAggregatesFilter<"Job"> | Date | string
     priority?: EnumJobPriorityWithAggregatesFilter<"Job"> | $Enums.JobPriority
     isPublished?: BoolWithAggregatesFilter<"Job"> | boolean
-    isPaid?: BoolWithAggregatesFilter<"Job"> | boolean
     dueAt?: DateTimeWithAggregatesFilter<"Job"> | Date | string
     completedAt?: DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
     finishedAt?: DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
@@ -52163,6 +53842,7 @@ export namespace Prisma {
     assignedAt?: DateTimeFilter<"JobAssignment"> | Date | string
     job?: XOR<JobScalarRelationFilter, JobWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    transactions?: TransactionListRelationFilter
   }
 
   export type JobAssignmentOrderByWithRelationInput = {
@@ -52173,6 +53853,7 @@ export namespace Prisma {
     assignedAt?: SortOrder
     job?: JobOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
+    transactions?: TransactionOrderByRelationAggregateInput
   }
 
   export type JobAssignmentWhereUniqueInput = Prisma.AtLeast<{
@@ -52187,6 +53868,7 @@ export namespace Prisma {
     assignedAt?: DateTimeFilter<"JobAssignment"> | Date | string
     job?: XOR<JobScalarRelationFilter, JobWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    transactions?: TransactionListRelationFilter
   }, "id" | "jobId_userId">
 
   export type JobAssignmentOrderByWithAggregationInput = {
@@ -52306,6 +53988,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Client"> | Date | string
     updatedAt?: DateTimeFilter<"Client"> | Date | string
     jobs?: JobListRelationFilter
+    transactions?: TransactionListRelationFilter
   }
 
   export type ClientOrderByWithRelationInput = {
@@ -52326,6 +54009,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     jobs?: JobOrderByRelationAggregateInput
+    transactions?: TransactionOrderByRelationAggregateInput
   }
 
   export type ClientWhereUniqueInput = Prisma.AtLeast<{
@@ -52349,6 +54033,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Client"> | Date | string
     updatedAt?: DateTimeFilter<"Client"> | Date | string
     jobs?: JobListRelationFilter
+    transactions?: TransactionListRelationFilter
   }, "id" | "name" | "code">
 
   export type ClientOrderByWithAggregationInput = {
@@ -52466,6 +54151,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"PaymentChannel"> | Date | string
     updatedAt?: DateTimeFilter<"PaymentChannel"> | Date | string
     jobs?: JobListRelationFilter
+    transactions?: TransactionListRelationFilter
   }
 
   export type PaymentChannelOrderByWithRelationInput = {
@@ -52485,6 +54171,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     jobs?: JobOrderByRelationAggregateInput
+    transactions?: TransactionOrderByRelationAggregateInput
   }
 
   export type PaymentChannelWhereUniqueInput = Prisma.AtLeast<{
@@ -52507,6 +54194,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"PaymentChannel"> | Date | string
     updatedAt?: DateTimeFilter<"PaymentChannel"> | Date | string
     jobs?: JobListRelationFilter
+    transactions?: TransactionListRelationFilter
   }, "id">
 
   export type PaymentChannelOrderByWithAggregationInput = {
@@ -53536,6 +55224,125 @@ export namespace Prisma {
     modifierById?: StringNullableWithAggregatesFilter<"SystemSetting"> | string | null
   }
 
+  export type TransactionWhereInput = {
+    AND?: TransactionWhereInput | TransactionWhereInput[]
+    OR?: TransactionWhereInput[]
+    NOT?: TransactionWhereInput | TransactionWhereInput[]
+    id?: StringFilter<"Transaction"> | string
+    amount?: FloatFilter<"Transaction"> | number
+    currency?: StringFilter<"Transaction"> | string
+    type?: EnumTransactionTypeFilter<"Transaction"> | $Enums.TransactionType
+    status?: EnumTransactionStatusFilter<"Transaction"> | $Enums.TransactionStatus
+    referenceNo?: StringNullableFilter<"Transaction"> | string | null
+    note?: StringNullableFilter<"Transaction"> | string | null
+    evidenceUrl?: StringNullableFilter<"Transaction"> | string | null
+    jobId?: StringFilter<"Transaction"> | string
+    clientId?: StringNullableFilter<"Transaction"> | string | null
+    assignmentId?: StringNullableFilter<"Transaction"> | string | null
+    paymentChannelId?: StringNullableFilter<"Transaction"> | string | null
+    createdById?: StringFilter<"Transaction"> | string
+    createdAt?: DateTimeFilter<"Transaction"> | Date | string
+    updatedAt?: DateTimeFilter<"Transaction"> | Date | string
+    job?: XOR<JobScalarRelationFilter, JobWhereInput>
+    client?: XOR<ClientNullableScalarRelationFilter, ClientWhereInput> | null
+    assignment?: XOR<JobAssignmentNullableScalarRelationFilter, JobAssignmentWhereInput> | null
+    paymentChannel?: XOR<PaymentChannelNullableScalarRelationFilter, PaymentChannelWhereInput> | null
+    createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type TransactionOrderByWithRelationInput = {
+    id?: SortOrder
+    amount?: SortOrder
+    currency?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    referenceNo?: SortOrderInput | SortOrder
+    note?: SortOrderInput | SortOrder
+    evidenceUrl?: SortOrderInput | SortOrder
+    jobId?: SortOrder
+    clientId?: SortOrderInput | SortOrder
+    assignmentId?: SortOrderInput | SortOrder
+    paymentChannelId?: SortOrderInput | SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    job?: JobOrderByWithRelationInput
+    client?: ClientOrderByWithRelationInput
+    assignment?: JobAssignmentOrderByWithRelationInput
+    paymentChannel?: PaymentChannelOrderByWithRelationInput
+    createdBy?: UserOrderByWithRelationInput
+  }
+
+  export type TransactionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    referenceNo?: string
+    AND?: TransactionWhereInput | TransactionWhereInput[]
+    OR?: TransactionWhereInput[]
+    NOT?: TransactionWhereInput | TransactionWhereInput[]
+    amount?: FloatFilter<"Transaction"> | number
+    currency?: StringFilter<"Transaction"> | string
+    type?: EnumTransactionTypeFilter<"Transaction"> | $Enums.TransactionType
+    status?: EnumTransactionStatusFilter<"Transaction"> | $Enums.TransactionStatus
+    note?: StringNullableFilter<"Transaction"> | string | null
+    evidenceUrl?: StringNullableFilter<"Transaction"> | string | null
+    jobId?: StringFilter<"Transaction"> | string
+    clientId?: StringNullableFilter<"Transaction"> | string | null
+    assignmentId?: StringNullableFilter<"Transaction"> | string | null
+    paymentChannelId?: StringNullableFilter<"Transaction"> | string | null
+    createdById?: StringFilter<"Transaction"> | string
+    createdAt?: DateTimeFilter<"Transaction"> | Date | string
+    updatedAt?: DateTimeFilter<"Transaction"> | Date | string
+    job?: XOR<JobScalarRelationFilter, JobWhereInput>
+    client?: XOR<ClientNullableScalarRelationFilter, ClientWhereInput> | null
+    assignment?: XOR<JobAssignmentNullableScalarRelationFilter, JobAssignmentWhereInput> | null
+    paymentChannel?: XOR<PaymentChannelNullableScalarRelationFilter, PaymentChannelWhereInput> | null
+    createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "referenceNo">
+
+  export type TransactionOrderByWithAggregationInput = {
+    id?: SortOrder
+    amount?: SortOrder
+    currency?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    referenceNo?: SortOrderInput | SortOrder
+    note?: SortOrderInput | SortOrder
+    evidenceUrl?: SortOrderInput | SortOrder
+    jobId?: SortOrder
+    clientId?: SortOrderInput | SortOrder
+    assignmentId?: SortOrderInput | SortOrder
+    paymentChannelId?: SortOrderInput | SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: TransactionCountOrderByAggregateInput
+    _avg?: TransactionAvgOrderByAggregateInput
+    _max?: TransactionMaxOrderByAggregateInput
+    _min?: TransactionMinOrderByAggregateInput
+    _sum?: TransactionSumOrderByAggregateInput
+  }
+
+  export type TransactionScalarWhereWithAggregatesInput = {
+    AND?: TransactionScalarWhereWithAggregatesInput | TransactionScalarWhereWithAggregatesInput[]
+    OR?: TransactionScalarWhereWithAggregatesInput[]
+    NOT?: TransactionScalarWhereWithAggregatesInput | TransactionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Transaction"> | string
+    amount?: FloatWithAggregatesFilter<"Transaction"> | number
+    currency?: StringWithAggregatesFilter<"Transaction"> | string
+    type?: EnumTransactionTypeWithAggregatesFilter<"Transaction"> | $Enums.TransactionType
+    status?: EnumTransactionStatusWithAggregatesFilter<"Transaction"> | $Enums.TransactionStatus
+    referenceNo?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
+    note?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
+    evidenceUrl?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
+    jobId?: StringWithAggregatesFilter<"Transaction"> | string
+    clientId?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
+    assignmentId?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
+    paymentChannelId?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
+    createdById?: StringWithAggregatesFilter<"Transaction"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Transaction"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Transaction"> | Date | string
+  }
+
   export type SystemAuditLogCreateInput = {
     id?: string
     action: string
@@ -53794,6 +55601,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -53839,6 +55647,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUpdateInput = {
@@ -53884,6 +55693,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -53929,6 +55739,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -55035,7 +56846,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -55058,6 +56868,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
     folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+    transactions?: TransactionCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateInput = {
@@ -55077,7 +56888,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -55094,6 +56904,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobUpdateInput = {
@@ -55107,7 +56918,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -55130,6 +56940,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
     folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+    transactions?: TransactionUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateInput = {
@@ -55149,7 +56960,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -55166,6 +56976,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobCreateManyInput = {
@@ -55185,7 +56996,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -55208,7 +57018,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -55236,7 +57045,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -55335,6 +57143,7 @@ export namespace Prisma {
     assignedAt?: Date | string
     job: JobCreateNestedOneWithoutAssignmentsInput
     user: UserCreateNestedOneWithoutJobAssignmentsInput
+    transactions?: TransactionCreateNestedManyWithoutAssignmentInput
   }
 
   export type JobAssignmentUncheckedCreateInput = {
@@ -55343,6 +57152,7 @@ export namespace Prisma {
     userId: string
     staffCost?: number
     assignedAt?: Date | string
+    transactions?: TransactionUncheckedCreateNestedManyWithoutAssignmentInput
   }
 
   export type JobAssignmentUpdateInput = {
@@ -55351,6 +57161,7 @@ export namespace Prisma {
     assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     job?: JobUpdateOneRequiredWithoutAssignmentsNestedInput
     user?: UserUpdateOneRequiredWithoutJobAssignmentsNestedInput
+    transactions?: TransactionUpdateManyWithoutAssignmentNestedInput
   }
 
   export type JobAssignmentUncheckedUpdateInput = {
@@ -55359,6 +57170,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     staffCost?: FloatFieldUpdateOperationsInput | number
     assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transactions?: TransactionUncheckedUpdateManyWithoutAssignmentNestedInput
   }
 
   export type JobAssignmentCreateManyInput = {
@@ -55482,6 +57294,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     jobs?: JobCreateNestedManyWithoutClientInput
+    transactions?: TransactionCreateNestedManyWithoutClientInput
   }
 
   export type ClientUncheckedCreateInput = {
@@ -55502,6 +57315,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     jobs?: JobUncheckedCreateNestedManyWithoutClientInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutClientInput
   }
 
   export type ClientUpdateInput = {
@@ -55522,6 +57336,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     jobs?: JobUpdateManyWithoutClientNestedInput
+    transactions?: TransactionUpdateManyWithoutClientNestedInput
   }
 
   export type ClientUncheckedUpdateInput = {
@@ -55542,6 +57357,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     jobs?: JobUncheckedUpdateManyWithoutClientNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutClientNestedInput
   }
 
   export type ClientCreateManyInput = {
@@ -55658,6 +57474,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     jobs?: JobCreateNestedManyWithoutPaymentChannelInput
+    transactions?: TransactionCreateNestedManyWithoutPaymentChannelInput
   }
 
   export type PaymentChannelUncheckedCreateInput = {
@@ -55677,6 +57494,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     jobs?: JobUncheckedCreateNestedManyWithoutPaymentChannelInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutPaymentChannelInput
   }
 
   export type PaymentChannelUpdateInput = {
@@ -55696,6 +57514,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     jobs?: JobUpdateManyWithoutPaymentChannelNestedInput
+    transactions?: TransactionUpdateManyWithoutPaymentChannelNestedInput
   }
 
   export type PaymentChannelUncheckedUpdateInput = {
@@ -55715,6 +57534,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     jobs?: JobUncheckedUpdateManyWithoutPaymentChannelNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutPaymentChannelNestedInput
   }
 
   export type PaymentChannelCreateManyInput = {
@@ -56829,6 +58649,127 @@ export namespace Prisma {
     modifierById?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
+  export type TransactionCreateInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutTransactionsInput
+    client?: ClientCreateNestedOneWithoutTransactionsInput
+    assignment?: JobAssignmentCreateNestedOneWithoutTransactionsInput
+    paymentChannel?: PaymentChannelCreateNestedOneWithoutTransactionsInput
+    createdBy: UserCreateNestedOneWithoutTransactionsInput
+  }
+
+  export type TransactionUncheckedCreateInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    jobId: string
+    clientId?: string | null
+    assignmentId?: string | null
+    paymentChannelId?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransactionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutTransactionsNestedInput
+    client?: ClientUpdateOneWithoutTransactionsNestedInput
+    assignment?: JobAssignmentUpdateOneWithoutTransactionsNestedInput
+    paymentChannel?: PaymentChannelUpdateOneWithoutTransactionsNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutTransactionsNestedInput
+  }
+
+  export type TransactionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    jobId?: StringFieldUpdateOperationsInput | string
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransactionCreateManyInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    jobId: string
+    clientId?: string | null
+    assignmentId?: string | null
+    paymentChannelId?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransactionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransactionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    jobId?: StringFieldUpdateOperationsInput | string
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -57258,6 +59199,12 @@ export namespace Prisma {
     none?: SystemSettingWhereInput
   }
 
+  export type TransactionListRelationFilter = {
+    every?: TransactionWhereInput
+    some?: TransactionWhereInput
+    none?: TransactionWhereInput
+  }
+
   export type NotificationOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -57339,6 +59286,10 @@ export namespace Prisma {
   }
 
   export type SystemSettingOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type TransactionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -58160,7 +60111,6 @@ export namespace Prisma {
     startedAt?: SortOrder
     priority?: SortOrder
     isPublished?: SortOrder
-    isPaid?: SortOrder
     dueAt?: SortOrder
     completedAt?: SortOrder
     finishedAt?: SortOrder
@@ -58193,7 +60143,6 @@ export namespace Prisma {
     startedAt?: SortOrder
     priority?: SortOrder
     isPublished?: SortOrder
-    isPaid?: SortOrder
     dueAt?: SortOrder
     completedAt?: SortOrder
     finishedAt?: SortOrder
@@ -58221,7 +60170,6 @@ export namespace Prisma {
     startedAt?: SortOrder
     priority?: SortOrder
     isPublished?: SortOrder
-    isPaid?: SortOrder
     dueAt?: SortOrder
     completedAt?: SortOrder
     finishedAt?: SortOrder
@@ -59261,6 +61209,107 @@ export namespace Prisma {
     modifierById?: SortOrder
   }
 
+  export type EnumTransactionTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionType | EnumTransactionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionTypeFilter<$PrismaModel> | $Enums.TransactionType
+  }
+
+  export type EnumTransactionStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionStatus | EnumTransactionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionStatusFilter<$PrismaModel> | $Enums.TransactionStatus
+  }
+
+  export type JobAssignmentNullableScalarRelationFilter = {
+    is?: JobAssignmentWhereInput | null
+    isNot?: JobAssignmentWhereInput | null
+  }
+
+  export type TransactionCountOrderByAggregateInput = {
+    id?: SortOrder
+    amount?: SortOrder
+    currency?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    referenceNo?: SortOrder
+    note?: SortOrder
+    evidenceUrl?: SortOrder
+    jobId?: SortOrder
+    clientId?: SortOrder
+    assignmentId?: SortOrder
+    paymentChannelId?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TransactionAvgOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type TransactionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    amount?: SortOrder
+    currency?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    referenceNo?: SortOrder
+    note?: SortOrder
+    evidenceUrl?: SortOrder
+    jobId?: SortOrder
+    clientId?: SortOrder
+    assignmentId?: SortOrder
+    paymentChannelId?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TransactionMinOrderByAggregateInput = {
+    id?: SortOrder
+    amount?: SortOrder
+    currency?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    referenceNo?: SortOrder
+    note?: SortOrder
+    evidenceUrl?: SortOrder
+    jobId?: SortOrder
+    clientId?: SortOrder
+    assignmentId?: SortOrder
+    paymentChannelId?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TransactionSumOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type EnumTransactionTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionType | EnumTransactionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionTypeWithAggregatesFilter<$PrismaModel> | $Enums.TransactionType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTransactionTypeFilter<$PrismaModel>
+    _max?: NestedEnumTransactionTypeFilter<$PrismaModel>
+  }
+
+  export type EnumTransactionStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionStatus | EnumTransactionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionStatusWithAggregatesFilter<$PrismaModel> | $Enums.TransactionStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTransactionStatusFilter<$PrismaModel>
+    _max?: NestedEnumTransactionStatusFilter<$PrismaModel>
+  }
+
   export type UserCreateNestedOneWithoutSystemAuditLogsInput = {
     create?: XOR<UserCreateWithoutSystemAuditLogsInput, UserUncheckedCreateWithoutSystemAuditLogsInput>
     connectOrCreate?: UserCreateOrConnectWithoutSystemAuditLogsInput
@@ -59495,6 +61544,13 @@ export namespace Prisma {
     connect?: SystemSettingWhereUniqueInput | SystemSettingWhereUniqueInput[]
   }
 
+  export type TransactionCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<TransactionCreateWithoutCreatedByInput, TransactionUncheckedCreateWithoutCreatedByInput> | TransactionCreateWithoutCreatedByInput[] | TransactionUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutCreatedByInput | TransactionCreateOrConnectWithoutCreatedByInput[]
+    createMany?: TransactionCreateManyCreatedByInputEnvelope
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
   export type NotificationUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
     connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
@@ -59653,6 +61709,13 @@ export namespace Prisma {
     connectOrCreate?: SystemSettingCreateOrConnectWithoutModifierByInput | SystemSettingCreateOrConnectWithoutModifierByInput[]
     createMany?: SystemSettingCreateManyModifierByInputEnvelope
     connect?: SystemSettingWhereUniqueInput | SystemSettingWhereUniqueInput[]
+  }
+
+  export type TransactionUncheckedCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<TransactionCreateWithoutCreatedByInput, TransactionUncheckedCreateWithoutCreatedByInput> | TransactionCreateWithoutCreatedByInput[] | TransactionUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutCreatedByInput | TransactionCreateOrConnectWithoutCreatedByInput[]
+    createMany?: TransactionCreateManyCreatedByInputEnvelope
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
   }
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -60020,6 +62083,20 @@ export namespace Prisma {
     deleteMany?: SystemSettingScalarWhereInput | SystemSettingScalarWhereInput[]
   }
 
+  export type TransactionUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<TransactionCreateWithoutCreatedByInput, TransactionUncheckedCreateWithoutCreatedByInput> | TransactionCreateWithoutCreatedByInput[] | TransactionUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutCreatedByInput | TransactionCreateOrConnectWithoutCreatedByInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutCreatedByInput | TransactionUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: TransactionCreateManyCreatedByInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutCreatedByInput | TransactionUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutCreatedByInput | TransactionUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
   export type NotificationUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
     connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
@@ -60339,6 +62416,20 @@ export namespace Prisma {
     update?: SystemSettingUpdateWithWhereUniqueWithoutModifierByInput | SystemSettingUpdateWithWhereUniqueWithoutModifierByInput[]
     updateMany?: SystemSettingUpdateManyWithWhereWithoutModifierByInput | SystemSettingUpdateManyWithWhereWithoutModifierByInput[]
     deleteMany?: SystemSettingScalarWhereInput | SystemSettingScalarWhereInput[]
+  }
+
+  export type TransactionUncheckedUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<TransactionCreateWithoutCreatedByInput, TransactionUncheckedCreateWithoutCreatedByInput> | TransactionCreateWithoutCreatedByInput[] | TransactionUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutCreatedByInput | TransactionCreateOrConnectWithoutCreatedByInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutCreatedByInput | TransactionUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: TransactionCreateManyCreatedByInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutCreatedByInput | TransactionUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutCreatedByInput | TransactionUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutSecurityLogsInput = {
@@ -61029,6 +63120,13 @@ export namespace Prisma {
     connect?: JobFolderTemplateWhereUniqueInput
   }
 
+  export type TransactionCreateNestedManyWithoutJobInput = {
+    create?: XOR<TransactionCreateWithoutJobInput, TransactionUncheckedCreateWithoutJobInput> | TransactionCreateWithoutJobInput[] | TransactionUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutJobInput | TransactionCreateOrConnectWithoutJobInput[]
+    createMany?: TransactionCreateManyJobInputEnvelope
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
   export type JobAssignmentUncheckedCreateNestedManyWithoutJobInput = {
     create?: XOR<JobAssignmentCreateWithoutJobInput, JobAssignmentUncheckedCreateWithoutJobInput> | JobAssignmentCreateWithoutJobInput[] | JobAssignmentUncheckedCreateWithoutJobInput[]
     connectOrCreate?: JobAssignmentCreateOrConnectWithoutJobInput | JobAssignmentCreateOrConnectWithoutJobInput[]
@@ -61076,6 +63174,13 @@ export namespace Prisma {
     connectOrCreate?: JobDeliveryCreateOrConnectWithoutJobInput | JobDeliveryCreateOrConnectWithoutJobInput[]
     createMany?: JobDeliveryCreateManyJobInputEnvelope
     connect?: JobDeliveryWhereUniqueInput | JobDeliveryWhereUniqueInput[]
+  }
+
+  export type TransactionUncheckedCreateNestedManyWithoutJobInput = {
+    create?: XOR<TransactionCreateWithoutJobInput, TransactionUncheckedCreateWithoutJobInput> | TransactionCreateWithoutJobInput[] | TransactionUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutJobInput | TransactionCreateOrConnectWithoutJobInput[]
+    createMany?: TransactionCreateManyJobInputEnvelope
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
   }
 
   export type JobUpdateattachmentUrlsInput = {
@@ -61261,6 +63366,20 @@ export namespace Prisma {
     update?: XOR<XOR<JobFolderTemplateUpdateToOneWithWhereWithoutJobsInput, JobFolderTemplateUpdateWithoutJobsInput>, JobFolderTemplateUncheckedUpdateWithoutJobsInput>
   }
 
+  export type TransactionUpdateManyWithoutJobNestedInput = {
+    create?: XOR<TransactionCreateWithoutJobInput, TransactionUncheckedCreateWithoutJobInput> | TransactionCreateWithoutJobInput[] | TransactionUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutJobInput | TransactionCreateOrConnectWithoutJobInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutJobInput | TransactionUpsertWithWhereUniqueWithoutJobInput[]
+    createMany?: TransactionCreateManyJobInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutJobInput | TransactionUpdateWithWhereUniqueWithoutJobInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutJobInput | TransactionUpdateManyWithWhereWithoutJobInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
   export type JobAssignmentUncheckedUpdateManyWithoutJobNestedInput = {
     create?: XOR<JobAssignmentCreateWithoutJobInput, JobAssignmentUncheckedCreateWithoutJobInput> | JobAssignmentCreateWithoutJobInput[] | JobAssignmentUncheckedCreateWithoutJobInput[]
     connectOrCreate?: JobAssignmentCreateOrConnectWithoutJobInput | JobAssignmentCreateOrConnectWithoutJobInput[]
@@ -61359,6 +63478,20 @@ export namespace Prisma {
     deleteMany?: JobDeliveryScalarWhereInput | JobDeliveryScalarWhereInput[]
   }
 
+  export type TransactionUncheckedUpdateManyWithoutJobNestedInput = {
+    create?: XOR<TransactionCreateWithoutJobInput, TransactionUncheckedCreateWithoutJobInput> | TransactionCreateWithoutJobInput[] | TransactionUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutJobInput | TransactionCreateOrConnectWithoutJobInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutJobInput | TransactionUpsertWithWhereUniqueWithoutJobInput[]
+    createMany?: TransactionCreateManyJobInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutJobInput | TransactionUpdateWithWhereUniqueWithoutJobInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutJobInput | TransactionUpdateManyWithWhereWithoutJobInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
   export type JobCreateNestedManyWithoutSharepointFolderInput = {
     create?: XOR<JobCreateWithoutSharepointFolderInput, JobUncheckedCreateWithoutSharepointFolderInput> | JobCreateWithoutSharepointFolderInput[] | JobUncheckedCreateWithoutSharepointFolderInput[]
     connectOrCreate?: JobCreateOrConnectWithoutSharepointFolderInput | JobCreateOrConnectWithoutSharepointFolderInput[]
@@ -61413,6 +63546,20 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type TransactionCreateNestedManyWithoutAssignmentInput = {
+    create?: XOR<TransactionCreateWithoutAssignmentInput, TransactionUncheckedCreateWithoutAssignmentInput> | TransactionCreateWithoutAssignmentInput[] | TransactionUncheckedCreateWithoutAssignmentInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutAssignmentInput | TransactionCreateOrConnectWithoutAssignmentInput[]
+    createMany?: TransactionCreateManyAssignmentInputEnvelope
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
+  export type TransactionUncheckedCreateNestedManyWithoutAssignmentInput = {
+    create?: XOR<TransactionCreateWithoutAssignmentInput, TransactionUncheckedCreateWithoutAssignmentInput> | TransactionCreateWithoutAssignmentInput[] | TransactionUncheckedCreateWithoutAssignmentInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutAssignmentInput | TransactionCreateOrConnectWithoutAssignmentInput[]
+    createMany?: TransactionCreateManyAssignmentInputEnvelope
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
   export type JobUpdateOneRequiredWithoutAssignmentsNestedInput = {
     create?: XOR<JobCreateWithoutAssignmentsInput, JobUncheckedCreateWithoutAssignmentsInput>
     connectOrCreate?: JobCreateOrConnectWithoutAssignmentsInput
@@ -61427,6 +63574,34 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutJobAssignmentsInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutJobAssignmentsInput, UserUpdateWithoutJobAssignmentsInput>, UserUncheckedUpdateWithoutJobAssignmentsInput>
+  }
+
+  export type TransactionUpdateManyWithoutAssignmentNestedInput = {
+    create?: XOR<TransactionCreateWithoutAssignmentInput, TransactionUncheckedCreateWithoutAssignmentInput> | TransactionCreateWithoutAssignmentInput[] | TransactionUncheckedCreateWithoutAssignmentInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutAssignmentInput | TransactionCreateOrConnectWithoutAssignmentInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutAssignmentInput | TransactionUpsertWithWhereUniqueWithoutAssignmentInput[]
+    createMany?: TransactionCreateManyAssignmentInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutAssignmentInput | TransactionUpdateWithWhereUniqueWithoutAssignmentInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutAssignmentInput | TransactionUpdateManyWithWhereWithoutAssignmentInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
+  export type TransactionUncheckedUpdateManyWithoutAssignmentNestedInput = {
+    create?: XOR<TransactionCreateWithoutAssignmentInput, TransactionUncheckedCreateWithoutAssignmentInput> | TransactionCreateWithoutAssignmentInput[] | TransactionUncheckedCreateWithoutAssignmentInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutAssignmentInput | TransactionCreateOrConnectWithoutAssignmentInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutAssignmentInput | TransactionUpsertWithWhereUniqueWithoutAssignmentInput[]
+    createMany?: TransactionCreateManyAssignmentInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutAssignmentInput | TransactionUpdateWithWhereUniqueWithoutAssignmentInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutAssignmentInput | TransactionUpdateManyWithWhereWithoutAssignmentInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
   }
 
   export type JobCreateNestedManyWithoutFolderTemplateInput = {
@@ -61478,11 +63653,25 @@ export namespace Prisma {
     connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
   }
 
+  export type TransactionCreateNestedManyWithoutClientInput = {
+    create?: XOR<TransactionCreateWithoutClientInput, TransactionUncheckedCreateWithoutClientInput> | TransactionCreateWithoutClientInput[] | TransactionUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutClientInput | TransactionCreateOrConnectWithoutClientInput[]
+    createMany?: TransactionCreateManyClientInputEnvelope
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
   export type JobUncheckedCreateNestedManyWithoutClientInput = {
     create?: XOR<JobCreateWithoutClientInput, JobUncheckedCreateWithoutClientInput> | JobCreateWithoutClientInput[] | JobUncheckedCreateWithoutClientInput[]
     connectOrCreate?: JobCreateOrConnectWithoutClientInput | JobCreateOrConnectWithoutClientInput[]
     createMany?: JobCreateManyClientInputEnvelope
     connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+  }
+
+  export type TransactionUncheckedCreateNestedManyWithoutClientInput = {
+    create?: XOR<TransactionCreateWithoutClientInput, TransactionUncheckedCreateWithoutClientInput> | TransactionCreateWithoutClientInput[] | TransactionUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutClientInput | TransactionCreateOrConnectWithoutClientInput[]
+    createMany?: TransactionCreateManyClientInputEnvelope
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
   }
 
   export type EnumClientTypeFieldUpdateOperationsInput = {
@@ -61503,6 +63692,20 @@ export namespace Prisma {
     deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
   }
 
+  export type TransactionUpdateManyWithoutClientNestedInput = {
+    create?: XOR<TransactionCreateWithoutClientInput, TransactionUncheckedCreateWithoutClientInput> | TransactionCreateWithoutClientInput[] | TransactionUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutClientInput | TransactionCreateOrConnectWithoutClientInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutClientInput | TransactionUpsertWithWhereUniqueWithoutClientInput[]
+    createMany?: TransactionCreateManyClientInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutClientInput | TransactionUpdateWithWhereUniqueWithoutClientInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutClientInput | TransactionUpdateManyWithWhereWithoutClientInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
   export type JobUncheckedUpdateManyWithoutClientNestedInput = {
     create?: XOR<JobCreateWithoutClientInput, JobUncheckedCreateWithoutClientInput> | JobCreateWithoutClientInput[] | JobUncheckedCreateWithoutClientInput[]
     connectOrCreate?: JobCreateOrConnectWithoutClientInput | JobCreateOrConnectWithoutClientInput[]
@@ -61515,6 +63718,20 @@ export namespace Prisma {
     update?: JobUpdateWithWhereUniqueWithoutClientInput | JobUpdateWithWhereUniqueWithoutClientInput[]
     updateMany?: JobUpdateManyWithWhereWithoutClientInput | JobUpdateManyWithWhereWithoutClientInput[]
     deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
+  }
+
+  export type TransactionUncheckedUpdateManyWithoutClientNestedInput = {
+    create?: XOR<TransactionCreateWithoutClientInput, TransactionUncheckedCreateWithoutClientInput> | TransactionCreateWithoutClientInput[] | TransactionUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutClientInput | TransactionCreateOrConnectWithoutClientInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutClientInput | TransactionUpsertWithWhereUniqueWithoutClientInput[]
+    createMany?: TransactionCreateManyClientInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutClientInput | TransactionUpdateWithWhereUniqueWithoutClientInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutClientInput | TransactionUpdateManyWithWhereWithoutClientInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutPinnedJobsInput = {
@@ -61552,11 +63769,25 @@ export namespace Prisma {
     connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
   }
 
+  export type TransactionCreateNestedManyWithoutPaymentChannelInput = {
+    create?: XOR<TransactionCreateWithoutPaymentChannelInput, TransactionUncheckedCreateWithoutPaymentChannelInput> | TransactionCreateWithoutPaymentChannelInput[] | TransactionUncheckedCreateWithoutPaymentChannelInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutPaymentChannelInput | TransactionCreateOrConnectWithoutPaymentChannelInput[]
+    createMany?: TransactionCreateManyPaymentChannelInputEnvelope
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
   export type JobUncheckedCreateNestedManyWithoutPaymentChannelInput = {
     create?: XOR<JobCreateWithoutPaymentChannelInput, JobUncheckedCreateWithoutPaymentChannelInput> | JobCreateWithoutPaymentChannelInput[] | JobUncheckedCreateWithoutPaymentChannelInput[]
     connectOrCreate?: JobCreateOrConnectWithoutPaymentChannelInput | JobCreateOrConnectWithoutPaymentChannelInput[]
     createMany?: JobCreateManyPaymentChannelInputEnvelope
     connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+  }
+
+  export type TransactionUncheckedCreateNestedManyWithoutPaymentChannelInput = {
+    create?: XOR<TransactionCreateWithoutPaymentChannelInput, TransactionUncheckedCreateWithoutPaymentChannelInput> | TransactionCreateWithoutPaymentChannelInput[] | TransactionUncheckedCreateWithoutPaymentChannelInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutPaymentChannelInput | TransactionCreateOrConnectWithoutPaymentChannelInput[]
+    createMany?: TransactionCreateManyPaymentChannelInputEnvelope
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
   }
 
   export type EnumPaymentChannelTypeFieldUpdateOperationsInput = {
@@ -61585,6 +63816,20 @@ export namespace Prisma {
     deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
   }
 
+  export type TransactionUpdateManyWithoutPaymentChannelNestedInput = {
+    create?: XOR<TransactionCreateWithoutPaymentChannelInput, TransactionUncheckedCreateWithoutPaymentChannelInput> | TransactionCreateWithoutPaymentChannelInput[] | TransactionUncheckedCreateWithoutPaymentChannelInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutPaymentChannelInput | TransactionCreateOrConnectWithoutPaymentChannelInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutPaymentChannelInput | TransactionUpsertWithWhereUniqueWithoutPaymentChannelInput[]
+    createMany?: TransactionCreateManyPaymentChannelInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutPaymentChannelInput | TransactionUpdateWithWhereUniqueWithoutPaymentChannelInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutPaymentChannelInput | TransactionUpdateManyWithWhereWithoutPaymentChannelInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
   export type JobUncheckedUpdateManyWithoutPaymentChannelNestedInput = {
     create?: XOR<JobCreateWithoutPaymentChannelInput, JobUncheckedCreateWithoutPaymentChannelInput> | JobCreateWithoutPaymentChannelInput[] | JobUncheckedCreateWithoutPaymentChannelInput[]
     connectOrCreate?: JobCreateOrConnectWithoutPaymentChannelInput | JobCreateOrConnectWithoutPaymentChannelInput[]
@@ -61597,6 +63842,20 @@ export namespace Prisma {
     update?: JobUpdateWithWhereUniqueWithoutPaymentChannelInput | JobUpdateWithWhereUniqueWithoutPaymentChannelInput[]
     updateMany?: JobUpdateManyWithWhereWithoutPaymentChannelInput | JobUpdateManyWithWhereWithoutPaymentChannelInput[]
     deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
+  }
+
+  export type TransactionUncheckedUpdateManyWithoutPaymentChannelNestedInput = {
+    create?: XOR<TransactionCreateWithoutPaymentChannelInput, TransactionUncheckedCreateWithoutPaymentChannelInput> | TransactionCreateWithoutPaymentChannelInput[] | TransactionUncheckedCreateWithoutPaymentChannelInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutPaymentChannelInput | TransactionCreateOrConnectWithoutPaymentChannelInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutPaymentChannelInput | TransactionUpsertWithWhereUniqueWithoutPaymentChannelInput[]
+    createMany?: TransactionCreateManyPaymentChannelInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutPaymentChannelInput | TransactionUpdateWithWhereUniqueWithoutPaymentChannelInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutPaymentChannelInput | TransactionUpdateManyWithWhereWithoutPaymentChannelInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
   }
 
   export type JobCreateNestedManyWithoutTypeInput = {
@@ -62213,6 +64472,90 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSystemSettingsInput, UserUpdateWithoutSystemSettingsInput>, UserUncheckedUpdateWithoutSystemSettingsInput>
   }
 
+  export type JobCreateNestedOneWithoutTransactionsInput = {
+    create?: XOR<JobCreateWithoutTransactionsInput, JobUncheckedCreateWithoutTransactionsInput>
+    connectOrCreate?: JobCreateOrConnectWithoutTransactionsInput
+    connect?: JobWhereUniqueInput
+  }
+
+  export type ClientCreateNestedOneWithoutTransactionsInput = {
+    create?: XOR<ClientCreateWithoutTransactionsInput, ClientUncheckedCreateWithoutTransactionsInput>
+    connectOrCreate?: ClientCreateOrConnectWithoutTransactionsInput
+    connect?: ClientWhereUniqueInput
+  }
+
+  export type JobAssignmentCreateNestedOneWithoutTransactionsInput = {
+    create?: XOR<JobAssignmentCreateWithoutTransactionsInput, JobAssignmentUncheckedCreateWithoutTransactionsInput>
+    connectOrCreate?: JobAssignmentCreateOrConnectWithoutTransactionsInput
+    connect?: JobAssignmentWhereUniqueInput
+  }
+
+  export type PaymentChannelCreateNestedOneWithoutTransactionsInput = {
+    create?: XOR<PaymentChannelCreateWithoutTransactionsInput, PaymentChannelUncheckedCreateWithoutTransactionsInput>
+    connectOrCreate?: PaymentChannelCreateOrConnectWithoutTransactionsInput
+    connect?: PaymentChannelWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutTransactionsInput = {
+    create?: XOR<UserCreateWithoutTransactionsInput, UserUncheckedCreateWithoutTransactionsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTransactionsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EnumTransactionTypeFieldUpdateOperationsInput = {
+    set?: $Enums.TransactionType
+  }
+
+  export type EnumTransactionStatusFieldUpdateOperationsInput = {
+    set?: $Enums.TransactionStatus
+  }
+
+  export type JobUpdateOneRequiredWithoutTransactionsNestedInput = {
+    create?: XOR<JobCreateWithoutTransactionsInput, JobUncheckedCreateWithoutTransactionsInput>
+    connectOrCreate?: JobCreateOrConnectWithoutTransactionsInput
+    upsert?: JobUpsertWithoutTransactionsInput
+    connect?: JobWhereUniqueInput
+    update?: XOR<XOR<JobUpdateToOneWithWhereWithoutTransactionsInput, JobUpdateWithoutTransactionsInput>, JobUncheckedUpdateWithoutTransactionsInput>
+  }
+
+  export type ClientUpdateOneWithoutTransactionsNestedInput = {
+    create?: XOR<ClientCreateWithoutTransactionsInput, ClientUncheckedCreateWithoutTransactionsInput>
+    connectOrCreate?: ClientCreateOrConnectWithoutTransactionsInput
+    upsert?: ClientUpsertWithoutTransactionsInput
+    disconnect?: ClientWhereInput | boolean
+    delete?: ClientWhereInput | boolean
+    connect?: ClientWhereUniqueInput
+    update?: XOR<XOR<ClientUpdateToOneWithWhereWithoutTransactionsInput, ClientUpdateWithoutTransactionsInput>, ClientUncheckedUpdateWithoutTransactionsInput>
+  }
+
+  export type JobAssignmentUpdateOneWithoutTransactionsNestedInput = {
+    create?: XOR<JobAssignmentCreateWithoutTransactionsInput, JobAssignmentUncheckedCreateWithoutTransactionsInput>
+    connectOrCreate?: JobAssignmentCreateOrConnectWithoutTransactionsInput
+    upsert?: JobAssignmentUpsertWithoutTransactionsInput
+    disconnect?: JobAssignmentWhereInput | boolean
+    delete?: JobAssignmentWhereInput | boolean
+    connect?: JobAssignmentWhereUniqueInput
+    update?: XOR<XOR<JobAssignmentUpdateToOneWithWhereWithoutTransactionsInput, JobAssignmentUpdateWithoutTransactionsInput>, JobAssignmentUncheckedUpdateWithoutTransactionsInput>
+  }
+
+  export type PaymentChannelUpdateOneWithoutTransactionsNestedInput = {
+    create?: XOR<PaymentChannelCreateWithoutTransactionsInput, PaymentChannelUncheckedCreateWithoutTransactionsInput>
+    connectOrCreate?: PaymentChannelCreateOrConnectWithoutTransactionsInput
+    upsert?: PaymentChannelUpsertWithoutTransactionsInput
+    disconnect?: PaymentChannelWhereInput | boolean
+    delete?: PaymentChannelWhereInput | boolean
+    connect?: PaymentChannelWhereUniqueInput
+    update?: XOR<XOR<PaymentChannelUpdateToOneWithWhereWithoutTransactionsInput, PaymentChannelUpdateWithoutTransactionsInput>, PaymentChannelUncheckedUpdateWithoutTransactionsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutTransactionsNestedInput = {
+    create?: XOR<UserCreateWithoutTransactionsInput, UserUncheckedCreateWithoutTransactionsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTransactionsInput
+    upsert?: UserUpsertWithoutTransactionsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTransactionsInput, UserUpdateWithoutTransactionsInput>, UserUncheckedUpdateWithoutTransactionsInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -62747,6 +65090,40 @@ export namespace Prisma {
     _max?: NestedEnumTopicTypeFilter<$PrismaModel>
   }
 
+  export type NestedEnumTransactionTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionType | EnumTransactionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionTypeFilter<$PrismaModel> | $Enums.TransactionType
+  }
+
+  export type NestedEnumTransactionStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionStatus | EnumTransactionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionStatusFilter<$PrismaModel> | $Enums.TransactionStatus
+  }
+
+  export type NestedEnumTransactionTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionType | EnumTransactionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionTypeWithAggregatesFilter<$PrismaModel> | $Enums.TransactionType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTransactionTypeFilter<$PrismaModel>
+    _max?: NestedEnumTransactionTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumTransactionStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionStatus | EnumTransactionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionStatusWithAggregatesFilter<$PrismaModel> | $Enums.TransactionStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTransactionStatusFilter<$PrismaModel>
+    _max?: NestedEnumTransactionStatusFilter<$PrismaModel>
+  }
+
   export type UserCreateWithoutSystemAuditLogsInput = {
     id?: string
     code: string
@@ -62789,6 +65166,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutSystemAuditLogsInput = {
@@ -62833,6 +65211,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutSystemAuditLogsInput = {
@@ -62893,6 +65272,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSystemAuditLogsInput = {
@@ -62937,6 +65317,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateWithoutUserDevicesInput = {
@@ -62981,6 +65362,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutUserDevicesInput = {
@@ -63025,6 +65407,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutUserDevicesInput = {
@@ -63085,6 +65468,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUserDevicesInput = {
@@ -63129,6 +65513,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type JobTitleCreateWithoutUsersInput = {
@@ -63226,7 +65611,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -63248,6 +65632,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
     folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+    transactions?: TransactionCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutCreatedByInput = {
@@ -63266,7 +65651,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -63283,6 +65667,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutCreatedByInput = {
@@ -63644,6 +66029,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutReportsInput = {
@@ -63688,6 +66074,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutReportsInput = {
@@ -63737,6 +66124,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutManagerInput = {
@@ -63781,6 +66169,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutManagerInput = {
@@ -63956,6 +66345,7 @@ export namespace Prisma {
     staffCost?: number
     assignedAt?: Date | string
     job: JobCreateNestedOneWithoutAssignmentsInput
+    transactions?: TransactionCreateNestedManyWithoutAssignmentInput
   }
 
   export type JobAssignmentUncheckedCreateWithoutUserInput = {
@@ -63963,6 +66353,7 @@ export namespace Prisma {
     jobId: string
     staffCost?: number
     assignedAt?: Date | string
+    transactions?: TransactionUncheckedCreateNestedManyWithoutAssignmentInput
   }
 
   export type JobAssignmentCreateOrConnectWithoutUserInput = {
@@ -64110,6 +66501,50 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type TransactionCreateWithoutCreatedByInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutTransactionsInput
+    client?: ClientCreateNestedOneWithoutTransactionsInput
+    assignment?: JobAssignmentCreateNestedOneWithoutTransactionsInput
+    paymentChannel?: PaymentChannelCreateNestedOneWithoutTransactionsInput
+  }
+
+  export type TransactionUncheckedCreateWithoutCreatedByInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    jobId: string
+    clientId?: string | null
+    assignmentId?: string | null
+    paymentChannelId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransactionCreateOrConnectWithoutCreatedByInput = {
+    where: TransactionWhereUniqueInput
+    create: XOR<TransactionCreateWithoutCreatedByInput, TransactionUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type TransactionCreateManyCreatedByInputEnvelope = {
+    data: TransactionCreateManyCreatedByInput | TransactionCreateManyCreatedByInput[]
+    skipDuplicates?: boolean
+  }
+
   export type JobTitleUpsertWithoutUsersInput = {
     update: XOR<JobTitleUpdateWithoutUsersInput, JobTitleUncheckedUpdateWithoutUsersInput>
     create: XOR<JobTitleCreateWithoutUsersInput, JobTitleUncheckedCreateWithoutUsersInput>
@@ -64239,7 +66674,6 @@ export namespace Prisma {
     startedAt?: DateTimeFilter<"Job"> | Date | string
     priority?: EnumJobPriorityFilter<"Job"> | $Enums.JobPriority
     isPublished?: BoolFilter<"Job"> | boolean
-    isPaid?: BoolFilter<"Job"> | boolean
     dueAt?: DateTimeFilter<"Job"> | Date | string
     completedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
     finishedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
@@ -64573,6 +67007,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReportsInput = {
@@ -64617,6 +67052,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUpsertWithWhereUniqueWithoutManagerInput = {
@@ -64983,6 +67419,43 @@ export namespace Prisma {
     modifierById?: StringNullableFilter<"SystemSetting"> | string | null
   }
 
+  export type TransactionUpsertWithWhereUniqueWithoutCreatedByInput = {
+    where: TransactionWhereUniqueInput
+    update: XOR<TransactionUpdateWithoutCreatedByInput, TransactionUncheckedUpdateWithoutCreatedByInput>
+    create: XOR<TransactionCreateWithoutCreatedByInput, TransactionUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type TransactionUpdateWithWhereUniqueWithoutCreatedByInput = {
+    where: TransactionWhereUniqueInput
+    data: XOR<TransactionUpdateWithoutCreatedByInput, TransactionUncheckedUpdateWithoutCreatedByInput>
+  }
+
+  export type TransactionUpdateManyWithWhereWithoutCreatedByInput = {
+    where: TransactionScalarWhereInput
+    data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyWithoutCreatedByInput>
+  }
+
+  export type TransactionScalarWhereInput = {
+    AND?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+    OR?: TransactionScalarWhereInput[]
+    NOT?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+    id?: StringFilter<"Transaction"> | string
+    amount?: FloatFilter<"Transaction"> | number
+    currency?: StringFilter<"Transaction"> | string
+    type?: EnumTransactionTypeFilter<"Transaction"> | $Enums.TransactionType
+    status?: EnumTransactionStatusFilter<"Transaction"> | $Enums.TransactionStatus
+    referenceNo?: StringNullableFilter<"Transaction"> | string | null
+    note?: StringNullableFilter<"Transaction"> | string | null
+    evidenceUrl?: StringNullableFilter<"Transaction"> | string | null
+    jobId?: StringFilter<"Transaction"> | string
+    clientId?: StringNullableFilter<"Transaction"> | string | null
+    assignmentId?: StringNullableFilter<"Transaction"> | string | null
+    paymentChannelId?: StringNullableFilter<"Transaction"> | string | null
+    createdById?: StringFilter<"Transaction"> | string
+    createdAt?: DateTimeFilter<"Transaction"> | Date | string
+    updatedAt?: DateTimeFilter<"Transaction"> | Date | string
+  }
+
   export type UserCreateWithoutSecurityLogsInput = {
     id?: string
     code: string
@@ -65025,6 +67498,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutSecurityLogsInput = {
@@ -65069,6 +67543,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutSecurityLogsInput = {
@@ -65129,6 +67604,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSecurityLogsInput = {
@@ -65173,6 +67649,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type PermissionCreateWithoutRolesInput = {
@@ -65246,6 +67723,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutRoleInput = {
@@ -65290,6 +67768,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutRoleInput = {
@@ -65531,6 +68010,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutUserPermissionsInput = {
@@ -65575,6 +68055,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutUserPermissionsInput = {
@@ -65664,6 +68145,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUserPermissionsInput = {
@@ -65708,6 +68190,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type PermissionUpsertWithoutUserPermissionsInput = {
@@ -65837,6 +68320,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -65881,6 +68365,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -65941,6 +68426,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -65985,6 +68471,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -66029,6 +68516,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -66073,6 +68561,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -66133,6 +68622,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -66177,6 +68667,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateWithoutGalleryInput = {
@@ -66221,6 +68712,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutGalleryInput = {
@@ -66265,6 +68757,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutGalleryInput = {
@@ -66325,6 +68818,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutGalleryInput = {
@@ -66369,6 +68863,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type JobCreateWithoutCommentsInput = {
@@ -66382,7 +68877,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -66404,6 +68898,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
     folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+    transactions?: TransactionCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutCommentsInput = {
@@ -66423,7 +68918,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -66439,6 +68933,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutCommentsInput = {
@@ -66488,6 +68983,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutJobCommentsInput = {
@@ -66532,6 +69028,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutJobCommentsInput = {
@@ -66616,7 +69113,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -66638,6 +69134,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
     folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+    transactions?: TransactionUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutCommentsInput = {
@@ -66657,7 +69154,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -66673,6 +69169,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type UserUpsertWithoutJobCommentsInput = {
@@ -66728,6 +69225,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJobCommentsInput = {
@@ -66772,6 +69270,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type JobCommentUpsertWithoutRepliesInput = {
@@ -66863,6 +69362,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutJobTitleInput = {
@@ -66907,6 +69407,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutJobTitleInput = {
@@ -66977,6 +69478,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutDepartmentInput = {
@@ -67021,6 +69523,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutDepartmentInput = {
@@ -67091,6 +69594,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutConfigsInput = {
@@ -67135,6 +69639,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutConfigsInput = {
@@ -67195,6 +69700,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutConfigsInput = {
@@ -67239,6 +69745,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateWithoutFilesCreatedInput = {
@@ -67283,6 +69790,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutFilesCreatedInput = {
@@ -67327,6 +69835,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutFilesCreatedInput = {
@@ -67376,6 +69885,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutFilesInput = {
@@ -67420,6 +69930,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutFilesInput = {
@@ -67438,7 +69949,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -67460,6 +69970,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
     folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+    transactions?: TransactionCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutFilesInput = {
@@ -67479,7 +69990,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -67495,6 +70005,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutFilesInput = {
@@ -67555,6 +70066,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFilesCreatedInput = {
@@ -67599,6 +70111,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUpsertWithWhereUniqueWithoutFilesInput = {
@@ -67639,7 +70152,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -67661,6 +70173,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
     folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+    transactions?: TransactionUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutFilesInput = {
@@ -67680,7 +70193,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -67696,6 +70208,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobTypeCreateWithoutJobsInput = {
@@ -67740,6 +70253,7 @@ export namespace Prisma {
     paymentTerms?: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    transactions?: TransactionCreateNestedManyWithoutClientInput
   }
 
   export type ClientUncheckedCreateWithoutJobsInput = {
@@ -67759,6 +70273,7 @@ export namespace Prisma {
     paymentTerms?: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    transactions?: TransactionUncheckedCreateNestedManyWithoutClientInput
   }
 
   export type ClientCreateOrConnectWithoutJobsInput = {
@@ -67798,6 +70313,7 @@ export namespace Prisma {
     staffCost?: number
     assignedAt?: Date | string
     user: UserCreateNestedOneWithoutJobAssignmentsInput
+    transactions?: TransactionCreateNestedManyWithoutAssignmentInput
   }
 
   export type JobAssignmentUncheckedCreateWithoutJobInput = {
@@ -67805,6 +70321,7 @@ export namespace Prisma {
     userId: string
     staffCost?: number
     assignedAt?: Date | string
+    transactions?: TransactionUncheckedCreateNestedManyWithoutAssignmentInput
   }
 
   export type JobAssignmentCreateOrConnectWithoutJobInput = {
@@ -67859,6 +70376,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutJobsCreatedInput = {
@@ -67903,6 +70421,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutJobsCreatedInput = {
@@ -67926,6 +70445,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    transactions?: TransactionCreateNestedManyWithoutPaymentChannelInput
   }
 
   export type PaymentChannelUncheckedCreateWithoutJobsInput = {
@@ -67944,6 +70464,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    transactions?: TransactionUncheckedCreateNestedManyWithoutPaymentChannelInput
   }
 
   export type PaymentChannelCreateOrConnectWithoutJobsInput = {
@@ -68205,6 +70726,50 @@ export namespace Prisma {
     create: XOR<JobFolderTemplateCreateWithoutJobsInput, JobFolderTemplateUncheckedCreateWithoutJobsInput>
   }
 
+  export type TransactionCreateWithoutJobInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    client?: ClientCreateNestedOneWithoutTransactionsInput
+    assignment?: JobAssignmentCreateNestedOneWithoutTransactionsInput
+    paymentChannel?: PaymentChannelCreateNestedOneWithoutTransactionsInput
+    createdBy: UserCreateNestedOneWithoutTransactionsInput
+  }
+
+  export type TransactionUncheckedCreateWithoutJobInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    clientId?: string | null
+    assignmentId?: string | null
+    paymentChannelId?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransactionCreateOrConnectWithoutJobInput = {
+    where: TransactionWhereUniqueInput
+    create: XOR<TransactionCreateWithoutJobInput, TransactionUncheckedCreateWithoutJobInput>
+  }
+
+  export type TransactionCreateManyJobInputEnvelope = {
+    data: TransactionCreateManyJobInput | TransactionCreateManyJobInput[]
+    skipDuplicates?: boolean
+  }
+
   export type JobTypeUpsertWithoutJobsInput = {
     update: XOR<JobTypeUpdateWithoutJobsInput, JobTypeUncheckedUpdateWithoutJobsInput>
     create: XOR<JobTypeCreateWithoutJobsInput, JobTypeUncheckedCreateWithoutJobsInput>
@@ -68264,6 +70829,7 @@ export namespace Prisma {
     paymentTerms?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transactions?: TransactionUpdateManyWithoutClientNestedInput
   }
 
   export type ClientUncheckedUpdateWithoutJobsInput = {
@@ -68283,6 +70849,7 @@ export namespace Prisma {
     paymentTerms?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transactions?: TransactionUncheckedUpdateManyWithoutClientNestedInput
   }
 
   export type SharepointItemUpsertWithoutJobsInput = {
@@ -68387,6 +70954,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJobsCreatedInput = {
@@ -68431,6 +70999,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type PaymentChannelUpsertWithoutJobsInput = {
@@ -68460,6 +71029,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transactions?: TransactionUpdateManyWithoutPaymentChannelNestedInput
   }
 
   export type PaymentChannelUncheckedUpdateWithoutJobsInput = {
@@ -68478,6 +71048,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transactions?: TransactionUncheckedUpdateManyWithoutPaymentChannelNestedInput
   }
 
   export type JobStatusUpsertWithoutJobsInput = {
@@ -68654,6 +71225,22 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type TransactionUpsertWithWhereUniqueWithoutJobInput = {
+    where: TransactionWhereUniqueInput
+    update: XOR<TransactionUpdateWithoutJobInput, TransactionUncheckedUpdateWithoutJobInput>
+    create: XOR<TransactionCreateWithoutJobInput, TransactionUncheckedCreateWithoutJobInput>
+  }
+
+  export type TransactionUpdateWithWhereUniqueWithoutJobInput = {
+    where: TransactionWhereUniqueInput
+    data: XOR<TransactionUpdateWithoutJobInput, TransactionUncheckedUpdateWithoutJobInput>
+  }
+
+  export type TransactionUpdateManyWithWhereWithoutJobInput = {
+    where: TransactionScalarWhereInput
+    data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyWithoutJobInput>
+  }
+
   export type JobCreateWithoutSharepointFolderInput = {
     id?: string
     no: string
@@ -68665,7 +71252,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -68687,6 +71273,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
     folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+    transactions?: TransactionCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutSharepointFolderInput = {
@@ -68705,7 +71292,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -68722,6 +71308,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutSharepointFolderInput = {
@@ -68761,7 +71348,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -68783,6 +71369,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
     folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+    transactions?: TransactionCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutAssignmentsInput = {
@@ -68802,7 +71389,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -68818,6 +71404,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutAssignmentsInput = {
@@ -68867,6 +71454,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutJobAssignmentsInput = {
@@ -68911,11 +71499,56 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutJobAssignmentsInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutJobAssignmentsInput, UserUncheckedCreateWithoutJobAssignmentsInput>
+  }
+
+  export type TransactionCreateWithoutAssignmentInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutTransactionsInput
+    client?: ClientCreateNestedOneWithoutTransactionsInput
+    paymentChannel?: PaymentChannelCreateNestedOneWithoutTransactionsInput
+    createdBy: UserCreateNestedOneWithoutTransactionsInput
+  }
+
+  export type TransactionUncheckedCreateWithoutAssignmentInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    jobId: string
+    clientId?: string | null
+    paymentChannelId?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransactionCreateOrConnectWithoutAssignmentInput = {
+    where: TransactionWhereUniqueInput
+    create: XOR<TransactionCreateWithoutAssignmentInput, TransactionUncheckedCreateWithoutAssignmentInput>
+  }
+
+  export type TransactionCreateManyAssignmentInputEnvelope = {
+    data: TransactionCreateManyAssignmentInput | TransactionCreateManyAssignmentInput[]
+    skipDuplicates?: boolean
   }
 
   export type JobUpsertWithoutAssignmentsInput = {
@@ -68940,7 +71573,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -68962,6 +71594,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
     folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+    transactions?: TransactionUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutAssignmentsInput = {
@@ -68981,7 +71614,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -68997,6 +71629,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type UserUpsertWithoutJobAssignmentsInput = {
@@ -69052,6 +71685,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJobAssignmentsInput = {
@@ -69096,6 +71730,23 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type TransactionUpsertWithWhereUniqueWithoutAssignmentInput = {
+    where: TransactionWhereUniqueInput
+    update: XOR<TransactionUpdateWithoutAssignmentInput, TransactionUncheckedUpdateWithoutAssignmentInput>
+    create: XOR<TransactionCreateWithoutAssignmentInput, TransactionUncheckedCreateWithoutAssignmentInput>
+  }
+
+  export type TransactionUpdateWithWhereUniqueWithoutAssignmentInput = {
+    where: TransactionWhereUniqueInput
+    data: XOR<TransactionUpdateWithoutAssignmentInput, TransactionUncheckedUpdateWithoutAssignmentInput>
+  }
+
+  export type TransactionUpdateManyWithWhereWithoutAssignmentInput = {
+    where: TransactionScalarWhereInput
+    data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyWithoutAssignmentInput>
   }
 
   export type JobCreateWithoutFolderTemplateInput = {
@@ -69109,7 +71760,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -69131,6 +71781,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
+    transactions?: TransactionCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutFolderTemplateInput = {
@@ -69150,7 +71801,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -69166,6 +71816,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutFolderTemplateInput = {
@@ -69205,7 +71856,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -69227,6 +71877,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
     folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+    transactions?: TransactionCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutClientInput = {
@@ -69245,7 +71896,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -69262,6 +71912,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutClientInput = {
@@ -69271,6 +71922,50 @@ export namespace Prisma {
 
   export type JobCreateManyClientInputEnvelope = {
     data: JobCreateManyClientInput | JobCreateManyClientInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TransactionCreateWithoutClientInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutTransactionsInput
+    assignment?: JobAssignmentCreateNestedOneWithoutTransactionsInput
+    paymentChannel?: PaymentChannelCreateNestedOneWithoutTransactionsInput
+    createdBy: UserCreateNestedOneWithoutTransactionsInput
+  }
+
+  export type TransactionUncheckedCreateWithoutClientInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    jobId: string
+    assignmentId?: string | null
+    paymentChannelId?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransactionCreateOrConnectWithoutClientInput = {
+    where: TransactionWhereUniqueInput
+    create: XOR<TransactionCreateWithoutClientInput, TransactionUncheckedCreateWithoutClientInput>
+  }
+
+  export type TransactionCreateManyClientInputEnvelope = {
+    data: TransactionCreateManyClientInput | TransactionCreateManyClientInput[]
     skipDuplicates?: boolean
   }
 
@@ -69288,6 +71983,22 @@ export namespace Prisma {
   export type JobUpdateManyWithWhereWithoutClientInput = {
     where: JobScalarWhereInput
     data: XOR<JobUpdateManyMutationInput, JobUncheckedUpdateManyWithoutClientInput>
+  }
+
+  export type TransactionUpsertWithWhereUniqueWithoutClientInput = {
+    where: TransactionWhereUniqueInput
+    update: XOR<TransactionUpdateWithoutClientInput, TransactionUncheckedUpdateWithoutClientInput>
+    create: XOR<TransactionCreateWithoutClientInput, TransactionUncheckedCreateWithoutClientInput>
+  }
+
+  export type TransactionUpdateWithWhereUniqueWithoutClientInput = {
+    where: TransactionWhereUniqueInput
+    data: XOR<TransactionUpdateWithoutClientInput, TransactionUncheckedUpdateWithoutClientInput>
+  }
+
+  export type TransactionUpdateManyWithWhereWithoutClientInput = {
+    where: TransactionScalarWhereInput
+    data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyWithoutClientInput>
   }
 
   export type UserCreateWithoutPinnedJobsInput = {
@@ -69332,6 +72043,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutPinnedJobsInput = {
@@ -69376,6 +72088,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutPinnedJobsInput = {
@@ -69394,7 +72107,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -69416,6 +72128,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
     folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+    transactions?: TransactionCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutPinnedByUsersInput = {
@@ -69435,7 +72148,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -69451,6 +72163,7 @@ export namespace Prisma {
     comments?: JobCommentUncheckedCreateNestedManyWithoutJobInput
     statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutPinnedByUsersInput = {
@@ -69511,6 +72224,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPinnedJobsInput = {
@@ -69555,6 +72269,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type JobUpsertWithoutPinnedByUsersInput = {
@@ -69579,7 +72294,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -69601,6 +72315,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
     folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+    transactions?: TransactionUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutPinnedByUsersInput = {
@@ -69620,7 +72335,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -69636,6 +72350,7 @@ export namespace Prisma {
     comments?: JobCommentUncheckedUpdateManyWithoutJobNestedInput
     statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobCreateWithoutPaymentChannelInput = {
@@ -69649,7 +72364,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -69671,6 +72385,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
     folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+    transactions?: TransactionCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutPaymentChannelInput = {
@@ -69689,7 +72404,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -69706,6 +72420,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutPaymentChannelInput = {
@@ -69715,6 +72430,50 @@ export namespace Prisma {
 
   export type JobCreateManyPaymentChannelInputEnvelope = {
     data: JobCreateManyPaymentChannelInput | JobCreateManyPaymentChannelInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TransactionCreateWithoutPaymentChannelInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutTransactionsInput
+    client?: ClientCreateNestedOneWithoutTransactionsInput
+    assignment?: JobAssignmentCreateNestedOneWithoutTransactionsInput
+    createdBy: UserCreateNestedOneWithoutTransactionsInput
+  }
+
+  export type TransactionUncheckedCreateWithoutPaymentChannelInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    jobId: string
+    clientId?: string | null
+    assignmentId?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransactionCreateOrConnectWithoutPaymentChannelInput = {
+    where: TransactionWhereUniqueInput
+    create: XOR<TransactionCreateWithoutPaymentChannelInput, TransactionUncheckedCreateWithoutPaymentChannelInput>
+  }
+
+  export type TransactionCreateManyPaymentChannelInputEnvelope = {
+    data: TransactionCreateManyPaymentChannelInput | TransactionCreateManyPaymentChannelInput[]
     skipDuplicates?: boolean
   }
 
@@ -69734,6 +72493,22 @@ export namespace Prisma {
     data: XOR<JobUpdateManyMutationInput, JobUncheckedUpdateManyWithoutPaymentChannelInput>
   }
 
+  export type TransactionUpsertWithWhereUniqueWithoutPaymentChannelInput = {
+    where: TransactionWhereUniqueInput
+    update: XOR<TransactionUpdateWithoutPaymentChannelInput, TransactionUncheckedUpdateWithoutPaymentChannelInput>
+    create: XOR<TransactionCreateWithoutPaymentChannelInput, TransactionUncheckedCreateWithoutPaymentChannelInput>
+  }
+
+  export type TransactionUpdateWithWhereUniqueWithoutPaymentChannelInput = {
+    where: TransactionWhereUniqueInput
+    data: XOR<TransactionUpdateWithoutPaymentChannelInput, TransactionUncheckedUpdateWithoutPaymentChannelInput>
+  }
+
+  export type TransactionUpdateManyWithWhereWithoutPaymentChannelInput = {
+    where: TransactionScalarWhereInput
+    data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyWithoutPaymentChannelInput>
+  }
+
   export type JobCreateWithoutTypeInput = {
     id?: string
     no: string
@@ -69745,7 +72520,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -69767,6 +72541,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
     folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+    transactions?: TransactionCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutTypeInput = {
@@ -69785,7 +72560,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -69802,6 +72576,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutTypeInput = {
@@ -69841,7 +72616,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -69863,6 +72637,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
     folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+    transactions?: TransactionCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutStatusInput = {
@@ -69881,7 +72656,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -69898,6 +72672,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutStatusInput = {
@@ -70049,7 +72824,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -70071,6 +72845,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+    transactions?: TransactionCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutJobDeliveriesInput = {
@@ -70090,7 +72865,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -70106,6 +72880,7 @@ export namespace Prisma {
     comments?: JobCommentUncheckedCreateNestedManyWithoutJobInput
     statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutJobDeliveriesInput = {
@@ -70155,6 +72930,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutJobDeliveriesInput = {
@@ -70199,6 +72975,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutJobDeliveriesInput = {
@@ -70256,7 +73033,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -70278,6 +73054,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+    transactions?: TransactionUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutJobDeliveriesInput = {
@@ -70297,7 +73074,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -70313,6 +73089,7 @@ export namespace Prisma {
     comments?: JobCommentUncheckedUpdateManyWithoutJobNestedInput
     statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type UserUpsertWithoutJobDeliveriesInput = {
@@ -70368,6 +73145,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJobDeliveriesInput = {
@@ -70412,6 +73190,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type JobDeliverFileUpsertWithWhereUniqueWithoutJobDeliveryInput = {
@@ -70454,7 +73233,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -70476,6 +73254,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
     folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+    transactions?: TransactionCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutStatusHistoryInput = {
@@ -70495,7 +73274,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -70511,6 +73289,7 @@ export namespace Prisma {
     comments?: JobCommentUncheckedCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutStatusHistoryInput = {
@@ -70599,6 +73378,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutStatusChangesInput = {
@@ -70643,6 +73423,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutStatusChangesInput = {
@@ -70672,7 +73453,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -70694,6 +73474,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
     folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+    transactions?: TransactionUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutStatusHistoryInput = {
@@ -70713,7 +73494,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -70729,6 +73509,7 @@ export namespace Prisma {
     comments?: JobCommentUncheckedUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobStatusUpsertWithoutHistoryInput = {
@@ -70829,6 +73610,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutStatusChangesInput = {
@@ -70873,6 +73655,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type JobCreateWithoutActivityLogInput = {
@@ -70886,7 +73669,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -70908,6 +73690,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
     folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+    transactions?: TransactionCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutActivityLogInput = {
@@ -70927,7 +73710,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -70943,6 +73725,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
     pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
     jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutActivityLogInput = {
@@ -70992,6 +73775,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutJobActivityLogInput = {
@@ -71036,6 +73820,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutJobActivityLogInput = {
@@ -71065,7 +73850,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -71087,6 +73871,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
     folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+    transactions?: TransactionUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutActivityLogInput = {
@@ -71106,7 +73891,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -71122,6 +73906,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type UserUpsertWithoutJobActivityLogInput = {
@@ -71177,6 +73962,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJobActivityLogInput = {
@@ -71221,6 +74007,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserCreateWithoutNotificationsInput = {
@@ -71265,6 +74052,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -71309,6 +74097,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -71358,6 +74147,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutSendedNotificationsInput = {
@@ -71402,6 +74192,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutSendedNotificationsInput = {
@@ -71462,6 +74253,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -71506,6 +74298,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUpsertWithoutSendedNotificationsInput = {
@@ -71561,6 +74354,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSendedNotificationsInput = {
@@ -71605,6 +74399,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type TopicCreateWithoutCommunityInput = {
@@ -71754,6 +74549,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutCommunitiesInput = {
@@ -71798,6 +74594,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutCommunitiesInput = {
@@ -71889,6 +74686,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCommunitiesInput = {
@@ -71933,6 +74731,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type CommunityUpsertWithoutMembersInput = {
@@ -72134,6 +74933,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutPostsInput = {
@@ -72178,6 +74978,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutPostsInput = {
@@ -72290,6 +75091,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPostsInput = {
@@ -72334,6 +75136,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type TopicUpsertWithoutPostsInput = {
@@ -72510,6 +75313,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserUncheckedCreateWithoutSystemSettingsInput = {
@@ -72554,6 +75358,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
     securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
   export type UserCreateOrConnectWithoutSystemSettingsInput = {
@@ -72614,6 +75419,7 @@ export namespace Prisma {
     userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSystemSettingsInput = {
@@ -72658,6 +75464,595 @@ export namespace Prisma {
     userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type JobCreateWithoutTransactionsInput = {
+    id?: string
+    no: string
+    displayName: string
+    description?: string | null
+    attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    incomeCost: number
+    totalStaffCost?: number
+    startedAt?: Date | string
+    priority?: $Enums.JobPriority
+    isPublished?: boolean
+    dueAt: Date | string
+    completedAt?: Date | string | null
+    finishedAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    type: JobTypeCreateNestedOneWithoutJobsInput
+    client?: ClientCreateNestedOneWithoutJobsInput
+    sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
+    assignments?: JobAssignmentCreateNestedManyWithoutJobInput
+    createdBy: UserCreateNestedOneWithoutJobsCreatedInput
+    paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
+    status: JobStatusCreateNestedOneWithoutJobsInput
+    activityLog?: JobActivityLogCreateNestedManyWithoutJobInput
+    files?: FileSystemCreateNestedManyWithoutJobInput
+    comments?: JobCommentCreateNestedManyWithoutJobInput
+    statusHistory?: JobStatusHistoryCreateNestedManyWithoutJobInput
+    pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
+    jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
+    folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+  }
+
+  export type JobUncheckedCreateWithoutTransactionsInput = {
+    id?: string
+    no: string
+    typeId: string
+    displayName: string
+    description?: string | null
+    attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    clientId?: string | null
+    incomeCost: number
+    sharepointFolderId?: string | null
+    totalStaffCost?: number
+    createdById: string
+    paymentChannelId?: string | null
+    statusId: string
+    startedAt?: Date | string
+    priority?: $Enums.JobPriority
+    isPublished?: boolean
+    dueAt: Date | string
+    completedAt?: Date | string | null
+    finishedAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    folderTemplateId?: string | null
+    assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
+    activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
+    files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
+    comments?: JobCommentUncheckedCreateNestedManyWithoutJobInput
+    statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
+    pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
+    jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+  }
+
+  export type JobCreateOrConnectWithoutTransactionsInput = {
+    where: JobWhereUniqueInput
+    create: XOR<JobCreateWithoutTransactionsInput, JobUncheckedCreateWithoutTransactionsInput>
+  }
+
+  export type ClientCreateWithoutTransactionsInput = {
+    id?: string
+    name: string
+    code: string
+    type?: $Enums.ClientType
+    region?: string | null
+    country?: string | null
+    address?: string | null
+    timezone?: string | null
+    email?: string | null
+    phoneNumber?: string | null
+    billingEmail?: string | null
+    taxId?: string | null
+    currency?: string
+    paymentTerms?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    jobs?: JobCreateNestedManyWithoutClientInput
+  }
+
+  export type ClientUncheckedCreateWithoutTransactionsInput = {
+    id?: string
+    name: string
+    code: string
+    type?: $Enums.ClientType
+    region?: string | null
+    country?: string | null
+    address?: string | null
+    timezone?: string | null
+    email?: string | null
+    phoneNumber?: string | null
+    billingEmail?: string | null
+    taxId?: string | null
+    currency?: string
+    paymentTerms?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    jobs?: JobUncheckedCreateNestedManyWithoutClientInput
+  }
+
+  export type ClientCreateOrConnectWithoutTransactionsInput = {
+    where: ClientWhereUniqueInput
+    create: XOR<ClientCreateWithoutTransactionsInput, ClientUncheckedCreateWithoutTransactionsInput>
+  }
+
+  export type JobAssignmentCreateWithoutTransactionsInput = {
+    id?: string
+    staffCost?: number
+    assignedAt?: Date | string
+    job: JobCreateNestedOneWithoutAssignmentsInput
+    user: UserCreateNestedOneWithoutJobAssignmentsInput
+  }
+
+  export type JobAssignmentUncheckedCreateWithoutTransactionsInput = {
+    id?: string
+    jobId: string
+    userId: string
+    staffCost?: number
+    assignedAt?: Date | string
+  }
+
+  export type JobAssignmentCreateOrConnectWithoutTransactionsInput = {
+    where: JobAssignmentWhereUniqueInput
+    create: XOR<JobAssignmentCreateWithoutTransactionsInput, JobAssignmentUncheckedCreateWithoutTransactionsInput>
+  }
+
+  export type PaymentChannelCreateWithoutTransactionsInput = {
+    id?: string
+    displayName: string
+    hexColor?: string | null
+    type?: $Enums.PaymentChannelType
+    accountDetails?: string | null
+    feeRate?: number | null
+    fixedFee?: number | null
+    totalVolume?: number | null
+    totalFees?: number | null
+    logoUrl?: string | null
+    ownerName?: string | null
+    cardNumber?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    jobs?: JobCreateNestedManyWithoutPaymentChannelInput
+  }
+
+  export type PaymentChannelUncheckedCreateWithoutTransactionsInput = {
+    id?: string
+    displayName: string
+    hexColor?: string | null
+    type?: $Enums.PaymentChannelType
+    accountDetails?: string | null
+    feeRate?: number | null
+    fixedFee?: number | null
+    totalVolume?: number | null
+    totalFees?: number | null
+    logoUrl?: string | null
+    ownerName?: string | null
+    cardNumber?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    jobs?: JobUncheckedCreateNestedManyWithoutPaymentChannelInput
+  }
+
+  export type PaymentChannelCreateOrConnectWithoutTransactionsInput = {
+    where: PaymentChannelWhereUniqueInput
+    create: XOR<PaymentChannelCreateWithoutTransactionsInput, PaymentChannelUncheckedCreateWithoutTransactionsInput>
+  }
+
+  export type UserCreateWithoutTransactionsInput = {
+    id?: string
+    code: string
+    email: string
+    personalEmail?: string | null
+    username: string
+    displayName: string
+    avatar: string
+    password: string
+    emailVerified?: boolean
+    phoneNumber?: string | null
+    isActive?: boolean
+    deletedAt?: Date | string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    jobTitle?: JobTitleCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    jobsCreated?: JobCreateNestedManyWithoutCreatedByInput
+    filesCreated?: FileSystemCreateNestedManyWithoutCreatedByInput
+    files?: FileSystemCreateNestedManyWithoutVisibleToUsersInput
+    sendedNotifications?: NotificationCreateNestedManyWithoutSenderInput
+    jobActivityLog?: JobActivityLogCreateNestedManyWithoutModifiedByInput
+    configs?: UserConfigCreateNestedManyWithoutUserInput
+    jobComments?: JobCommentCreateNestedManyWithoutUserInput
+    gallery?: GalleryCreateNestedManyWithoutUserInput
+    userDevices?: UserDevicesCreateNestedManyWithoutUserInput
+    statusChanges?: JobStatusHistoryCreateNestedManyWithoutChangedByInput
+    pinnedJobs?: PinnedJobCreateNestedManyWithoutUserInput
+    manager?: UserCreateNestedOneWithoutReportsInput
+    reports?: UserCreateNestedManyWithoutManagerInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    jobDeliveries?: JobDeliveryCreateNestedManyWithoutUserInput
+    communities?: CommunityMemberCreateNestedManyWithoutUserInput
+    posts?: PostCreateNestedManyWithoutAuthorInput
+    jobAssignments?: JobAssignmentCreateNestedManyWithoutUserInput
+    role?: RoleCreateNestedOneWithoutUsersInput
+    userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
+    securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+  }
+
+  export type UserUncheckedCreateWithoutTransactionsInput = {
+    id?: string
+    code: string
+    email: string
+    personalEmail?: string | null
+    username: string
+    displayName: string
+    avatar: string
+    jobTitleId?: string | null
+    password: string
+    emailVerified?: boolean
+    departmentId?: string | null
+    phoneNumber?: string | null
+    isActive?: boolean
+    managerId?: string | null
+    roleId?: string | null
+    deletedAt?: Date | string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    jobsCreated?: JobUncheckedCreateNestedManyWithoutCreatedByInput
+    filesCreated?: FileSystemUncheckedCreateNestedManyWithoutCreatedByInput
+    files?: FileSystemUncheckedCreateNestedManyWithoutVisibleToUsersInput
+    sendedNotifications?: NotificationUncheckedCreateNestedManyWithoutSenderInput
+    jobActivityLog?: JobActivityLogUncheckedCreateNestedManyWithoutModifiedByInput
+    configs?: UserConfigUncheckedCreateNestedManyWithoutUserInput
+    jobComments?: JobCommentUncheckedCreateNestedManyWithoutUserInput
+    gallery?: GalleryUncheckedCreateNestedManyWithoutUserInput
+    userDevices?: UserDevicesUncheckedCreateNestedManyWithoutUserInput
+    statusChanges?: JobStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
+    pinnedJobs?: PinnedJobUncheckedCreateNestedManyWithoutUserInput
+    reports?: UserUncheckedCreateNestedManyWithoutManagerInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutUserInput
+    communities?: CommunityMemberUncheckedCreateNestedManyWithoutUserInput
+    posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
+    userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
+    securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+  }
+
+  export type UserCreateOrConnectWithoutTransactionsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutTransactionsInput, UserUncheckedCreateWithoutTransactionsInput>
+  }
+
+  export type JobUpsertWithoutTransactionsInput = {
+    update: XOR<JobUpdateWithoutTransactionsInput, JobUncheckedUpdateWithoutTransactionsInput>
+    create: XOR<JobCreateWithoutTransactionsInput, JobUncheckedCreateWithoutTransactionsInput>
+    where?: JobWhereInput
+  }
+
+  export type JobUpdateToOneWithWhereWithoutTransactionsInput = {
+    where?: JobWhereInput
+    data: XOR<JobUpdateWithoutTransactionsInput, JobUncheckedUpdateWithoutTransactionsInput>
+  }
+
+  export type JobUpdateWithoutTransactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    no?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    incomeCost?: FloatFieldUpdateOperationsInput | number
+    totalStaffCost?: FloatFieldUpdateOperationsInput | number
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
+    isPublished?: BoolFieldUpdateOperationsInput | boolean
+    dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    type?: JobTypeUpdateOneRequiredWithoutJobsNestedInput
+    client?: ClientUpdateOneWithoutJobsNestedInput
+    sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
+    assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
+    paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
+    status?: JobStatusUpdateOneRequiredWithoutJobsNestedInput
+    activityLog?: JobActivityLogUpdateManyWithoutJobNestedInput
+    files?: FileSystemUpdateManyWithoutJobNestedInput
+    comments?: JobCommentUpdateManyWithoutJobNestedInput
+    statusHistory?: JobStatusHistoryUpdateManyWithoutJobNestedInput
+    pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
+    jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
+    folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+  }
+
+  export type JobUncheckedUpdateWithoutTransactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    no?: StringFieldUpdateOperationsInput | string
+    typeId?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalStaffCost?: FloatFieldUpdateOperationsInput | number
+    createdById?: StringFieldUpdateOperationsInput | string
+    paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
+    statusId?: StringFieldUpdateOperationsInput | string
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
+    isPublished?: BoolFieldUpdateOperationsInput | boolean
+    dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
+    activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
+    files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
+    comments?: JobCommentUncheckedUpdateManyWithoutJobNestedInput
+    statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
+    pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
+    jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+  }
+
+  export type ClientUpsertWithoutTransactionsInput = {
+    update: XOR<ClientUpdateWithoutTransactionsInput, ClientUncheckedUpdateWithoutTransactionsInput>
+    create: XOR<ClientCreateWithoutTransactionsInput, ClientUncheckedCreateWithoutTransactionsInput>
+    where?: ClientWhereInput
+  }
+
+  export type ClientUpdateToOneWithWhereWithoutTransactionsInput = {
+    where?: ClientWhereInput
+    data: XOR<ClientUpdateWithoutTransactionsInput, ClientUncheckedUpdateWithoutTransactionsInput>
+  }
+
+  export type ClientUpdateWithoutTransactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    type?: EnumClientTypeFieldUpdateOperationsInput | $Enums.ClientType
+    region?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    timezone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    billingEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    taxId?: NullableStringFieldUpdateOperationsInput | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentTerms?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    jobs?: JobUpdateManyWithoutClientNestedInput
+  }
+
+  export type ClientUncheckedUpdateWithoutTransactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    type?: EnumClientTypeFieldUpdateOperationsInput | $Enums.ClientType
+    region?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    timezone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    billingEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    taxId?: NullableStringFieldUpdateOperationsInput | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentTerms?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    jobs?: JobUncheckedUpdateManyWithoutClientNestedInput
+  }
+
+  export type JobAssignmentUpsertWithoutTransactionsInput = {
+    update: XOR<JobAssignmentUpdateWithoutTransactionsInput, JobAssignmentUncheckedUpdateWithoutTransactionsInput>
+    create: XOR<JobAssignmentCreateWithoutTransactionsInput, JobAssignmentUncheckedCreateWithoutTransactionsInput>
+    where?: JobAssignmentWhereInput
+  }
+
+  export type JobAssignmentUpdateToOneWithWhereWithoutTransactionsInput = {
+    where?: JobAssignmentWhereInput
+    data: XOR<JobAssignmentUpdateWithoutTransactionsInput, JobAssignmentUncheckedUpdateWithoutTransactionsInput>
+  }
+
+  export type JobAssignmentUpdateWithoutTransactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    staffCost?: FloatFieldUpdateOperationsInput | number
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutAssignmentsNestedInput
+    user?: UserUpdateOneRequiredWithoutJobAssignmentsNestedInput
+  }
+
+  export type JobAssignmentUncheckedUpdateWithoutTransactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    staffCost?: FloatFieldUpdateOperationsInput | number
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentChannelUpsertWithoutTransactionsInput = {
+    update: XOR<PaymentChannelUpdateWithoutTransactionsInput, PaymentChannelUncheckedUpdateWithoutTransactionsInput>
+    create: XOR<PaymentChannelCreateWithoutTransactionsInput, PaymentChannelUncheckedCreateWithoutTransactionsInput>
+    where?: PaymentChannelWhereInput
+  }
+
+  export type PaymentChannelUpdateToOneWithWhereWithoutTransactionsInput = {
+    where?: PaymentChannelWhereInput
+    data: XOR<PaymentChannelUpdateWithoutTransactionsInput, PaymentChannelUncheckedUpdateWithoutTransactionsInput>
+  }
+
+  export type PaymentChannelUpdateWithoutTransactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    hexColor?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumPaymentChannelTypeFieldUpdateOperationsInput | $Enums.PaymentChannelType
+    accountDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    feeRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    fixedFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalVolume?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalFees?: NullableFloatFieldUpdateOperationsInput | number | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerName?: NullableStringFieldUpdateOperationsInput | string | null
+    cardNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    jobs?: JobUpdateManyWithoutPaymentChannelNestedInput
+  }
+
+  export type PaymentChannelUncheckedUpdateWithoutTransactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    hexColor?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumPaymentChannelTypeFieldUpdateOperationsInput | $Enums.PaymentChannelType
+    accountDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    feeRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    fixedFee?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalVolume?: NullableFloatFieldUpdateOperationsInput | number | null
+    totalFees?: NullableFloatFieldUpdateOperationsInput | number | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerName?: NullableStringFieldUpdateOperationsInput | string | null
+    cardNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    jobs?: JobUncheckedUpdateManyWithoutPaymentChannelNestedInput
+  }
+
+  export type UserUpsertWithoutTransactionsInput = {
+    update: XOR<UserUpdateWithoutTransactionsInput, UserUncheckedUpdateWithoutTransactionsInput>
+    create: XOR<UserCreateWithoutTransactionsInput, UserUncheckedCreateWithoutTransactionsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutTransactionsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutTransactionsInput, UserUncheckedUpdateWithoutTransactionsInput>
+  }
+
+  export type UserUpdateWithoutTransactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    jobTitle?: JobTitleUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    jobsCreated?: JobUpdateManyWithoutCreatedByNestedInput
+    filesCreated?: FileSystemUpdateManyWithoutCreatedByNestedInput
+    files?: FileSystemUpdateManyWithoutVisibleToUsersNestedInput
+    sendedNotifications?: NotificationUpdateManyWithoutSenderNestedInput
+    jobActivityLog?: JobActivityLogUpdateManyWithoutModifiedByNestedInput
+    configs?: UserConfigUpdateManyWithoutUserNestedInput
+    jobComments?: JobCommentUpdateManyWithoutUserNestedInput
+    gallery?: GalleryUpdateManyWithoutUserNestedInput
+    userDevices?: UserDevicesUpdateManyWithoutUserNestedInput
+    statusChanges?: JobStatusHistoryUpdateManyWithoutChangedByNestedInput
+    pinnedJobs?: PinnedJobUpdateManyWithoutUserNestedInput
+    manager?: UserUpdateOneWithoutReportsNestedInput
+    reports?: UserUpdateManyWithoutManagerNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    jobDeliveries?: JobDeliveryUpdateManyWithoutUserNestedInput
+    communities?: CommunityMemberUpdateManyWithoutUserNestedInput
+    posts?: PostUpdateManyWithoutAuthorNestedInput
+    jobAssignments?: JobAssignmentUpdateManyWithoutUserNestedInput
+    role?: RoleUpdateOneWithoutUsersNestedInput
+    userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
+    securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutTransactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
+    jobTitleId?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    managerId?: NullableStringFieldUpdateOperationsInput | string | null
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    jobsCreated?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
+    filesCreated?: FileSystemUncheckedUpdateManyWithoutCreatedByNestedInput
+    files?: FileSystemUncheckedUpdateManyWithoutVisibleToUsersNestedInput
+    sendedNotifications?: NotificationUncheckedUpdateManyWithoutSenderNestedInput
+    jobActivityLog?: JobActivityLogUncheckedUpdateManyWithoutModifiedByNestedInput
+    configs?: UserConfigUncheckedUpdateManyWithoutUserNestedInput
+    jobComments?: JobCommentUncheckedUpdateManyWithoutUserNestedInput
+    gallery?: GalleryUncheckedUpdateManyWithoutUserNestedInput
+    userDevices?: UserDevicesUncheckedUpdateManyWithoutUserNestedInput
+    statusChanges?: JobStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+    pinnedJobs?: PinnedJobUncheckedUpdateManyWithoutUserNestedInput
+    reports?: UserUncheckedUpdateManyWithoutManagerNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutUserNestedInput
+    communities?: CommunityMemberUncheckedUpdateManyWithoutUserNestedInput
+    posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
+    userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
+    securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
   }
 
   export type NotificationCreateManyUserInput = {
@@ -72689,7 +76084,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -72908,6 +76302,23 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type TransactionCreateManyCreatedByInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    jobId: string
+    clientId?: string | null
+    assignmentId?: string | null
+    paymentChannelId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type NotificationUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
@@ -72958,7 +76369,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -72980,6 +76390,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
     folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+    transactions?: TransactionUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutCreatedByInput = {
@@ -72998,7 +76409,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -73015,6 +76425,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateManyWithoutCreatedByInput = {
@@ -73033,7 +76444,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -73403,6 +76813,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutManagerInput = {
@@ -73447,6 +76858,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutManagerInput = {
@@ -73635,6 +77047,7 @@ export namespace Prisma {
     staffCost?: FloatFieldUpdateOperationsInput | number
     assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     job?: JobUpdateOneRequiredWithoutAssignmentsNestedInput
+    transactions?: TransactionUpdateManyWithoutAssignmentNestedInput
   }
 
   export type JobAssignmentUncheckedUpdateWithoutUserInput = {
@@ -73642,6 +77055,7 @@ export namespace Prisma {
     jobId?: StringFieldUpdateOperationsInput | string
     staffCost?: FloatFieldUpdateOperationsInput | number
     assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transactions?: TransactionUncheckedUpdateManyWithoutAssignmentNestedInput
   }
 
   export type JobAssignmentUncheckedUpdateManyWithoutUserInput = {
@@ -73762,6 +77176,57 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type TransactionUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutTransactionsNestedInput
+    client?: ClientUpdateOneWithoutTransactionsNestedInput
+    assignment?: JobAssignmentUpdateOneWithoutTransactionsNestedInput
+    paymentChannel?: PaymentChannelUpdateOneWithoutTransactionsNestedInput
+  }
+
+  export type TransactionUncheckedUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    jobId?: StringFieldUpdateOperationsInput | string
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransactionUncheckedUpdateManyWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    jobId?: StringFieldUpdateOperationsInput | string
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserCreateManyRoleInput = {
     id?: string
     code: string
@@ -73860,6 +77325,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRoleInput = {
@@ -73904,6 +77370,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutRoleInput = {
@@ -74127,6 +77594,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJobTitleInput = {
@@ -74171,6 +77639,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutJobTitleInput = {
@@ -74257,6 +77726,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDepartmentInput = {
@@ -74301,6 +77771,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutDepartmentInput = {
@@ -74366,6 +77837,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFilesInput = {
@@ -74410,6 +77882,7 @@ export namespace Prisma {
     securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutFilesInput = {
@@ -74502,11 +77975,29 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type TransactionCreateManyJobInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    clientId?: string | null
+    assignmentId?: string | null
+    paymentChannelId?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type JobAssignmentUpdateWithoutJobInput = {
     id?: StringFieldUpdateOperationsInput | string
     staffCost?: FloatFieldUpdateOperationsInput | number
     assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutJobAssignmentsNestedInput
+    transactions?: TransactionUpdateManyWithoutAssignmentNestedInput
   }
 
   export type JobAssignmentUncheckedUpdateWithoutJobInput = {
@@ -74514,6 +78005,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     staffCost?: FloatFieldUpdateOperationsInput | number
     assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transactions?: TransactionUncheckedUpdateManyWithoutAssignmentNestedInput
   }
 
   export type JobAssignmentUncheckedUpdateManyWithoutJobInput = {
@@ -74712,6 +78204,57 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type TransactionUpdateWithoutJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    client?: ClientUpdateOneWithoutTransactionsNestedInput
+    assignment?: JobAssignmentUpdateOneWithoutTransactionsNestedInput
+    paymentChannel?: PaymentChannelUpdateOneWithoutTransactionsNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutTransactionsNestedInput
+  }
+
+  export type TransactionUncheckedUpdateWithoutJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransactionUncheckedUpdateManyWithoutJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type JobCreateManySharepointFolderInput = {
     id?: string
     no: string
@@ -74728,7 +78271,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -74751,7 +78293,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -74773,6 +78314,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
     folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+    transactions?: TransactionUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutSharepointFolderInput = {
@@ -74791,7 +78333,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -74808,6 +78349,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateManyWithoutSharepointFolderInput = {
@@ -74826,7 +78368,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -74836,6 +78377,74 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type TransactionCreateManyAssignmentInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    jobId: string
+    clientId?: string | null
+    paymentChannelId?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransactionUpdateWithoutAssignmentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutTransactionsNestedInput
+    client?: ClientUpdateOneWithoutTransactionsNestedInput
+    paymentChannel?: PaymentChannelUpdateOneWithoutTransactionsNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutTransactionsNestedInput
+  }
+
+  export type TransactionUncheckedUpdateWithoutAssignmentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    jobId?: StringFieldUpdateOperationsInput | string
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransactionUncheckedUpdateManyWithoutAssignmentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    jobId?: StringFieldUpdateOperationsInput | string
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type JobCreateManyFolderTemplateInput = {
@@ -74855,7 +78464,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -74877,7 +78485,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -74899,6 +78506,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutFolderTemplateInput = {
@@ -74918,7 +78526,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -74934,6 +78541,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateManyWithoutFolderTemplateInput = {
@@ -74953,7 +78561,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -74980,7 +78587,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -74990,6 +78596,23 @@ export namespace Prisma {
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     folderTemplateId?: string | null
+  }
+
+  export type TransactionCreateManyClientInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    jobId: string
+    assignmentId?: string | null
+    paymentChannelId?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type JobUpdateWithoutClientInput = {
@@ -75003,7 +78626,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -75025,6 +78647,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
     folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+    transactions?: TransactionUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutClientInput = {
@@ -75043,7 +78666,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -75060,6 +78682,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateManyWithoutClientInput = {
@@ -75078,7 +78701,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -75088,6 +78710,57 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type TransactionUpdateWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutTransactionsNestedInput
+    assignment?: JobAssignmentUpdateOneWithoutTransactionsNestedInput
+    paymentChannel?: PaymentChannelUpdateOneWithoutTransactionsNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutTransactionsNestedInput
+  }
+
+  export type TransactionUncheckedUpdateWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    jobId?: StringFieldUpdateOperationsInput | string
+    assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransactionUncheckedUpdateManyWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    jobId?: StringFieldUpdateOperationsInput | string
+    assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type JobCreateManyPaymentChannelInput = {
@@ -75106,7 +78779,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -75116,6 +78788,23 @@ export namespace Prisma {
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     folderTemplateId?: string | null
+  }
+
+  export type TransactionCreateManyPaymentChannelInput = {
+    id?: string
+    amount: number
+    currency?: string
+    type: $Enums.TransactionType
+    status?: $Enums.TransactionStatus
+    referenceNo?: string | null
+    note?: string | null
+    evidenceUrl?: string | null
+    jobId: string
+    clientId?: string | null
+    assignmentId?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type JobUpdateWithoutPaymentChannelInput = {
@@ -75129,7 +78818,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -75151,6 +78839,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
     folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+    transactions?: TransactionUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutPaymentChannelInput = {
@@ -75169,7 +78858,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -75186,6 +78874,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateManyWithoutPaymentChannelInput = {
@@ -75204,7 +78893,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -75214,6 +78902,57 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type TransactionUpdateWithoutPaymentChannelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutTransactionsNestedInput
+    client?: ClientUpdateOneWithoutTransactionsNestedInput
+    assignment?: JobAssignmentUpdateOneWithoutTransactionsNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutTransactionsNestedInput
+  }
+
+  export type TransactionUncheckedUpdateWithoutPaymentChannelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    jobId?: StringFieldUpdateOperationsInput | string
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransactionUncheckedUpdateManyWithoutPaymentChannelInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    evidenceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    jobId?: StringFieldUpdateOperationsInput | string
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type JobCreateManyTypeInput = {
@@ -75232,7 +78971,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -75255,7 +78993,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -75277,6 +79014,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
     folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+    transactions?: TransactionUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutTypeInput = {
@@ -75295,7 +79033,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -75312,6 +79049,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateManyWithoutTypeInput = {
@@ -75330,7 +79068,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -75358,7 +79095,6 @@ export namespace Prisma {
     startedAt?: Date | string
     priority?: $Enums.JobPriority
     isPublished?: boolean
-    isPaid?: boolean
     dueAt: Date | string
     completedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -75392,7 +79128,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -75414,6 +79149,7 @@ export namespace Prisma {
     pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
     folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+    transactions?: TransactionUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutStatusInput = {
@@ -75432,7 +79168,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -75449,6 +79184,7 @@ export namespace Prisma {
     statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
     pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
     jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateManyWithoutStatusInput = {
@@ -75467,7 +79203,6 @@ export namespace Prisma {
     startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
     isPublished?: BoolFieldUpdateOperationsInput | boolean
-    isPaid?: BoolFieldUpdateOperationsInput | boolean
     dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null

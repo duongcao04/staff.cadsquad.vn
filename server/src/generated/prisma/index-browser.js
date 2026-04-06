@@ -334,7 +334,6 @@ exports.Prisma.JobScalarFieldEnum = {
   startedAt: 'startedAt',
   priority: 'priority',
   isPublished: 'isPublished',
-  isPaid: 'isPaid',
   dueAt: 'dueAt',
   completedAt: 'completedAt',
   finishedAt: 'finishedAt',
@@ -568,6 +567,24 @@ exports.Prisma.SystemSettingScalarFieldEnum = {
   modifierById: 'modifierById'
 };
 
+exports.Prisma.TransactionScalarFieldEnum = {
+  id: 'id',
+  amount: 'amount',
+  currency: 'currency',
+  type: 'type',
+  status: 'status',
+  referenceNo: 'referenceNo',
+  note: 'note',
+  evidenceUrl: 'evidenceUrl',
+  jobId: 'jobId',
+  clientId: 'clientId',
+  assignmentId: 'assignmentId',
+  paymentChannelId: 'paymentChannelId',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -742,6 +759,19 @@ exports.TopicType = exports.$Enums.TopicType = {
   SUPPORT: 'SUPPORT'
 };
 
+exports.TransactionType = exports.$Enums.TransactionType = {
+  INCOME: 'INCOME',
+  PAYOUT: 'PAYOUT',
+  REFUND: 'REFUND'
+};
+
+exports.TransactionStatus = exports.$Enums.TransactionStatus = {
+  PENDING: 'PENDING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED',
+  CANCELLED: 'CANCELLED'
+};
+
 exports.Prisma.ModelName = {
   SystemAuditLog: 'SystemAuditLog',
   BrowserSubscribes: 'BrowserSubscribes',
@@ -780,7 +810,8 @@ exports.Prisma.ModelName = {
   Topic: 'Topic',
   Post: 'Post',
   PostEvent: 'PostEvent',
-  SystemSetting: 'SystemSetting'
+  SystemSetting: 'SystemSetting',
+  Transaction: 'Transaction'
 };
 
 /**

@@ -88,6 +88,7 @@ model User {
     systemAuditLogs SystemAuditLog[]
 
     systemSettings SystemSetting[]
+    transactions   Transaction[]
 }
 
 model UserSecurityLog {
@@ -394,7 +395,6 @@ model Job {
     priority         JobPriority        @default(MEDIUM)
     files            FileSystem[]
     isPublished      Boolean            @default(false)
-    isPaid           Boolean            @default(false)
     dueAt            DateTime
     completedAt      DateTime?
     finishedAt       DateTime?
@@ -410,6 +410,8 @@ model Job {
 
     folderTemplateId String?
     folderTemplate   JobFolderTemplate? @relation(fields: [folderTemplateId], references: [id])
+
+    transactions Transaction[]
 
     @@index([no])
     @@index([statusId])
@@ -439,13 +441,14 @@ enum JOB_PAYMENT_STATUS {
 }
 
 model JobAssignment {
-    id         String   @id @default(uuid())
-    job        Job      @relation(fields: [jobId], references: [id])
-    jobId      String
-    user       User     @relation(fields: [userId], references: [id])
-    userId     String
-    staffCost  Float    @default(0)
-    assignedAt DateTime @default(now())
+    id           String        @id @default(uuid())
+    job          Job           @relation(fields: [jobId], references: [id])
+    jobId        String
+    user         User          @relation(fields: [userId], references: [id])
+    userId       String
+    staffCost    Float         @default(0)
+    assignedAt   DateTime      @default(now())
+    transactions Transaction[]
 
     @@unique([jobId, userId]) // Prevents assigning the same person twice
 }
@@ -492,8 +495,9 @@ model Client {
     // Relations
     jobs Job[] // Links back to your Job model
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    createdAt    DateTime      @default(now())
+    updatedAt    DateTime      @updatedAt
+    transactions Transaction[]
 }
 
 enum ClientType {
@@ -538,7 +542,8 @@ model PaymentChannel {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    jobs Job[]
+    jobs         Job[]
+    transactions Transaction[]
 }
 
 enum PaymentChannelType {

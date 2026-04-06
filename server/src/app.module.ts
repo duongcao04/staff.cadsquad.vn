@@ -42,17 +42,14 @@ import { BullBoardModule } from '@bull-board/nestjs'
 import { BullModule } from '@nestjs/bullmq'
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
+import { EventEmitterModule } from '@nestjs/event-emitter'
 import { ScheduleModule } from '@nestjs/schedule'
 import { PrometheusModule } from '@willsoto/nestjs-prometheus'
 import { AdministratorModule } from './modules/administrator/administrator.module'
 import { AuditLogModule } from './modules/audit-log/audit-log.module'
-import { BullConfigProvider } from './providers/bull-mq/bull-mq.provider'
-import { AuditLogProcessor } from './modules/audit-log/audit-log.processor'
-import { EventEmitterModule } from '@nestjs/event-emitter';
-import { BullMQAdapter } from '@bull-board/api/bullMQAdapter'
-import { APP_INTERCEPTOR } from '@nestjs/core'
-import { AuditLogInterceptor } from './common/interceptors/audit-log.interceptor'
 import { SystemSettingsModule } from './modules/system-settings/system-settings.module'
+import { BullConfigProvider } from './providers/bull-mq/bull-mq.provider'
+import { FinancialModule } from './modules/financial/financial.module'
 
 @Module({
 	imports: [
@@ -119,7 +116,8 @@ import { SystemSettingsModule } from './modules/system-settings/system-settings.
 		CommunityModule,
 		ClientModule,
 		AdministratorModule,
-		AuditLogModule
+		AuditLogModule,
+		FinancialModule
 	],
 	controllers: [AppController],
 	providers: [AppService],

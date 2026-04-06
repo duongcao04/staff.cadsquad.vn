@@ -4,6 +4,7 @@ export * from './useEmail';
 export * from './useImage';
 export * from './useNotification';
 export * from './options/_audit-log.queries';
+export * from './options/_financial-queries';
 export * from './options/administrator-queries';
 export * from './options/analytics-queries';
 export * from './options/auth-queries';

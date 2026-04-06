@@ -10,6 +10,7 @@ export const sharepointQueryKeys = {
 	folderDetail: (folderId: string) => [...sharepointQueryKeys.resource, 'folder', 'detail', folderId] as const,
 	lists: () => [...sharepointQueryKeys.resource, 'list'] as const,
 	detailById: (id: string) => [...sharepointQueryKeys.resource, 'detail', id] as const,
+	resolvePath: (path: string) => [...sharepointQueryKeys.resource, 'resolve-path', path] as const,
 }
 
 // 2. Fetch Query
@@ -26,6 +27,7 @@ export const sharepointFolderItemsOptions = (
 		}),
 	})
 }
+
 export const sharepointFolderDetailOptions = (
 	folderId: string
 ) => {
@@ -67,3 +69,15 @@ export const copySharepointItemOptions = mutationOptions({
 	},
 	onError: (err) => onErrorToast(err, 'Copy item failed'),
 })
+
+export const resolvePathOptions = (
+	path: string
+) => {
+	return queryOptions({
+		queryKey: sharepointQueryKeys.resolvePath(path),
+		queryFn: () => {
+			return sharepointApi.getFolderId(path)
+		},
+		select: (res) => SharePointHelper.flattenFolderData(res.result),
+	})
+}

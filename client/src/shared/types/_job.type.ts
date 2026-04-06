@@ -59,6 +59,8 @@ export type TJob = {
      */
     client?: TClient
 
+    clientId?: string
+
     /**
      * The income generated from the job.
      * @type {number}

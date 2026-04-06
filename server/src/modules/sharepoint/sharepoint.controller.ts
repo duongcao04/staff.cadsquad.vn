@@ -25,7 +25,7 @@ export class SharePointController {
 	// Nếu không truyền folderId -> Lấy Root
 	@Get('items')
 	@ResponseMessage("Get folder items successfully")
-	async listItems(@Query('folder') folderId?: string) {
+	async listItems(@Query('folderId') folderId?: string) {
 		return this.service.getItems(folderId)
 	}
 
@@ -85,7 +85,7 @@ export class SharePointController {
 	@Get('resolve-path')
 	async getIdFromPath(@Query('path') path: string) {
 		// Gọi: GET /sharepoint/resolve-path?path=CSD- TEAM/ST006. CH.DUONG
-		const id = await this.service.getFolderIdByPath(path)
+		const id = await this.service.getFolderDetailsByPath(path)
 		return { path, id }
 	}
 	/**

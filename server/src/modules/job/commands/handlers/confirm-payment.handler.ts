@@ -28,7 +28,7 @@ export class ConfirmPaymentHandler implements ICommandHandler<ConfirmPaymentComm
 			},
 		});
 
-		if (!job || job.isPaid) {
+		if (!job || job.paymentStatus === 'PAID') {
 			throw new BadRequestException('Job already paid or not found');
 		}
 

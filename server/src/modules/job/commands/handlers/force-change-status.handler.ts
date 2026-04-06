@@ -44,7 +44,7 @@ export class ForceChangeStatusHandler implements ICommandHandler<ForceChangeStat
 
 			if (targetStatus.systemType === 'TERMINATED') {
 				updateData.finishedAt = now;
-				updateData.isPaid = true;
+				updateData.paymentStatus = 'PAID';
 				// Chỉ cập nhật ngày thanh toán nếu trước đó chưa có
 				if (!job.payoutDate) updateData.payoutDate = now;
 			}

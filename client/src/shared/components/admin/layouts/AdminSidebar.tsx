@@ -26,6 +26,7 @@ import {
     ChevronLeft,
     ChevronRight,
     CogIcon,
+    ComponentIcon,
     FolderGit2Icon,
     HandshakeIcon,
     LandmarkIcon,
@@ -307,6 +308,16 @@ export const AdminSidebar = ({
                                         icon={BriefcaseIcon}
                                         label="All Job"
                                         url={INTERNAL_URLS.management.jobs}
+                                        isCollapsed={isCollapsed}
+                                    />
+                                )}
+                                {hasPermission(
+                                    APP_PERMISSIONS.JOB_TYPE.MANAGE
+                                ) && (
+                                    <SidebarItem
+                                        icon={ComponentIcon}
+                                        label="Job Types"
+                                        url={INTERNAL_URLS.management.jobTypes}
                                         isCollapsed={isCollapsed}
                                     />
                                 )}

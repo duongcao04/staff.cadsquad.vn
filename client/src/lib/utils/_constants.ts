@@ -65,6 +65,8 @@ export const INTERNAL_URLS = {
         jobDetail: (jobNo: string) => ['', 'mgmt', 'jobs', jobNo].join('/'),
         jobFolderTemplates: ['', 'mgmt', 'jobs', 'folder-templates'].join('/'),
         jobFolderTemplateDetail: (id: string) => ['', 'mgmt', 'jobs', 'folder-templates', id].join('/'),
+        jobTypes: ['', 'mgmt', 'job-types'].join('/'),
+        jobTypesDetail: (id: string) => ['', 'mgmt', 'job-types', id].join('/'),
         clients: ['', 'mgmt', 'clients'].join('/'),
         clientDetail: (code: string) => ['', 'mgmt', 'clients', code].join('/'),
         departments: ['', 'mgmt', 'departments'].join('/'),

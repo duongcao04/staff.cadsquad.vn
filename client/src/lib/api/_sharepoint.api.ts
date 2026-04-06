@@ -10,6 +10,14 @@ export const sharepointApi = {
 			.then((res) => res.data)
 	},
 
+	getFolderId: async (path: string) => {
+		return axiosClient
+			.get<
+				ApiResponse<any[]>
+			>(`/v1/sharepoint/resolve-path?path=${path}`)
+			.then((res) => res.data)
+	},
+
 	folderDetail: async (folderId: string) => {
 		return axiosClient
 			.get<

@@ -264,3 +264,23 @@ export const JobPayoutSchema = z.lazy(() => z.object({
 }));
 
 export type TJobPayoutDetail = z.infer<typeof JobPayoutSchema>
+
+/**
+ * Schema bổ sung cho thông tin tài chính chi tiết của Job
+ */
+export const JobFinancialFieldSchema = z.object({
+    totalPaid: z.coerce.number().default(0),
+    remainingAmount: z.coerce.number().default(0),
+    isPartiallyPaid: z.preprocess((v) => Boolean(v), z.boolean().default(false)),
+});
+
+/**
+ * JobReceivableSchema: Kết hợp JobSchema gốc với field financial
+ * Dùng cho các query liệt kê công nợ khách hàng
+ */
+export const JobReceivableSchema = (JobSchema as any)._def.getter().extend({
+    financial: JobFinancialFieldSchema
+});
+
+// Loại bỏ type inference nếu cần
+export type TJobReceivable = z.infer<typeof JobReceivableSchema>;

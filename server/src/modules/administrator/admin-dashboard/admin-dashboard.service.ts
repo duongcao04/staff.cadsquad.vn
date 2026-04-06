@@ -69,7 +69,7 @@ export class AdminDashboardService {
 		const revenueTarget = 50000
 		const currentRevenue = await this.prisma.job.aggregate({
 			_sum: { incomeCost: true },
-			where: { isPaid: true },
+			where: { paymentStatus: 'UNPAID' },
 		})
 
 		return {
@@ -137,7 +137,7 @@ export class AdminDashboardService {
 									status: { systemType: 'COMPLETED' },
 								},
 								{
-									isPaid: false,
+									paymentStatus: 'PENDING',
 								},
 							],
 						},
@@ -191,7 +191,7 @@ export class AdminDashboardService {
 			folderTemplates: await this.prisma.jobFolderTemplate.count(),
 			paymentChannels: await this.prisma.paymentChannel.count(),
 			payouts: await this.prisma.job.count({
-				where: { isPaid: true }
+				where: { paymentStatus: 'PAID' }
 			})
 		}
 	}

@@ -22,3 +22,4 @@ export * from './_user-config.api';
 export * from './_user-device.api';
 export * from './_user.api';
 export * from './administrator.api';
+export * from './financial.api';

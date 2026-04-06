@@ -13,5 +13,5 @@ export const QueryHandlers = [
     FindJobsPendingPayoutsHandler,
     FindJobsToDeliverHandler,
     GetMonthlyDeadlinesHandler,
-    GetPayoutDetailsHandler
+    GetPayoutDetailsHandler,
 ]

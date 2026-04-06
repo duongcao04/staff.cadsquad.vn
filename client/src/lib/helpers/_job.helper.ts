@@ -1,6 +1,7 @@
 import { EJobPaymentStatus } from '@/shared/enums'
 import lodash from 'lodash'
 import { TJob } from '../../shared/types'
+import dayjs from 'dayjs'
 
 
 interface IJobPaymentStatusDisplayResult {
@@ -30,6 +31,12 @@ export class JobHelper {
 
 	static isCancelled(data: TJob) {
 		return !lodash.isNil(data.deletedAt)
+	}
+
+	static isLate(data: TJob) {
+		const deadline = dayjs(data.dueAt);
+		const today = dayjs();
+		return today.isAfter(deadline)
 	}
 
 	static isPayout(data: TJob) {

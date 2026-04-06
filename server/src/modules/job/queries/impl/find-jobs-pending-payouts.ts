@@ -19,7 +19,7 @@ export class FindJobsPendingPayoutsHandler implements IQueryHandler<FindJobsPend
 		const result = await this.prisma.job.findMany({
 			where: {
 				status: { systemType: 'COMPLETED' },
-				isPaid: false,
+				paymentStatus: 'PENDING',
 				deletedAt: null,
 			},
 			include: {
