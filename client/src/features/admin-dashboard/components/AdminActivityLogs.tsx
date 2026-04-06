@@ -25,6 +25,7 @@ import {
     Users,
     Zap,
 } from 'lucide-react'
+import { ScrollArea } from '../../../shared/components'
 
 const RECENT_ACTIVITY_LOGS = [
     {
@@ -70,12 +71,12 @@ interface AdminActivityLogsProps {
 }
 export function AdminActivityLogs({ auditLogs }: AdminActivityLogsProps) {
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             <Card
                 shadow="none"
                 className="border border-primary-200 bg-primary-50 lg:col-span-1"
             >
-                <CardHeader className="px-6 py-4 border-b border-primary-100 flex justify-between items-center bg-primary-100/50">
+                <CardHeader className="flex items-center justify-between px-6 py-4 border-b border-primary-100 bg-primary-100/50">
                     <div className="flex items-center gap-2">
                         <Zap size={18} className="text-primary-600" />
                         <h2 className="text-lg font-bold text-primary-900">
@@ -88,7 +89,7 @@ export function AdminActivityLogs({ auditLogs }: AdminActivityLogsProps) {
                         to={INTERNAL_URLS.management.accessControl}
                         className="block"
                     >
-                        <div className="p-3 bg-white border border-primary-100 rounded-lg hover:border-primary transition-colors flex items-center justify-between shadow-sm">
+                        <div className="flex items-center justify-between p-3 transition-colors bg-white border rounded-lg shadow-sm border-primary-100 hover:border-primary">
                             <div className="flex items-center gap-3">
                                 <Users size={18} className="text-primary" />
                                 <span className="text-sm font-semibold text-default-700">
@@ -102,7 +103,7 @@ export function AdminActivityLogs({ auditLogs }: AdminActivityLogsProps) {
                         </div>
                     </Link>
                     <Link to="/mgmt/jobs/folder-templates" className="block">
-                        <div className="p-3 bg-white border border-primary-100 rounded-lg hover:border-primary transition-colors flex items-center justify-between shadow-sm">
+                        <div className="flex items-center justify-between p-3 transition-colors bg-white border rounded-lg shadow-sm border-primary-100 hover:border-primary">
                             <div className="flex items-center gap-3">
                                 <ListTree size={18} className="text-success" />
                                 <span className="text-sm font-semibold text-default-700">
@@ -119,7 +120,7 @@ export function AdminActivityLogs({ auditLogs }: AdminActivityLogsProps) {
                         to={INTERNAL_URLS.financial.overview}
                         className="block"
                     >
-                        <div className="p-3 bg-white border border-primary-100 rounded-lg hover:border-primary transition-colors flex items-center justify-between shadow-sm">
+                        <div className="flex items-center justify-between p-3 transition-colors bg-white border rounded-lg shadow-sm border-primary-100 hover:border-primary">
                             <div className="flex items-center gap-3">
                                 <Landmark size={18} className="text-warning" />
                                 <span className="text-sm font-semibold text-default-700">
@@ -133,7 +134,7 @@ export function AdminActivityLogs({ auditLogs }: AdminActivityLogsProps) {
                         </div>
                     </Link>
                     <Link to={INTERNAL_URLS.admin.settings} className="block">
-                        <div className="p-3 bg-white border border-primary-100 rounded-lg hover:border-primary transition-colors flex items-center justify-between shadow-sm">
+                        <div className="flex items-center justify-between p-3 transition-colors bg-white border rounded-lg shadow-sm border-primary-100 hover:border-primary">
                             <div className="flex items-center gap-3">
                                 <Settings
                                     size={18}
@@ -156,93 +157,97 @@ export function AdminActivityLogs({ auditLogs }: AdminActivityLogsProps) {
                 shadow="none"
                 className="border border-border-default lg:col-span-2"
             >
-                <div className="px-6 py-4 border-b border-divider flex justify-between items-center bg-default-50">
-                    <h2 className="text-lg font-bold text-default-900 flex items-center gap-2">
+                <CardHeader className="justify-between">
+                    <h2 className="flex items-center gap-2 text-lg font-bold text-default-900">
                         <Activity size={18} className="text-default-500" />{' '}
                         System Activity Log
                     </h2>
                     <Button size="sm" variant="light" color="primary">
                         View Full Audit Log &rarr;
                     </Button>
-                </div>
-                <Table
-                    aria-label="Recent Activity Table"
-                    removeWrapper
-                    className="bg-transparent"
-                >
-                    <TableHeader>
-                        <TableColumn>USER / SYSTEM</TableColumn>
-                        <TableColumn>ACTION</TableColumn>
-                        <TableColumn>TARGET</TableColumn>
-                        <TableColumn>MODULE</TableColumn>
-                        <TableColumn align="end">TIME</TableColumn>
-                    </TableHeader>
-                    <TableBody>
-                        {auditLogs?.map((log) => (
-                            <TableRow key={log.id}>
-                                <TableCell>
-                                    {log.actor ? (
-                                        <HeroUser
-                                            name={
-                                                <span className="text-sm font-medium">
-                                                    {log.actor.displayName}
-                                                </span>
-                                            }
-                                            avatarProps={{
-                                                src: log.actor.avatar,
-                                                size: 'sm',
-                                            }}
-                                        />
-                                    ) : (
-                                        <div className="flex items-center gap-2 pl-1">
-                                            <Cloud
-                                                size={16}
-                                                className="text-primary"
-                                            />
-                                            <span className="text-sm font-bold text-primary">
-                                                System
+                </CardHeader>
+                <CardBody>
+                    <div>
+                        <Table
+                            aria-label="Recent Activity Table"
+                            removeWrapper
+                            className="bg-transparent"
+                        >
+                            <TableHeader>
+                                <TableColumn>USER / SYSTEM</TableColumn>
+                                <TableColumn>ACTION</TableColumn>
+                                <TableColumn>TARGET</TableColumn>
+                                <TableColumn>MODULE</TableColumn>
+                                <TableColumn align="end">TIME</TableColumn>
+                            </TableHeader>``
+                            <TableBody>
+                                {auditLogs?.map((log) => (
+                                    <TableRow key={log.id}>
+                                        <TableCell>
+                                            {log.actor ? (
+                                                <HeroUser
+                                                    name={
+                                                        <span className="text-sm font-medium">
+                                                            {log.actor.displayName}
+                                                        </span>
+                                                    }
+                                                    avatarProps={{
+                                                        src: log.actor.avatar,
+                                                        size: 'sm',
+                                                    }}
+                                                />
+                                            ) : (
+                                                <div className="flex items-center gap-2 pl-1">
+                                                    <Cloud
+                                                        size={16}
+                                                        className="text-primary"
+                                                    />
+                                                    <span className="text-sm font-bold text-primary">
+                                                        System
+                                                    </span>
+                                                </div>
+                                            )}
+                                        </TableCell>
+                                        <TableCell>
+                                            <span className="text-sm text-default-600">
+                                                {log.action}
                                             </span>
-                                        </div>
-                                    )}
-                                </TableCell>
-                                <TableCell>
-                                    <span className="text-sm text-default-600">
-                                        {log.action}
-                                    </span>
-                                </TableCell>
-                                <TableCell>
-                                    <span className="text-sm font-semibold text-default-900">
-                                        {log.targetDisplay}
-                                    </span>
-                                </TableCell>
-                                <TableCell>
-                                    <Chip
-                                        size="sm"
-                                        variant="flat"
-                                        color={
-                                            log.module === 'SECURITY'
-                                                ? 'danger'
-                                                : log.module === 'FINANCIAL'
-                                                  ? 'success'
-                                                  : log.module === 'SYSTEM'
-                                                    ? 'primary'
-                                                    : 'default'
-                                        }
-                                    >
-                                        {log.module}
-                                    </Chip>
-                                </TableCell>
-                                <TableCell>
-                                    <span className="text-xs text-default-500 whitespace-nowrap">
-                                        {dateFormatter(log.createdAt, {
-                                            isDistance: true,
-                                        })}
-                                    </span>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
+                                        </TableCell>
+                                        <TableCell>
+                                            <span className="text-sm font-semibold text-default-900">
+                                                {log.targetDisplay}
+                                            </span>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Chip
+                                                size="sm"
+                                                variant="flat"
+                                                color={
+                                                    log.module === 'SECURITY'
+                                                        ? 'danger'
+                                                        : log.module === 'FINANCIAL'
+                                                          ? 'success'
+                                                          : log.module === 'SYSTEM'
+                                                            ? 'primary'
+                                                            : 'default'
+                                                }
+                                            >
+                                                {log.module}
+                                            </Chip>
+                                        </TableCell>
+                                        <TableCell>
+                                            <span className="text-xs text-default-500 whitespace-nowrap">
+                                                {dateFormatter(log.createdAt, {
+                                                    isDistance: true,
+                                                })}
+                                            </span>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
+                </CardBody>
             </Card>
         </div>
     )

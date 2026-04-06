@@ -2,7 +2,7 @@ import {
     currencyFormatter,
     EXCHANGE_RATE,
     getPageTitle,
-    INTERNAL_URLS
+    INTERNAL_URLS,
 } from '@/lib'
 import {
     bulkRecordPayoutOptions,
@@ -17,7 +17,9 @@ import {
     Button,
     Card,
     CardBody,
+    CardHeader,
     Chip,
+    Divider,
     Selection,
     Tab,
     Table,
@@ -40,7 +42,7 @@ import { useMemo, useState } from 'react'
 
 export const Route = createFileRoute('/_administrator/financial/payouts/')({
     head: () => ({
-        meta: [{ title: getPageTitle('Accounting Desk') }],
+        meta: [{ title: getPageTitle('Pending Payouts') }],
     }),
     loader: async ({ context }) => {
         // Prefetch các dữ liệu tài chính cốt lõi
@@ -52,8 +54,8 @@ export const Route = createFileRoute('/_administrator/financial/payouts/')({
     component: () => (
         <>
             <AdminPageHeading
-                title="Accounting Desk"
-                description="Manage staff payouts, client receivables, and financial performance."
+                title="Pending Payouts"
+                description="Manage staff payouts, client receivables."
             />
             <PendingPayoutsPage />
         </>
@@ -184,189 +186,205 @@ export default function PendingPayoutsPage() {
             </div>
 
             {/* Main Tabs and Actions */}
-            <div className="space-y-4">
-                <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
-                    <Tabs
-                        selectedKey={selectedTab}
-                        onSelectionChange={(k) => {
-                            setSelectedTab(k as string)
-                            setSelectedKeys(new Set([]))
-                        }}
-                        color="primary"
-                        variant="underlined"
-                    >
-                        <Tab
-                            key="pending"
-                            title={
-                                <div className="flex items-center gap-2 font-bold">
-                                    Pending Payouts
-                                    <Chip
-                                        size="sm"
-                                        color="danger"
-                                        variant="flat"
-                                    >
-                                        {payableJobs.length}
-                                    </Chip>
-                                </div>
-                            }
-                        />
-                        <Tab
-                            key="receivables"
-                            title={
-                                <div className="flex items-center gap-2 font-bold">
-                                    Client Debts
-                                    <Chip
-                                        size="sm"
-                                        color="primary"
-                                        variant="flat"
-                                    >
-                                        {receivables.length}
-                                    </Chip>
-                                </div>
-                            }
-                        />
-                    </Tabs>
-
-                    {selectedTab === 'pending' && selectedIds.length > 0 && (
-                        <Button
-                            color="success"
-                            variant="shadow"
-                            className="px-6 font-bold text-white"
-                            startContent={<CheckCircle size={18} />}
-                            onPress={handleBulkPayout}
-                            isLoading={isBulkPaying}
+            <Card shadow="none" className="border border-border-default">
+                <CardHeader>
+                    <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
+                        <Tabs
+                            selectedKey={selectedTab}
+                            onSelectionChange={(k) => {
+                                setSelectedTab(k as string)
+                                setSelectedKeys(new Set([]))
+                            }}
+                            color="primary"
+                            variant="underlined"
                         >
-                            Mark Paid Selected ({selectedIds.length})
-                        </Button>
-                    )}
-                </div>
-
-                <Table
-                    aria-label="Accounting Management Table"
-                    className="border border-divider rounded-xl"
-                    removeWrapper
-                    selectionMode={
-                        selectedTab === 'pending' ? 'multiple' : 'none'
-                    }
-                    selectedKeys={selectedKeys}
-                    onSelectionChange={setSelectedKeys}
-                >
-                    <TableHeader>
-                        <TableColumn>JOB INFO</TableColumn>
-                        <TableColumn>CLIENT</TableColumn>
-                        <TableColumn align="end">INCOME (USD)</TableColumn>
-                        <TableColumn align="end">TOTAL COST (VND)</TableColumn>
-                        <TableColumn align="end">
-                            <div className="flex items-center justify-end gap-1">
-                                DEBT / REMAINING
-                                <HeroTooltip content="Remaining amount to pay staff or collect from client">
-                                    <div className="w-3 h-3 rounded-full bg-default-200 text-[8px] flex items-center justify-center cursor-help">
-                                        ?
-                                    </div>
-                                </HeroTooltip>
-                            </div>
-                        </TableColumn>
-                        <TableColumn align="center">STATUS</TableColumn>
-                        <TableColumn align="end">ACTIONS</TableColumn>
-                    </TableHeader>
-                    <TableBody emptyContent="No financial records found in this category.">
-                        {(selectedTab === 'pending'
-                            ? payableJobs
-                            : receivables
-                        ).map((job: any) => {
-                            // Logic mapping field linh hoạt giữa 2 Query (Payable vs Receivable)
-                            const debt =
-                                selectedTab === 'pending'
-                                    ? job.financial?.totalDebt
-                                    : job.financial?.remainingAmount
-
-                            const totalCost =
-                                job.financial?.totalStaffCost ||
-                                job.totalStaffCost ||
-                                0
-
-                            return (
-                                <TableRow
-                                    key={job.id}
-                                    className="transition-colors hover:bg-default-50"
-                                >
-                                    <TableCell>
-                                        <div className="flex flex-col">
-                                            <span className="text-sm font-bold">
-                                                #{job.jobNo || job.no}
-                                            </span>
-                                            <span className="text-xs text-default-500 truncate max-w-[200px]">
-                                                {job.displayName || job.jobName}
-                                            </span>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <p className="text-xs font-semibold text-default-600">
-                                            {job.clientName || job.client?.name}
-                                        </p>
-                                    </TableCell>
-                                    <TableCell>
-                                        <p className="text-sm font-bold text-success-600">
-                                            $
-                                            {(
-                                                job.incomeCost || 0
-                                            ).toLocaleString()}
-                                        </p>
-                                    </TableCell>
-                                    <TableCell>
-                                        <p className="text-sm font-bold text-right text-danger-600">
-                                            {currencyFormatter(
-                                                totalCost,
-                                                'Vietnamese'
-                                            )}
-                                        </p>
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="text-right">
-                                            <p
-                                                className={`text-sm font-bold ${selectedTab === 'pending' ? 'text-danger-700' : 'text-primary-700'}`}
+                            <Tab
+                                key="pending"
+                                title={
+                                    <div className="flex items-center gap-2 font-bold">
+                                        Pending Payouts
+                                        {payableJobs.length > 0 && (
+                                            <Chip
+                                                size="sm"
+                                                color="danger"
+                                                variant="flat"
                                             >
+                                                {payableJobs.length}
+                                            </Chip>
+                                        )}
+                                    </div>
+                                }
+                            />
+                            <Tab
+                                key="receivables"
+                                title={
+                                    <div className="flex items-center gap-2 font-bold">
+                                        Client Debts
+                                        {receivables.length > 0 && (
+                                            <Chip
+                                                size="sm"
+                                                color="primary"
+                                                variant="flat"
+                                            >
+                                                {receivables.length}
+                                            </Chip>
+                                        )}
+                                    </div>
+                                }
+                            />
+                        </Tabs>
+
+                        {selectedTab === 'pending' &&
+                            selectedIds.length > 0 && (
+                                <Button
+                                    color="success"
+                                    variant="shadow"
+                                    className="px-6 font-bold text-white"
+                                    startContent={<CheckCircle size={18} />}
+                                    onPress={handleBulkPayout}
+                                    isLoading={isBulkPaying}
+                                >
+                                    Mark Paid Selected ({selectedIds.length})
+                                </Button>
+                            )}
+                    </div>
+                </CardHeader>
+
+                <Divider className="bg-border-default" />
+
+                <CardBody>
+                    <Table
+                        aria-label="Accounting Management Table"
+                        removeWrapper
+                        selectionMode={
+                            selectedTab === 'pending' ? 'multiple' : 'none'
+                        }
+                        selectedKeys={selectedKeys}
+                        onSelectionChange={setSelectedKeys}
+                    >
+                        <TableHeader>
+                            <TableColumn>JOB INFO</TableColumn>
+                            <TableColumn>CLIENT</TableColumn>
+                            <TableColumn align="end">INCOME (USD)</TableColumn>
+                            <TableColumn align="end">
+                                TOTAL COST (VND)
+                            </TableColumn>
+                            <TableColumn align="end">
+                                <div className="flex items-center justify-end gap-1">
+                                    DEBT / REMAINING
+                                    <HeroTooltip content="Remaining amount to pay staff or collect from client">
+                                        <div className="w-3 h-3 rounded-full bg-default-200 text-[8px] flex items-center justify-center cursor-help">
+                                            ?
+                                        </div>
+                                    </HeroTooltip>
+                                </div>
+                            </TableColumn>
+                            <TableColumn align="center">STATUS</TableColumn>
+                            <TableColumn align="end">ACTIONS</TableColumn>
+                        </TableHeader>
+                        <TableBody emptyContent="No financial records found in this category.">
+                            {(selectedTab === 'pending'
+                                ? payableJobs
+                                : receivables
+                            ).map((job: any) => {
+                                // Logic mapping field linh hoạt giữa 2 Query (Payable vs Receivable)
+                                const debt =
+                                    selectedTab === 'pending'
+                                        ? job.financial?.totalDebt
+                                        : job.financial?.remainingAmount
+
+                                const totalCost =
+                                    job.financial?.totalStaffCost ||
+                                    job.totalStaffCost ||
+                                    0
+
+                                return (
+                                    <TableRow
+                                        key={job.id}
+                                        className="transition-colors hover:bg-default-50"
+                                    >
+                                        <TableCell>
+                                            <div className="flex flex-col">
+                                                <span className="text-sm font-bold">
+                                                    #{job.jobNo || job.no}
+                                                </span>
+                                                <span className="text-xs text-default-500 truncate max-w-[200px]">
+                                                    {job.displayName ||
+                                                        job.jobName}
+                                                </span>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <p className="text-xs font-semibold text-default-600">
+                                                {job.clientName ||
+                                                    job.client?.name}
+                                            </p>
+                                        </TableCell>
+                                        <TableCell>
+                                            <p className="text-sm font-bold text-success-600">
+                                                $
+                                                {(
+                                                    job.incomeCost || 0
+                                                ).toLocaleString()}
+                                            </p>
+                                        </TableCell>
+                                        <TableCell>
+                                            <p className="text-sm font-bold text-right text-danger-600">
                                                 {currencyFormatter(
-                                                    debt || 0,
+                                                    totalCost,
                                                     'Vietnamese'
                                                 )}
                                             </p>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <JobStatusChip
-                                            data={job.status}
-                                            props={{ size: 'sm' }}
-                                        />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Button
-                                            size="sm"
-                                            color={
-                                                selectedTab === 'pending'
-                                                    ? 'warning'
-                                                    : 'primary'
-                                            }
-                                            variant="flat"
-                                            as={Link}
-                                            href={
-                                                selectedTab === 'pending'
-                                                    ? INTERNAL_URLS.financial.payoutsDetail(
-                                                          job.jobNo || job.no
-                                                      )
-                                                    : INTERNAL_URLS.financial
-                                                          .receivables
-                                            }
-                                        >
-                                            Details
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            )
-                        })}
-                    </TableBody>
-                </Table>
-            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="text-right">
+                                                <p
+                                                    className={`text-sm font-bold ${selectedTab === 'pending' ? 'text-danger-700' : 'text-primary-700'}`}
+                                                >
+                                                    {currencyFormatter(
+                                                        debt || 0,
+                                                        'Vietnamese'
+                                                    )}
+                                                </p>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <JobStatusChip
+                                                data={job.status}
+                                                props={{ size: 'sm' }}
+                                            />
+                                        </TableCell>
+                                        <TableCell>
+                                            <Button
+                                                size="sm"
+                                                color={
+                                                    selectedTab === 'pending'
+                                                        ? 'warning'
+                                                        : 'primary'
+                                                }
+                                                variant="flat"
+                                                as={Link}
+                                                href={
+                                                    selectedTab === 'pending'
+                                                        ? INTERNAL_URLS.financial.payoutsDetail(
+                                                              job.jobNo ||
+                                                                  job.no
+                                                          )
+                                                        : INTERNAL_URLS
+                                                              .financial
+                                                              .receivables
+                                                }
+                                            >
+                                                Details
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                )
+                            })}
+                        </TableBody>
+                    </Table>
+                </CardBody>
+            </Card>
         </div>
     )
 }
