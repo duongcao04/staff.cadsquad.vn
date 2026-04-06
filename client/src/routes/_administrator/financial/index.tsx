@@ -53,10 +53,8 @@ export const Route = createFileRoute('/_administrator/financial/')({
     component: FinancialOverview,
 })
 export default function FinancialOverview() {
-    // --- 1. Fetch Real Data ---
-    const { data: stats, isLoading: isStatsLoading } = useQuery(
-        financialStatsOptions()
-    )
+    // --- 1. Fetch Data ---
+    const { data: stats } = useQuery(financialStatsOptions())
     const {
         data: { pendingPayouts },
     } = useSuspenseQuery(jobsPendingPayoutsOptions())

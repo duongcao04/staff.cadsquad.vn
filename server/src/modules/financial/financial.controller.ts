@@ -2,6 +2,7 @@ import {
 	Body,
 	Controller,
 	Get,
+	Param,
 	Post,
 	Query,
 	Req,
@@ -9,15 +10,16 @@ import {
 } from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
-import { JwtGuard } from '../auth/jwt.guard'
-import { CreateTransactionDto } from './dtos/create-transaction.dto'
 import { TokenPayload } from '../auth/dto/token-payload.dto'
-import { CreateTransactionCommand } from './commands/impl/create-transaction.command'
-import { GetReceivableJobsQuery } from './queries/impl/get-receivable-jobs.query'
-import { GetPayableJobsQuery } from './queries/impl/get-payable-jobs.query'
-import { GetFinancialStatsQuery } from './queries/impl/get-financial-stats.query'
-import { GetAllTransactionsQuery } from './queries/impl/get-all-transactions.query'
+import { JwtGuard } from '../auth/jwt.guard'
 import { BulkPayoutCommand } from './commands/impl/bulk-payout.command'
+import { CreateTransactionCommand } from './commands/impl/create-transaction.command'
+import { CreateTransactionDto } from './dtos/create-transaction.dto'
+import { GetAllTransactionsQuery } from './queries/impl/get-all-transactions.query'
+import { GetFinancialStatsQuery } from './queries/impl/get-financial-stats.query'
+import { GetPayableJobsQuery } from './queries/impl/get-payable-jobs.query'
+import { GetReceivableJobsQuery } from './queries/impl/get-receivable-jobs.query'
+import { GetTransactionDetailQuery } from './queries/impl/get-transaction-detail.query'
 
 @ApiTags('Financials')
 @ApiBearerAuth()
@@ -40,6 +42,12 @@ export class FinancialController {
 		return this.queryBus.execute(
 			new GetAllTransactionsQuery(page, limit, search, type)
 		)
+	}
+
+	@Get('transactions/:id')
+	@ApiOperation({ summary: 'Get transaction detail successfully' })
+	async getTransactionDetail(@Param('id') id: string) {
+		return this.queryBus.execute(new GetTransactionDetailQuery(id))
 	}
 
 	@Post('transactions')

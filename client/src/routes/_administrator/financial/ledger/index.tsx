@@ -1,5 +1,6 @@
 import { ledgerTransactionsOptions } from '@/lib/queries'
 import {
+    Button,
     Card,
     CardBody,
     CardHeader,
@@ -13,22 +14,23 @@ import {
     TableColumn,
     TableHeader,
     TableRow,
-    User as UserProfile
+    User as UserProfile,
 } from '@heroui/react'
 import { useQuery } from '@tanstack/react-query'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import dayjs from 'dayjs'
 import {
     ArrowDownRight,
     ArrowUpRight,
+    EyeIcon,
     Filter,
-    Search
+    Search,
 } from 'lucide-react'
 import { useState } from 'react'
-import { currencyFormatter } from '@/lib'
+import { currencyFormatter, INTERNAL_URLS } from '@/lib'
 import { AdminPageHeading, AppLoading } from '@/shared/components'
 
-export const Route = createFileRoute('/_administrator/financial/ledger')({
+export const Route = createFileRoute('/_administrator/financial/ledger/')({
     head: () => ({ meta: [{ title: 'Master Ledger' }] }),
     pendingComponent: AppLoading,
     component: () => {
@@ -108,12 +110,13 @@ export default function FinancialLedgerPage() {
                         isHeaderSticky
                     >
                         <TableHeader>
-                            <TableColumn>DATE & TIME</TableColumn>
-                            <TableColumn>TYPE</TableColumn>
-                            <TableColumn>AMOUNT</TableColumn>
-                            <TableColumn>JOB REF.</TableColumn>
-                            <TableColumn>ENTITY (FROM / TO)</TableColumn>
-                            <TableColumn>PAYMENT DETAILS</TableColumn>
+                            <TableColumn>Date & Time</TableColumn>
+                            <TableColumn>Type</TableColumn>
+                            <TableColumn>Amount</TableColumn>
+                            <TableColumn>Job Ref.</TableColumn>
+                            <TableColumn>Entity (From / To)</TableColumn>
+                            <TableColumn>Payment Details</TableColumn>
+                            <TableColumn align="end">Actions</TableColumn>
                         </TableHeader>
                         <TableBody
                             emptyContent={
@@ -221,6 +224,19 @@ export default function FinancialLedgerPage() {
                                                 {txn.referenceNo || 'No Ref'}
                                             </span>
                                         </div>
+                                    </TableCell>
+
+                                    <TableCell>
+                                        <Button
+                                            as={Link}
+                                            href={INTERNAL_URLS.financial.transactionDetail(
+                                                txn.id
+                                            )}
+                                            isIconOnly
+                                            variant="light"
+                                        >
+                                            <EyeIcon size={16} />
+                                        </Button>
                                     </TableCell>
                                 </TableRow>
                             )}

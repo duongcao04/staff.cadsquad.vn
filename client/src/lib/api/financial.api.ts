@@ -24,6 +24,12 @@ export const financialApi = {
             .then((res) => res.data)
     },
 
+    transactionById: async (id: string) => {
+        return axiosClient
+            .get<ApiResponse<any>>(`/v1/financials/transactions/${id}`)
+            .then((res) => res.data)
+    },
+
     // Lấy danh sách khách nợ (Receivable)
     getReceivable: async (params?: any) => {
         const query = queryString.stringify(params || {})

@@ -40,7 +40,6 @@ import { Route as AdministratorMgmtAccessControlRouteImport } from './routes/_ad
 import { Route as AdministratorFinancialSettingRouteImport } from './routes/_administrator/financial/setting'
 import { Route as AdministratorFinancialReceivablesRouteImport } from './routes/_administrator/financial/receivables'
 import { Route as AdministratorFinancialPaymentChannelsRouteImport } from './routes/_administrator/financial/payment-channels'
-import { Route as AdministratorFinancialLedgerRouteImport } from './routes/_administrator/financial/ledger'
 import { Route as AdministratorFinancialInvoiceTemplatesRouteImport } from './routes/_administrator/financial/invoice-templates'
 import { Route as AdministratorAdminSettingsRouteImport } from './routes/_administrator/admin/settings'
 import { Route as AdministratorAdminScheduleRouteImport } from './routes/_administrator/admin/schedule'
@@ -54,6 +53,7 @@ import { Route as AdministratorMgmtDepartmentsIndexRouteImport } from './routes/
 import { Route as AdministratorMgmtClientsIndexRouteImport } from './routes/_administrator/mgmt/clients/index'
 import { Route as AdministratorMgmtAccessControlIndexRouteImport } from './routes/_administrator/mgmt/access-control/index'
 import { Route as AdministratorFinancialPayoutsIndexRouteImport } from './routes/_administrator/financial/payouts/index'
+import { Route as AdministratorFinancialLedgerIndexRouteImport } from './routes/_administrator/financial/ledger/index'
 import { Route as AdministratorMgmtStaffDirectoryCodeRouteImport } from './routes/_administrator/mgmt/staff-directory/$code'
 import { Route as AdministratorMgmtJobsCreateRouteImport } from './routes/_administrator/mgmt/jobs/create'
 import { Route as AdministratorMgmtJobsNoRouteImport } from './routes/_administrator/mgmt/jobs/$no'
@@ -63,6 +63,7 @@ import { Route as AdministratorMgmtDepartmentsCodeRouteImport } from './routes/_
 import { Route as AdministratorMgmtClientsCodeRouteImport } from './routes/_administrator/mgmt/clients/$code'
 import { Route as AdministratorMgmtAccessControlPermissionsRouteImport } from './routes/_administrator/mgmt/access-control/permissions'
 import { Route as AdministratorFinancialPayoutsNoRouteImport } from './routes/_administrator/financial/payouts/$no'
+import { Route as AdministratorFinancialLedgerIdRouteImport } from './routes/_administrator/financial/ledger/$id'
 import { Route as AdministratorMgmtJobsFolderTemplatesIndexRouteImport } from './routes/_administrator/mgmt/jobs/folder-templates/index'
 import { Route as AdministratorMgmtJobsFolderTemplatesIdRouteImport } from './routes/_administrator/mgmt/jobs/folder-templates/$id'
 import { Route as AdministratorMgmtAccessControlRolesCodeIndexRouteImport } from './routes/_administrator/mgmt/access-control/roles/$code/index'
@@ -230,12 +231,6 @@ const AdministratorFinancialPaymentChannelsRoute =
     path: '/financial/payment-channels',
     getParentRoute: () => AdministratorRoute,
   } as any)
-const AdministratorFinancialLedgerRoute =
-  AdministratorFinancialLedgerRouteImport.update({
-    id: '/financial/ledger',
-    path: '/financial/ledger',
-    getParentRoute: () => AdministratorRoute,
-  } as any)
 const AdministratorFinancialInvoiceTemplatesRoute =
   AdministratorFinancialInvoiceTemplatesRouteImport.update({
     id: '/financial/invoice-templates',
@@ -313,6 +308,12 @@ const AdministratorFinancialPayoutsIndexRoute =
     path: '/financial/payouts/',
     getParentRoute: () => AdministratorRoute,
   } as any)
+const AdministratorFinancialLedgerIndexRoute =
+  AdministratorFinancialLedgerIndexRouteImport.update({
+    id: '/financial/ledger/',
+    path: '/financial/ledger/',
+    getParentRoute: () => AdministratorRoute,
+  } as any)
 const AdministratorMgmtStaffDirectoryCodeRoute =
   AdministratorMgmtStaffDirectoryCodeRouteImport.update({
     id: '/mgmt/staff-directory/$code',
@@ -366,6 +367,12 @@ const AdministratorFinancialPayoutsNoRoute =
     path: '/financial/payouts/$no',
     getParentRoute: () => AdministratorRoute,
   } as any)
+const AdministratorFinancialLedgerIdRoute =
+  AdministratorFinancialLedgerIdRouteImport.update({
+    id: '/financial/ledger/$id',
+    path: '/financial/ledger/$id',
+    getParentRoute: () => AdministratorRoute,
+  } as any)
 const AdministratorMgmtJobsFolderTemplatesIndexRoute =
   AdministratorMgmtJobsFolderTemplatesIndexRouteImport.update({
     id: '/mgmt/jobs/folder-templates/',
@@ -410,7 +417,6 @@ export interface FileRoutesByFullPath {
   '/admin/schedule': typeof AdministratorAdminScheduleRoute
   '/admin/settings': typeof AdministratorAdminSettingsRoute
   '/financial/invoice-templates': typeof AdministratorFinancialInvoiceTemplatesRoute
-  '/financial/ledger': typeof AdministratorFinancialLedgerRoute
   '/financial/payment-channels': typeof AdministratorFinancialPaymentChannelsRoute
   '/financial/receivables': typeof AdministratorFinancialReceivablesRoute
   '/financial/setting': typeof AdministratorFinancialSettingRoute
@@ -424,6 +430,7 @@ export interface FileRoutesByFullPath {
   '/jobs/': typeof WorkspaceJobsIndexRoute
   '/notifications/': typeof WorkspaceNotificationsIndexRoute
   '/project-center/': typeof WorkspaceProjectCenterIndexRoute
+  '/financial/ledger/$id': typeof AdministratorFinancialLedgerIdRoute
   '/financial/payouts/$no': typeof AdministratorFinancialPayoutsNoRoute
   '/mgmt/access-control/permissions': typeof AdministratorMgmtAccessControlPermissionsRoute
   '/mgmt/clients/$code': typeof AdministratorMgmtClientsCodeRoute
@@ -433,6 +440,7 @@ export interface FileRoutesByFullPath {
   '/mgmt/jobs/$no': typeof AdministratorMgmtJobsNoRoute
   '/mgmt/jobs/create': typeof AdministratorMgmtJobsCreateRoute
   '/mgmt/staff-directory/$code': typeof AdministratorMgmtStaffDirectoryCodeRoute
+  '/financial/ledger/': typeof AdministratorFinancialLedgerIndexRoute
   '/financial/payouts/': typeof AdministratorFinancialPayoutsIndexRoute
   '/mgmt/access-control/': typeof AdministratorMgmtAccessControlIndexRoute
   '/mgmt/clients/': typeof AdministratorMgmtClientsIndexRoute
@@ -464,7 +472,6 @@ export interface FileRoutesByTo {
   '/admin/schedule': typeof AdministratorAdminScheduleRoute
   '/admin/settings': typeof AdministratorAdminSettingsRoute
   '/financial/invoice-templates': typeof AdministratorFinancialInvoiceTemplatesRoute
-  '/financial/ledger': typeof AdministratorFinancialLedgerRoute
   '/financial/payment-channels': typeof AdministratorFinancialPaymentChannelsRoute
   '/financial/receivables': typeof AdministratorFinancialReceivablesRoute
   '/financial/setting': typeof AdministratorFinancialSettingRoute
@@ -477,6 +484,7 @@ export interface FileRoutesByTo {
   '/jobs': typeof WorkspaceJobsIndexRoute
   '/notifications': typeof WorkspaceNotificationsIndexRoute
   '/project-center': typeof WorkspaceProjectCenterIndexRoute
+  '/financial/ledger/$id': typeof AdministratorFinancialLedgerIdRoute
   '/financial/payouts/$no': typeof AdministratorFinancialPayoutsNoRoute
   '/mgmt/access-control/permissions': typeof AdministratorMgmtAccessControlPermissionsRoute
   '/mgmt/clients/$code': typeof AdministratorMgmtClientsCodeRoute
@@ -486,6 +494,7 @@ export interface FileRoutesByTo {
   '/mgmt/jobs/$no': typeof AdministratorMgmtJobsNoRoute
   '/mgmt/jobs/create': typeof AdministratorMgmtJobsCreateRoute
   '/mgmt/staff-directory/$code': typeof AdministratorMgmtStaffDirectoryCodeRoute
+  '/financial/ledger': typeof AdministratorFinancialLedgerIndexRoute
   '/financial/payouts': typeof AdministratorFinancialPayoutsIndexRoute
   '/mgmt/access-control': typeof AdministratorMgmtAccessControlIndexRoute
   '/mgmt/clients': typeof AdministratorMgmtClientsIndexRoute
@@ -523,7 +532,6 @@ export interface FileRoutesById {
   '/_administrator/admin/schedule': typeof AdministratorAdminScheduleRoute
   '/_administrator/admin/settings': typeof AdministratorAdminSettingsRoute
   '/_administrator/financial/invoice-templates': typeof AdministratorFinancialInvoiceTemplatesRoute
-  '/_administrator/financial/ledger': typeof AdministratorFinancialLedgerRoute
   '/_administrator/financial/payment-channels': typeof AdministratorFinancialPaymentChannelsRoute
   '/_administrator/financial/receivables': typeof AdministratorFinancialReceivablesRoute
   '/_administrator/financial/setting': typeof AdministratorFinancialSettingRoute
@@ -538,6 +546,7 @@ export interface FileRoutesById {
   '/_workspace/jobs/': typeof WorkspaceJobsIndexRoute
   '/_workspace/notifications/': typeof WorkspaceNotificationsIndexRoute
   '/_workspace/project-center/': typeof WorkspaceProjectCenterIndexRoute
+  '/_administrator/financial/ledger/$id': typeof AdministratorFinancialLedgerIdRoute
   '/_administrator/financial/payouts/$no': typeof AdministratorFinancialPayoutsNoRoute
   '/_administrator/mgmt/access-control/permissions': typeof AdministratorMgmtAccessControlPermissionsRoute
   '/_administrator/mgmt/clients/$code': typeof AdministratorMgmtClientsCodeRoute
@@ -547,6 +556,7 @@ export interface FileRoutesById {
   '/_administrator/mgmt/jobs/$no': typeof AdministratorMgmtJobsNoRoute
   '/_administrator/mgmt/jobs/create': typeof AdministratorMgmtJobsCreateRoute
   '/_administrator/mgmt/staff-directory/$code': typeof AdministratorMgmtStaffDirectoryCodeRoute
+  '/_administrator/financial/ledger/': typeof AdministratorFinancialLedgerIndexRoute
   '/_administrator/financial/payouts/': typeof AdministratorFinancialPayoutsIndexRoute
   '/_administrator/mgmt/access-control/': typeof AdministratorMgmtAccessControlIndexRoute
   '/_administrator/mgmt/clients/': typeof AdministratorMgmtClientsIndexRoute
@@ -582,7 +592,6 @@ export interface FileRouteTypes {
     | '/admin/schedule'
     | '/admin/settings'
     | '/financial/invoice-templates'
-    | '/financial/ledger'
     | '/financial/payment-channels'
     | '/financial/receivables'
     | '/financial/setting'
@@ -596,6 +605,7 @@ export interface FileRouteTypes {
     | '/jobs/'
     | '/notifications/'
     | '/project-center/'
+    | '/financial/ledger/$id'
     | '/financial/payouts/$no'
     | '/mgmt/access-control/permissions'
     | '/mgmt/clients/$code'
@@ -605,6 +615,7 @@ export interface FileRouteTypes {
     | '/mgmt/jobs/$no'
     | '/mgmt/jobs/create'
     | '/mgmt/staff-directory/$code'
+    | '/financial/ledger/'
     | '/financial/payouts/'
     | '/mgmt/access-control/'
     | '/mgmt/clients/'
@@ -636,7 +647,6 @@ export interface FileRouteTypes {
     | '/admin/schedule'
     | '/admin/settings'
     | '/financial/invoice-templates'
-    | '/financial/ledger'
     | '/financial/payment-channels'
     | '/financial/receivables'
     | '/financial/setting'
@@ -649,6 +659,7 @@ export interface FileRouteTypes {
     | '/jobs'
     | '/notifications'
     | '/project-center'
+    | '/financial/ledger/$id'
     | '/financial/payouts/$no'
     | '/mgmt/access-control/permissions'
     | '/mgmt/clients/$code'
@@ -658,6 +669,7 @@ export interface FileRouteTypes {
     | '/mgmt/jobs/$no'
     | '/mgmt/jobs/create'
     | '/mgmt/staff-directory/$code'
+    | '/financial/ledger'
     | '/financial/payouts'
     | '/mgmt/access-control'
     | '/mgmt/clients'
@@ -694,7 +706,6 @@ export interface FileRouteTypes {
     | '/_administrator/admin/schedule'
     | '/_administrator/admin/settings'
     | '/_administrator/financial/invoice-templates'
-    | '/_administrator/financial/ledger'
     | '/_administrator/financial/payment-channels'
     | '/_administrator/financial/receivables'
     | '/_administrator/financial/setting'
@@ -709,6 +720,7 @@ export interface FileRouteTypes {
     | '/_workspace/jobs/'
     | '/_workspace/notifications/'
     | '/_workspace/project-center/'
+    | '/_administrator/financial/ledger/$id'
     | '/_administrator/financial/payouts/$no'
     | '/_administrator/mgmt/access-control/permissions'
     | '/_administrator/mgmt/clients/$code'
@@ -718,6 +730,7 @@ export interface FileRouteTypes {
     | '/_administrator/mgmt/jobs/$no'
     | '/_administrator/mgmt/jobs/create'
     | '/_administrator/mgmt/staff-directory/$code'
+    | '/_administrator/financial/ledger/'
     | '/_administrator/financial/payouts/'
     | '/_administrator/mgmt/access-control/'
     | '/_administrator/mgmt/clients/'
@@ -960,13 +973,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdministratorFinancialPaymentChannelsRouteImport
       parentRoute: typeof AdministratorRoute
     }
-    '/_administrator/financial/ledger': {
-      id: '/_administrator/financial/ledger'
-      path: '/financial/ledger'
-      fullPath: '/financial/ledger'
-      preLoaderRoute: typeof AdministratorFinancialLedgerRouteImport
-      parentRoute: typeof AdministratorRoute
-    }
     '/_administrator/financial/invoice-templates': {
       id: '/_administrator/financial/invoice-templates'
       path: '/financial/invoice-templates'
@@ -1058,6 +1064,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdministratorFinancialPayoutsIndexRouteImport
       parentRoute: typeof AdministratorRoute
     }
+    '/_administrator/financial/ledger/': {
+      id: '/_administrator/financial/ledger/'
+      path: '/financial/ledger'
+      fullPath: '/financial/ledger/'
+      preLoaderRoute: typeof AdministratorFinancialLedgerIndexRouteImport
+      parentRoute: typeof AdministratorRoute
+    }
     '/_administrator/mgmt/staff-directory/$code': {
       id: '/_administrator/mgmt/staff-directory/$code'
       path: '/mgmt/staff-directory/$code'
@@ -1121,6 +1134,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdministratorFinancialPayoutsNoRouteImport
       parentRoute: typeof AdministratorRoute
     }
+    '/_administrator/financial/ledger/$id': {
+      id: '/_administrator/financial/ledger/$id'
+      path: '/financial/ledger/$id'
+      fullPath: '/financial/ledger/$id'
+      preLoaderRoute: typeof AdministratorFinancialLedgerIdRouteImport
+      parentRoute: typeof AdministratorRoute
+    }
     '/_administrator/mgmt/jobs/folder-templates/': {
       id: '/_administrator/mgmt/jobs/folder-templates/'
       path: '/mgmt/jobs/folder-templates'
@@ -1181,7 +1201,6 @@ interface AdministratorRouteChildren {
   AdministratorAdminScheduleRoute: typeof AdministratorAdminScheduleRoute
   AdministratorAdminSettingsRoute: typeof AdministratorAdminSettingsRoute
   AdministratorFinancialInvoiceTemplatesRoute: typeof AdministratorFinancialInvoiceTemplatesRoute
-  AdministratorFinancialLedgerRoute: typeof AdministratorFinancialLedgerRoute
   AdministratorFinancialPaymentChannelsRoute: typeof AdministratorFinancialPaymentChannelsRoute
   AdministratorFinancialReceivablesRoute: typeof AdministratorFinancialReceivablesRoute
   AdministratorFinancialSettingRoute: typeof AdministratorFinancialSettingRoute
@@ -1189,6 +1208,7 @@ interface AdministratorRouteChildren {
   AdministratorMgmtRevenueRoute: typeof AdministratorMgmtRevenueRoute
   AdministratorAdminIndexRoute: typeof AdministratorAdminIndexRoute
   AdministratorFinancialIndexRoute: typeof AdministratorFinancialIndexRoute
+  AdministratorFinancialLedgerIdRoute: typeof AdministratorFinancialLedgerIdRoute
   AdministratorFinancialPayoutsNoRoute: typeof AdministratorFinancialPayoutsNoRoute
   AdministratorMgmtClientsCodeRoute: typeof AdministratorMgmtClientsCodeRoute
   AdministratorMgmtDepartmentsCodeRoute: typeof AdministratorMgmtDepartmentsCodeRoute
@@ -1197,6 +1217,7 @@ interface AdministratorRouteChildren {
   AdministratorMgmtJobsNoRoute: typeof AdministratorMgmtJobsNoRoute
   AdministratorMgmtJobsCreateRoute: typeof AdministratorMgmtJobsCreateRoute
   AdministratorMgmtStaffDirectoryCodeRoute: typeof AdministratorMgmtStaffDirectoryCodeRoute
+  AdministratorFinancialLedgerIndexRoute: typeof AdministratorFinancialLedgerIndexRoute
   AdministratorFinancialPayoutsIndexRoute: typeof AdministratorFinancialPayoutsIndexRoute
   AdministratorMgmtClientsIndexRoute: typeof AdministratorMgmtClientsIndexRoute
   AdministratorMgmtDepartmentsIndexRoute: typeof AdministratorMgmtDepartmentsIndexRoute
@@ -1215,7 +1236,6 @@ const AdministratorRouteChildren: AdministratorRouteChildren = {
   AdministratorAdminSettingsRoute: AdministratorAdminSettingsRoute,
   AdministratorFinancialInvoiceTemplatesRoute:
     AdministratorFinancialInvoiceTemplatesRoute,
-  AdministratorFinancialLedgerRoute: AdministratorFinancialLedgerRoute,
   AdministratorFinancialPaymentChannelsRoute:
     AdministratorFinancialPaymentChannelsRoute,
   AdministratorFinancialReceivablesRoute:
@@ -1226,6 +1246,7 @@ const AdministratorRouteChildren: AdministratorRouteChildren = {
   AdministratorMgmtRevenueRoute: AdministratorMgmtRevenueRoute,
   AdministratorAdminIndexRoute: AdministratorAdminIndexRoute,
   AdministratorFinancialIndexRoute: AdministratorFinancialIndexRoute,
+  AdministratorFinancialLedgerIdRoute: AdministratorFinancialLedgerIdRoute,
   AdministratorFinancialPayoutsNoRoute: AdministratorFinancialPayoutsNoRoute,
   AdministratorMgmtClientsCodeRoute: AdministratorMgmtClientsCodeRoute,
   AdministratorMgmtDepartmentsCodeRoute: AdministratorMgmtDepartmentsCodeRoute,
@@ -1235,6 +1256,8 @@ const AdministratorRouteChildren: AdministratorRouteChildren = {
   AdministratorMgmtJobsCreateRoute: AdministratorMgmtJobsCreateRoute,
   AdministratorMgmtStaffDirectoryCodeRoute:
     AdministratorMgmtStaffDirectoryCodeRoute,
+  AdministratorFinancialLedgerIndexRoute:
+    AdministratorFinancialLedgerIndexRoute,
   AdministratorFinancialPayoutsIndexRoute:
     AdministratorFinancialPayoutsIndexRoute,
   AdministratorMgmtClientsIndexRoute: AdministratorMgmtClientsIndexRoute,

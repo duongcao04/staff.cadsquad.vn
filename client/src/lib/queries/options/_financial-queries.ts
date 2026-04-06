@@ -2,7 +2,7 @@ import { financialApi } from '@/lib/api/financial.api'
 import {
     JobReceivableSchema,
     TCreateTransactionInput,
-    TJobReceivable
+    TJobReceivable,
 } from '@/lib/validationSchemas'
 import { mutationOptions, queryOptions } from '@tanstack/react-query'
 import { parseList } from '../../zod'
@@ -10,6 +10,17 @@ import { onErrorToast } from '../helper'
 
 export const financialQueryKeys = {
     all: ['financials'] as const,
+    allTransactions: (params: any) => [
+        ...financialQueryKeys.all,
+        'transactions',
+        params,
+    ],
+    transactionDetail: (identify: string) => [
+        ...financialQueryKeys.all,
+        'transactions',
+        'identify',
+        identify,
+    ],
     stats: () => [...financialQueryKeys.all, 'stats'] as const,
     receivable: (params: any) =>
         [...financialQueryKeys.all, 'receivable', params] as const,
@@ -29,12 +40,21 @@ export const ledgerTransactionsOptions = (
     params: any = { page: 1, limit: 20 }
 ) =>
     queryOptions({
-        queryKey: [...financialQueryKeys.all, 'ledger', params],
+        queryKey: financialQueryKeys.allTransactions(params),
         queryFn: () => financialApi.findAllTransactions(params),
         select: (res) => ({
             transactions: res.result?.data,
             paginate: res.result?.paginate,
         }),
+    })
+
+export const transactionDetailOptions = (id: string) =>
+    queryOptions({
+        queryKey: financialQueryKeys.transactionDetail(id),
+        queryFn: () => financialApi.transactionById(id),
+        select: (res) => {
+            return res.result
+        },
     })
 
 // 2. Hook lấy danh sách khách nợ (Receivable Jobs)
