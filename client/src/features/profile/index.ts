@@ -1,5 +1,3 @@
 export * from './components/JobCard'
-export * from './components/ProfileCard'
 export * from './components/ProfileMobileContent'
 export * from './components/ProfileOrganization'
-export * from './components/ProfileOverview'
