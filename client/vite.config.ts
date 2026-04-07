@@ -3,7 +3,6 @@ import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 import { defineConfig, loadEnv } from 'vite'
-import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
@@ -18,9 +17,10 @@ export default defineConfig(({ mode }) => {
         server: {
             port: 3000,
             host: true,
-            strictPort: true, fs: {
-                allow: ['..'] // Allows Vite to reach up one directory into 'shared'
-            }
+            strictPort: true,
+            fs: {
+                allow: ['..'], // Allows Vite to reach up one directory into 'shared'
+            },
         },
         preview: {
             port: 3000,
@@ -50,55 +50,21 @@ export default defineConfig(({ mode }) => {
                     plugins: [['babel-plugin-react-compiler']],
                 },
             }),
-            // VitePWA({
-            //     disable: Boolean(process.env.VITE_ENABLE_PWA),
-            //     devOptions: {
-            //         enabled: false,
-            //     },
-            //     registerType: 'autoUpdate',
-            //     includeAssets: [
-            //         'favicon.ico',
-            //         'apple-touch-icon.png',
-            //         'mask-icon.svg',
-            //     ],
-            //     workbox: {
-            //         // Tăng giới hạn lên 10MB (hoặc cao hơn nếu cần)
-            //         maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
-            //     },
-            //     manifest: {
-            //         name: 'Cadsquad Staff',
-            //         short_name: 'Staff',
-            //         description:
-            //             "Web application designed for Cadsquad's internal staff. It provides a comprehensive platform for managing jobs, user accounts, notifications, and other core business operations",
-            //         icons: [
-            //             {
-            //                 src: '/android-chrome-192x192.png',
-            //                 sizes: '192x192',
-            //                 type: 'image/png',
-            //             },
-            //             {
-            //                 src: '/android-chrome-512x512.png',
-            //                 sizes: '512x512',
-            //                 type: 'image/png',
-            //             },
-            //         ],
-            //         theme_color: '#ffffff',
-            //         background_color: '#ffffff',
-            //         // Cấu hình riêng cho Safari/iOS
-            //         display: 'standalone',
-            //     },
-            // }),
+            // Chỗ này bạn đang comment VitePWA, cứ giữ nguyên nếu chưa cần
         ],
 
         resolve: {
             alias: {
                 '@': path.resolve(__dirname, './src'),
-                "@staff-cadsquad/shared": path.resolve(__dirname, '../shared/index.ts')
+                '@staff-cadsquad/shared': path.resolve(
+                    __dirname,
+                    '../shared/index.ts'
+                ),
             },
         },
 
         build: {
-            target: 'esnext',
+            target: 'esnext', // Đã chốt cứng target là esnext để esbuild không văng lỗi
             rollupOptions: {
                 // ĐỊNH NGHĨA 2 ĐẦU VÀO: Ứng dụng chính và Service Worker
                 input: {
@@ -123,10 +89,6 @@ export default defineConfig(({ mode }) => {
                     warn(warning)
                 },
             },
-            target:
-                process.env.TAURI_PLATFORM == 'windows'
-                    ? 'chrome105'
-                    : 'safari13',
             minify: !process.env.TAURI_DEBUG ? 'esbuild' : false,
             sourcemap: !!process.env.TAURI_DEBUG,
             chunkSizeWarningLimit: 2000,
