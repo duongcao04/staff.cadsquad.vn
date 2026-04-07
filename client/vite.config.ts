@@ -64,7 +64,8 @@ export default defineConfig(({ mode }) => {
         },
 
         build: {
-            target: 'esnext', // Đã chốt cứng target là esnext để esbuild không văng lỗi
+            target: 'esnext',
+            drop: ['console', 'debugger'],
             rollupOptions: {
                 // ĐỊNH NGHĨA 2 ĐẦU VÀO: Ứng dụng chính và Service Worker
                 input: {
