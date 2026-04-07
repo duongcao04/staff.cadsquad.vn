@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    options {
+        // Jenkins không tự động checkout lần 2 gây lỗi
+        skipDefaultCheckout() 
+    }
+    
     environment {
         // Cấu hình Image cho từng service
         DOCKER_USER = "haiduong004" // docker hub username
@@ -18,10 +23,7 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
-                // Pull code từ repo GitHub
-                git branch: 'master', 
-                    credentialsId: 'github-ssh-key', 
-                    url: 'git@github.com:duongcao04/staff.cadsquad.vn.git'
+                checkout scm 
             }
         }
 
