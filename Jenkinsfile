@@ -2,36 +2,49 @@ pipeline {
     agent any
 
     options {
-        // Jenkins không tự động checkout lần 2 gây lỗi
         skipDefaultCheckout() 
     }
     
     environment {
-        // Cấu hình Image Docker
-        DOCKER_USER = "haiduong004" // docker hub username
+        DOCKER_USER = "haiduong004"
         BACKEND_IMAGE = "${DOCKER_USER}/csd-backend"
         CLIENT_IMAGE = "${DOCKER_USER}/csd-client"
         REGISTRY_CREDS = "docker-hub-creds"
         
-        // --- PHẦN MỚI THÊM: Cấu hình GitHub Actions Trigger ---
-        GITHUB_TOKEN = credentials('github-pat-token') // Phải tạo credential loại Secret Text tên 'github-pat-token' trong Jenkins
+        GITHUB_TOKEN = credentials('github-pat-token')
         GITHUB_OWNER = "duongcao04"
         GITHUB_REPO = "staff.cadsquad.vn"
         WORKFLOW_FILE = "main.yml"
         BRANCH = "master"
+
+        // --- LOAD BIẾN TỪ FILE .ENV HOẶC ĐỊNH NGHĨA TRỰC TIẾP ---
+        // Lưu ý: Nếu các biến này nhạy cảm, hãy dùng credentials('id')
+        CLIENT_URL = "${env.CLIENT_URL ?: 'https://staff.cadsquad.vn'}"
+        APP_TITLE  = "CSD Staff"
+        BACKEND_URL = "${env.BACKEND_URL ?: 'https://api.staff.cadsquad.vn'}"
+        WS_URL      = "${env.WS_URL ?: 'wss://api.staff.cadsquad.vn'}"
+        APP_VERSION = "1.0.0"
+        
+        // Firebase & Other
+        FIREBASE_VAPID_KEY = "${env.FIREBASE_VAPID_KEY}"
+        FIREBASE_API_KEY   = "${env.FIREBASE_API_KEY}"
+        FIREBASE_AUTH_DOMAIN = "${env.FIREBASE_AUTH_DOMAIN}"
+        FIREBASE_DATABASE_URL = "${env.FIREBASE_DATABASE_URL}"
+        FIREBASE_PROJECT_ID = "${env.FIREBASE_PROJECT_ID}"
+        FIREBASE_STORAGE_BUCKET = "${env.FIREBASE_STORAGE_BUCKET}"
+        FIREBASE_MESSAGING_SENDER_ID = "${env.FIREBASE_MESSAGING_SENDER_ID}"
+        FIREBASE_APP_ID = "${env.FIREBASE_APP_ID}"
+        FIREBASE_MEASUREMENT_ID = "${env.FIREBASE_MEASUREMENT_ID}"
+        TAURI_DEV_HOST = "localhost"
     }
 
     stages {
         stage('Cleanup Workspace') {
-            steps {
-                cleanWs() // Tránh rác từ các bản build cũ làm đầy 40GB SSD
-            }
+            steps { cleanWs() }
         }
 
         stage('Checkout Code') {
-            steps {
-                checkout scm 
-            }
+            steps { checkout scm }
         }
 
         stage('Build & Push Images') {
@@ -43,8 +56,27 @@ pipeline {
                         backendApp.push()
                         backendApp.push("${env.BUILD_NUMBER}")
 
-                        // 2. Build & Push Web Client
-                        def clientApp = docker.build("${CLIENT_IMAGE}:latest", "./client")
+                        // 2. Build & Push Web Client (TRUYỀN ARG TẠI ĐÂY)
+                        // Chúng ta tạo chuỗi build-arg khổng lồ
+                        def clientBuildArgs = [
+                            "--build-arg APP_URL=${CLIENT_URL}",
+                            "--build-arg APP_TITLE=${APP_TITLE}",
+                            "--build-arg API_ENDPOINT=${BACKEND_URL}",
+                            "--build-arg WS_URL=${WS_URL}",
+                            "--build-arg APP_VERSION=${APP_VERSION}",
+                            "--build-arg FIREBASE_VAPID_KEY=${FIREBASE_VAPID_KEY}",
+                            "--build-arg FIREBASE_API_KEY=${FIREBASE_API_KEY}",
+                            "--build-arg FIREBASE_AUTH_DOMAIN=${FIREBASE_AUTH_DOMAIN}",
+                            "--build-arg FIREBASE_DATABASE_URL=${FIREBASE_DATABASE_URL}",
+                            "--build-arg FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID}",
+                            "--build-arg FIREBASE_STORAGE_BUCKET=${FIREBASE_STORAGE_BUCKET}",
+                            "--build-arg FIREBASE_MESSAGING_SENDER_ID=${FIREBASE_MESSAGING_SENDER_ID}",
+                            "--build-arg FIREBASE_APP_ID=${FIREBASE_APP_ID}",
+                            "--build-arg FIREBASE_MEASUREMENT_ID=${FIREBASE_MEASUREMENT_ID}",
+                            "--build-arg TAURI_DEV_HOST=${TAURI_DEV_HOST}"
+                        ].join(" ")
+
+                        def clientApp = docker.build("${CLIENT_IMAGE}:latest", "${clientBuildArgs} ./client")
                         clientApp.push()
                         clientApp.push("${env.BUILD_NUMBER}")
                     }
@@ -55,39 +87,26 @@ pipeline {
         stage('Deploy to Production') {
             steps {
                 script {
-                    // Nhảy vào thư mục chứa file .env trên VPS
                     dir('/home/prod/apps/csd-staff') {
-                        // Copy file docker-compose.yml từ workspace Jenkins sang thư mục này
+                        // Lưu ý: Lúc này Docker Compose chỉ làm nhiệm vụ chạy Image đã build sẵn
                         sh "cp ${WORKSPACE}/docker-compose.yml ." 
-
-                        sh 'docker compose pull backend web_client'
+                        sh 'docker compose pull web_client backend'
                         sh 'docker compose up -d'
                     }
                 }
             }
         }
 
-        stage('Health Check') {
-            steps {
-                echo "Waiting for services to be healthy..."
-                sleep 10
-                sh 'docker ps'
-            }
-        }
-
-        // --- PHẦN MỚI THÊM: Gọi API sang GitHub ---
         stage('Trigger GitHub Actions') {
             steps {
                 script {
-                    echo "Deploy xong! Đang bắn tín hiệu sang GitHub Actions..."
                     sh '''
                     curl -L \
                       -X POST \
                       -H "Accept: application/vnd.github+json" \
                       -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-                      -H "X-GitHub-Api-Version: 2022-11-28" \
                       https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/actions/workflows/${WORKFLOW_FILE}/dispatches \
-                      -d "{\\"ref\\":\\"${BRANCH}\\", \\"inputs\\": {\\"message\\": \\"App đã deploy xong với Build #${BUILD_NUMBER} trên Jenkins!\\"}}"
+                      -d "{\\"ref\\":\\"${BRANCH}\\", \\"inputs\\": {\\"message\\": \\"Build #${BUILD_NUMBER} deployed!\\"}}"
                     '''
                 }
             }
@@ -96,12 +115,7 @@ pipeline {
 
     post {
         success {
-            echo "Deployment successful for build ${env.BUILD_NUMBER}!"
-            // Xóa các image rác (dangling images) để tiết kiệm ổ cứng
             sh 'docker image prune -f'
-        }
-        failure {
-            echo "Deployment failed! Check logs immediately."
         }
     }
 }
