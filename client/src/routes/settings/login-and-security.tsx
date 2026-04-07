@@ -3,7 +3,6 @@ import { ConfirmLogoutAllDevicesModal } from '@/features/user-sessions'
 import {
     cookie,
     dateFormatter,
-    getPageTitle,
     INTERNAL_URLS,
     TUpdatePasswordInput,
     UpdatePasswordInputSchema,
@@ -19,9 +18,6 @@ import { COOKIES, getDeviceIcon } from '@/lib/utils'
 import {
     HeroBreadcrumbItem,
     HeroBreadcrumbs,
-    HeroCard,
-    HeroCardBody,
-    HeroCardHeader,
     HeroPasswordInput,
     HeroTooltip,
 } from '@/shared/components'
@@ -33,14 +29,7 @@ import {
     CardHeader,
     Chip,
     Divider,
-    Input,
-    Modal,
-    ModalBody,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
     Spinner,
-    Switch,
     Table,
     TableBody,
     TableCell,
@@ -60,28 +49,21 @@ import {
     KeyRound,
     LogOut,
     MapPin,
-    Shield,
     ShieldAlertIcon,
-    Smartphone,
 } from 'lucide-react'
-import { useState } from 'react'
 
 export const Route = createFileRoute('/settings/login-and-security')({
     head: () => ({
         meta: [
             {
-                title: getPageTitle('Login & Security'),
+                title: 'Login & Security',
             },
         ],
     }),
     component: SecuritySettingsPage,
 })
 
-const enable2FA = false
 function SecuritySettingsPage() {
-    const { isOpen, onOpen, onOpenChange } = useDisclosure() // For 2FA Modal
-    const [is2FAEnabled, setIs2FAEnabled] = useState(true)
-
     const revokeSessionMutation = useRevokeSessionMutation()
     const revokeAllSessionMutation = useRevokeAllSessionMutation(() => {})
 
@@ -140,97 +122,20 @@ function SecuritySettingsPage() {
                 <HeroBreadcrumbItem>Login & Security</HeroBreadcrumbItem>
             </HeroBreadcrumbs>
 
-            <div className="size-full mt-5">
+            <div className="mt-5 space-y-6 size-full">
                 {/* Header */}
                 <SettingTitle
                     title="Login & Security"
                     description="Manage your password, 2FA, and active sessions."
                 />
 
-                <div
-                    className={`mt-7 grid grid-cols-1 ${enable2FA ? 'lg:grid-cols-2' : ''} gap-8`}
-                >
-                    {/* --- LEFT COLUMN: Credentials --- */}
-                    <UpdatePasswordForm />
-                    {/* --- RIGHT COLUMN: Activity & Sessions --- */}
-                    {enable2FA && (
-                        <div className="size-full lg:col-span-1 space-y-6">
-                            {/* 2FA Settings */}
-                            <Card className="shadow-sm border border-border-default">
-                                <CardHeader className="px-6 pt-6 pb-2">
-                                    <h4 className="font-bold text-lg text-text-default flex items-center gap-2">
-                                        <Shield
-                                            size={20}
-                                            className="text-success"
-                                        />{' '}
-                                        Two-Factor Authentication
-                                    </h4>
-                                </CardHeader>
-                                <CardBody className="px-6 pb-6">
-                                    <div className="flex justify-between items-center mb-4">
-                                        <div className="pr-4">
-                                            <p
-                                                className={`font-bold text-sm ${is2FAEnabled ? 'text-success-600' : 'text-text-subdued'}`}
-                                            >
-                                                {is2FAEnabled
-                                                    ? 'Enabled'
-                                                    : 'Disabled'}
-                                            </p>
-                                            <p className="text-xs text-text-subdued mt-1">
-                                                Secure your account with an
-                                                authenticator app (Google Auth,
-                                                Authy).
-                                            </p>
-                                        </div>
-                                        <Switch
-                                            isSelected={is2FAEnabled}
-                                            onValueChange={setIs2FAEnabled}
-                                            color="success"
-                                        />
-                                    </div>
-
-                                    {!is2FAEnabled && (
-                                        <Button
-                                            variant="flat"
-                                            color="primary"
-                                            className="w-full"
-                                            onPress={onOpen}
-                                        >
-                                            Setup 2FA Now
-                                        </Button>
-                                    )}
-
-                                    {is2FAEnabled && (
-                                        <div className="bg-background-muted p-3 rounded-lg border border-border-default">
-                                            <div className="flex items-center gap-2 text-xs font-bold text-text-default mb-2">
-                                                <Smartphone size={14} />
-                                                Recovery Codes
-                                            </div>
-                                            <p className="text-xs text-text-subdued mb-3">
-                                                You have 3 unused recovery codes
-                                                left. Generate new ones if you
-                                                lost them.
-                                            </p>
-                                            <Button
-                                                size="sm"
-                                                variant="bordered"
-                                                className="w-full border-border-default"
-                                            >
-                                                View Codes
-                                            </Button>
-                                        </div>
-                                    )}
-                                </CardBody>
-                            </Card>
-                        </div>
-                    )}
-                </div>
+                <UpdatePasswordForm />
 
                 {/* Active Sessions */}
-                <HeroCard className="mt-6 ">
-                    <HeroCardHeader className="px-6 pt-6 pb-2 flex justify-between items-center">
+                <Card shadow="none" className="border border-border-default">
+                    <CardHeader className="flex items-center justify-between px-6 py-4">
                         <div className="flex flex-col items-start">
-                            <h2 className="text-lg font-bold flex items-center gap-2">
+                            <h2 className="flex items-center gap-2 text-lg font-bold">
                                 <ShieldAlertIcon
                                     size={20}
                                     className="text-text-subdued"
@@ -258,8 +163,9 @@ function SecuritySettingsPage() {
                         >
                             Log Out All Devices
                         </Button>
-                    </HeroCardHeader>
-                    <HeroCardBody className="px-6 pb-6">
+                    </CardHeader>
+                    <Divider className="bg-border-default" />
+                    <CardBody className="px-6 pb-6">
                         <div className="space-y-4">
                             {activeSessions.map((session) => {
                                 const currentSessionId = cookie.get(
@@ -271,7 +177,7 @@ function SecuritySettingsPage() {
                                 return (
                                     <div
                                         key={session.ipAddress}
-                                        className="flex items-center justify-between p-3 border border-border-default rounded-xl hover:bg-background-hovered transition-colors"
+                                        className="flex items-center justify-between p-3 transition-colors border border-border-default rounded-xl hover:bg-background-hovered"
                                     >
                                         <div className="flex items-center gap-4">
                                             <div
@@ -281,7 +187,7 @@ function SecuritySettingsPage() {
                                             </div>
                                             <div>
                                                 <div className="flex items-center gap-2">
-                                                    <p className="font-bold text-text-default text-sm">
+                                                    <p className="text-sm font-bold text-text-default">
                                                         {session.device}
                                                     </p>
                                                     {isCurrentSession && (
@@ -340,36 +246,29 @@ function SecuritySettingsPage() {
                                 )
                             })}
                         </div>
-                    </HeroCardBody>
-                </HeroCard>
+                    </CardBody>
+                </Card>
 
                 {/* Login History */}
-                <HeroCard className="mt-6 ">
-                    <HeroCardHeader className="px-6 pt-6 pb-2">
-                        <h4 className="font-bold text-lg text-text-default flex items-center gap-2">
+                <Card shadow="none" className="border border-border-default">
+                    <CardHeader className="px-6 py-4">
+                        <h4 className="flex items-center gap-2 text-lg font-bold text-text-default">
                             <Clock size={20} className="text-text-subdued" />{' '}
                             Recent Activity
                         </h4>
-                    </HeroCardHeader>
-                    <HeroCardBody className="p-0">
+                    </CardHeader>
+                    <Divider className="bg-border-default" />
+                    <CardBody>
                         <Table
                             aria-label="User security logs table"
                             removeWrapper
                             className="min-h-50"
                         >
-                            <TableHeader className="px-12">
-                                <TableColumn className="bg-transparent text-[11px] font-bold">
-                                    EVENT
-                                </TableColumn>
-                                <TableColumn className="bg-transparent text-[11px] font-bold">
-                                    DATE
-                                </TableColumn>
-                                <TableColumn className="bg-transparent text-[11px] font-bold">
-                                    IP ADDRESS
-                                </TableColumn>
-                                <TableColumn className="bg-transparent text-[11px] font-bold text-right">
-                                    STATUS
-                                </TableColumn>
+                            <TableHeader>
+                                <TableColumn>EVENT</TableColumn>
+                                <TableColumn>DATE</TableColumn>
+                                <TableColumn>IP ADDRESS</TableColumn>
+                                <TableColumn align="end">STATUS</TableColumn>
                             </TableHeader>
 
                             <TableBody
@@ -382,8 +281,8 @@ function SecuritySettingsPage() {
                                     />
                                 }
                                 emptyContent={
-                                    <div className="flex flex-col items-center justify-center py-10 gap-2">
-                                        <div className="p-3 bg-default-100 rounded-full">
+                                    <div className="flex flex-col items-center justify-center gap-2 py-10">
+                                        <div className="p-3 rounded-full bg-default-100">
                                             <ShieldAlertIcon
                                                 size={32}
                                                 className="text-text-subdued"
@@ -404,7 +303,7 @@ function SecuritySettingsPage() {
                                 {(log: TUserSecurityLog) => (
                                     <TableRow
                                         key={log.id}
-                                        className="hover:bg-background-hovered px-6"
+                                        className="px-6 hover:bg-background-hovered"
                                     >
                                         <TableCell>
                                             <span
@@ -414,14 +313,14 @@ function SecuritySettingsPage() {
                                             </span>
                                         </TableCell>
                                         <TableCell>
-                                            <span className="text-text-subdued text-xs">
+                                            <span className="text-xs text-text-subdued">
                                                 {dateFormatter(log.createdAt, {
                                                     format: 'longDateTime',
                                                 })}
                                             </span>
                                         </TableCell>
                                         <TableCell>
-                                            <span className="text-text-default text-xs bg-background/80 border border-border-muted px-2 py-1 rounded">
+                                            <span className="px-2 py-1 text-xs border rounded text-text-default bg-background/80 border-border-muted">
                                                 {log.ipAddress}
                                             </span>
                                         </TableCell>
@@ -456,62 +355,8 @@ function SecuritySettingsPage() {
                                 )}
                             </TableBody>
                         </Table>
-                    </HeroCardBody>
-                </HeroCard>
-
-                {/* 2FA Setup Modal */}
-                {enable2FA && (
-                    <Modal
-                        isOpen={isOpen}
-                        onOpenChange={onOpenChange}
-                        size="md"
-                    >
-                        <ModalContent>
-                            {(onClose) => (
-                                <>
-                                    <ModalHeader>
-                                        Setup Two-Factor Authentication
-                                    </ModalHeader>
-                                    <ModalBody className="flex flex-col items-center text-center">
-                                        <div className="w-48 h-48 bg-slate-100 rounded-xl mb-4 flex items-center justify-center border border-border-default">
-                                            <span className="text-text-subdued font-mono text-xs">
-                                                QR CODE PLACEHOLDER
-                                            </span>
-                                        </div>
-                                        <p className="text-sm text-slate-600 mb-4">
-                                            Scan this QR code with your
-                                            authenticator app (Google
-                                            Authenticator, Authy, etc.) and
-                                            enter the code below.
-                                        </p>
-                                        <Input
-                                            placeholder="Enter 6-digit code"
-                                            className="max-w-xs text-center font-mono text-lg tracking-widest"
-                                            maxLength={6}
-                                        />
-                                    </ModalBody>
-                                    <ModalFooter>
-                                        <Button
-                                            variant="light"
-                                            onPress={onClose}
-                                        >
-                                            Cancel
-                                        </Button>
-                                        <Button
-                                            color="primary"
-                                            onPress={() => {
-                                                setIs2FAEnabled(true)
-                                                onClose()
-                                            }}
-                                        >
-                                            Verify & Enable
-                                        </Button>
-                                    </ModalFooter>
-                                </>
-                            )}
-                        </ModalContent>
-                    </Modal>
-                )}
+                    </CardBody>
+                </Card>
             </div>
         </>
     )
@@ -544,19 +389,25 @@ function UpdatePasswordForm() {
     return (
         <form
             onSubmit={formik.handleSubmit}
-            className="size-full lg:col-span-1 space-y-6"
+            className="space-y-6 size-full lg:col-span-1"
         >
             {/* Change Password */}
-            <HeroCard>
-                <HeroCardHeader className="px-6 pt-6 pb-2">
-                    <h4 className="font-bold text-lg text-text-default flex items-center gap-2">
+            <Card shadow="none" className="border border-border-default">
+                <CardHeader className="px-6 py-4">
+                    <h4 className="flex items-center gap-2 text-lg font-bold text-text-default">
                         <KeyRound size={20} className="text-primary" /> Password
                     </h4>
-                </HeroCardHeader>
-                <HeroCardBody className="px-6 pb-6 gap-4">
+                </CardHeader>
+
+                <Divider className="bg-border-default" />
+
+                <CardBody className="gap-4 px-6 pb-6">
                     <HeroPasswordInput
+                        isRequired
                         id="oldPassword"
                         name="oldPassword"
+                        labelPlacement="outside-top"
+                        classNames={{ label: 'font-semibold' }}
                         value={formik.values.oldPassword}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
@@ -572,11 +423,13 @@ function UpdatePasswordForm() {
                         placeholder="Enter current password"
                         variant="bordered"
                     />
-                    <Divider />
                     <HeroPasswordInput
+                        isRequired
                         id="newPassword"
                         name="newPassword"
                         label="New Password"
+                        labelPlacement="outside-top"
+                        classNames={{ label: 'font-semibold' }}
                         placeholder="Minimum 8 characters"
                         type="password"
                         variant="bordered"
@@ -593,9 +446,12 @@ function UpdatePasswordForm() {
                         }
                     />
                     <HeroPasswordInput
+                        isRequired
                         id="newConfirmPassword"
                         name="newConfirmPassword"
                         label="Confirm New Password"
+                        labelPlacement="outside-top"
+                        classNames={{ label: 'font-semibold' }}
                         placeholder="Re-enter new password"
                         type="password"
                         variant="bordered"
@@ -615,7 +471,7 @@ function UpdatePasswordForm() {
                         <Button
                             type="submit"
                             color="primary"
-                            size="sm"
+                            variant="shadow"
                             isLoading={updatePasswordMutation.isPending}
                             isDisabled={
                                 !formik.dirty ||
@@ -626,8 +482,8 @@ function UpdatePasswordForm() {
                             Update Password
                         </Button>
                     </div>
-                </HeroCardBody>
-            </HeroCard>
+                </CardBody>
+            </Card>
         </form>
     )
 }

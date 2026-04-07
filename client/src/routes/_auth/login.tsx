@@ -1,12 +1,11 @@
 import { LoginForm } from '@/features/auth'
-import { getPageTitle } from '@/lib'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_auth/login')({
     head: () => ({
         meta: [
             {
-                title: getPageTitle('Login'),
+                title: 'Authenticaion',
             },
             {
                 name: 'description',

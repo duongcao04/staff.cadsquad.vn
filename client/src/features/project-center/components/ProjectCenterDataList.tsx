@@ -5,7 +5,7 @@ import { ProjectCenterPagination } from './ProjectCenterPagination'
 import { ProjectCenterToolbar } from './ProjectCenterToolbar'
 import { useStore } from '@tanstack/react-store'
 import { pCenterTableStore } from '@/features/project-center'
-import ProjectCenterTable from './views/ProjectCenterTable'
+import { ProjectCenterTable } from './views/ProjectCenterTable'
 
 // Use this component as the "Smart" container if you aren't doing it in the route file
 // Props match what the original big component took

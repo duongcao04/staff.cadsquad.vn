@@ -7,7 +7,7 @@ import {
     type TUpdateProfileInput,
 } from '@/lib/validationSchemas'
 import type { TUser } from '@/shared/types'
-import { addToast, toast } from '@heroui/react'
+import { addToast } from '@heroui/react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import { queryClient } from '../../main'
@@ -113,7 +113,7 @@ export const useRevokeAllSessionMutation = (
             if (onSuccess) {
                 onSuccess(res)
             } else {
-                toast.danger(res.message)
+                addToast({ title: res.message, color: 'danger' })
             }
             queryClient.refetchQueries({
                 queryKey: profileOptions().queryKey,
@@ -194,7 +194,7 @@ export const useUpdateProfileMutation = (
             if (onSuccess) {
                 onSuccess(res)
             } else {
-                toast.danger(res.message)
+                addToast({ title: res.message, color: 'danger' })
             }
         },
         onError: (err) => onErrorToast(err, 'Failed to update profile'),
@@ -211,7 +211,7 @@ export const useForgotPasswordMutation = (
             if (onSuccess) {
                 onSuccess(res)
             } else {
-                toast.danger(res.message)
+                addToast({ title: res.message, color: 'danger' })
             }
         },
         onError: (err) => onErrorToast(err, 'Failed to forgot password'),
@@ -228,7 +228,7 @@ export const useResetPasswordWithTokenMutation = (
             if (onSuccess) {
                 onSuccess(res)
             } else {
-                toast.danger(res.message)
+                addToast({ title: res.message, color: 'danger' })
             }
         },
         onError: (err) => onErrorToast(err, 'Failed to reset password'),
