@@ -560,6 +560,17 @@ exports.Prisma.PostEventScalarFieldEnum = {
   postId: 'postId'
 };
 
+exports.Prisma.SupportTicketScalarFieldEnum = {
+  id: 'id',
+  subject: 'subject',
+  category: 'category',
+  description: 'description',
+  status: 'status',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SystemSettingScalarFieldEnum = {
   key: 'key',
   value: 'value',
@@ -759,6 +770,22 @@ exports.TopicType = exports.$Enums.TopicType = {
   SUPPORT: 'SUPPORT'
 };
 
+exports.TicketCategory = exports.$Enums.TicketCategory = {
+  BUG: 'BUG',
+  JOB: 'JOB',
+  SYSTEM: 'SYSTEM',
+  BILLING: 'BILLING',
+  ACCOUNT: 'ACCOUNT',
+  OTHER: 'OTHER'
+};
+
+exports.TicketStatus = exports.$Enums.TicketStatus = {
+  OPEN: 'OPEN',
+  IN_PROGRESS: 'IN_PROGRESS',
+  RESOLVED: 'RESOLVED',
+  CLOSED: 'CLOSED'
+};
+
 exports.TransactionType = exports.$Enums.TransactionType = {
   INCOME: 'INCOME',
   PAYOUT: 'PAYOUT',
@@ -810,6 +837,7 @@ exports.Prisma.ModelName = {
   Topic: 'Topic',
   Post: 'Post',
   PostEvent: 'PostEvent',
+  SupportTicket: 'SupportTicket',
   SystemSetting: 'SystemSetting',
   Transaction: 'Transaction'
 };

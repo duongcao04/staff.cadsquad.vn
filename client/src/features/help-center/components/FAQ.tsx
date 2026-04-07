@@ -1,3 +1,6 @@
+import { FAQ_GROUPS, FAQS, TFAQ } from '@/lib/constants/faqs'
+import HtmlReactParser from '@/shared/components/ui/html-react-parser'
+import { usePermission } from '@/shared/hooks'
 import {
     Accordion,
     AccordionItem,
@@ -7,11 +10,6 @@ import {
     Divider,
 } from '@heroui/react'
 import { useMemo } from 'react'
-import { FAQ_GROUPS, FAQS, TFAQ } from '../../../lib/constants/faqs'
-import { usePermission } from '../../../shared/hooks'
-// ============================================================================
-// Page Component
-// ============================================================================
 
 export function FAQ() {
     const { hasPermission } = usePermission()
@@ -45,7 +43,7 @@ export function FAQ() {
                     No FAQs available for your current permission level.
                 </div>
             ) : (
-                <div className="flex flex-col gap-12">
+                <div className="flex flex-col gap-6">
                     {visibleGroups.map((group) => (
                         <Card
                             shadow="none"
@@ -62,31 +60,20 @@ export function FAQ() {
                                 </p>
                             </CardHeader>
 
-                            <Divider className='bg-border-default'/>
+                            <Divider className="bg-border-default" />
 
                             {/* Section Accordion */}
-                            <CardBody>
-                                <Accordion
-                                    variant="splitted"
-                                    className="px-0"
-                                    itemClasses={{
-                                        base: 'bg-default-50 border border-default-200 shadow-sm',
-                                        title: 'font-medium text-sm text-text-default',
-                                        content:
-                                            'text-sm text-text-subdued pb-4 leading-relaxed',
-                                    }}
-                                >
+                            <CardBody className='py-0!'>
+                                <Accordion>
                                     {group.faqs.map((faq) => (
                                         <AccordionItem
                                             key={faq.id}
                                             aria-label={faq.question}
                                             title={faq.question}
                                         >
-                                            <div
-                                                dangerouslySetInnerHTML={{
-                                                    __html: faq.answer,
-                                                }}
-                                                className="prose-sm prose max-w-none prose-a:text-primary hover:prose-a:underline"
+                                            <HtmlReactParser
+                                                htmlString={faq.answer}
+                                                className="text-text-subdued text-sm"
                                             />
                                         </AccordionItem>
                                     ))}

@@ -1,11 +1,13 @@
 // ============================================================================
 // Types
-// ============================================================================
 
+import { INTERNAL_URLS } from '../utils'
+
+// ============================================================================
 export type TFAQ = {
     id: string
     question: string
-    answer: string // HTML string, can include <a href="...">
+    answer: string
     hasPermission?: string
 }
 
@@ -31,7 +33,7 @@ export const FAQS: TFAQ[] = [
     {
         id: 'JOB-002',
         question: 'Can I edit the details of an existing job?',
-        answer: 'Yes, you can edit job details by selecting the specific job from the <a href="/jobs">Job List</a> and clicking the "Edit" button, or by visiting the edit page directly if you have the <a href="/jobs">job ID</a>.',
+        answer: `Yes, you can edit job details by selecting the specific job from the <a href="${INTERNAL_URLS.management.jobs}"}">Job List</a> and clicking the "Edit" button, or by visiting the edit page directly if you have the job no`,
         hasPermission: 'job.update',
     },
     {
@@ -682,7 +684,7 @@ export const FAQ_GROUPS: TFAQGroup[] = [
     },
     {
         id: 'management-team',
-        title: 'Management: Team',
+        title: 'Team Management',
         description: 'Manage users, departments, and job titles.',
         faqIds: [
             'USER-001',
@@ -713,7 +715,7 @@ export const FAQ_GROUPS: TFAQGroup[] = [
     },
     {
         id: 'management-jobs',
-        title: 'Management: Jobs',
+        title: 'Jobs Management',
         description: 'Job types, workflows, and operational status.',
         faqIds: [
             'JOB-001',
@@ -741,7 +743,7 @@ export const FAQ_GROUPS: TFAQGroup[] = [
     },
     {
         id: 'management-templates',
-        title: 'Management: Folder Templates',
+        title: 'Folder Templates Management',
         description: 'Manage file structures and workspace templates.',
         faqIds: [
             'FILE-001',
@@ -758,7 +760,7 @@ export const FAQ_GROUPS: TFAQGroup[] = [
     },
     {
         id: 'management-clients',
-        title: 'Management: Clients',
+        title: 'Clients Management',
         description: 'Manage corporate and individual clients.',
         faqIds: [
             'CLI-001',
@@ -771,7 +773,7 @@ export const FAQ_GROUPS: TFAQGroup[] = [
     },
     {
         id: 'management-payments',
-        title: 'Management: Payment Channels',
+        title: 'Payment Channels Management',
         description: 'Configure and manage payment methods.',
         faqIds: ['CLI-006', 'CLI-007', 'CLI-008', 'CLI-009'],
     },
@@ -796,21 +798,6 @@ export const FAQ_GROUPS: TFAQGroup[] = [
             'ANA-008',
             'ANA-009',
             'ANA-010',
-        ],
-    },
-    {
-        id: 'community',
-        title: 'Community',
-        description: 'Internal communications and group management.',
-        faqIds: [
-            'SYS-002',
-            'SYS-003',
-            'SYS-004',
-            'SYS-005',
-            'SYS-010',
-            'SYS-011',
-            'SYS-012',
-            'SYS-013',
         ],
     },
 ]

@@ -6,11 +6,21 @@ import parse, {
     Element,
     type HTMLReactParserOptions,
 } from 'html-react-parser'
+import { cn } from '../../../lib'
 
 type HtmlReactParserProps = {
     htmlString: string
+    className?: string
+    attClassNames?: {
+        link?: string
+        img?: string
+    }
 }
-export default function HtmlReactParser({ htmlString }: HtmlReactParserProps) {
+export default function HtmlReactParser({
+    htmlString,
+    className,
+    attClassNames,
+}: HtmlReactParserProps) {
     const options: HTMLReactParserOptions = {
         replace: (domNode: DOMNode) => {
             // We must check if the node is an Element (an HTML tag) before accessing attribs
@@ -22,7 +32,14 @@ export default function HtmlReactParser({ htmlString }: HtmlReactParserProps) {
                     // Ensure strictly internal links use Next Link
                     if (href && href.startsWith('/')) {
                         return (
-                            <Link to={href} className={className}>
+                            <Link
+                                to={href}
+                                className={cn(
+                                    'hover:underline font-semibold',
+                                    className,
+                                    attClassNames?.link
+                                )}
+                            >
                                 {domToReact(
                                     domNode.children as DOMNode[],
                                     options
@@ -50,7 +67,7 @@ export default function HtmlReactParser({ htmlString }: HtmlReactParserProps) {
                                 alt={alt || 'image'}
                                 width={parseInt(width, 10)}
                                 height={parseInt(height, 10)}
-                                className={className}
+                                className={cn(className, attClassNames?.img)}
                             />
                         )
                     }
@@ -59,5 +76,9 @@ export default function HtmlReactParser({ htmlString }: HtmlReactParserProps) {
         },
     }
 
-    return <div className="prose">{parse(htmlString, options)}</div>
+    return (
+        <div className={cn('prose', className)}>
+            {parse(htmlString, options)}
+        </div>
+    )
 }

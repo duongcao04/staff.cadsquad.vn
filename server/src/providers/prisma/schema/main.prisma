@@ -87,6 +87,8 @@ model User {
     updatedAt       DateTime         @updatedAt
     systemAuditLogs SystemAuditLog[]
 
+    supportTickets SupportTicket[]
+
     systemSettings SystemSetting[]
     transactions   Transaction[]
 }
