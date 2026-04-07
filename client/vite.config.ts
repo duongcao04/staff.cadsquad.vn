@@ -98,6 +98,7 @@ export default defineConfig(({ mode }) => {
         },
 
         build: {
+            target: 'esnext',
             rollupOptions: {
                 // ĐỊNH NGHĨA 2 ĐẦU VÀO: Ứng dụng chính và Service Worker
                 input: {
