@@ -49,10 +49,14 @@ pipeline {
         stage('Deploy to Production') {
             steps {
                 script {
-                    // Vì Jenkins chạy ngay trên VPS này, ta gọi trực tiếp docker compose
-                    // pull giúp lấy image mới nhất từ Registry về trước khi restart
-                    sh 'docker compose pull backend web_client'
-                    sh 'docker compose up -d'
+                    // Nhảy vào thư mục chứa file .env trên VPS
+                    dir('/home/prod/apps/csd-staff') {
+                        // Copy file docker-compose.yml từ workspace Jenkins sang thư mục này
+                        sh "cp ${WORKSPACE}/docker-compose.yml ." 
+
+                        sh 'docker compose pull backend web_client'
+                        sh 'docker compose up -d'
+                    }
                 }
             }
         }
