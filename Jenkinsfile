@@ -68,13 +68,13 @@ pipeline {
                     docker.withRegistry('', REGISTRY_CREDS) {
                         
                         // 1. Build & Push Backend (Simple Build)
-                        sh "docker build --no-cache -t ${BACKEND_IMAGE}:latest ./server"
+                        sh "docker build -t ${BACKEND_IMAGE}:latest ./server"
                         sh "docker push ${BACKEND_IMAGE}:latest"
 
                         // 2. Build & Push Web Client (Complex Build with ARGS)
                         // Sử dụng dấu nháy đơn nội bộ để bảo vệ các giá trị có khoảng trắng
                         sh """
-                        docker build --no-cache -t ${CLIENT_IMAGE}:latest \
+                        docker build -t ${CLIENT_IMAGE}:latest \
                             --build-arg APP_URL='${env.CLIENT_URL}' \
                             --build-arg APP_TITLE='${env.APP_TITLE}' \
                             --build-arg API_ENDPOINT='${env.BACKEND_URL}' \
@@ -112,9 +112,7 @@ pipeline {
 
                         // Kéo image mới về và khởi động lại
                         sh 'docker compose pull web_client backend'
-
-                        // Down và Up lại để re-create container với image vừa pull
-                        sh 'docker compose up -d --force-recreate'
+                        sh 'docker compose up -d'
                     }
                 }
             }
@@ -140,7 +138,6 @@ pipeline {
     post {
         success {
             echo "Success!"
-            // Xóa image cũ (dangling) để tránh rác
             sh 'docker image prune -f'
         }
         failure {
