@@ -56,8 +56,7 @@ pipeline {
                         backendApp.push()
                         backendApp.push("${env.BUILD_NUMBER}")
 
-                        // 2. Build & Push Web Client (TRUYỀN ARG TẠI ĐÂY)
-                        // Chúng ta tạo chuỗi build-arg khổng lồ
+                        // 2. Build & Push Web Client (TRUYỀN ARG)
                         def clientBuildArgs = [
                             "--build-arg APP_URL=${CLIENT_URL}",
                             "--build-arg APP_TITLE=${APP_TITLE}",
@@ -75,7 +74,8 @@ pipeline {
                             "--build-arg FIREBASE_MEASUREMENT_ID=${FIREBASE_MEASUREMENT_ID}",
                             "--build-arg TAURI_DEV_HOST=${TAURI_DEV_HOST}"
                         ].join(" ")
-
+                        
+                        // Cấu trúc: docker.build("tên-image", "các-flag đường-dẫn-context")
                         def clientApp = docker.build("${CLIENT_IMAGE}:latest", "${clientBuildArgs} ./client")
                         clientApp.push()
                         clientApp.push("${env.BUILD_NUMBER}")
