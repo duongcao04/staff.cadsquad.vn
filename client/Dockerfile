@@ -30,7 +30,7 @@ ENV VITE_APP_URL="${VITE_APP_URL}" \
 WORKDIR /app
 
 # Tối ưu cache cho layer install
-COPY bun.lock ./
+COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 
 # Copy mã nguồn
