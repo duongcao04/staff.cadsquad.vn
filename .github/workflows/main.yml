@@ -2,11 +2,11 @@
 name: Github Jenkins flow
 
 # 2. The event that triggers the workflow
-on: 
+on:
   push:
-    branches: [ "master" ] # Triggers when pushing to the 'main' branch
+    branches: ['master'] # Triggers when pushing to the 'main' branch
   pull_request:
-    branches: [ "master" ] # Triggers when a PR is opened against 'main'
+    branches: ['master'] # Triggers when a PR is opened against 'main'
 
 # 3. The jobs that will run
 jobs:
@@ -23,7 +23,7 @@ jobs:
       # Step B: Runs a basic command line script
       - name: Say Hello
         run: echo "Hello, GitHub Actions! The code has been checked out."
-        
+
       # Step C: Running multiple lines of scripts
       - name: Run multiple commands
         run: |
