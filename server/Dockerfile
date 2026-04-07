@@ -62,7 +62,7 @@ COPY --from=builder /app/src/providers/mail/templates /app/src/templates
 RUN chown -R nodejs:nodejs /app
 USER nodejs
 
-EXPOSE 8080
+EXPOSE 8000
 ENV NODE_ENV production
 
 # Entrypoint chạy migration trước, CMD khởi động Server sau

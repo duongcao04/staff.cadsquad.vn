@@ -14,7 +14,7 @@ async function bootstrap() {
 	const configService = app.get(ConfigService)
 
 	// 2. Lấy các biến từ namespace 'app' (được định nghĩa trong app.config.ts)
-	const port = configService.get<number>('app.BACKEND_PORT') || 8080
+	const port = configService.get<number>('app.BACKEND_PORT') || 8000
 	const clientUrl = configService.get<string>('app.CLIENT_URL')
 	const apiPrefix = configService.get<string>('app.API_ENDPOINT') || '/api'
 	const appTitle =
