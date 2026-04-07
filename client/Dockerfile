@@ -1,23 +1,24 @@
 # Stage 1: Build the application
 FROM oven/bun:1-alpine AS build
 
-# Khai báo các ARG
-ARG VITE_APP_URL
-ARG VITE_APP_TITLE
-ARG VITE_API_ENDPOINT
-ARG VITE_WS_URL
-ARG VITE_FIREBASE_VAPID_KEY
-ARG VITE_FIREBASE_API_KEY
-ARG VITE_FIREBASE_AUTH_DOMAIN
-ARG VITE_FIREBASE_DATABASE_URL
-ARG VITE_FIREBASE_PROJECT_ID
-ARG VITE_FIREBASE_STORAGE_BUCKET
-ARG VITE_FIREBASE_MESSAGING_SENDER_ID
-ARG VITE_FIREBASE_APP_ID
-ARG VITE_FIREBASE_MEASUREMENT_ID
-ARG VITE_APP_VERSION
+# --- KHAI BÁO ARG (Phải khớp chính xác với --build-arg trong Jenkins) ---
+ARG APP_URL
+ARG APP_TITLE
+ARG API_ENDPOINT
+ARG WS_URL
+ARG APP_VERSION
+ARG FIREBASE_VAPID_KEY
+ARG FIREBASE_API_KEY
+ARG FIREBASE_AUTH_DOMAIN
+ARG FIREBASE_DATABASE_URL
+ARG FIREBASE_PROJECT_ID
+ARG FIREBASE_STORAGE_BUCKET
+ARG FIREBASE_MESSAGING_SENDER_ID
+ARG FIREBASE_APP_ID
+ARG FIREBASE_MEASUREMENT_ID
+ARG TAURI_DEV_HOST
 
-# Sử dụng ngoặc kép cho ENV để tránh lỗi ký tự đặc biệt/identifier
+# --- GÁN VÀO ENV VỚI TIỀN TỐ VITE_ (Vite chỉ nhận biến có tiền tố này) ---
 ENV VITE_APP_URL="${APP_URL}" \
     VITE_APP_TITLE="${APP_TITLE}" \
     VITE_API_ENDPOINT="${API_ENDPOINT}" \
@@ -43,21 +44,14 @@ RUN bun install --frozen-lockfile
 # Copy mã nguồn
 COPY . .
 
-# Build dự án
-RUN bun run build && \
-    # XÓA node_modules ngay sau khi build để giải phóng dung lượng đĩa tạm thời trong quá trình build
-    rm -rf node_modules
+# Build dự án - Tại đây Vite sẽ nhúng các ENV vào file tĩnh
+RUN bun run build && rm -rf node_modules
 
 # Stage 2: Serve với Nginx
 FROM nginx:stable-alpine
-
-# Xóa các file mặc định của Nginx để tránh xung đột
 RUN rm -rf /usr/share/nginx/html/*
-
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-# Chỉ copy những file tĩnh đã được build (rất nhẹ)
 COPY --from=build /app/dist /usr/share/nginx/html
 
 EXPOSE 80
-
 CMD ["nginx", "-g", "daemon off;"]
