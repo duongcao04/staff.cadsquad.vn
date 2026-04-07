@@ -19,7 +19,9 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 // Pull code từ repo GitHub
-                git branch: 'master', credentialsId: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJMpT8HOV0nYTSjxpV1xs/iQlNfhwZiUFDbM0SYqWJGp caohaiduong04@gmail.com', url: 'git@github.com:duongcao04/staff.cadsquad.vn.git'
+                git branch: 'master', 
+                    credentialsId: 'github-ssh-key', 
+                    url: 'git@github.com:duongcao04/staff.cadsquad.vn.git'
             }
         }
 
