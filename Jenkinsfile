@@ -7,11 +7,18 @@ pipeline {
     }
     
     environment {
-        // Cấu hình Image cho từng service
+        // Cấu hình Image Docker
         DOCKER_USER = "haiduong004" // docker hub username
         BACKEND_IMAGE = "${DOCKER_USER}/csd-backend"
         CLIENT_IMAGE = "${DOCKER_USER}/csd-client"
         REGISTRY_CREDS = "docker-hub-creds"
+        
+        // --- PHẦN MỚI THÊM: Cấu hình GitHub Actions Trigger ---
+        GITHUB_TOKEN = credentials('github-pat-token') // Phải tạo credential loại Secret Text tên 'github-pat-token' trong Jenkins
+        GITHUB_OWNER = "duongcao04"
+        GITHUB_REPO = "staff.cadsquad.vn"
+        WORKFLOW_FILE = "main.yml"
+        BRANCH = "master"
     }
 
     stages {
@@ -32,7 +39,6 @@ pipeline {
                 script {
                     docker.withRegistry('', REGISTRY_CREDS) {
                         // 1. Build & Push Backend
-                        // Chú ý: Dùng --no-cache nếu bạn muốn build sạch hoàn toàn
                         def backendApp = docker.build("${BACKEND_IMAGE}:latest", "./server")
                         backendApp.push()
                         backendApp.push("${env.BUILD_NUMBER}")
@@ -66,6 +72,24 @@ pipeline {
                 echo "Waiting for services to be healthy..."
                 sleep 10
                 sh 'docker ps'
+            }
+        }
+
+        // --- PHẦN MỚI THÊM: Gọi API sang GitHub ---
+        stage('Trigger GitHub Actions') {
+            steps {
+                script {
+                    echo "Deploy xong! Đang bắn tín hiệu sang GitHub Actions..."
+                    sh '''
+                    curl -L \
+                      -X POST \
+                      -H "Accept: application/vnd.github+json" \
+                      -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+                      -H "X-GitHub-Api-Version: 2022-11-28" \
+                      https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/actions/workflows/${WORKFLOW_FILE}/dispatches \
+                      -d "{\\"ref\\":\\"${BRANCH}\\", \\"inputs\\": {\\"message\\": \\"App đã deploy xong với Build #${BUILD_NUMBER} trên Jenkins!\\"}}"
+                    '''
+                }
             }
         }
     }
