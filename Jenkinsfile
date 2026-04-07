@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    options {
+        // Jenkins không tự động checkout lần 2 gây lỗi
+        skipDefaultCheckout() 
+    }
+    
     environment {
         // Cấu hình Image cho từng service
         DOCKER_USER = "haiduong004" // docker hub username
@@ -18,8 +23,7 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
-                // Pull code từ repo GitHub
-                git branch: 'master', credentialsId: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJMpT8HOV0nYTSjxpV1xs/iQlNfhwZiUFDbM0SYqWJGp caohaiduong04@gmail.com', url: 'git@github.com:duongcao04/staff.cadsquad.vn.git'
+                checkout scm 
             }
         }
 
@@ -45,10 +49,14 @@ pipeline {
         stage('Deploy to Production') {
             steps {
                 script {
-                    // Vì Jenkins chạy ngay trên VPS này, ta gọi trực tiếp docker compose
-                    // pull giúp lấy image mới nhất từ Registry về trước khi restart
-                    sh 'docker compose pull backend web_client'
-                    sh 'docker compose up -d'
+                    // Nhảy vào thư mục chứa file .env trên VPS
+                    dir('/home/prod/apps/csd-staff') {
+                        // Copy file docker-compose.yml từ workspace Jenkins sang thư mục này
+                        sh "cp ${WORKSPACE}/docker-compose.yml ." 
+
+                        sh 'docker compose pull backend web_client'
+                        sh 'docker compose up -d'
+                    }
                 }
             }
         }

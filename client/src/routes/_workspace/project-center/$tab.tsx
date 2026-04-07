@@ -1,16 +1,15 @@
-import JobDetailDrawer from '@/features/job-details/components/drawers/JobDetailDrawer'
+import { JobDetailDrawer } from '@/features/job-details'
 import {
     pCenterTableStore,
     ProjectCenterMobileContent,
+    ProjectCenterPagination,
+    ProjectCenterTable,
     ProjectCenterTabs,
+    ProjectCenterToolbar,
     ProjectCenterViewColumnsDrawer,
 } from '@/features/project-center'
 import AddAttachmentsModal from '@/features/project-center/components/modals/AddAttachmentsModal'
 import AssignMemberModal from '@/features/project-center/components/modals/AssignMemberModal'
-import { ProjectCenterPagination } from '@/features/project-center/components/ProjectCenterPagination'
-import { ProjectCenterToolbar } from '@/features/project-center/components/ProjectCenterToolbar'
-import ProjectCenterTable from '@/features/project-center/components/views/ProjectCenterTable'
-import { getPageTitle, STORAGE_KEYS } from '@/lib'
 import {
     jobsListOptions,
     jobStatusesListOptions,
@@ -23,11 +22,11 @@ import { jobFiltersSchema, TJobFilters } from '@/lib/validationSchemas'
 import { ProjectCenterTabEnum } from '@/shared/enums'
 import { useDevice } from '@/shared/hooks'
 import { Spinner, useDisclosure } from '@heroui/react'
-import { useSuspenseQuery } from '@tanstack/react-query'
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { useStore } from '@tanstack/react-store'
 import lodash from 'lodash'
-import { Suspense, useMemo, useState, useTransition } from 'react'
+import { Suspense, useMemo, useState } from 'react'
 import { z } from 'zod'
 import { useProjectCenterFilters } from './-hooks/useProjectCenterFilters'
 import { useProjectExport } from './-hooks/useProjectExport'
@@ -45,7 +44,14 @@ export const projectCenterParamsSchema = z
 export type TProjectCenterSearch = z.infer<typeof projectCenterParamsSchema>
 
 export const Route = createFileRoute('/_workspace/project-center/$tab')({
-    head: () => ({ meta: [{ title: getPageTitle('Project Center') }] }),
+    head: ({ params }) => {
+        const title =
+            'Project Center' +
+            ' - ' +
+            lodash.upperFirst(params.tab.trim()) +
+            ' jobs'
+        return { meta: [{ title }] }
+    },
     validateSearch: (search) => projectCenterParamsSchema.parse(search),
     parseParams: (params) => {
         const result = z.nativeEnum(ProjectCenterTabEnum).safeParse(params.tab)
@@ -55,51 +61,40 @@ export const Route = createFileRoute('/_workspace/project-center/$tab')({
     },
     loaderDeps: ({ search }) => ({ search }),
     loader: async ({ context, deps, params }) => {
+        const { search } = deps as { search: TProjectCenterSearch }
+        const { tab } = params as { tab: ProjectCenterTabEnum }
+
         await Promise.all([
             context.queryClient.ensureQueryData(jobStatusesListOptions()),
             context.queryClient.ensureQueryData(jobTypesListOptions()),
             context.queryClient.ensureQueryData(paymentChannelsListOptions()),
             context.queryClient.ensureQueryData(usersListOptions()),
+            context.queryClient.ensureQueryData(
+                jobsListOptions({
+                    ...search,
+                    tab,
+                })
+            ),
         ])
-        let hideFinishItems: '1' | '0' = '1'
-        if (typeof window !== 'undefined') {
-            const val = localStorage.getItem(
-                STORAGE_KEYS.projectCenterFinishItems
-            )
-            hideFinishItems = val === 'true' ? '1' : '0'
-        }
-        void context.queryClient.ensureQueryData(
-            jobsListOptions({
-                ...deps.search,
-                tab: params.tab,
-            })
-        )
     },
     component: ProjectCenterPage,
 })
 
-// --- Layout ---
-
 function ProjectCenterPage() {
-    const { tab } = Route.useParams()
-    const navigate = Route.useNavigate()
+    const searchParams = Route.useSearch()
+    const { tab } = Route.useParams() as { tab: ProjectCenterTabEnum }
     const { search, isPending } = useProjectCenterFilters()
-    const [_, startTransition] = useTransition()
 
-    const handleTabChange = (t: ProjectCenterTabEnum) => {
-        startTransition(() => {
-            navigate({
-                to: '/project-center/$tab',
-                params: { tab: t },
-                search: { ...search, page: 1 },
-                replace: true,
-            })
+    const { refetch } = useQuery(
+        jobsListOptions({
+            ...searchParams,
+            tab,
         })
-    }
+    )
 
     return (
-        <div className="size-full space-y-5">
-            <ProjectCenterTabs currentTab={tab} onTabChange={handleTabChange} />
+        <div className="space-y-5 size-full">
+            <ProjectCenterTabs currentTab={tab} />
             <div
                 className={
                     isPending
@@ -114,6 +109,7 @@ function ProjectCenterPage() {
                     tab={tab}
                     search={search}
                     isPending={isPending}
+                    onRefresh={refetch}
                 />
             </div>
         </div>
@@ -121,15 +117,16 @@ function ProjectCenterPage() {
 }
 
 // --- Container (Non-Suspended) ---
-
 function ProjectCenterContainer({
     tab,
     search,
     isPending,
+    onRefresh,
 }: {
     tab: ProjectCenterTabEnum
     search: TProjectCenterSearch
     isPending: boolean
+    onRefresh: () => void
 }) {
     const { isSmallView } = useDevice()
     const { userPermissions } = useProfile()
@@ -220,7 +217,7 @@ function ProjectCenterContainer({
                     />
                 </Suspense>
             ) : (
-                <div className="flex flex-col gap-4 h-full">
+                <div className="flex flex-col h-full gap-4">
                     {/* A. Toolbar */}
                     <ProjectCenterToolbar
                         searchKeywords={search.search}
@@ -230,9 +227,7 @@ function ProjectCenterContainer({
                                 : onSearchChange(undefined)
                         }
                         isLoadingData={isPending}
-                        onRefresh={() => {
-                            /* Invalidate */
-                        }}
+                        onRefresh={onRefresh}
                         filters={search as TJobFilters}
                         onFiltersChange={onFiltersChange}
                         openViewColDrawer={viewColDisclosure.onOpen}
@@ -263,7 +258,6 @@ function ProjectCenterContainer({
 function ProjectCenterDataList({
     tab,
     search,
-    localShowFinishItems,
     onPageChange,
     onSortChange,
     onLimitChange,
@@ -273,9 +267,7 @@ function ProjectCenterDataList({
         ...jobsListOptions({
             ...search,
             tab,
-            hideFinishItems: localShowFinishItems ? '1' : '0',
         }),
-        // NOTE: placeholderData removed as discussed to fix Typescript issue
     })
 
     const pagination = useMemo(

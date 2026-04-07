@@ -132,6 +132,8 @@ model User {
   updatedAt       DateTime         @updatedAt
   systemAuditLogs SystemAuditLog[]
 
+  supportTickets SupportTicket[]
+
   systemSettings SystemSetting[]
   transactions   Transaction[]
 }
@@ -948,6 +950,38 @@ model PostEvent {
   // Quan hệ với Post
   postId String @unique
   post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+enum TicketCategory {
+  BUG
+  JOB
+  SYSTEM
+  BILLING
+  ACCOUNT
+  OTHER
+}
+
+model SupportTicket {
+  id          String         @id @default(cuid())
+  subject     String
+  category    TicketCategory
+  description String         @db.Text
+  status      TicketStatus   @default(OPEN)
+
+  // Relationship to the User
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Timestamps for tracking
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
 }
 
 model SystemSetting {

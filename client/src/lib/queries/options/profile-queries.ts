@@ -12,8 +12,6 @@ export const profileScheduleOptions = (
         queryKey: ['profile', 'schedule', `year=${year}`, `month=${month}`, `day=${day}`],
         queryFn: () => userApi.schedule(year, month, day),
         select: (res) => {
-            console.log(res);
-
             const jobsData = res?.result?.jobsSchedule
             return {
                 jobsSchedule: parseList(JobSchema, jobsData),

@@ -24,6 +24,7 @@ export * from './_permission.schema';
 export * from './_role.schema';
 export * from './_sharepoint-item.schema';
 export * from './_system-setting.schema';
+export * from './_ticket.schema';
 export * from './_topic.schema';
 export * from './_transaction.schema';
 export * from './_upload.schema';

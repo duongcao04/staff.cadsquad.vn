@@ -1,4 +1,4 @@
-import JobDetailDrawer from '@/features/job-details/components/drawers/JobDetailDrawer'
+import { JobDetailDrawer } from '@/features/job-details'
 import AddAttachmentsModal from '@/features/project-center/components/modals/AddAttachmentsModal'
 import AssignMemberModal from '@/features/project-center/components/modals/AssignMemberModal'
 import {
@@ -206,9 +206,7 @@ function WorkbenchPageContent() {
                                 : onSearchChange(undefined)
                         }
                         onFiltersChange={onFiltersChange}
-                        onRefresh={() => {
-                            /* Trigger invalidation */
-                        }}
+                        onRefresh={refetch}
                         openViewColDrawer={viewColDisclosure.onOpen}
                     />
 

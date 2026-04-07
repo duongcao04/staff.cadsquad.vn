@@ -1,4 +1,4 @@
-import { APP_PERMISSIONS } from '@/lib/utils'
+import { APP_PERMISSIONS, RouteUtil } from '@/lib/utils'
 import { ProjectCenterTabEnum } from '@/shared/enums'
 import { useDevice, usePermission } from '@/shared/hooks'
 import { Tab, Tabs } from '@heroui/react'
@@ -15,10 +15,9 @@ import {
 
 type Props = {
     currentTab: ProjectCenterTabEnum
-    onTabChange: (key: ProjectCenterTabEnum) => void
 }
 
-export function ProjectCenterTabs({ currentTab, onTabChange }: Props) {
+export function ProjectCenterTabs({ currentTab }: Props) {
     const { hasPermission } = usePermission()
     const { isSmallView } = useDevice()
 
@@ -29,9 +28,14 @@ export function ProjectCenterTabs({ currentTab, onTabChange }: Props) {
             size={isSmallView ? 'sm' : 'md'}
             variant="bordered"
             selectedKey={currentTab}
-            onSelectionChange={(key) =>
-                onTabChange(key as ProjectCenterTabEnum)
-            }
+            onSelectionChange={(key) => {
+                const tab = key as ProjectCenterTabEnum
+                RouteUtil.navigate({
+                    to: '/project-center/$tab',
+                    params: { tab },
+                    search: (prev: any) => ({ ...prev, page: 1 }) as never,
+                })
+            }}
             classNames={{ tabWrapper: 'border-[1px]', tabList: 'border-1' }}
         >
             <Tab

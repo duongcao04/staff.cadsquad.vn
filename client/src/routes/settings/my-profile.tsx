@@ -2,26 +2,22 @@ import SettingTitle from '@/features/settings/components/SettingTitle'
 import { UploadAvatarModal } from '@/features/staff-directory'
 import {
     dateFormatter,
-    getPageTitle,
     INTERNAL_URLS,
     optimizeCloudinary,
     phoneNumberFormatter,
     updateProfileSchema,
     useUpdateProfileMutation,
-    useUploadImageMutation,
+    useUploadImageMutation
 } from '@/lib'
 import { profileOptions } from '@/lib/queries/options/user-queries'
-import {
-    HeroBreadcrumbItem,
-    HeroBreadcrumbs,
-    HeroCard,
-    HeroCardBody,
-    HeroCardHeader,
-} from '@/shared/components'
+import { HeroBreadcrumbItem, HeroBreadcrumbs } from '@/shared/components'
 import {
     addToast,
     Avatar,
     Button,
+    Card,
+    CardBody,
+    CardHeader,
     Chip,
     Divider,
     Input,
@@ -42,12 +38,13 @@ import {
     Save,
     User,
 } from 'lucide-react'
+import { DisplayHelper } from '../../lib/helpers'
 
 export const Route = createFileRoute('/settings/my-profile')({
     head: () => ({
         meta: [
             {
-                title: getPageTitle('My Profile'),
+                title: 'My Profile',
             },
         ],
     }),
@@ -147,57 +144,68 @@ function SettingsProfilePage() {
                     description="Manage your personal information and public profile."
                 />
 
-                <div className="mt-7 grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 gap-8 mt-7 md:grid-cols-3">
                     {/* --- LEFT: Avatar & Identity Card --- */}
-                    <div className="md:col-span-1 space-y-6">
-                        <HeroCard>
-                            <HeroCardBody className="flex flex-col items-center text-center p-6">
+                    <div className="space-y-6 md:col-span-1">
+                        <Card
+                            shadow="none"
+                            className="border border-border-default"
+                        >
+                            <CardBody className="flex flex-col items-center p-6 space-y-6 text-center">
                                 {/* Avatar Trigger */}
-                                <div className="relative group mb-4">
-                                    <Avatar
-                                        src={optimizeCloudinary(
-                                            profile?.avatar,
-                                            {
-                                                width: 512,
-                                                height: 512,
-                                            }
-                                        )}
-                                        className="w-32 h-32 text-large ring-4 ring-offset-2 ring-slate-50 shadow-lg"
-                                    />
-                                    <button
-                                        onClick={onOpenUploadAvatarModal}
-                                        className="absolute inset-0 bg-white/20 rounded-full flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all cursor-pointer backdrop-blur-[2px]"
-                                    >
-                                        <Camera
-                                            className="text-white mb-1"
-                                            size={24}
+                                <div>
+                                    <div className="relative mb-4 group">
+                                        <Avatar
+                                            src={optimizeCloudinary(
+                                                profile?.avatar,
+                                                {
+                                                    width: 512,
+                                                    height: 512,
+                                                }
+                                            )}
+                                            className="w-32 h-32 shadow-lg text-large ring-4 ring-offset-2 ring-slate-50"
                                         />
-                                        <span className="text-white text-xs font-bold">
-                                            Change
+                                        <button
+                                            onClick={onOpenUploadAvatarModal}
+                                            className="absolute inset-0 bg-white/20 rounded-full flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all cursor-pointer backdrop-blur-[2px]"
+                                        >
+                                            <Camera
+                                                className="mb-1 text-white"
+                                                size={24}
+                                            />
+                                            <span className="text-xs font-bold text-white">
+                                                Change
+                                            </span>
+                                        </button>
+                                    </div>
+
+                                    <h2 className="mt-1 text-xl font-bold text-text-default">
+                                        {profile?.displayName}
+                                    </h2>
+                                    <p className="text-sm text-text-subdued mt-0.5 mb-4">
+                                        @{profile?.username}
+                                    </p>
+
+                                    <Chip
+                                        size="sm"
+                                        variant="flat"
+                                        style={{
+                                            ...DisplayHelper.getTagStyle(
+                                                profile.role.hexColor
+                                            ),
+                                        }}
+                                    >
+                                        <span className="font-bold">
+                                            {profile?.role?.displayName}
                                         </span>
-                                    </button>
+                                    </Chip>
                                 </div>
 
-                                <h2 className="mt-1 text-xl font-bold text-text-default">
-                                    {profile?.displayName}
-                                </h2>
-                                <p className="text-sm text-text-subdued mt-0.5 mb-4">
-                                    @{profile?.username}
-                                </p>
+                                <Divider className="bg-border-default" />
 
-                                <Chip
-                                    size="sm"
-                                    variant="flat"
-                                    color="primary"
-                                    className="mb-6"
-                                >
-                                    {profile?.role?.displayName}
-                                </Chip>
-
-                                <Divider className="my-3" />
                                 <div className="w-full space-y-3 text-left">
                                     <div className="flex items-center justify-between text-sm">
-                                        <span className="text-text-subdued flex items-center gap-2">
+                                        <span className="flex items-center gap-2 text-text-subdued">
                                             <Building size={14} /> Dept
                                         </span>
                                         <span className="font-medium text-text-default">
@@ -206,8 +214,8 @@ function SettingsProfilePage() {
                                         </span>
                                     </div>
                                     <div className="flex items-center justify-between text-sm">
-                                        <span className="text-text-subdued flex items-center gap-2">
-                                            <Briefcase size={14} /> Title
+                                        <span className="flex items-center gap-2 text-text-subdued">
+                                            <Briefcase size={14} /> Job title
                                         </span>
                                         <span className="font-medium text-text-default">
                                             {profile?.jobTitle?.displayName ||
@@ -215,16 +223,16 @@ function SettingsProfilePage() {
                                         </span>
                                     </div>
                                     <div className="flex items-center justify-between text-sm">
-                                        <span className="text-text-subdued flex items-center gap-2">
-                                            <Calendar size={14} /> Joined
+                                        <span className="flex items-center gap-2 text-text-subdued">
+                                            <Calendar size={14} /> Joined at
                                         </span>
                                         <span className="font-medium text-text-default">
                                             {dateFormatter(profile?.createdAt)}
                                         </span>
                                     </div>
                                 </div>
-                            </HeroCardBody>
-                        </HeroCard>
+                            </CardBody>
+                        </Card>
                     </div>
 
                     {/* --- RIGHT: Edit Form --- */}
@@ -232,14 +240,17 @@ function SettingsProfilePage() {
                         onSubmit={formik.handleSubmit}
                         className="md:col-span-2"
                     >
-                        <HeroCard>
-                            <HeroCardHeader className="px-6 py-4 border-b border-border-default">
-                                <h3 className="font-bold text-text-default text-lg">
+                        <Card
+                            shadow="none"
+                            className="border border-border-default"
+                        >
+                            <CardHeader className="px-6 py-4 border-b border-border-default">
+                                <h3 className="text-lg font-bold text-text-default">
                                     Personal Details
                                 </h3>
-                            </HeroCardHeader>
-                            <HeroCardBody className="p-6 gap-6">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            </CardHeader>
+                            <CardBody className="gap-6 p-6">
+                                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                                     {/* Display Name */}
                                     <Input
                                         isRequired
@@ -404,8 +415,8 @@ function SettingsProfilePage() {
                                         Save Changes
                                     </Button>
                                 </div>
-                            </HeroCardBody>
-                        </HeroCard>
+                            </CardBody>
+                        </Card>
                     </form>
                 </div>
 

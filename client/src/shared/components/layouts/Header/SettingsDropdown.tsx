@@ -60,7 +60,7 @@ export function SettingsDropdown() {
             >
                 <DropdownSection title="Settings">
                     <DropdownItem
-                        key="INTERNAL_URLS.settings.profile"
+                        key="settings_profile"
                         startContent={
                             <div className={iconWrapperClasses}>
                                 <SquareUserRound
@@ -69,16 +69,13 @@ export function SettingsDropdown() {
                                 />
                             </div>
                         }
+                        as={Link}
+                        href={INTERNAL_URLS.settings.profile}
                     >
-                        <Link
-                            to={INTERNAL_URLS.settings.profile}
-                            className={linkClasses}
-                        >
-                            <p className={titleClasses}>Account settings</p>
-                            <p className={descClasses}>
-                                Manage language and other personal preferences.
-                            </p>
-                        </Link>
+                        <p className={titleClasses}>Account settings</p>
+                        <p className={descClasses}>
+                            Manage language and other personal preferences.
+                        </p>
                     </DropdownItem>
 
                     <DropdownItem
@@ -88,17 +85,13 @@ export function SettingsDropdown() {
                                 <Palette size={22} className={iconClasses} />
                             </div>
                         }
+                        as={Link}
+                        href={INTERNAL_URLS.settings.appearance}
                     >
-                        <Link
-                            to={INTERNAL_URLS.settings.appearance}
-                            className={linkClasses}
-                        >
-                            <p className={titleClasses}>Appearance</p>
-                            <p className={descClasses}>
-                                Manage how your public dashboard looks and
-                                feels.
-                            </p>
-                        </Link>
+                        <p className={titleClasses}>Appearance</p>
+                        <p className={descClasses}>
+                            Manage how your public dashboard looks and feels.
+                        </p>
                     </DropdownItem>
 
                     {/* TODO: Implement Notification Settings */}

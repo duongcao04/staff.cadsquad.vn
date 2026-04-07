@@ -50,6 +50,7 @@ import { AuditLogModule } from './modules/audit-log/audit-log.module'
 import { SystemSettingsModule } from './modules/system-settings/system-settings.module'
 import { BullConfigProvider } from './providers/bull-mq/bull-mq.provider'
 import { FinancialModule } from './modules/financial/financial.module'
+import { SupportModule } from './modules/support/support.module'
 
 @Module({
 	imports: [
@@ -117,9 +118,11 @@ import { FinancialModule } from './modules/financial/financial.module'
 		ClientModule,
 		AdministratorModule,
 		AuditLogModule,
-		FinancialModule
+		FinancialModule,
+		SupportModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
+

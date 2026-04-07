@@ -17,6 +17,7 @@ export * from './_notification.api';
 export * from './_payment-channel.api';
 export * from './_role.api';
 export * from './_sharepoint.api';
+export * from './_support.api';
 export * from './_system-setting.api';
 export * from './_user-config.api';
 export * from './_user-device.api';

@@ -31,7 +31,7 @@ type Props = {
     onAddAttachments: (jobNo: string) => void
 }
 
-export default function ProjectCenterTable({
+export function ProjectCenterTable({
     data,
     isLoadingData,
     visibleColumns,

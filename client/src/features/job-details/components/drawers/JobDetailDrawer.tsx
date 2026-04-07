@@ -82,7 +82,7 @@ type JobDetailDrawerProps = {
     jobNo: string
 }
 
-export default function JobDetailDrawer({
+export function JobDetailDrawer({
     jobNo,
     isOpen,
     onClose,

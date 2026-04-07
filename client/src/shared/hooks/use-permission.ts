@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
-import { useProfile } from '../../lib'
-import { AppPermission } from '@staff-cadsquad/shared'
+import { AppPermission, useProfile } from '../../lib'
 
 export const usePermission = () => {
     const {
@@ -28,7 +27,7 @@ export const usePermission = () => {
             const required = Array.isArray(requiredPerms) ? requiredPerms : [requiredPerms]
             if (required.length === 0) return true
 
-            return required.some((code) => userPermissions.includes(code as string))
+            return required.some((code) => userPermissions?.includes(code as string))
         },
         [user?.role?.code, userPermissions]
     )
