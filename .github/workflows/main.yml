@@ -2,9 +2,9 @@ name: Build and Deploy CSD Staff
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ['master']
   pull_request:
-    branches: [ "master" ]
+    branches: ['master']
   workflow_dispatch:
     inputs:
       message:
@@ -13,7 +13,7 @@ on:
         default: 'Triggered manually'
 
 env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 jobs:
   build-and-push-docker:
@@ -24,12 +24,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Đã sửa lại có dấu | ở đây
       - name: Print Trigger Message
         if: github.event_name == 'workflow_dispatch'
         run: |
           echo "Tin nhắn nhận được: ${{ github.event.inputs.message }}"
 
+      # BƯỚC QUAN TRỌNG: Rải file .env cho cả Client và Server để Docker Build
       - name: Inject .env file for Build
         run: |
           echo "${{ secrets.ENV_PRODUCTION }}" > ./client/.env
@@ -70,15 +70,15 @@ jobs:
           script: |
             echo "1. Đang truy cập vào thư mục dự án..."
             cd /home/prod/apps/csd-staff
-            
+
             echo "2. Cập nhật file .env trên VPS..."
             echo "$ENV_PRODUCTION_CONTENT" > .env
-            
+
             echo "3. Kéo Image mới nhất từ Docker Hub về VPS..."
             docker compose pull backend web_client
-            
+
             echo "4. Khởi động lại các container với Image mới..."
             docker compose up -d
-            
+
             echo "5. Dọn dẹp các Image rác để tránh đầy ổ cứng VPS..."
             docker image prune -f
