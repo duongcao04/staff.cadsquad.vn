@@ -17,10 +17,10 @@ export default defineConfig(({ mode }) => {
         server: {
             port: 3000,
             host: true,
-            strictPort: true, 
+            strictPort: true,
             fs: {
-                allow: ['..'] // Allows Vite to reach up one directory into 'shared'
-            }
+                allow: ['..'], // Allows Vite to reach up one directory into 'shared'
+            },
         },
         preview: {
             port: 3000,
@@ -56,12 +56,16 @@ export default defineConfig(({ mode }) => {
         resolve: {
             alias: {
                 '@': path.resolve(__dirname, './src'),
-                "@staff-cadsquad/shared": path.resolve(__dirname, '../shared/index.ts')
+                '@staff-cadsquad/shared': path.resolve(
+                    __dirname,
+                    '../shared/index.ts'
+                ),
             },
         },
 
         build: {
-            target: 'esnext', // Đã chốt cứng target là esnext để esbuild không văng lỗi
+            target: 'esnext',
+            drop: ['console', 'debugger'],
             rollupOptions: {
                 // ĐỊNH NGHĨA 2 ĐẦU VÀO: Ứng dụng chính và Service Worker
                 input: {
