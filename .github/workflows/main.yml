@@ -1,13 +1,10 @@
 name: Build and Deploy CSD Staff
 
 on:
-  # 1. Chạy tự động khi có code mới đẩy lên nhánh master
   push:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
-    
-  # 2. Cho phép kích hoạt thủ công từ giao diện
   workflow_dispatch:
     inputs:
       message:
@@ -15,14 +12,10 @@ on:
         required: false
         default: 'Triggered manually'
 
-# Khắc phục cảnh báo "Node.js 20 actions are deprecated"
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
 jobs:
-  # ==========================================
-  # JOB 1: BUILD & PUSH DOCKER IMAGES
-  # ==========================================
   build-and-push-docker:
     name: Build & Push Docker Images
     runs-on: ubuntu-latest
@@ -33,53 +26,62 @@ jobs:
 
       - name: Print Trigger Message
         if: github.event_name == 'workflow_dispatch'
-        run: |
-          echo "Tin nhắn nhận được: ${{ github.event.inputs.message }}"
+        run: echo "Tin nhắn nhận được: ${{ github.event.inputs.message }}"
 
-      # Đăng nhập vào Docker Hub bằng thông tin trong GitHub Secrets
+      # --- MỚI THÊM: CẬP NHẬT FILE .ENV CHO LÚC BUILD ---
+      - name: Inject .env file for Build
+        run: |
+          echo "${{ secrets.ENV_PRODUCTION }}" > ./client/.env
+          echo "${{ secrets.ENV_PRODUCTION }}" > ./server/.env
+      # ---------------------------------------------------
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Build và Push Backend
       - name: Build and push Backend Image
         run: |
           docker build -t haiduong004/csd-backend:latest ./server
           docker push haiduong004/csd-backend:latest
 
-      # Build và Push Frontend
       - name: Build and push Client Image
         run: |
           docker build -t haiduong004/csd-client:latest ./client
           docker push haiduong004/csd-client:latest
 
-  # ==========================================
-  # JOB 2: DEPLOY LÊN VPS QUA SSH
-  # ==========================================
   deploy-to-vps:
     name: Deploy to VPS
-    needs: build-and-push-docker # Bắt buộc phải chờ Job Build chạy xong mới được Deploy
+    needs: build-and-push-docker
     runs-on: ubuntu-latest
 
     steps:
       - name: Execute SSH commands on VPS
         uses: appleboy/ssh-action@v1.0.3
+        # --- MỚI THÊM: TRUYỀN BIẾN ENV_PRODUCTION VÀO SSH ---
+        env:
+          ENV_PRODUCTION_CONTENT: ${{ secrets.ENV_PRODUCTION }}
+        # ----------------------------------------------------
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USERNAME }}
-          key: ${{ secrets.VPS_SSH_KEY }} # Dùng Private Key bạn vừa lấy bằng lệnh cat
+          key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
+          # Cấu hình envs để ssh-action nhận diện biến môi trường an toàn
+          envs: ENV_PRODUCTION_CONTENT
           script: |
             echo "1. Đang truy cập vào thư mục dự án..."
             cd /home/prod/apps/csd-staff
             
-            echo "2. Kéo Image mới nhất từ Docker Hub về VPS..."
+            echo "2. Cập nhật file .env trên VPS..."
+            echo "$ENV_PRODUCTION_CONTENT" > .env
+            
+            echo "3. Kéo Image mới nhất từ Docker Hub về VPS..."
             docker compose pull backend web_client
             
-            echo "3. Khởi động lại các container với Image mới..."
+            echo "4. Khởi động lại các container với Image mới..."
             docker compose up -d
             
-            echo "4. Dọn dẹp các Image rác để tránh đầy ổ cứng VPS..."
+            echo "5. Dọn dẹp các Image rác để tránh đầy ổ cứng VPS..."
             docker image prune -f
