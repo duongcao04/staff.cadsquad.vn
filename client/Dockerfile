@@ -4,13 +4,13 @@ FROM oven/bun:1-alpine AS build
 WORKDIR /app
 
 # Tối ưu cache cho layer install
-COPY package.json bun.lockb ./
+COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 
-# Copy TOÀN BỘ mã nguồn (Bao gồm cả file .env do GitHub Actions vừa đẻ ra)
+# Copy mã nguồn
 COPY . .
 
-# Build dự án - Tại đây Vite sẽ tự động tìm và đọc file .env
+# Build dự án - Tại đây Vite sẽ nhúng các ENV vào file tĩnh
 RUN bun run build && rm -rf node_modules
 
 # Stage 2: Serve với Nginx
