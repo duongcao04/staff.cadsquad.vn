@@ -24,16 +24,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Đã sửa lại có dấu | ở đây
       - name: Print Trigger Message
         if: github.event_name == 'workflow_dispatch'
-        run: echo "Tin nhắn nhận được: ${{ github.event.inputs.message }}"
+        run: |
+          echo "Tin nhắn nhận được: ${{ github.event.inputs.message }}"
 
-      # --- MỚI THÊM: CẬP NHẬT FILE .ENV CHO LÚC BUILD ---
       - name: Inject .env file for Build
         run: |
           echo "${{ secrets.ENV_PRODUCTION }}" > ./client/.env
           echo "${{ secrets.ENV_PRODUCTION }}" > ./server/.env
-      # ---------------------------------------------------
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
@@ -59,16 +59,13 @@ jobs:
     steps:
       - name: Execute SSH commands on VPS
         uses: appleboy/ssh-action@v1.0.3
-        # --- MỚI THÊM: TRUYỀN BIẾN ENV_PRODUCTION VÀO SSH ---
         env:
           ENV_PRODUCTION_CONTENT: ${{ secrets.ENV_PRODUCTION }}
-        # ----------------------------------------------------
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USERNAME }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
-          # Cấu hình envs để ssh-action nhận diện biến môi trường an toàn
           envs: ENV_PRODUCTION_CONTENT
           script: |
             echo "1. Đang truy cập vào thư mục dự án..."
