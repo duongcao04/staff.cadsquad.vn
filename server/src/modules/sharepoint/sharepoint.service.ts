@@ -81,7 +81,9 @@ export class SharePointService implements OnModuleInit, OnModuleDestroy {
 
 		// 3. Tìm Drive ID mặc định ("Documents")
 		if (!this.driveId) {
-			const drives = await client.api(`/sites/${this.siteId}/drives`).get()
+			const drives = await client
+				.api(`/sites/${this.siteId}/drives`)
+				.get()
 			const targetDrive = drives.value.find(
 				(d: any) => d.name === 'Documents'
 			)
@@ -98,7 +100,7 @@ export class SharePointService implements OnModuleInit, OnModuleDestroy {
 	/**
 	 * Dọn dẹp listener khi module bị hủy (Quan trọng để tránh memory leak)
 	 */
-	async onModuleDestroy() { }
+	async onModuleDestroy() {}
 
 	private async getAccessToken(): Promise<string> {
 		const result = await this.msalClient.acquireTokenByClientCredential({
@@ -107,7 +109,7 @@ export class SharePointService implements OnModuleInit, OnModuleDestroy {
 		return result?.accessToken ?? ''
 	}
 
-	private async getGraphClient() {
+	public async getGraphClient() {
 		const accessToken = await this.getAccessToken()
 		return Client.init({
 			authProvider: (done) => done(null, accessToken),
@@ -137,7 +139,9 @@ export class SharePointService implements OnModuleInit, OnModuleDestroy {
 				createdBy: item.createdBy?.user?.displayName || 'System',
 			}))
 		} catch (error) {
-			this.logger.error(`List items failed: ${(error as { message: string }).message}`)
+			this.logger.error(
+				`List items failed: ${(error as { message: string }).message}`
+			)
 			throw new BadRequestException('Cannot list items from SharePoint')
 		}
 	}
@@ -165,29 +169,29 @@ export class SharePointService implements OnModuleInit, OnModuleDestroy {
 
 		return {
 			message: 'File queued for upload',
-			jobId: job.id
+			jobId: job.id,
 		}
 	}
 
 	async executeUploadFile(parentId: string, file: Express.Multer.File) {
 		try {
 			// 1. Lấy Access Token dùng chung hàm có sẵn
-			const accessToken = await this.getAccessToken();
+			const accessToken = await this.getAccessToken()
 
 			// 2. Encode tên file để tránh lỗi URL
-			const fileName = encodeURIComponent(file.originalname);
+			const fileName = encodeURIComponent(file.originalname)
 
 			// 3. Sử dụng endpoint động (như bạn dùng ở các hàm khác)
 			// graph.microsoft.com/v1.0 đã được ngầm định khi dùng axios hoặc client.
-			const createSessionUrl = `https://graph.microsoft.com/v1.0/drives/${this.driveId}/items/${parentId}:/${fileName}:/createUploadSession`;
+			const createSessionUrl = `https://graph.microsoft.com/v1.0/drives/${this.driveId}/items/${parentId}:/${fileName}:/createUploadSession`
 
 			// 4. Tạo Upload Session trên SharePoint
 			const sessionResponse = await axios.post(
 				createSessionUrl,
 				{
 					item: {
-						"@microsoft.graph.conflictBehavior": "rename", // Hoặc "replace" nếu muốn ghi đè
-					}
+						'@microsoft.graph.conflictBehavior': 'rename', // Hoặc "replace" nếu muốn ghi đè
+					},
 				},
 				{
 					headers: {
@@ -195,24 +199,26 @@ export class SharePointService implements OnModuleInit, OnModuleDestroy {
 						'Content-Type': 'application/json',
 					},
 				}
-			);
+			)
 
-			const uploadUrl = sessionResponse.data.uploadUrl;
+			const uploadUrl = sessionResponse.data.uploadUrl
 
 			// 5. Khởi tạo thông số băm nhỏ file (Chunking)
-			const fileSize = file.size;
+			const fileSize = file.size
 			// Microsoft bắt buộc chunk size là bội số của 320 KiB (327,680 bytes)
 			// 327680 * 10 = ~3.2MB cho mỗi chunk. Đây là mức lý tưởng.
-			const chunkSize = 327680 * 10;
-			let start = 0;
-			let uploadResult = null;
+			const chunkSize = 327680 * 10
+			let start = 0
+			let uploadResult = null
 
-			this.logger.log(`Bắt đầu upload file ${file.originalname} (Size: ${fileSize} bytes)`);
+			this.logger.log(
+				`Bắt đầu upload file ${file.originalname} (Size: ${fileSize} bytes)`
+			)
 
 			// 6. Đẩy từng chunk lên SharePoint
 			while (start < fileSize) {
-				const end = Math.min(start + chunkSize, fileSize);
-				const chunk = file.buffer.slice(start, end);
+				const end = Math.min(start + chunkSize, fileSize)
+				const chunk = file.buffer.slice(start, end)
 
 				const chunkResponse = await axios.put(uploadUrl, chunk, {
 					headers: {
@@ -220,28 +226,30 @@ export class SharePointService implements OnModuleInit, OnModuleDestroy {
 						// Header Content-Range bắt buộc: bytes {start}-{end}/{total}
 						'Content-Range': `bytes ${start}-${end - 1}/${fileSize}`,
 					},
-				});
+				})
 
-				uploadResult = chunkResponse.data;
-				start = end;
+				uploadResult = chunkResponse.data
+				start = end
 
 				// Tuỳ chọn: Ghi log tiến trình
-				const percent = Math.round((start / fileSize) * 100);
-				this.logger.debug(`Uploading ${file.originalname}: ${percent}%`);
+				const percent = Math.round((start / fileSize) * 100)
+				this.logger.debug(`Uploading ${file.originalname}: ${percent}%`)
 			}
 
-			this.logger.log(`Upload thành công file: ${file.originalname}`);
+			this.logger.log(`Upload thành công file: ${file.originalname}`)
 
 			// 7. Trả về kết quả sau khi hoàn thành
 			return uploadResult
-
 		} catch (error: any) {
-			const errorMessage = error?.response?.data?.error?.message || error.message;
-			this.logger.error(`Error uploading file ${file.originalname} to SharePoint: ${errorMessage}`);
+			const errorMessage =
+				error?.response?.data?.error?.message || error.message
+			this.logger.error(
+				`Error uploading file ${file.originalname} to SharePoint: ${errorMessage}`
+			)
 
 			throw new BadRequestException(
 				`Failed to upload file to SharePoint. Error: ${errorMessage}`
-			);
+			)
 		}
 	}
 
@@ -276,7 +284,11 @@ export class SharePointService implements OnModuleInit, OnModuleDestroy {
 		)
 	}
 
-	async queueCopyItem(itemId: string, destinationFolderId: string, newName?: string) {
+	async queueCopyItem(
+		itemId: string,
+		destinationFolderId: string,
+		newName?: string
+	) {
 		const payload: CopyItemDto = {
 			itemId,
 			destinationFolderId,
@@ -310,15 +322,15 @@ export class SharePointService implements OnModuleInit, OnModuleDestroy {
 		await client.api(`${this.driveEndpoint}/items/${itemId}`).delete()
 		return { success: true }
 	}
-	
+
 	async getFolderDetailsByPath(path: string) {
-		const client = await this.getGraphClient();
+		const client = await this.getGraphClient()
 
 		// Clean the path: remove leading slash and encode for URLs (handles spaces/special chars)
-		const safePath = path.startsWith('/') ? path.substring(1) : path;
-		const encodedPath = encodeURIComponent(safePath);
+		const safePath = path.startsWith('/') ? path.substring(1) : path
+		const encodedPath = encodeURIComponent(safePath)
 
-		const endpoint = `/drives/${this.driveId}/root:/${encodedPath}`;
+		const endpoint = `/drives/${this.driveId}/root:/${encodedPath}`
 
 		try {
 			const item = await client
@@ -328,14 +340,14 @@ export class SharePointService implements OnModuleInit, OnModuleDestroy {
 					'id',
 					'name',
 					'webUrl',
-					'folder',        // Contains childCount
-					'size',          // Total size of all items inside
+					'folder', // Contains childCount
+					'size', // Total size of all items inside
 					'parentReference', // Site and Drive info
 					'createdDateTime',
 					'lastModifiedDateTime',
-					'file'           // Will be present if it's a file, null if folder
+					'file', // Will be present if it's a file, null if folder
 				])
-				.get();
+				.get()
 
 			return {
 				id: item.id,
@@ -347,11 +359,15 @@ export class SharePointService implements OnModuleInit, OnModuleDestroy {
 				parentPath: item.parentReference?.path,
 				createdAt: item.createdDateTime,
 				updatedAt: item.lastModifiedDateTime,
-				raw: item // Keep the original response if needed
-			};
+				raw: item, // Keep the original response if needed
+			}
 		} catch (error) {
-			this.logger.error(`Path resolution failed: ${path} - ${(error as Error).message}`);
-			throw new BadRequestException(`Path '${path}' not found in SharePoint.`);
+			this.logger.error(
+				`Path resolution failed: ${path} - ${(error as Error).message}`
+			)
+			throw new BadRequestException(
+				`Path '${path}' not found in SharePoint.`
+			)
 		}
 	}
 
@@ -371,13 +387,38 @@ export class SharePointService implements OnModuleInit, OnModuleDestroy {
 		try {
 			const client = await this.getGraphClient()
 			// Ví dụ sử dụng Microsoft Graph Client
-			const details = await client.api(`/sites/${this.siteId}/drive/items/${folderId}`)
-				.get();
+			const details = await client
+				.api(`/sites/${this.siteId}/drive/items/${folderId}`)
+				.get()
 
-			return details;
+			return details
 		} catch (error) {
 			// Xử lý lỗi (ví dụ: NotFoundException nếu folder không tồn tại)
-			throw error;
+			throw error
 		}
 	}
+
+	/**
+	 * Trả về Drive ID đang được sử dụng (Mặc định là Documents của site Data)
+	 */
+	public getDriveId(): string {
+		if (!this.driveId) {
+			this.logger.error('Attempted to get driveId before initialization')
+			throw new BadRequestException(
+				'SharePoint Drive is not initialized or not found.'
+			)
+		}
+		return this.driveId
+	}
+
+	/**
+	 * Trả về Site ID đang được sử dụng
+	 */
+	public getSiteId(): string {
+		if (!this.siteId) {
+			throw new BadRequestException('SharePoint Site is not initialized.')
+		}
+		return this.siteId
+	}
 }
+

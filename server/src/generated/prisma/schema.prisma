@@ -466,20 +466,6 @@ model Job {
   @@index([priority])
 }
 
-model SharepointItem {
-  id              String  @id @default(uuid())
-  itemId          String
-  displayName     String?
-  isFolder        Boolean @default(false)
-  size            Int?
-  webUrl          String?
-  createdDateTime String?
-  createdBy       String?
-  jobs            Job[]
-
-  @@unique([itemId, id])
-}
-
 enum JOB_PAYMENT_STATUS {
   PAID
   PENDING
@@ -952,6 +938,28 @@ model PostEvent {
   post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
 
+model SharepointItem {
+  id              String  @id @default(uuid())
+  itemId          String
+  displayName     String?
+  isFolder        Boolean @default(false)
+  size            Int?
+  webUrl          String?
+  createdDateTime String?
+  createdBy       String?
+  jobs            Job[]
+
+  syncStatus SharepointSyncStatus @default(FAILED)
+
+  @@unique([itemId, id])
+}
+
+enum SharepointSyncStatus {
+  FAILED
+  SUCCESS
+  SYNCING
+}
+
 enum TicketCategory {
   BUG
   JOB
@@ -985,8 +993,8 @@ enum TicketStatus {
 }
 
 model SystemSetting {
-  key       String   @id // e.g., "maintenanceMode"
-  value     String   @db.Text // Store everything as a stringified JSON
+  key       String   @id
+  value     String   @db.Text
   updatedAt DateTime @updatedAt
 
   modifierBy   User?   @relation(fields: [modifierById], references: [id])

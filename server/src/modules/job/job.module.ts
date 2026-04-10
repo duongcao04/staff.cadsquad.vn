@@ -1,3 +1,6 @@
+import { BullMQAdapter } from '@bull-board/api/bullMQAdapter'
+import { BullBoardModule } from '@bull-board/nestjs'
+import { BullModule } from '@nestjs/bullmq'
 import { forwardRef, Module } from '@nestjs/common'
 import { CqrsModule } from '@nestjs/cqrs'
 import { MailModule } from '../../providers/mail/mail.module'
@@ -14,13 +17,28 @@ import { JobCommentService } from './job-comment.service'
 import { JobDeliverService } from './job-deliver.service'
 import { JobHelpersService } from './job-helpers.service'
 import { JobReminderService } from './job-reminder.service'
+import { JOB_FLOW, JOB_QUEUE } from './job.constants'
 import { JobController } from './job.controller'
 import { JobService } from './job.service'
 import { JobNotificationListener } from './listeners/job-notification.listener'
+import { JobSharepointListener } from './listeners/job-sharepoint.listener'
 import { QueryHandlers } from './queries'
+import { JobProcessor } from './job.processor'
+
+const EventListeners = [JobNotificationListener, JobSharepointListener]
 
 @Module({
 	imports: [
+		BullModule.registerQueue({
+			name: JOB_QUEUE,
+		}),
+		BullBoardModule.forFeature({
+			name: JOB_QUEUE,
+			adapter: BullMQAdapter,
+		}),
+		BullModule.registerFlowProducer({
+			name: JOB_FLOW,
+		}),
 		forwardRef(() => AuthModule),
 		forwardRef(() => UserModule),
 		UserConfigModule,
@@ -39,10 +57,12 @@ import { QueryHandlers } from './queries'
 		ActivityLogService,
 		JobCommentService,
 		JobReminderService,
-		JobNotificationListener,
+		JobProcessor,
+		...EventListeners,
 		...CommandHandlers,
 		...QueryHandlers,
 	],
 	exports: [JobService, ActivityLogService, JobCommentService],
 })
-export class JobModule { }
+export class JobModule {}
+

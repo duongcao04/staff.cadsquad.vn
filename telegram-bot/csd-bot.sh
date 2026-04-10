@@ -46,7 +46,7 @@ $OUTPUT"
                         # KIỂM TRA: Container có tồn tại không? (Dùng docker inspect giấu output)
                         if docker inspect "$CONTAINER" >/dev/null 2>&1; then
                             # NẾU TỒN TẠI -> Lấy 30 dòng log
-                            LOGS=$(docker logs --tail 30 "$CONTAINER" 2>&1)
+                            LOGS=$(docker logs --tail 30 "$CONTAINER" 2>&1 | sed 's/\x1b\[[0-9;]*[a-zA-Z]//g')
                             
                             # Xử lý trường hợp log rỗng
                             if [[ -z "${LOGS// /}" ]]; then

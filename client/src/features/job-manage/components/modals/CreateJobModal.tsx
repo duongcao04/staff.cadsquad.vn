@@ -1,8 +1,4 @@
-import {
-    copySharepointItemOptions,
-    createJobOptions,
-    INTERNAL_URLS,
-} from '@/lib'
+import { createJobOptions, INTERNAL_URLS } from '@/lib'
 import { CancelModal } from '@/shared/components/ui/cancel-modal'
 import { useDevice } from '@/shared/hooks'
 import { ChevronsExpandUpRight } from '@gravity-ui/icons'
@@ -18,9 +14,9 @@ import {
     useDisclosure,
 } from '@heroui/react'
 import { useMutation } from '@tanstack/react-query'
+import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import CreateJobForm from '../forms/CreateJobForm'
-import { Link } from '@tanstack/react-router'
 
 type Props = {
     isOpen: boolean
@@ -37,8 +33,6 @@ export function CreateJobModal({ isOpen, onClose }: Props) {
 
     const createJobAction = useMutation(createJobOptions)
     const cancelModalDisclosure = useDisclosure()
-
-    const copySharepointMutation = useMutation(copySharepointItemOptions)
 
     return (
         <>
@@ -101,44 +95,26 @@ export function CreateJobModal({ isOpen, onClose }: Props) {
                                     typeId: values.typeId,
                                     description: values.description,
                                     paymentChannelId: values.paymentChannelId,
-                                    sharepointFolderId: '',
-                                }
-                                if (values.useExistingSharepointFolder) {
-                                    createData['sharepointFolderId'] =
-                                        values.sharepointFolderId as string
-                                } else {
-                                    const sharepointFolderName =
-                                        values.no +
-                                        '- ' +
-                                        values.clientName.toUpperCase() +
-                                        '_' +
-                                        values.displayName.toUpperCase()
-                                    const newSharepointFolderId =
-                                        await copySharepointMutation
-                                            .mutateAsync({
-                                                itemId: values.sharepointTemplateId as string,
-                                                destinationFolderId:
-                                                    rootSharepointFolderId as string,
-                                                newName: sharepointFolderName,
-                                            })
-                                            .then((res) => res.result.id)
-                                    createData['sharepointFolderId'] =
-                                        newSharepointFolderId as string
+                                    sharepointFolderId:
+                                        values.sharepointFolderId,
+                                    useExistingSharepointFolder:
+                                        values.useExistingSharepointFolder
+                                            ? '1'
+                                            : '0',
+                                    sharepointTemplateId:
+                                        values.sharepointTemplateId,
                                 }
 
-                                await createJobAction.mutateAsync(
-                                    createData,
-                                    {
-                                        onSuccess() {
-                                            addToast({
-                                                title: 'Successfully',
-                                                description:
-                                                    'Create job successfuly',
-                                                color: 'success',
-                                            })
-                                        },
-                                    }
-                                )
+                                await createJobAction.mutateAsync(createData, {
+                                    onSuccess() {
+                                        addToast({
+                                            title: 'Successfully',
+                                            description:
+                                                'Create job successfuly',
+                                            color: 'success',
+                                        })
+                                    },
+                                })
                             }}
                             afterSubmit={onClose}
                         />

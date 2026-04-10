@@ -237,7 +237,6 @@ export const createJobOptions = mutationOptions({
         data: Omit<
             TCreateJobFormValues,
             | 'useExistingSharepointFolder'
-            | 'sharepointTemplateId'
             | 'isCreateSharepointFolder'
         >
     ) => jobApi.create(data),
