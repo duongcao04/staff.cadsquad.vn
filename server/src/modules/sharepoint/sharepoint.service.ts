@@ -1,6 +1,6 @@
 import { azureConfig } from '@/config'
 import { ConfidentialClientApplication } from '@azure/msal-node'
-import { Client } from '@microsoft/microsoft-graph-client'
+import { Client, ResponseType } from '@microsoft/microsoft-graph-client'
 import { InjectFlowProducer, InjectQueue } from '@nestjs/bullmq'
 import {
 	BadRequestException,
@@ -299,6 +299,67 @@ export class SharePointService implements OnModuleInit, OnModuleDestroy {
 		this.logger.log(`Queued copy item: ${itemId} to ${destinationFolderId}`)
 	}
 
+	async excuteCopySharepointFolder(data: {
+		itemId: string
+		destinationFolderId: string
+		newName: string
+	}) {
+		const { itemId, destinationFolderId, newName } = data
+
+		try {
+			const client = await this.getGraphClient()
+			const driveId = this.getDriveId()
+
+			const copyRequest = {
+				parentReference: { driveId, id: destinationFolderId },
+				name: newName || undefined,
+			}
+
+			// 1. Gọi API Copy dạng RAW
+			const response = await client
+				.api(`/drives/${driveId}/items/${itemId}/copy`)
+				.responseType(ResponseType.RAW)
+				.post(copyRequest)
+
+			// 2. Lấy Monitor URL
+			const monitorUrl = response.headers.get('Location')
+			if (!monitorUrl)
+				throw new Error('Graph API did not return Location header')
+
+			// 3. Vòng lặp Polling chờ MS xử lý
+			let isDone = false
+			let newSharepointItem = null
+
+			while (!isDone) {
+				await new Promise((resolve) => setTimeout(resolve, 2000))
+
+				const statusResponse = await client.api(monitorUrl).get()
+
+				if (statusResponse.status === 'completed') {
+					isDone = true
+					newSharepointItem = await client
+						.api(
+							`/drives/${driveId}/items/${statusResponse.resourceId}`
+						)
+						.get()
+				} else if (statusResponse.status === 'failed') {
+					throw new Error(
+						`MS Graph copy failed: ${JSON.stringify(statusResponse)}`
+					)
+				}
+			}
+
+			this.logger.log(
+				`✅ Copied item ${itemId} to ${destinationFolderId} (New ID: ${(newSharepointItem as unknown as { id: string }).id})`
+			)
+
+			return newSharepointItem
+		} catch (error) {
+			this.logger.error(`Copy item failed: ${(error as Error).message}`)
+			throw error
+		}
+	}
+
 	// ==========================================
 	// 4. GET & DELETE
 	// ==========================================
@@ -421,4 +482,3 @@ export class SharePointService implements OnModuleInit, OnModuleDestroy {
 		return this.siteId
 	}
 }
-

@@ -102,11 +102,12 @@ export class JobProcessor extends WorkerHost {
 				)
 
 				// 2. CHẠY COPY NGẦM TRÊN MICROSOFT
-				const folderDetail = await this.copySharepointFolder({
-					itemId: dto.sharepointTemplateId,
-					destinationFolderId: destinationFolderCreationId,
-					newName: sharepointFolderName,
-				})
+				const folderDetail =
+					await this.sharepointService.excuteCopySharepointFolder({
+						itemId: dto.sharepointTemplateId,
+						destinationFolderId: destinationFolderCreationId,
+						newName: sharepointFolderName,
+					})
 
 				// 3. COPY XONG -> UPDATE THÀNH "SUCCESS" VÀ ĐIỀN DATA THẬT
 				await this.prisma.job.update({
@@ -122,20 +123,23 @@ export class JobProcessor extends WorkerHost {
 								// LƯU Ý: Phải đổi từ 'create' sang 'update' vì record đã tồn tại
 								syncStatus: 'SUCCESS',
 								itemId: cryto.randomUUID(), // Đã có ID thật
-								webUrl: folderDetail.webUrl,
-								displayName: folderDetail.name,
+								webUrl: folderDetail?.['webUrl'] || '',
+								displayName: folderDetail?.['name'] || '',
 								createdBy:
-									folderDetail.createdBy?.name ||
-									folderDetail.createdBy?.user?.displayName ||
+									folderDetail?.['createdBy']?.['name'] ||
+									folderDetail?.['createdBy']?.['user']?.[
+										'displayName'
+									] ||
 									'Unknown',
-								createdDateTime: folderDetail.createdDateTime,
-								size: folderDetail.size || 0,
+								createdDateTime:
+									folderDetail?.['createdDateTime'],
+								size: folderDetail?.['size'] || 0,
 							},
 						},
 					},
 				})
 				this.logger.log(
-					`Created job with Copy Template folder. Sharepoint Folder ID: ${folderDetail.id}`
+					`Created job with Copy Template folder. Sharepoint Folder ID: ${folderDetail?.['id']}`
 				)
 			}
 		} catch (error) {
@@ -169,67 +173,4 @@ export class JobProcessor extends WorkerHost {
 			throw error
 		}
 	}
-
-	// UTILS
-	private async copySharepointFolder(data: {
-		itemId: string
-		destinationFolderId: string
-		newName: string
-	}) {
-		const { itemId, destinationFolderId, newName } = data
-
-		try {
-			const client = await this.sharepointService.getGraphClient()
-			const driveId = this.sharepointService.getDriveId()
-
-			const copyRequest = {
-				parentReference: { driveId, id: destinationFolderId },
-				name: newName || undefined,
-			}
-
-			// 1. Gọi API Copy dạng RAW
-			const response = await client
-				.api(`/drives/${driveId}/items/${itemId}/copy`)
-				.responseType(ResponseType.RAW)
-				.post(copyRequest)
-
-			// 2. Lấy Monitor URL
-			const monitorUrl = response.headers.get('Location')
-			if (!monitorUrl)
-				throw new Error('Graph API did not return Location header')
-
-			// 3. Vòng lặp Polling chờ MS xử lý
-			let isDone = false
-			let newSharepointItem = null
-
-			while (!isDone) {
-				await new Promise((resolve) => setTimeout(resolve, 2000))
-
-				const statusResponse = await client.api(monitorUrl).get()
-
-				if (statusResponse.status === 'completed') {
-					isDone = true
-					newSharepointItem = await client
-						.api(
-							`/drives/${driveId}/items/${statusResponse.resourceId}`
-						)
-						.get()
-				} else if (statusResponse.status === 'failed') {
-					throw new Error(
-						`MS Graph copy failed: ${JSON.stringify(statusResponse)}`
-					)
-				}
-			}
-
-			this.logger.log(
-				`✅ Copied item ${itemId} to ${destinationFolderId} (New ID: ${newSharepointItem.id})`
-			)
-
-			return newSharepointItem
-		} catch (error) {
-			this.logger.error(`Copy item failed: ${(error as Error).message}`)
-			throw error
-		}
-	}
 }
-

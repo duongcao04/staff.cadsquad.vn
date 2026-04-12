@@ -2,34 +2,26 @@ import { Logger } from '@nestjs/common'
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs'
 import { JobCreatedEvent } from '../events/job-created.event'
 import { SharePointService } from '../../sharepoint/sharepoint.service'
+import { Queue } from 'bullmq'
+import { InjectQueue } from '@nestjs/bullmq'
+import { JOB_QUEUE, JOB_CREATED_HANDLER } from '../job.constants'
 
 @EventsHandler(JobCreatedEvent)
 export class JobSharepointListener implements IEventHandler<JobCreatedEvent> {
 	private readonly logger = new Logger(JobSharepointListener.name)
 
-	constructor(private readonly sharepointService: SharePointService) {}
+	constructor(@InjectQueue(JOB_QUEUE) private readonly spQueue: Queue) {}
 
 	async handle(event: JobCreatedEvent) {
 		this.logger.log(
-			`[JobSharepointListener] Bắt được sự kiện tạo job cho mã: ${event.jobNo}`
+			`[JobSharepointListener] Bắt được sự kiện tạo job cho mã: ${event.data.no}`
 		)
 
-		const sharepointFolderName = `${event.jobNo}- ${event.clientName.toUpperCase()}_${event.displayName.toUpperCase()}`
-
-		// Giả sử bạn có logic lấy ID thư mục đích (có thể import thêm 1 service để lấy if needed)
-		const destinationFolderCreationId = 'ID_CUA_THU_MUC_DICH'
-
 		try {
-			// Đẩy vào BullMQ Queue
-			await this.sharepointService.queueCopyItem(
-				event.sharepointTemplateId,
-				destinationFolderCreationId,
-				sharepointFolderName,
-				event.jobNo // Truyền Job No để Worker update lại Database sau khi copy xong
-			)
+			await this.spQueue.add(JOB_CREATED_HANDLER, event)
 
 			this.logger.log(
-				`Đã đẩy yêu cầu tạo folder Sharepoint cho Job ${event.jobNo} vào Queue.`
+				`Đã đẩy yêu cầu tạo folder Sharepoint cho Job ${event.data.no} vào Queue.`
 			)
 		} catch (error) {
 			this.logger.error(
@@ -38,4 +30,3 @@ export class JobSharepointListener implements IEventHandler<JobCreatedEvent> {
 		}
 	}
 }
-
