@@ -1,25 +1,20 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
-import { PrismaService } from '@/providers/prisma/prisma.service'
-import { EventEmitter2 } from '@nestjs/event-emitter'
-import {
-	BadRequestException,
-	InternalServerErrorException,
-	NotFoundException,
-} from '@nestjs/common'
-import { CreateJobCommand } from '../impl/create-job.command'
-import { ActivityLogService } from '../../activity-log.service'
 import { ActivityType, Prisma } from '@/generated/prisma'
-import { JobActionEvent } from '../../events/job-action.event'
-import { plainToInstance } from 'class-transformer'
-import { JobResponseDto } from '../../dto/job-response.dto'
-import slugify from 'slugify'
-import { randomUUID } from 'node:crypto'
-import { SharePointService } from '../../../sharepoint/sharepoint.service'
-import { CreateJobDto } from '../../dto/create-job.dto'
+import { PrismaService } from '@/providers/prisma/prisma.service'
 import { InjectQueue } from '@nestjs/bullmq'
+import { InternalServerErrorException, NotFoundException } from '@nestjs/common'
+import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs'
+import { EventEmitter2 } from '@nestjs/event-emitter'
 import { Queue } from 'bullmq'
+import { plainToInstance } from 'class-transformer'
+import slugify from 'slugify'
+import { SharePointService } from '../../../sharepoint/sharepoint.service'
+import { ActivityLogService } from '../../activity-log.service'
+import { CreateJobDto } from '../../dto/create-job.dto'
+import { JobResponseDto } from '../../dto/job-response.dto'
+import { JobActionEvent } from '../../events/job-action.event'
 import { JOB_CREATED_HANDLER, JOB_QUEUE } from '../../job.constants'
-import { JOB_CREATE_FOLDER } from '../../../sharepoint/sharepoint.constants'
+import { CreateJobCommand } from '../impl/create-job.command'
+import { JobCreatedEvent } from '../../events/job-created.event'
 
 @CommandHandler(CreateJobCommand)
 export class CreateJobHandler implements ICommandHandler<CreateJobCommand> {
@@ -27,7 +22,7 @@ export class CreateJobHandler implements ICommandHandler<CreateJobCommand> {
 		private readonly prisma: PrismaService,
 		private readonly activityLogService: ActivityLogService,
 		private readonly sharepointService: SharePointService,
-		private readonly eventEmitter: EventEmitter2,
+		private readonly eventBus: EventBus,
 		@InjectQueue(JOB_QUEUE) private readonly spQueue: Queue
 	) {}
 
@@ -51,6 +46,8 @@ export class CreateJobHandler implements ICommandHandler<CreateJobCommand> {
 			totalStaffCost,
 			attachmentUrls,
 			sharepointFolderId,
+			useExistingSharepointFolder,
+			sharepointTemplateId,
 			...jobData
 		} = dto
 
@@ -119,11 +116,8 @@ export class CreateJobHandler implements ICommandHandler<CreateJobCommand> {
 			return createdJob
 		})
 
-		await this.afterCreateJob(dto)
-
-		// Bắn event sau khi transaction thành công
-		this.eventEmitter.emit(
-			'job.action',
+		// Send notification
+		this.eventBus.publish(
 			new JobActionEvent(
 				ActivityType.CREATE_JOB,
 				newJob.id,
@@ -133,16 +127,15 @@ export class CreateJobHandler implements ICommandHandler<CreateJobCommand> {
 			)
 		)
 
-		return plainToInstance(JobResponseDto, newJob, {
-			excludeExtraneousValues: true,
-		})
-	}
-
-	private async afterCreateJob(dto: CreateJobDto) {
 		const destinationFolderCreationId =
 			await this.getDestinationFolderCreationId(dto.typeId)
 		const payload = { destinationFolderCreationId, ...dto }
-		await this.spQueue.add(JOB_CREATED_HANDLER, payload)
+
+		this.eventBus.publish(new JobCreatedEvent(payload))
+
+		return plainToInstance(JobResponseDto, newJob, {
+			excludeExtraneousValues: true,
+		})
 	}
 
 	private async getDestinationFolderCreationId(
@@ -186,4 +179,3 @@ export class CreateJobHandler implements ICommandHandler<CreateJobCommand> {
 		return client
 	}
 }
-

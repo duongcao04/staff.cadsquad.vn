@@ -303,63 +303,39 @@ export class SharePointService implements OnModuleInit, OnModuleDestroy {
 		itemId: string
 		destinationFolderId: string
 		newName: string
-	}) {
+	}): Promise<void> {
 		const { itemId, destinationFolderId, newName } = data
 
 		try {
 			const client = await this.getGraphClient()
-			const driveId = this.getDriveId()
+			const driveId = this.driveId
 
+			// Build the copy request
 			const copyRequest = {
-				parentReference: { driveId, id: destinationFolderId },
-				name: newName || undefined,
+				parentReference: {
+					driveId: this.driveId,
+					id: destinationFolderId,
+				},
+				name: newName || undefined, // Optional new name
 			}
 
-			// 1. Gọi API Copy dạng RAW
-			const response = await client
+			// Execute the copy operation
+			const copyResult = await client
 				.api(`/drives/${driveId}/items/${itemId}/copy`)
-				.responseType(ResponseType.RAW)
 				.post(copyRequest)
 
-			// 2. Lấy Monitor URL
-			const monitorUrl = response.headers.get('Location')
-			if (!monitorUrl)
-				throw new Error('Graph API did not return Location header')
-
-			// 3. Vòng lặp Polling chờ MS xử lý
-			let isDone = false
-			let newSharepointItem = null
-
-			while (!isDone) {
-				await new Promise((resolve) => setTimeout(resolve, 2000))
-
-				const statusResponse = await client.api(monitorUrl).get()
-
-				if (statusResponse.status === 'completed') {
-					isDone = true
-					newSharepointItem = await client
-						.api(
-							`/drives/${driveId}/items/${statusResponse.resourceId}`
-						)
-						.get()
-				} else if (statusResponse.status === 'failed') {
-					throw new Error(
-						`MS Graph copy failed: ${JSON.stringify(statusResponse)}`
-					)
-				}
-			}
-
 			this.logger.log(
-				`✅ Copied item ${itemId} to ${destinationFolderId} (New ID: ${(newSharepointItem as unknown as { id: string }).id})`
+				`✅ Copied item ${itemId} to ${destinationFolderId} (New ID: ${JSON.stringify(copyResult)})`
 			)
 
-			return newSharepointItem
+			return copyResult
 		} catch (error) {
-			this.logger.error(`Copy item failed: ${(error as Error).message}`)
-			throw error
+			this.logger.error(
+				`Copy item failed: ${JSON.stringify((error as { message: string }).message)}`
+			)
+			throw error // Ném lỗi để BullMQ biết và retry
 		}
 	}
-
 	// ==========================================
 	// 4. GET & DELETE
 	// ==========================================
