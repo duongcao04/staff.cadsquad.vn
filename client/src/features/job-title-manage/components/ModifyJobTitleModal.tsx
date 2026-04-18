@@ -6,209 +6,325 @@ import {
     ModalContent,
     ModalFooter,
     ModalHeader,
+    Skeleton,
     Textarea,
     Tooltip,
-    Slider,
-    cn
+    addToast,
+    useDisclosure,
 } from '@heroui/react'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { useFormik } from 'formik'
 import lodash from 'lodash'
-import { Briefcase, Hash, Shield, Sparkles, X } from 'lucide-react'
-import { toFormikValidationSchema } from 'zod-formik-adapter'
+import { Briefcase, Hash, AlignLeft, Sparkles } from 'lucide-react'
 import { z } from 'zod'
-import slugify from 'slugify'
+import { toFormikValidate } from 'zod-formik-adapter'
+// Replace these with your actual query/mutation imports
+import {
+    jobTitleOptions,
+    createJobTitleOptions,
+    updateJobTitleOptions,
+} from '@/lib/queries'
+import { CancelModal } from '../../../shared/components'
 
-// Define Schema locally if not imported
-const CreateJobTitleSchema = z.object({
-    displayName: z.string().min(1, "Name is required"),
-    code: z.string().min(1, "Code is required"),
-    level: z.number().min(1).max(10),
-    notes: z.string().optional(),
+// --- Validation Schema ---
+const JobTitleFormSchema = z.object({
+    displayName: z.string().min(1, 'Display name is required'),
+    code: z.string().min(1, 'Code is required').toUpperCase(),
+    notes: z.string().optional().nullable(),
 })
 
-type TCreateJobTitleInput = z.infer<typeof CreateJobTitleSchema>
+type TJobTitleFormValues = z.infer<typeof JobTitleFormSchema>
 
-type ModifyJobTitleModalProps = {
+interface ModifyJobTitleModalProps {
     isOpen: boolean
     onClose: () => void
-    jobTitleId?: string // If present, we are editing
+    afterSubmit?: () => void
+    jobTitleId?: string // If provided -> Edit Mode. If undefined -> Create Mode.
 }
 
-export function ModifyJobTitleModal({
+export const ModifyJobTitleModal = ({
     isOpen,
     onClose,
+    afterSubmit,
     jobTitleId,
-}: ModifyJobTitleModalProps) {
-    const queryClient = useQueryClient()
-    const isEditing = !lodash.isEmpty(jobTitleId)
+}: ModifyJobTitleModalProps) => {
+    const isEditMode = !!jobTitleId
 
-    // Mocking the options/fetch logic based on your pattern
-    // const { data: jobTitle } = useQuery({ ...jobTitleOptions(jobTitleId) })
-    // const mutation = useMutation(createJobTitleOptions)
+    const cancelModalState = useDisclosure()
 
-    const formik = useFormik<TCreateJobTitleInput>({
-        initialValues: {
-            displayName: '',
-            code: '',
-            level: 1,
-            notes: '',
-        },
-        enableReinitialize: true,
-        validationSchema: toFormikValidationSchema(CreateJobTitleSchema),
-        onSubmit: async (values) => {
-            console.log('Submitting Job Title:', values)
-            // await mutation.mutateAsync(values)
+    // --- 1. Data Fetching (Only if Edit Mode) ---
+    const { data, isLoading: isFetching } = useQuery({
+        ...jobTitleOptions(jobTitleId || ''),
+        enabled: isEditMode && isOpen,
+    })
+
+    const jobTitle = data?.jobTitle
+
+    // --- 2. Mutations ---
+    const createMutation = useMutation(createJobTitleOptions)
+    const updateMutation = useMutation(updateJobTitleOptions)
+    const isPending = createMutation.isPending || updateMutation.isPending
+
+    const handleCloseModal = () => {
+        if (!formik.dirty) {
+            formik.resetForm()
             onClose()
+        } else {
+            cancelModalState.onOpen()
+        }
+    }
+
+    // --- 3. Formik Setup ---
+    const formik = useFormik<TJobTitleFormValues>({
+        enableReinitialize: true,
+        initialValues: {
+            displayName: jobTitle?.displayName || '',
+            code: jobTitle?.code || '',
+            notes: jobTitle?.notes || '',
+        },
+        validate: toFormikValidate(JobTitleFormSchema),
+        onSubmit: async (values) => {
+            try {
+                if (isEditMode && jobTitleId) {
+                    await updateMutation.mutateAsync({
+                        id: jobTitleId,
+                        data: {
+                            code: values.code,
+                            displayName: values.displayName,
+                            notes: values.notes || undefined,
+                        },
+                    })
+                    addToast({
+                        title: 'Job Title updated successfully',
+                        color: 'success',
+                    })
+                } else {
+                    await createMutation.mutateAsync({
+                        code: values.code,
+                        displayName: values.displayName,
+                        notes: values.notes || undefined,
+                    })
+                    addToast({
+                        title: 'Job Title created successfully',
+                        color: 'success',
+                    })
+                }
+
+                afterSubmit?.()
+                onClose()
+                formik.resetForm()
+            } catch (error) {
+                console.error('Submit error:', error)
+                addToast({ title: 'An error occurred', color: 'danger' })
+            }
         },
     })
 
+    // --- 4. Auto-Generate Code ---
     const handleGenerateCode = () => {
-        if (!formik.values.displayName) return
-        const generated = slugify(formik.values.displayName, { replacement: '_', lower: false })
+        if (!formik.values.displayName) {
+            addToast({
+                title: 'Please enter a Display Name first',
+                color: 'warning',
+            })
+            return
+        }
+        const slugifiedCode = lodash
+            .kebabCase(formik.values.displayName)
             .toUpperCase()
-            .replace(/[^A-Z0-9_]/g, '')
-        formik.setFieldValue('code', `ROLE_${generated}`)
+        formik.setFieldValue('code', slugifiedCode)
     }
 
     return (
-        <Modal 
-            isOpen={isOpen} 
-            onClose={onClose} 
-            size="xl"
-            backdrop="blur"
-            classNames={{
-                base: "border border-white/10 bg-background/80 backdrop-blur-md shadow-2xl",
-                header: "border-b border-white/5 pb-4",
-            }}
-        >
-            <ModalContent>
-                {(onClose) => (
-                    <>
-                        <ModalHeader className="flex items-center gap-3 pt-6">
-                            <div className="p-2 rounded-lg bg-primary/10 text-primary shadow-[0_0_15px_rgba(0,111,238,0.2)]">
-                                <Briefcase size={20} />
-                            </div>
-                            <div className="flex flex-col">
-                                <span className="text-lg font-black tracking-tight">
-                                    {isEditing ? 'Update Position' : 'Define New Position'}
+        <>
+            <CancelModal
+                isOpen={cancelModalState.isOpen}
+                onClose={cancelModalState.onClose}
+                onConfirm={() => {
+                    formik.resetForm()
+                    onClose()
+                }}
+            />
+            <Modal
+                isOpen={isOpen}
+                onClose={handleCloseModal}
+                size="md"
+                placement="center"
+            >
+                <ModalContent>
+                    {isEditMode && isFetching ? (
+                        <ModifyJobTitleSkeleton />
+                    ) : (
+                        <form onSubmit={formik.handleSubmit}>
+                            <ModalHeader className="flex flex-col gap-1 border-b border-default-100 pb-4 pt-6 px-6">
+                                <span className="text-xl font-bold text-default-900">
+                                    {isEditMode
+                                        ? 'Edit Job Title'
+                                        : 'Create Job Title'}
                                 </span>
-                                <span className="text-[10px] uppercase font-bold text-text-subdued tracking-widest">
-                                    Organizational Hierarchy System
-                                </span>
-                            </div>
-                        </ModalHeader>
+                                <p className="text-sm font-normal text-default-500">
+                                    {isEditMode
+                                        ? `Update details for ${jobTitle?.displayName}`
+                                        : 'Add a new standardized job title to the system.'}
+                                </p>
+                            </ModalHeader>
 
-                        <ModalBody className="py-6 space-y-8">
-                            <form id="job-title-form" onSubmit={formik.handleSubmit} className="space-y-6">
-                                {/* Identity Row */}
-                                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                                    <Input
-                                        name="displayName"
-                                        label="Position Title"
-                                        placeholder="e.g. Senior Software Engineer"
-                                        labelPlacement="outside"
-                                        variant="bordered"
-                                        classNames={{ label: "font-bold text-xs uppercase tracking-wider" }}
-                                        value={formik.values.displayName}
-                                        onChange={formik.handleChange}
-                                    />
-                                    <div className="flex flex-col gap-2">
-                                        <label className="text-xs font-bold tracking-wider uppercase text-foreground">
-                                            System Code
-                                        </label>
-                                        <div className="flex gap-2">
-                                            <Input
-                                                name="code"
-                                                placeholder="ROLE_SR_ENG"
+                            <ModalBody className="grid grid-cols-1 gap-6 py-6 px-6">
+                                <Input
+                                    name="displayName"
+                                    label="Display Name"
+                                    labelPlacement="outside"
+                                    placeholder="e.g. Senior 3D Artist"
+                                    variant="bordered"
+                                    classNames={{
+                                        label: 'font-semibold text-default-700',
+                                        inputWrapper: 'border-1',
+                                    }}
+                                    value={formik.values.displayName}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    isInvalid={Boolean(
+                                        formik.touched.displayName &&
+                                        formik.errors.displayName
+                                    )}
+                                    errorMessage={
+                                        formik.touched.displayName &&
+                                        formik.errors.displayName
+                                    }
+                                    isRequired
+                                    startContent={
+                                        <Briefcase
+                                            size={16}
+                                            className="text-default-400 mr-2"
+                                        />
+                                    }
+                                />
+
+                                <Input
+                                    name="code"
+                                    label="System Code"
+                                    labelPlacement="outside"
+                                    placeholder="e.g. SNR-3D-ARTIST"
+                                    variant="bordered"
+                                    classNames={{
+                                        label: 'font-semibold text-default-700',
+                                        inputWrapper: 'border-1 pr-1',
+                                    }}
+                                    value={formik.values.code}
+                                    onChange={(e) =>
+                                        formik.setFieldValue(
+                                            'code',
+                                            e.target.value.toUpperCase()
+                                        )
+                                    }
+                                    onBlur={formik.handleBlur}
+                                    isInvalid={Boolean(
+                                        formik.touched.code &&
+                                        formik.errors.code
+                                    )}
+                                    errorMessage={
+                                        formik.touched.code &&
+                                        formik.errors.code
+                                    }
+                                    isRequired
+                                    startContent={
+                                        <Hash
+                                            size={16}
+                                            className="text-default-400 mr-2"
+                                        />
+                                    }
+                                    endContent={
+                                        <Tooltip content="Auto-generate from name">
+                                            <Button
+                                                isIconOnly
+                                                size="sm"
                                                 variant="flat"
-                                                className="flex-1"
-                                                startContent={<Hash size={14} className="text-text-subdued" />}
-                                                value={formik.values.code}
-                                                onChange={formik.handleChange}
-                                            />
-                                            <Tooltip content="Magic Link Code" showArrow>
-                                                <Button
-                                                    isIconOnly
-                                                    variant="faded"
-                                                    className="shadow-sm border-white/10"
-                                                    onPress={handleGenerateCode}
-                                                    isDisabled={!formik.values.displayName}
-                                                >
-                                                    <Sparkles size={16} className="text-primary" />
-                                                </Button>
-                                            </Tooltip>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Seniority Slider - Visualizing the 'level' field */}
-                                <div className="p-4 space-y-4 border rounded-2xl bg-white/5 border-white/5">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-2">
-                                            <Shield size={16} className="text-primary" />
-                                            <span className="text-xs font-bold tracking-widest uppercase">Authority Level</span>
-                                        </div>
-                                        <Badge color="primary" variant="flat" className="font-mono">
-                                            LVL {formik.values.level}
-                                        </Badge>
-                                    </div>
-                                    <Slider 
-                                        step={1} 
-                                        maxValue={10} 
-                                        minValue={1} 
-                                        defaultValue={1}
-                                        showSteps={true}
-                                        size="sm"
-                                        value={formik.values.level}
-                                        onChange={(val) => formik.setFieldValue('level', val)}
-                                        classNames={{
-                                            track: "bg-default-500/30",
-                                            filler: "bg-primary shadow-[0_0_10px_rgba(0,111,238,0.5)]",
-                                            thumb: "bg-primary border-2 border-white shadow-lg"
-                                        }}
-                                    />
-                                    <p className="text-[10px] text-text-subdued italic">
-                                        Higher levels grant broader system visibility and structural permissions.
-                                    </p>
-                                </div>
+                                                color="primary"
+                                                className="h-7 w-7 min-w-7"
+                                                onPress={handleGenerateCode}
+                                            >
+                                                <Sparkles size={14} />
+                                            </Button>
+                                        </Tooltip>
+                                    }
+                                />
 
                                 <Textarea
                                     name="notes"
-                                    label="Role Description"
-                                    placeholder="Outline primary responsibilities and KPIs..."
+                                    label="Notes / Description"
                                     labelPlacement="outside"
+                                    placeholder="Optional details about this role's responsibilities..."
                                     variant="bordered"
+                                    classNames={{
+                                        label: 'font-semibold text-default-700',
+                                        inputWrapper: 'border-1',
+                                    }}
                                     minRows={3}
-                                    classNames={{ label: "font-bold text-xs uppercase tracking-wider" }}
-                                    value={formik.values.notes}
+                                    value={formik.values.notes || ''}
                                     onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    startContent={
+                                        <AlignLeft
+                                            size={16}
+                                            className="text-default-400 mr-2 mt-1"
+                                        />
+                                    }
                                 />
-                            </form>
-                        </ModalBody>
+                            </ModalBody>
 
-                        <ModalFooter className="border-t bg-white/5 border-white/5">
-                            <Button 
-                                variant="light" 
-                                onPress={onClose} 
-                                className="font-bold"
-                                startContent={<X size={18} />}
-                            >
-                                Discard
-                            </Button>
-                            <Button
-                                color="primary"
-                                type="submit"
-                                form="job-title-form"
-                                className="px-8 font-black shadow-lg shadow-primary/20"
-                                // isLoading={mutation.isPending}
-                            >
-                                {isEditing ? 'Save Changes' : 'Initialize Position'}
-                            </Button>
-                        </ModalFooter>
-                    </>
-                )}
-            </ModalContent>
-        </Modal>
+                            <ModalFooter className="border-t border-default-100 px-6 py-4">
+                                <Button
+                                    variant="flat"
+                                    onPress={handleCloseModal}
+                                    isDisabled={isPending}
+                                    className="font-medium"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    color="primary"
+                                    type="submit"
+                                    isLoading={isPending}
+                                    className="font-bold shadow-sm"
+                                >
+                                    {isEditMode
+                                        ? 'Save Changes'
+                                        : 'Create Job Title'}
+                                </Button>
+                            </ModalFooter>
+                        </form>
+                    )}
+                </ModalContent>
+            </Modal>
+        </>
+    )
+}
+
+function ModifyJobTitleSkeleton() {
+    return (
+        <>
+            <ModalHeader className="flex flex-col gap-2 pb-4 border-b border-default-100 pt-6 px-6">
+                <Skeleton className="w-1/2 h-6 rounded-lg" />
+                <Skeleton className="w-3/4 h-4 rounded-lg mt-1" />
+            </ModalHeader>
+            <ModalBody className="p-6 space-y-6">
+                <div className="space-y-2">
+                    <Skeleton className="w-1/3 h-4 rounded-lg" />
+                    <Skeleton className="w-full h-10 rounded-xl" />
+                </div>
+                <div className="space-y-2">
+                    <Skeleton className="w-1/4 h-4 rounded-lg" />
+                    <Skeleton className="w-full h-10 rounded-xl" />
+                </div>
+                <div className="space-y-2">
+                    <Skeleton className="w-1/3 h-4 rounded-lg" />
+                    <Skeleton className="w-full h-20 rounded-xl" />
+                </div>
+            </ModalBody>
+            <ModalFooter className="border-t border-default-100 px-6 py-4">
+                <Skeleton className="w-20 h-10 rounded-xl" />
+                <Skeleton className="w-32 h-10 rounded-xl" />
+            </ModalFooter>
+        </>
     )
 }
