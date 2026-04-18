@@ -22,8 +22,8 @@ export class SharePointHelper {
 		if (!apiResponse) return null;
 
 		// --- Style 1: Custom API Wrapper { path: string, id: { id, name, raw: {} } } ---
-		if (apiResponse.id && typeof apiResponse.id === 'object' && apiResponse.id.id) {
-			const folderInfo = apiResponse.id;
+		if (apiResponse.detail && typeof apiResponse.detail === 'object' && apiResponse.detail.id) {
+			const folderInfo = apiResponse.detail;
 			const rawData = folderInfo.raw || {};
 
 			return {

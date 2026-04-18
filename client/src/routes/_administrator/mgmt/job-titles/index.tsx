@@ -1,4 +1,7 @@
-import { ConfirmDeleteJobTitleModal } from '@/features/job-title-manage'
+import {
+    ConfirmDeleteJobTitleModal,
+    ModifyJobTitleModal,
+} from '@/features/job-title-manage'
 import { INTERNAL_URLS, RouteUtil, usersListOptions } from '@/lib'
 import { deleteJobTitleOptions, jobTitlesListOptions } from '@/lib/queries'
 import { AdminPageHeading, AppLoading } from '@/shared/components'
@@ -78,6 +81,7 @@ function JobTitlesPage() {
     const deleteAction = useMutation(deleteJobTitleOptions)
 
     const confirmDeleteModalState = useDisclosure()
+    const createModalState = useDisclosure()
 
     const stats = useMemo(
         () => [
@@ -105,10 +109,10 @@ function JobTitlesPage() {
             j.code.toLowerCase().includes(searchQuery.toLowerCase())
     )
 
-    // const handleCreate = () => {
-    //     setSeletectedDept(null)
-    //     createDepartmentModalState.onOpen()
-    // }
+    const handleCreate = () => {
+        setSelectedJobTitle(null)
+        createModalState.onOpen()
+    }
 
     // const handleEdit = (dept: TDepartment) => {
     //     setSeletectedDept(dept)
@@ -139,12 +143,23 @@ function JobTitlesPage() {
                     onConfirm={handleDelete}
                 />
             )}
+            {createModalState.isOpen && (
+                <ModifyJobTitleModal
+                    isOpen={createModalState.isOpen}
+                    onClose={createModalState.onClose}
+                    jobTitleId={selectedJobTitle?.id}
+                />
+            )}
             <AdminPageHeading
                 title="Job Titles"
                 showBadge
                 badgeCount={jobTitles.length}
                 actions={
-                    <Button color="primary" startContent={<Plus size={18} />}>
+                    <Button
+                        color="primary"
+                        startContent={<Plus size={18} />}
+                        onPress={handleCreate}
+                    >
                         Create Title
                     </Button>
                 }
