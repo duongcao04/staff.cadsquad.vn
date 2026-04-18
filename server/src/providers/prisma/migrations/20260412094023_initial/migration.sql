@@ -26,6 +26,9 @@ CREATE TYPE "ClientType" AS ENUM ('INDIVIDUAL', 'COMPANY');
 CREATE TYPE "JobPriority" AS ENUM ('LOW', 'MEDIUM', 'HIGH', 'URGENT');
 
 -- CreateEnum
+CREATE TYPE "PaymentChannelType" AS ENUM ('BANK', 'E_WALLET', 'CRYPTO');
+
+-- CreateEnum
 CREATE TYPE "JobStatusSystemType" AS ENUM ('STANDARD', 'DELIVERED', 'COMPLETED', 'TERMINATED');
 
 -- CreateEnum
@@ -45,6 +48,21 @@ CREATE TYPE "CommunityRole" AS ENUM ('MEMBER', 'MODERATOR', 'OWNER');
 
 -- CreateEnum
 CREATE TYPE "TopicType" AS ENUM ('GENERAL', 'ANNOUNCEMENT', 'FILES', 'IDEA', 'SUPPORT');
+
+-- CreateEnum
+CREATE TYPE "SharepointSyncStatus" AS ENUM ('FAILED', 'SUCCESS', 'SYNCING');
+
+-- CreateEnum
+CREATE TYPE "TicketCategory" AS ENUM ('BUG', 'JOB', 'SYSTEM', 'BILLING', 'ACCOUNT', 'OTHER');
+
+-- CreateEnum
+CREATE TYPE "TicketStatus" AS ENUM ('OPEN', 'IN_PROGRESS', 'RESOLVED', 'CLOSED');
+
+-- CreateEnum
+CREATE TYPE "TransactionType" AS ENUM ('INCOME', 'PAYOUT', 'REFUND');
+
+-- CreateEnum
+CREATE TYPE "TransactionStatus" AS ENUM ('PENDING', 'COMPLETED', 'FAILED', 'CANCELLED');
 
 -- CreateTable
 CREATE TABLE "SystemAuditLog" (
@@ -315,7 +333,6 @@ CREATE TABLE "Job" (
     "startedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "priority" "JobPriority" NOT NULL DEFAULT 'MEDIUM',
     "isPublished" BOOLEAN NOT NULL DEFAULT false,
-    "isPaid" BOOLEAN NOT NULL DEFAULT false,
     "dueAt" TIMESTAMP(3) NOT NULL,
     "completedAt" TIMESTAMP(3),
     "finishedAt" TIMESTAMP(3),
@@ -327,20 +344,6 @@ CREATE TABLE "Job" (
     "folderTemplateId" TEXT,
 
     CONSTRAINT "Job_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "SharepointItem" (
-    "id" TEXT NOT NULL,
-    "itemId" TEXT NOT NULL,
-    "displayName" TEXT,
-    "isFolder" BOOLEAN NOT NULL DEFAULT false,
-    "size" INTEGER,
-    "webUrl" TEXT,
-    "createdDateTime" TEXT,
-    "createdBy" TEXT,
-
-    CONSTRAINT "SharepointItem_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -404,9 +407,16 @@ CREATE TABLE "PaymentChannel" (
     "id" TEXT NOT NULL,
     "displayName" TEXT NOT NULL,
     "hexColor" TEXT,
+    "type" "PaymentChannelType" NOT NULL DEFAULT 'BANK',
+    "accountDetails" TEXT,
+    "feeRate" DOUBLE PRECISION,
+    "fixedFee" DOUBLE PRECISION,
+    "totalVolume" DOUBLE PRECISION,
+    "totalFees" DOUBLE PRECISION,
     "logoUrl" TEXT,
     "ownerName" TEXT,
     "cardNumber" TEXT,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -592,6 +602,66 @@ CREATE TABLE "PostEvent" (
 );
 
 -- CreateTable
+CREATE TABLE "SharepointItem" (
+    "id" TEXT NOT NULL,
+    "itemId" TEXT NOT NULL,
+    "displayName" TEXT,
+    "isFolder" BOOLEAN NOT NULL DEFAULT false,
+    "size" INTEGER,
+    "webUrl" TEXT,
+    "createdDateTime" TEXT,
+    "createdBy" TEXT,
+    "syncStatus" "SharepointSyncStatus" NOT NULL DEFAULT 'FAILED',
+
+    CONSTRAINT "SharepointItem_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "SupportTicket" (
+    "id" TEXT NOT NULL,
+    "subject" TEXT NOT NULL,
+    "category" "TicketCategory" NOT NULL,
+    "description" TEXT NOT NULL,
+    "status" "TicketStatus" NOT NULL DEFAULT 'OPEN',
+    "userId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "SupportTicket_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "SystemSetting" (
+    "key" TEXT NOT NULL,
+    "value" TEXT NOT NULL,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "modifierById" TEXT,
+
+    CONSTRAINT "SystemSetting_pkey" PRIMARY KEY ("key")
+);
+
+-- CreateTable
+CREATE TABLE "Transaction" (
+    "id" TEXT NOT NULL,
+    "amount" DOUBLE PRECISION NOT NULL,
+    "currency" TEXT NOT NULL DEFAULT 'VND',
+    "type" "TransactionType" NOT NULL,
+    "status" "TransactionStatus" NOT NULL DEFAULT 'COMPLETED',
+    "referenceNo" TEXT,
+    "note" TEXT,
+    "evidenceUrl" TEXT,
+    "jobId" TEXT NOT NULL,
+    "clientId" TEXT,
+    "assignmentId" TEXT,
+    "paymentChannelId" TEXT,
+    "createdById" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Transaction_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "_PermissionToRole" (
     "A" TEXT NOT NULL,
     "B" TEXT NOT NULL,
@@ -701,9 +771,6 @@ CREATE INDEX "Job_createdById_idx" ON "Job"("createdById");
 CREATE INDEX "Job_priority_idx" ON "Job"("priority");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "SharepointItem_itemId_id_key" ON "SharepointItem"("itemId", "id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "JobAssignment_jobId_userId_key" ON "JobAssignment"("jobId", "userId");
 
 -- CreateIndex
@@ -786,6 +853,24 @@ CREATE INDEX "Post_createdAt_idx" ON "Post"("createdAt");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "PostEvent_postId_key" ON "PostEvent"("postId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "SharepointItem_itemId_id_key" ON "SharepointItem"("itemId", "id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Transaction_referenceNo_key" ON "Transaction"("referenceNo");
+
+-- CreateIndex
+CREATE INDEX "Transaction_jobId_idx" ON "Transaction"("jobId");
+
+-- CreateIndex
+CREATE INDEX "Transaction_type_idx" ON "Transaction"("type");
+
+-- CreateIndex
+CREATE INDEX "Transaction_status_idx" ON "Transaction"("status");
+
+-- CreateIndex
+CREATE INDEX "Transaction_createdAt_idx" ON "Transaction"("createdAt");
 
 -- CreateIndex
 CREATE INDEX "_PermissionToRole_B_index" ON "_PermissionToRole"("B");
@@ -930,6 +1015,27 @@ ALTER TABLE "Post" ADD CONSTRAINT "Post_topicId_fkey" FOREIGN KEY ("topicId") RE
 
 -- AddForeignKey
 ALTER TABLE "PostEvent" ADD CONSTRAINT "PostEvent_postId_fkey" FOREIGN KEY ("postId") REFERENCES "Post"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "SupportTicket" ADD CONSTRAINT "SupportTicket_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "SystemSetting" ADD CONSTRAINT "SystemSetting_modifierById_fkey" FOREIGN KEY ("modifierById") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Transaction" ADD CONSTRAINT "Transaction_jobId_fkey" FOREIGN KEY ("jobId") REFERENCES "Job"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Transaction" ADD CONSTRAINT "Transaction_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "Client"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Transaction" ADD CONSTRAINT "Transaction_assignmentId_fkey" FOREIGN KEY ("assignmentId") REFERENCES "JobAssignment"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Transaction" ADD CONSTRAINT "Transaction_paymentChannelId_fkey" FOREIGN KEY ("paymentChannelId") REFERENCES "PaymentChannel"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Transaction" ADD CONSTRAINT "Transaction_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_PermissionToRole" ADD CONSTRAINT "_PermissionToRole_A_fkey" FOREIGN KEY ("A") REFERENCES "Permission"("id") ON DELETE CASCADE ON UPDATE CASCADE;

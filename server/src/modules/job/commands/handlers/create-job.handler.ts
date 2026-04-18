@@ -1,24 +1,31 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
+import { ActivityType, Prisma } from '@/generated/prisma'
 import { PrismaService } from '@/providers/prisma/prisma.service'
+import { InjectQueue } from '@nestjs/bullmq'
+import { InternalServerErrorException, NotFoundException } from '@nestjs/common'
+import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs'
 import { EventEmitter2 } from '@nestjs/event-emitter'
-import { InternalServerErrorException } from '@nestjs/common'
-import { CreateJobCommand } from '../impl/create-job.command'
-import { ActivityLogService } from '../../activity-log.service'
-import { ActivityType } from '@/generated/prisma'
-import { JobActionEvent } from '../../events/job-action.event'
+import { Queue } from 'bullmq'
 import { plainToInstance } from 'class-transformer'
-import { JobResponseDto } from '../../dto/job-response.dto'
 import slugify from 'slugify'
-import { randomUUID } from 'node:crypto'
 import { SharePointService } from '../../../sharepoint/sharepoint.service'
+import { ActivityLogService } from '../../activity-log.service'
+import { CreateJobDto } from '../../dto/create-job.dto'
+import { JobResponseDto } from '../../dto/job-response.dto'
+import { JobActionEvent } from '../../events/job-action.event'
+import { JOB_CREATED_HANDLER, JOB_QUEUE } from '../../job.constants'
+import { CreateJobCommand } from '../impl/create-job.command'
+import { JobCreatedEvent } from '../../events/job-created.event'
+import { JobCreatedHandlerDto } from '../../dto/queue/job-created-handler.dto'
+
 @CommandHandler(CreateJobCommand)
 export class CreateJobHandler implements ICommandHandler<CreateJobCommand> {
 	constructor(
 		private readonly prisma: PrismaService,
 		private readonly activityLogService: ActivityLogService,
 		private readonly sharepointService: SharePointService,
-		private readonly eventEmitter: EventEmitter2
-	) { }
+		private readonly eventBus: EventBus,
+		@InjectQueue(JOB_QUEUE) private readonly spQueue: Queue
+	) {}
 
 	async execute(command: CreateJobCommand) {
 		const { creatorId, dto } = command
@@ -40,35 +47,14 @@ export class CreateJobHandler implements ICommandHandler<CreateJobCommand> {
 			totalStaffCost,
 			attachmentUrls,
 			sharepointFolderId,
+			useExistingSharepointFolder,
+			sharepointTemplateId: folderTemplateId,
 			...jobData
 		} = dto
 
-		const folderDetail =
-			sharepointFolderId &&
-			(await this.sharepointService.getFolderDetails(sharepointFolderId))
-
 		// Xử lý Transaction y hệt logic cũ của bạn
 		const newJob = await this.prisma.$transaction(async (tx) => {
-			let client = await tx.client.findUnique({
-				where: { name: clientName },
-			})
-
-			if (!client) {
-				const baseCode = slugify(clientName, {
-					lower: true,
-					strict: true,
-				}).toUpperCase()
-				const existing = await tx.client.findUnique({
-					where: { code: baseCode },
-				})
-				const newClientCode = existing
-					? `${baseCode}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`
-					: baseCode
-
-				client = await tx.client.create({
-					data: { name: clientName, code: newClientCode },
-				})
-			}
+			const client = await this.getClient(tx, dto.clientName)
 
 			const createdJob = await tx.job.create({
 				data: {
@@ -82,21 +68,6 @@ export class CreateJobHandler implements ICommandHandler<CreateJobCommand> {
 					incomeCost: parseFloat(incomeCost as any) || 0,
 					totalStaffCost: parseFloat(totalStaffCost as any) || 0,
 					client: { connect: { id: client.id } },
-					sharepointFolder: sharepointFolderId
-						? {
-							create: {
-								id: randomUUID(),
-								itemId: sharepointFolderId,
-								webUrl: folderDetail.webUrl,
-								displayName: folderDetail.name,
-								isFolder: true,
-								createdBy: folderDetail.createdBy.name || folderDetail.createdBy.displayName || folderDetail.createdBy.user.displayName || 'Unknown',
-								createdDateTime:
-									folderDetail.createdDateTime,
-								size: folderDetail.size || 0,
-							},
-						}
-						: undefined,
 					attachmentUrls: Array.isArray(attachmentUrls)
 						? attachmentUrls
 						: [],
@@ -146,9 +117,8 @@ export class CreateJobHandler implements ICommandHandler<CreateJobCommand> {
 			return createdJob
 		})
 
-		// Bắn event sau khi transaction thành công
-		this.eventEmitter.emit(
-			'job.action',
+		// Send notification
+		this.eventBus.publish(
 			new JobActionEvent(
 				ActivityType.CREATE_JOB,
 				newJob.id,
@@ -157,9 +127,44 @@ export class CreateJobHandler implements ICommandHandler<CreateJobCommand> {
 				newJob
 			)
 		)
+		this.eventBus.publish(
+			new JobCreatedEvent({
+				clientName: clientName,
+				displayName: dto.displayName,
+				no: dto.no,
+				sharepointTemplateId: dto.sharepointTemplateId,
+				typeId: dto.typeId,
+				useExistingSharepointFolder: dto.useExistingSharepointFolder,
+			})
+		)
 
 		return plainToInstance(JobResponseDto, newJob, {
 			excludeExtraneousValues: true,
 		})
+	}
+
+	private async getClient(tx: Prisma.TransactionClient, clientName: string) {
+		const client = await tx.client.findUnique({
+			where: { name: clientName },
+		})
+
+		if (!client) {
+			const baseCode = slugify(clientName, {
+				lower: true,
+				strict: true,
+			}).toUpperCase()
+			const existing = await tx.client.findUnique({
+				where: { code: baseCode },
+			})
+			const newClientCode = existing
+				? `${baseCode}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`
+				: baseCode
+
+			return await tx.client.create({
+				data: { name: clientName, code: newClientCode },
+			})
+		}
+
+		return client
 	}
 }

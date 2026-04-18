@@ -13,6 +13,7 @@ export default defineConfig(({ mode }) => {
         // Prevent Vite from obscuring Rust errors
         clearScreen: false,
         envPrefix: ['VITE_', 'TAURI_'],
+        envDir: '..',
 
         server: {
             port: 3000,

@@ -96,6 +96,35 @@ SET
     "permissionGroupId" = EXCLUDED."permissionGroupId";
 
 -- ==============================================================================================
+-- ADDITIONS: JOB TITLE & JOB TYPE PERMISSIONS
+-- ==============================================================================================
+INSERT INTO "Permission" ("id", "displayName", "code", "entity", "action", "entityAction", "description", "permissionGroupId") 
+SELECT gen_random_uuid(), * FROM (VALUES 
+
+    -- JOB TITLE (MODULE_STAFF)
+    ('Manage Job Titles', 'TITLE_MANAGE', 'JOB_TITLE'::"EntityEnum", 'manage', 'jobTitle.manage', 'Manage all job titles.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_STAFF')),
+    ('Create Job Title',  'TITLE_CREATE', 'JOB_TITLE'::"EntityEnum", 'create', 'jobTitle.create', 'Define new official job titles/positions.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_STAFF')),
+    ('Update Job Title',  'TITLE_UPDATE', 'JOB_TITLE'::"EntityEnum", 'update', 'jobTitle.update', 'Modify existing job title definitions.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_STAFF')),
+    ('Delete Job Title',  'TITLE_DELETE', 'JOB_TITLE'::"EntityEnum", 'delete', 'jobTitle.delete', 'Remove job titles from master data.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_STAFF')),
+
+    -- JOB TYPE (MODULE_JOB_SETTINGS)
+    ('Manage Job Types', 'JOB_TYPE_MANAGE', 'JOB_TYPE'::"EntityEnum", 'manage', 'jobType.manage', 'Manage all job types.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_JOB_SETTINGS')),
+    ('Create Job Type',  'JOB_TYPE_CREATE', 'JOB_TYPE'::"EntityEnum", 'create', 'jobType.create', 'Define new categories or types of jobs.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_JOB_SETTINGS')),
+    ('Update Job Type',  'JOB_TYPE_UPDATE', 'JOB_TYPE'::"EntityEnum", 'update', 'jobType.update', 'Modify job type definitions.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_JOB_SETTINGS')),
+    ('Delete Job Type',  'JOB_TYPE_DELETE', 'JOB_TYPE'::"EntityEnum", 'delete', 'jobType.delete', 'Remove job types from master data.', (SELECT id FROM "PermissionGroup" WHERE code = 'MODULE_JOB_SETTINGS'))
+
+) AS v(displayName, code, entity, action, entityAction, description, permissionGroupId)
+ON CONFLICT ("entityAction") DO UPDATE
+SET
+    "displayName" = EXCLUDED."displayName",
+    "code" = EXCLUDED."code",
+    "entity" = EXCLUDED."entity",
+    "action" = EXCLUDED."action",
+    "entityAction" = EXCLUDED."entityAction",
+    "description" = EXCLUDED."description",
+    "permissionGroupId" = EXCLUDED."permissionGroupId";
+
+-- ==============================================================================================
 -- 4. GRANT PERMISSIONS
 -- ==============================================================================================
 

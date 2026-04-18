@@ -421,20 +421,6 @@ model Job {
     @@index([priority])
 }
 
-model SharepointItem {
-    id              String  @id @default(uuid())
-    itemId          String
-    displayName     String?
-    isFolder        Boolean @default(false)
-    size            Int?
-    webUrl          String?
-    createdDateTime String?
-    createdBy       String?
-    jobs            Job[]
-
-    @@unique([itemId, id])
-}
-
 enum JOB_PAYMENT_STATUS {
     PAID
     PENDING

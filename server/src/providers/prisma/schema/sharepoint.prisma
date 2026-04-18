@@ -1,0 +1,21 @@
+model SharepointItem {
+    id              String  @id @default(uuid())
+    itemId          String
+    displayName     String?
+    isFolder        Boolean @default(false)
+    size            Int?
+    webUrl          String?
+    createdDateTime String?
+    createdBy       String?
+    jobs            Job[]
+
+    syncStatus SharepointSyncStatus @default(FAILED)
+
+    @@unique([itemId, id])
+}
+
+enum SharepointSyncStatus {
+    FAILED
+    SUCCESS
+    SYNCING
+}

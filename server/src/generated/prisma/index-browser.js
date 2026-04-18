@@ -345,17 +345,6 @@ exports.Prisma.JobScalarFieldEnum = {
   folderTemplateId: 'folderTemplateId'
 };
 
-exports.Prisma.SharepointItemScalarFieldEnum = {
-  id: 'id',
-  itemId: 'itemId',
-  displayName: 'displayName',
-  isFolder: 'isFolder',
-  size: 'size',
-  webUrl: 'webUrl',
-  createdDateTime: 'createdDateTime',
-  createdBy: 'createdBy'
-};
-
 exports.Prisma.JobAssignmentScalarFieldEnum = {
   id: 'id',
   jobId: 'jobId',
@@ -558,6 +547,18 @@ exports.Prisma.PostEventScalarFieldEnum = {
   redirectUrl: 'redirectUrl',
   thumbnailUrl: 'thumbnailUrl',
   postId: 'postId'
+};
+
+exports.Prisma.SharepointItemScalarFieldEnum = {
+  id: 'id',
+  itemId: 'itemId',
+  displayName: 'displayName',
+  isFolder: 'isFolder',
+  size: 'size',
+  webUrl: 'webUrl',
+  createdDateTime: 'createdDateTime',
+  createdBy: 'createdBy',
+  syncStatus: 'syncStatus'
 };
 
 exports.Prisma.SupportTicketScalarFieldEnum = {
@@ -770,6 +771,12 @@ exports.TopicType = exports.$Enums.TopicType = {
   SUPPORT: 'SUPPORT'
 };
 
+exports.SharepointSyncStatus = exports.$Enums.SharepointSyncStatus = {
+  FAILED: 'FAILED',
+  SUCCESS: 'SUCCESS',
+  SYNCING: 'SYNCING'
+};
+
 exports.TicketCategory = exports.$Enums.TicketCategory = {
   BUG: 'BUG',
   JOB: 'JOB',
@@ -819,7 +826,6 @@ exports.Prisma.ModelName = {
   UserConfig: 'UserConfig',
   FileSystem: 'FileSystem',
   Job: 'Job',
-  SharepointItem: 'SharepointItem',
   JobAssignment: 'JobAssignment',
   JobFolderTemplate: 'JobFolderTemplate',
   Client: 'Client',
@@ -837,6 +843,7 @@ exports.Prisma.ModelName = {
   Topic: 'Topic',
   Post: 'Post',
   PostEvent: 'PostEvent',
+  SharepointItem: 'SharepointItem',
   SupportTicket: 'SupportTicket',
   SystemSetting: 'SystemSetting',
   Transaction: 'Transaction'

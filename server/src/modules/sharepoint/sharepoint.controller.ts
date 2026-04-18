@@ -8,7 +8,7 @@ import {
 	Post,
 	Query,
 	UploadedFile,
-	UseInterceptors
+	UseInterceptors,
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { CopyItemDto } from './dtos/copy-item.dto'
@@ -18,13 +18,13 @@ import { ResponseMessage } from '../../common/decorators/responseMessage.decorat
 @Controller('sharepoint')
 // @UseGuards(JwtGuard) // Bảo vệ toàn bộ API bằng Token Local
 export class SharePointController {
-	constructor(private readonly service: SharePointService) { }
+	constructor(private readonly service: SharePointService) {}
 
 	// 1. Lấy danh sách file
 	// GET /api/v1/sharepoint/items?folderId=xxx
 	// Nếu không truyền folderId -> Lấy Root
 	@Get('items')
-	@ResponseMessage("Get folder items successfully")
+	@ResponseMessage('Get folder items successfully')
 	async listItems(@Query('folderId') folderId?: string) {
 		return this.service.getItems(folderId)
 	}
@@ -39,7 +39,7 @@ export class SharePointController {
 		@Body('parentId') parentId: string = 'root'
 	) {
 		// Pass to service to handle queuing
-		return this.service.queueUploadFile(parentId, file);
+		return this.service.queueUploadFile(parentId, file)
 	}
 
 	@Post('upload')
@@ -49,14 +49,14 @@ export class SharePointController {
 		@Body('parentId') parentId: string
 	) {
 		if (!file) {
-			throw new BadRequestException('No file uploaded');
+			throw new BadRequestException('No file uploaded')
 		}
 
 		// Nếu Frontend không gửi parentId, mặc định lưu vào thư mục 'root'
-		const targetFolderId = parentId || 'root';
+		const targetFolderId = parentId || 'root'
 
 		// Gọi hàm service bạn vừa sửa ở trên
-		return this.service.executeUploadFile(targetFolderId, file);
+		return this.service.executeUploadFile(targetFolderId, file)
 	}
 
 	// 3. Tạo Folder mới
@@ -64,7 +64,10 @@ export class SharePointController {
 	// Body: { parentId: "xxx", name: "New Project" }
 	@Post('folder')
 	async createFolder(@Body() body: { parentId: string; name: string }) {
-		return this.service.queueCreateFolder(body.parentId || 'root', body.name)
+		return this.service.queueCreateFolder(
+			body.parentId || 'root',
+			body.name
+		)
 	}
 
 	// 4. Lấy link Download
@@ -81,12 +84,12 @@ export class SharePointController {
 		return this.service.deleteItem(id)
 	}
 
-	// 6. Lấy Folder ID từ path
+	// 6. Lấy Folder Detail từ path
 	@Get('resolve-path')
 	async getIdFromPath(@Query('path') path: string) {
 		// Gọi: GET /sharepoint/resolve-path?path=CSD- TEAM/ST006. CH.DUONG
-		const id = await this.service.getFolderDetailsByPath(path)
-		return { path, id }
+		const detail = await this.service.getFolderDetailsByPath(path)
+		return { path, detail }
 	}
 	/**
 	 *  7. Liệt kê tất cả Document Libraries (Drives) trong Site hiện tại
@@ -100,25 +103,21 @@ export class SharePointController {
 	// POST /api/v1/sharepoint/copy
 	// Body: { itemId: "xxx", destinationFolderId: "yyy", newName: "Optional Name" }
 	@Post('queu-copy')
-	async queuCopyItem(
-		@Body() dto: CopyItemDto
-	) {
+	async queuCopyItem(@Body() dto: CopyItemDto) {
 		return this.service.queueCopyItem(
 			dto.itemId,
 			dto.destinationFolderId,
 			dto.newName
-		);
+		)
 	}
 
 	@Post('copy')
-	async copyItem(
-		@Body() dto: CopyItemDto
-	) {
-		return this.service.queueCopyItem(
-			dto.itemId,
-			dto.destinationFolderId,
-			dto.newName
-		);
+	async copyItem(@Body() dto: CopyItemDto) {
+		return this.service.excuteCopySharepointFolder({
+			destinationFolderId: dto.destinationFolderId,
+			itemId: dto.itemId,
+			newName: dto.newName,
+		})
 	}
 
 	// 9. Lấy thông tin chi tiết của Folder (hoặc File)
@@ -126,9 +125,9 @@ export class SharePointController {
 	@Get('folder/:id')
 	async getFolderDetails(@Param('id') id: string) {
 		if (!id) {
-			throw new BadRequestException('Folder ID is required');
+			throw new BadRequestException('Folder ID is required')
 		}
 
-		return this.service.getFolderDetails(id);
+		return this.service.getFolderDetails(id)
 	}
 }

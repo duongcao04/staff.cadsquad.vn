@@ -1,4 +1,4 @@
-import { INTERNAL_URLS } from '@/lib'
+import { APP_PERMISSIONS, INTERNAL_URLS } from '@/lib'
 import { SettingsGearIcon } from '@/shared/components'
 import {
     Button,
@@ -8,7 +8,6 @@ import {
     DropdownSection,
     DropdownTrigger,
 } from '@heroui/react'
-import { APP_PERMISSIONS } from '@/lib'
 import { Link } from '@tanstack/react-router'
 import {
     BadgeDollarSignIcon,
@@ -16,9 +15,11 @@ import {
     BriefcaseBusiness,
     ChartCandlestickIcon,
     CircleDollarSign,
+    ComponentIcon,
     FolderGit2Icon,
     Grid2x2Icon,
     HandshakeIcon,
+    MonitorCogIcon,
     Palette,
     ShieldUserIcon,
     SquareUserRound,
@@ -55,7 +56,7 @@ export function SettingsDropdown() {
             <DropdownMenu
                 aria-label="Settings"
                 classNames={{
-                    base: 'w-[520px] overflow-y-auto left-0',
+                    base: 'w-[520px] overflow-y-auto left-0 max-h-[500px]',
                 }}
             >
                 <DropdownSection title="Settings">
@@ -188,6 +189,7 @@ export function SettingsDropdown() {
                 {hasSomePermissions([
                     APP_PERMISSIONS.USER.MANAGE,
                     APP_PERMISSIONS.JOB.MANAGE,
+                    APP_PERMISSIONS.JOB_TYPE.MANAGE,
                     APP_PERMISSIONS.FOLDER_TEMPLATE.MANAGE,
                     APP_PERMISSIONS.CLIENT.MANAGE,
                     APP_PERMISSIONS.PAYMENT_CHANNEL.MANAGE,
@@ -234,9 +236,31 @@ export function SettingsDropdown() {
                                     className={linkClasses}
                                 >
                                     <p className={titleClasses}>Jobs</p>
+                                    <p className={descClasses}>Manage jobs.</p>
+                                </Link>
+                            </DropdownItem>
+                        ) : null}
+
+                        {hasPermission(APP_PERMISSIONS.JOB_TYPE.MANAGE) ? (
+                            <DropdownItem
+                                key="job"
+                                startContent={
+                                    <div className={iconWrapperClasses}>
+                                        <ComponentIcon
+                                            size={22}
+                                            className={iconClasses}
+                                        />
+                                    </div>
+                                }
+                            >
+                                <Link
+                                    to={INTERNAL_URLS.management.jobTypes}
+                                    className={linkClasses}
+                                >
+                                    <p className={titleClasses}>Job Types</p>
                                     <p className={descClasses}>
-                                        Manage job type, overview analysis and
-                                        more.
+                                        Manage categories, color codes, and
+                                        default folder templates for jobs.
                                     </p>
                                 </Link>
                             </DropdownItem>
@@ -382,6 +406,37 @@ export function SettingsDropdown() {
                                     <p className={descClasses}>
                                         Manage invoices, staff payouts, and
                                         financial health.
+                                    </p>
+                                </Link>
+                            </DropdownItem>
+                        ) : null}
+                    </DropdownSection>
+                ) : null}
+
+                {hasSomePermissions([APP_PERMISSIONS.SYSTEM.MANAGE]) ? (
+                    <DropdownSection title="Systems">
+                        {hasPermission(APP_PERMISSIONS.SYSTEM.MANAGE) ? (
+                            <DropdownItem
+                                key="system_settings"
+                                startContent={
+                                    <div className={iconWrapperClasses}>
+                                        <MonitorCogIcon
+                                            size={22}
+                                            className={iconClasses}
+                                        />
+                                    </div>
+                                }
+                            >
+                                <Link
+                                    to={INTERNAL_URLS.admin.settings}
+                                    className={linkClasses}
+                                >
+                                    <p className={titleClasses}>
+                                        System Configuration
+                                    </p>
+                                    <p className={descClasses}>
+                                        Manage global defaults, notifications,
+                                        and system health.
                                     </p>
                                 </Link>
                             </DropdownItem>
