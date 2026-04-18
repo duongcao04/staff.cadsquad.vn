@@ -1,4 +1,4 @@
-import { IsNotEmpty } from "class-validator"
+import { IsNotEmpty } from 'class-validator'
 
 export class CopyItemDto {
 	@IsNotEmpty()
@@ -7,7 +7,6 @@ export class CopyItemDto {
 	@IsNotEmpty()
 	destinationFolderId!: string
 
-	newName?: string
-
-	driveId?: string
+	@IsNotEmpty()
+	newName!: string
 }

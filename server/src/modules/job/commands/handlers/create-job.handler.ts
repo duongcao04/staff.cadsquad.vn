@@ -15,6 +15,7 @@ import { JobActionEvent } from '../../events/job-action.event'
 import { JOB_CREATED_HANDLER, JOB_QUEUE } from '../../job.constants'
 import { CreateJobCommand } from '../impl/create-job.command'
 import { JobCreatedEvent } from '../../events/job-created.event'
+import { JobCreatedHandlerDto } from '../../dto/queue/job-created-handler.dto'
 
 @CommandHandler(CreateJobCommand)
 export class CreateJobHandler implements ICommandHandler<CreateJobCommand> {
@@ -47,7 +48,7 @@ export class CreateJobHandler implements ICommandHandler<CreateJobCommand> {
 			attachmentUrls,
 			sharepointFolderId,
 			useExistingSharepointFolder,
-			sharepointTemplateId,
+			sharepointTemplateId: folderTemplateId,
 			...jobData
 		} = dto
 
@@ -126,32 +127,20 @@ export class CreateJobHandler implements ICommandHandler<CreateJobCommand> {
 				newJob
 			)
 		)
-
-		const destinationFolderCreationId =
-			await this.getDestinationFolderCreationId(dto.typeId)
-		const payload = { destinationFolderCreationId, ...dto }
-
-		this.eventBus.publish(new JobCreatedEvent(payload))
+		this.eventBus.publish(
+			new JobCreatedEvent({
+				clientName: clientName,
+				displayName: dto.displayName,
+				no: dto.no,
+				sharepointTemplateId: dto.sharepointTemplateId,
+				typeId: dto.typeId,
+				useExistingSharepointFolder: dto.useExistingSharepointFolder,
+			})
+		)
 
 		return plainToInstance(JobResponseDto, newJob, {
 			excludeExtraneousValues: true,
 		})
-	}
-
-	private async getDestinationFolderCreationId(
-		jobTypeId: string
-	): Promise<string> {
-		const jobType = await this.prisma.jobType.findUnique({
-			where: { id: jobTypeId },
-		})
-
-		if (!jobType?.sharepointFolderId) {
-			throw new NotFoundException(
-				'Please check destination folder creation id for type ' +
-					jobTypeId
-			)
-		}
-		return jobType.sharepointFolderId
 	}
 
 	private async getClient(tx: Prisma.TransactionClient, clientName: string) {

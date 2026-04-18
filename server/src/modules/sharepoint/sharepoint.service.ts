@@ -287,13 +287,13 @@ export class SharePointService implements OnModuleInit, OnModuleDestroy {
 	async queueCopyItem(
 		itemId: string,
 		destinationFolderId: string,
-		newName?: string
+		newName: string
 	) {
-		const payload: CopyItemDto = {
+		const payload: CopyItemDto & { driveId: string } = {
 			itemId,
 			destinationFolderId,
 			newName,
-			driveId: this.driveId,
+			driveId: this.driveId!,
 		}
 		await this.spQueue.add(JOB_COPY_ITEM, payload)
 		this.logger.log(`Queued copy item: ${itemId} to ${destinationFolderId}`)
@@ -325,13 +325,16 @@ export class SharePointService implements OnModuleInit, OnModuleDestroy {
 				.post(copyRequest)
 
 			this.logger.log(
-				`✅ Copied item ${itemId} to ${destinationFolderId} (New ID: ${JSON.stringify(copyResult)})`
+				`Copied item ${itemId} to ${destinationFolderId} (New ID: ${JSON.stringify(copyResult)})`
 			)
 
 			return copyResult
 		} catch (error) {
 			this.logger.error(
-				`Copy item failed: ${JSON.stringify((error as { message: string }).message)}`
+				`Copy item failed: ${JSON.stringify({
+					error: (error as { message: string }).message,
+					data,
+				})}`
 			)
 			throw error // Ném lỗi để BullMQ biết và retry
 		}

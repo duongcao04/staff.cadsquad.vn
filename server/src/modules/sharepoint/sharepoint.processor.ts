@@ -62,7 +62,7 @@ export class SharePointProcessor extends WorkerHost {
 				...this.spQueue.opts?.defaultJobOptions,
 				attempts: 5, // Set maximum retry attempts
 			},
-		};
+		}
 	}
 
 	async process(job: Job): Promise<any> {
@@ -76,58 +76,67 @@ export class SharePointProcessor extends WorkerHost {
 		}
 	}
 	private async handleFileUpload(data: UploadFileDto) {
-		const { parentId, filePath, originalName, driveId } = data;
-		const client = await this.getGraphClient();
-		const fileBuffer = fs.readFileSync(filePath);
-		const totalSize = fileBuffer.length;
+		const { parentId, filePath, originalName, driveId } = data
+		const client = await this.getGraphClient()
+		const fileBuffer = fs.readFileSync(filePath)
+		const totalSize = fileBuffer.length
 
 		// Use your logic to get driveId or use the one from config
-		const itemPath = parentId === 'root' ? `/root:/${originalName}` : `/items/${parentId}:/${originalName}`;
-		const sessionUrl = `/drives/${driveId}${itemPath}:/createUploadSession`;
+		const itemPath =
+			parentId === 'root'
+				? `/root:/${originalName}`
+				: `/items/${parentId}:/${originalName}`
+		const sessionUrl = `/drives/${driveId}${itemPath}:/createUploadSession`
 
-		let result: any;
+		let result: any
 
 		try {
 			if (totalSize <= 4 * 1024 * 1024) {
 				// For small files, the Graph SDK returns the DriveItem directly
-				const endpoint = `/drives/${driveId}${itemPath}:/content`;
-				result = await client.api(endpoint).put(fileBuffer);
+				const endpoint = `/drives/${driveId}${itemPath}:/content`
+				result = await client.api(endpoint).put(fileBuffer)
 			} else {
 				// For large files, get the upload session url
 				const session = await client.api(sessionUrl).post({
-					item: { '@microsoft.graph.conflictBehavior': 'rename' }
-				});
+					item: { '@microsoft.graph.conflictBehavior': 'rename' },
+				})
 				// Await and capture the returned data from our chunk uploader
-				result = await this.uploadInChunks(session.uploadUrl, fileBuffer);
+				result = await this.uploadInChunks(
+					session.uploadUrl,
+					fileBuffer
+				)
 			}
 
 			// Clean up temp file
-			fs.unlinkSync(filePath);
+			fs.unlinkSync(filePath)
 
-			this.logger.log(`✅ Uploaded: ${originalName} (url: ${result?.webUrl})`);
+			this.logger.log(
+				`✅ Uploaded: ${originalName} (url: ${result?.webUrl})`
+			)
 
 			// Return the actual file metadata to BullMQ (job.returnvalue)
-			return result?.webUrl;
-
+			return result?.webUrl
 		} catch (error) {
-			this.logger.error(`❌ Upload Failed: ${(error as { message: string }).message}`);
+			this.logger.error(
+				`❌ Upload Failed: ${(error as { message: string }).message}`
+			)
 			// Always clean up temp file even if upload fails
 			if (fs.existsSync(filePath)) {
-				fs.unlinkSync(filePath);
+				fs.unlinkSync(filePath)
 			}
-			throw error;
+			throw error
 		}
 	}
 
 	private async uploadInChunks(uploadUrl: string, buffer: Buffer) {
-		const totalSize = buffer.length;
-		const chunkSize = 320 * 1024 * 10; // 3.2MB (must be multiple of 320KB)
-		let cursor = 0;
-		let lastResponse: any; // Used to capture the final API response
+		const totalSize = buffer.length
+		const chunkSize = 320 * 1024 * 10 // 3.2MB (must be multiple of 320KB)
+		let cursor = 0
+		let lastResponse: any // Used to capture the final API response
 
 		while (cursor < totalSize) {
-			const end = Math.min(cursor + chunkSize, totalSize);
-			const chunk = buffer.slice(cursor, end);
+			const end = Math.min(cursor + chunkSize, totalSize)
+			const chunk = buffer.slice(cursor, end)
 
 			// Execute the PUT request and save the response
 			lastResponse = await firstValueFrom(
@@ -136,14 +145,14 @@ export class SharePointProcessor extends WorkerHost {
 						'Content-Length': chunk.length.toString(),
 						'Content-Range': `bytes ${cursor}-${end - 1}/${totalSize}`,
 					},
-				}),
-			);
-			cursor = end;
+				})
+			)
+			cursor = end
 		}
 
-		// Microsoft Graph returns the uploaded 'DriveItem' JSON object 
+		// Microsoft Graph returns the uploaded 'DriveItem' JSON object
 		// in the body of the final successful chunk's response.
-		return lastResponse?.data;
+		return lastResponse?.data
 	}
 
 	private async uploadLargeFile(uploadUrl: string, buffer: Buffer) {
@@ -229,13 +238,17 @@ export class SharePointProcessor extends WorkerHost {
 
 			return newFolder // Return object để log hoặc debug nếu cần
 		} catch (error) {
-			this.logger.error(`Create folder failed: ${(error as { message: string }).message}`)
+			this.logger.error(
+				`Create folder failed: ${(error as { message: string }).message}`
+			)
 			throw error // Ném lỗi để BullMQ biết và retry
 		}
 	}
 
-	private async handleCopyItem(data: CopyItemDto): Promise<void> {
-		const { itemId, destinationFolderId, driveId, newName } = data
+	private async handleCopyItem(
+		data: CopyItemDto & { driveId: string }
+	): Promise<void> {
+		const { itemId, destinationFolderId, newName, driveId } = data
 
 		try {
 			const client = await this.getGraphClient()
@@ -260,7 +273,9 @@ export class SharePointProcessor extends WorkerHost {
 
 			return copyResult
 		} catch (error) {
-			this.logger.error(`Copy item failed: ${(error as { message: string }).message}`)
+			this.logger.error(
+				`Copy item failed: ${(error as { message: string }).message}`
+			)
 			throw error // Ném lỗi để BullMQ biết và retry
 		}
 	}

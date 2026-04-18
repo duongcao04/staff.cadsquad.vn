@@ -23,7 +23,7 @@ export class JwtGuard implements CanActivate {
         // 1. Get token from header
         const request = context.switchToHttp().getRequest()
         const token = this.extractTokenFromHeader(request)
-        const sessionId = request.headers['x-session-id'] // Hoặc trích xuất từ payload JWT
+        const sessionId = request.headers['x-session-id']
 
         // 2. Validate token
         if (!token) {
