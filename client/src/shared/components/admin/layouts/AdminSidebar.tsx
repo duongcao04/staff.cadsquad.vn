@@ -65,7 +65,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
     variant = 'default',
 }) => {
     const pathname = useRouterState({ select: (s) => s.location.pathname })
-    const isActive = defaultActive || pathname === url
+    const isActive = defaultActive || pathname.includes(url)
 
     return (
         <Tooltip isDisabled={!isCollapsed} content={label} placement="right">

@@ -1,5 +1,5 @@
 import { INTERNAL_URLS, optimizeCloudinary } from '@/lib'
-import { TStaffSearch } from '@/routes/_administrator/mgmt/staff-directory/index'
+import { TStaffSearchValues } from '@/routes/_administrator/mgmt/staff-directory/index'
 import { DepartmentChip } from '@/shared/components'
 import { RoleChip } from '@/shared/components/chips/RoleChip'
 import {
@@ -12,11 +12,11 @@ import { IPaginate } from '@/shared/interfaces'
 import { TUser } from '@/shared/types'
 import { Avatar, Button, Card, Pagination, Skeleton } from '@heroui/react'
 import { Link } from '@tanstack/react-router'
-import { Briefcase, Mail, Phone } from 'lucide-react'
+import { EyeIcon, Mail, Phone } from 'lucide-react'
 import { StaffDropdown } from '../dropdowns/StaffDropdown'
 
 type StaffDirectoryGridProps = {
-    searchParams: TStaffSearch
+    searchParams: TStaffSearchValues
     isLoading: boolean
     data: TUser[]
     onAddStaff: (user: TUser) => void
@@ -29,7 +29,6 @@ export default function StaffDirectoryGrid({
     data,
     pagination,
     onPageChange,
-    onAddStaff,
 }: StaffDirectoryGridProps) {
     return (
         <div className="size-full">
@@ -64,7 +63,7 @@ export default function StaffDirectoryGrid({
                                       <div className="flex flex-col gap-1 items-start justify-center">
                                           <Link
                                               to={INTERNAL_URLS.management.staffDetail(
-                                                  user.username
+                                                  user.code
                                               )}
                                           >
                                               <h4 className="text-sm font-bold hover:text-primary transition-colors line-clamp-1">
@@ -106,13 +105,15 @@ export default function StaffDirectoryGrid({
                                   <Button
                                       fullWidth
                                       variant="flat"
-                                      color="primary"
                                       size="sm"
                                       className="font-bold"
-                                      startContent={<Briefcase size={16} />}
-                                      onPress={() => onAddStaff(user)}
+                                      startContent={<EyeIcon size={16} />}
+                                      as={Link}
+                                      href={INTERNAL_URLS.management.staffDetail(
+                                          user.code
+                                      )}
                                   >
-                                      Assign Job
+                                      View detail
                                   </Button>
                               </HeroCardFooter>
                           </HeroCard>

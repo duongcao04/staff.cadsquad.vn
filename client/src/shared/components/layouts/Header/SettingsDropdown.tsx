@@ -7,11 +7,11 @@ import {
     DropdownMenu,
     DropdownSection,
     DropdownTrigger,
+    ScrollShadow,
 } from '@heroui/react'
 import { Link } from '@tanstack/react-router'
 import {
     BadgeDollarSignIcon,
-    BellIcon,
     BriefcaseBusiness,
     ChartCandlestickIcon,
     CircleDollarSign,
@@ -53,11 +53,13 @@ export function SettingsDropdown() {
                     isIconOnly
                 />
             </DropdownTrigger>
-            <DropdownMenu
+            <ScrollShadow
+                as={DropdownMenu}
                 aria-label="Settings"
                 classNames={{
-                    base: 'w-[520px] overflow-y-auto left-0 max-h-[500px]',
+                    base: 'w-[520px] max-h-[500px] left-0',
                 }}
+                hideScrollBar
             >
                 <DropdownSection title="Settings">
                     <DropdownItem
@@ -94,34 +96,6 @@ export function SettingsDropdown() {
                             Manage how your public dashboard looks and feels.
                         </p>
                     </DropdownItem>
-
-                    {/* TODO: Implement Notification Settings */}
-                    {false ? (
-                        <DropdownItem
-                            key="notificationSettings"
-                            startContent={
-                                <div className={iconWrapperClasses}>
-                                    <BellIcon
-                                        size={22}
-                                        className={iconClasses}
-                                    />
-                                </div>
-                            }
-                        >
-                            <Link
-                                to={INTERNAL_URLS.settings.notifications}
-                                className={linkClasses}
-                            >
-                                <p className={titleClasses}>
-                                    Notification settings
-                                </p>
-                                <p className={descClasses}>
-                                    Manage email and in-product notification
-                                    from site.
-                                </p>
-                            </Link>
-                        </DropdownItem>
-                    ) : null}
                 </DropdownSection>
 
                 {hasSomePermissions([
@@ -152,6 +126,33 @@ export function SettingsDropdown() {
                                         System overview, business intelligence,
                                         operations, and quick administrative
                                         actions.
+                                    </p>
+                                </Link>
+                            </DropdownItem>
+                        ) : null}
+
+                        {hasPermission(APP_PERMISSIONS.SYSTEM.MANAGE) ? (
+                            <DropdownItem
+                                key="system_settings"
+                                startContent={
+                                    <div className={iconWrapperClasses}>
+                                        <MonitorCogIcon
+                                            size={22}
+                                            className={iconClasses}
+                                        />
+                                    </div>
+                                }
+                            >
+                                <Link
+                                    to={INTERNAL_URLS.admin.settings}
+                                    className={linkClasses}
+                                >
+                                    <p className={titleClasses}>
+                                        System Configuration
+                                    </p>
+                                    <p className={descClasses}>
+                                        Manage global defaults, notifications,
+                                        and system health.
                                     </p>
                                 </Link>
                             </DropdownItem>
@@ -412,38 +413,7 @@ export function SettingsDropdown() {
                         ) : null}
                     </DropdownSection>
                 ) : null}
-
-                {hasSomePermissions([APP_PERMISSIONS.SYSTEM.MANAGE]) ? (
-                    <DropdownSection title="Systems">
-                        {hasPermission(APP_PERMISSIONS.SYSTEM.MANAGE) ? (
-                            <DropdownItem
-                                key="system_settings"
-                                startContent={
-                                    <div className={iconWrapperClasses}>
-                                        <MonitorCogIcon
-                                            size={22}
-                                            className={iconClasses}
-                                        />
-                                    </div>
-                                }
-                            >
-                                <Link
-                                    to={INTERNAL_URLS.admin.settings}
-                                    className={linkClasses}
-                                >
-                                    <p className={titleClasses}>
-                                        System Configuration
-                                    </p>
-                                    <p className={descClasses}>
-                                        Manage global defaults, notifications,
-                                        and system health.
-                                    </p>
-                                </Link>
-                            </DropdownItem>
-                        ) : null}
-                    </DropdownSection>
-                ) : null}
-            </DropdownMenu>
+            </ScrollShadow>
         </Dropdown>
     )
 }

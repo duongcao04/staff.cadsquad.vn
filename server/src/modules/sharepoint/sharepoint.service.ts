@@ -63,7 +63,6 @@ export class SharePointService implements OnModuleInit, OnModuleDestroy {
 		// Bắt buộc phải chia sẻ connection với Queue gốc
 		const connection = await this.spQueue.client
 		this.logger.log('📡 SharePoint QueueEvents initialized.')
-
 		// 2. Tìm Site "Data"
 		const client = await this.getGraphClient()
 		try {

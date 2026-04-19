@@ -74,7 +74,7 @@ export const renderProjectCenterCell = (
         case 'displayName':
             return (
                 <div>
-                    <p className="font-bold text-text-default">
+                    <p className="font-bold text-text-default uppercase select-text">
                         {data.displayName}
                     </p>
                     <div className="flex items-center gap-2 mt-0.5">

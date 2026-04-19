@@ -71,14 +71,14 @@ export const renderWorkbenchCell = (
 
         case 'displayName':
             return (
-                <p className="w-62.5 line-clamp-1 font-medium">
+                <p className="line-clamp-1 font-medium uppercase select-text">
                     {data.displayName}
                 </p>
             )
 
         case 'incomeCost':
             return (
-                <p className="font-bold text-right text-currency">
+                <p className="font-bold text-right text-currency select-text">
                     {currencyFormatter(data.incomeCost)}
                 </p>
             )

@@ -4,5 +4,6 @@
 	],
 	"exportall.config.relExclusion": [
 		"/server/src/config"
-	]
+	],
+	"cSpell.language": "en,vi"
 }

@@ -194,7 +194,7 @@ export const useUpdateProfileMutation = (
             if (onSuccess) {
                 onSuccess(res)
             } else {
-                addToast({ title: res.message, color: 'danger' })
+                addToast({ title: res.message, color: 'success' })
             }
         },
         onError: (err) => onErrorToast(err, 'Failed to update profile'),
@@ -211,7 +211,7 @@ export const useForgotPasswordMutation = (
             if (onSuccess) {
                 onSuccess(res)
             } else {
-                addToast({ title: res.message, color: 'danger' })
+                addToast({ title: res.message, color: 'success' })
             }
         },
         onError: (err) => onErrorToast(err, 'Failed to forgot password'),
@@ -228,7 +228,7 @@ export const useResetPasswordWithTokenMutation = (
             if (onSuccess) {
                 onSuccess(res)
             } else {
-                addToast({ title: res.message, color: 'danger' })
+                addToast({ title: res.message, color: 'success' })
             }
         },
         onError: (err) => onErrorToast(err, 'Failed to reset password'),
