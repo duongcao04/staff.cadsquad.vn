@@ -20,6 +20,10 @@ export const RedisProvider: Provider = {
 			password: redisConfig.password,
 			db: 0, // Mặc định DB 0
 
+			// Các cấu hình quan trọng để giúp kết nối không rớt khi dùng Tunnel/Docker
+			maxRetriesPerRequest: null, // BullMQ yêu cầu thuộc tính này phải là null
+			keepAlive: 10000, // Ping mỗi 10 giây để giữ kết nối sống
+			
 			// Tự động reconnect nếu mất kết nối
 			retryStrategy: (times) => {
 				// Thử lại tối đa 20 lần

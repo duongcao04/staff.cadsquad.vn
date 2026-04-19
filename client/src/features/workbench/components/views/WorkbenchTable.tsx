@@ -86,7 +86,8 @@ export default function WorkbenchTable({
             selectedKeys={selectedKeys}
             selectionMode="single"
             onSelectionChange={setSelectedKeys}
-            onRowAction={(key) => onViewDetail(key as string)}
+            // onRowAction={(key) => onViewDetail(key as string)}
+            onRowAction={() => {}}
             classNames={{
                 table: !isLoadingData ? 'relative' : 'relative min-h-[430px]!',
             }}

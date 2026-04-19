@@ -52,10 +52,18 @@ import { BullConfigProvider } from './providers/bull-mq/bull-mq.provider'
 import { FinancialModule } from './modules/financial/financial.module'
 import { SupportModule } from './modules/support/support.module'
 
+const environment = process.env.NODE_ENV || 'development'
+
 @Module({
 	imports: [
 		ConfigModule.forRoot({
 			isGlobal: true, // Để dùng được ở mọi nơi
+			envFilePath: [
+				'../.env.local', // 0. 
+				`../.env.${environment}.local`, // 1. Ưu tiên cao nhất (.env.production.local)
+				`../.env.${environment}`, // 2. Ưu tiên thứ hai (.env.production)
+				'../.env', // 3. Dự phòng cuối cùng (.env)
+			],
 			load: [
 				appConfig,
 				databaseConfig,
@@ -66,7 +74,6 @@ import { SupportModule } from './modules/support/support.module'
 				firebaseConfig,
 				ablyConfig,
 			],
-			envFilePath: ['.env', '../.env'],
 		}),
 		PrometheusModule.register({
 			path: '/metrics', // Đường dẫn để Prometheus lấy dữ liệu
@@ -125,4 +132,3 @@ import { SupportModule } from './modules/support/support.module'
 	providers: [AppService],
 })
 export class AppModule {}
-

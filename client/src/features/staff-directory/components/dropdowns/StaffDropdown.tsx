@@ -9,22 +9,18 @@ import {
     DropdownTrigger,
     useDisclosure,
 } from '@heroui/react'
-import { useRouter } from '@tanstack/react-router'
-import { Mail, MoreVertical, SendIcon, UserPen } from 'lucide-react'
+import { Link } from '@tanstack/react-router'
+import { Mail, MoreVertical, UserPen } from 'lucide-react'
 import { AssignJobModal } from '../modals/AssignJobModal'
 import { DeactivateUserModal } from '../modals/DeactiveUserModal'
 import { EmailUserModal } from '../modals/EmailUserModal'
-import { SendNotificationModal } from '../modals/SendNotificationModal'
 
 type StaffDropdownProps = {
     selectedUser: TUser
 }
 export function StaffDropdown({ selectedUser }: StaffDropdownProps) {
-    const router = useRouter()
-
     const assignJobModal = useDisclosure()
     const emailUserModal = useDisclosure()
-    const notificationModal = useDisclosure()
     const deactivateModal = useDisclosure()
 
     return (
@@ -41,13 +37,6 @@ export function StaffDropdown({ selectedUser }: StaffDropdownProps) {
                 <EmailUserModal
                     isOpen
                     onClose={emailUserModal.onClose}
-                    user={selectedUser}
-                />
-            )}
-            {notificationModal.isOpen && selectedUser && (
-                <SendNotificationModal
-                    isOpen
-                    onClose={notificationModal.onClose}
                     user={selectedUser}
                 />
             )}
@@ -74,22 +63,12 @@ export function StaffDropdown({ selectedUser }: StaffDropdownProps) {
                         <DropdownItem
                             key="view"
                             startContent={<UserPen size={16} />}
-                            onPress={() => {
-                                router.navigate({
-                                    href: INTERNAL_URLS.management.staffDetail(
-                                        selectedUser.username
-                                    ),
-                                })
-                            }}
+                            as={Link}
+                            href={INTERNAL_URLS.management.staffDetail(
+                                selectedUser.code
+                            )}
                         >
                             View Profile
-                        </DropdownItem>
-                        <DropdownItem
-                            key="notify"
-                            startContent={<SendIcon size={16} />}
-                            onPress={notificationModal.onOpen}
-                        >
-                            Send Notification
                         </DropdownItem>
                         <DropdownItem
                             key="email"

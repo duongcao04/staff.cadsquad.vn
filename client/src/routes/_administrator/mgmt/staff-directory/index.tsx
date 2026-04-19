@@ -28,7 +28,11 @@ import {
 import { useMemo } from 'react'
 import { z } from 'zod'
 import CreateUserModal from '../../../../features/staff-directory/components/modals/CreateUserModal'
-import { AdminPageHeading, HeroButton } from '../../../../shared/components'
+import {
+    AdminPageHeading,
+    AppLoading,
+    HeroButton,
+} from '../../../../shared/components'
 
 // --- 1. CONSTANTS & SCHEMA ---
 const VIEW_OPTIONS = [
@@ -91,6 +95,7 @@ export const Route = createFileRoute('/_administrator/mgmt/staff-directory/')({
             context.queryClient.ensureQueryData(departmentsListOptions()),
         ])
     },
+    pendingComponent: AppLoading,
     component: () => {
         const options = usersListOptions()
         const {

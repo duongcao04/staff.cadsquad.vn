@@ -21,6 +21,7 @@ type JobNoFieldProps = {
     isLoading?: boolean
     isInvalid?: boolean
     errorMessage?: React.ReactNode
+    size?: 'sm' | 'md' | 'lg' | undefined
 }
 
 export function JobNoField({
@@ -32,6 +33,7 @@ export function JobNoField({
     errorMessage,
     isInvalid,
     isLoading,
+    size,
 }: JobNoFieldProps) {
     const { isSmallView } = useDevice()
     const [selectedKey, setSelectedKey] = useState<string | null>(
@@ -100,6 +102,7 @@ export function JobNoField({
             className={`grid ${isSmallView ? 'grid-cols-2' : 'grid-cols-3'} items-end gap-4`}
         >
             <HeroAutocomplete
+                size={size}
                 isRequired
                 label={label}
                 placeholder={placeholder}

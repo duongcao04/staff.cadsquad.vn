@@ -55,8 +55,8 @@ function JobCard({ data, onPress }: Props) {
                     </div>
                     <Link
                         to={INTERNAL_URLS.jobDetail(data.no)}
-                        className="mt-0.5 block font-medium line-clamp-1! hover:underline"
-                        title="View detail"
+                        className="mt-0.5 block font-medium line-clamp-1! hover:underline uppercase"
+                        title={data.displayName}
                     >
                         {data.displayName}
                     </Link>

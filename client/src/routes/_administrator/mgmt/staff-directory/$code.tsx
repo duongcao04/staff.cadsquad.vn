@@ -24,6 +24,7 @@ import {
 } from '@/lib/queries'
 import {
     AdminPageHeading,
+    AppLoading,
     HeroBreadcrumbItem,
     HeroBreadcrumbs,
     HeroButton,
@@ -98,6 +99,7 @@ export const Route = createFileRoute(
         const { code } = params
         return context.queryClient.ensureQueryData(userOptions(code))
     },
+    pendingComponent: AppLoading,
     component: () => {
         const router = useRouter()
         const { code } = Route.useParams()

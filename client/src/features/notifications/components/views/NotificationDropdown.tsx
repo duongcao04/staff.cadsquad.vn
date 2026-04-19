@@ -179,7 +179,10 @@ export default function NotificationDropdown() {
                 </div>
 
                 {/* Content Area */}
-                <ScrollShadow className="w-full h-150 flex flex-col">
+                <ScrollShadow
+                    className="w-full h-150 flex flex-col"
+                    hideScrollBar
+                >
                     {isLoading && !data ? (
                         <div className="flex-1 flex flex-col items-center justify-center gap-2 text-default-400">
                             <Spinner size="lg" color="current" />

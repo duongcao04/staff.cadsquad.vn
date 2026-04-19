@@ -2,7 +2,8 @@ import type { ButtonProps } from '@heroui/react'
 import { cn } from '@heroui/react'
 import { useControlledState } from '@react-stately/utils'
 import { domAnimation, LazyMotion, m } from 'framer-motion'
-import { type ComponentProps,forwardRef } from 'react'
+import { type ComponentProps, forwardRef } from 'react'
+import { useDevice } from '../../hooks'
 
 // --- Types ---
 
@@ -114,6 +115,7 @@ const HeroRowsStep = forwardRef<HTMLButtonElement, HeroRowsStepProps>(
         },
         ref
     ) => {
+        const { isMobile, isTablet } = useDevice()
         const [currentStep, setCurrentStep] = useControlledState(
             currentStepProp,
             defaultStep,
@@ -188,6 +190,12 @@ const HeroRowsStep = forwardRef<HTMLButtonElement, HeroRowsStepProps>(
                                             'opacity-50 cursor-not-allowed',
                                         classNames.button
                                     )}
+                                    style={{
+                                        flexDirection:
+                                            isMobile || isTablet
+                                                ? 'column'
+                                                : 'row',
+                                    }}
                                     onClick={() =>
                                         !step.disabled &&
                                         setCurrentStep(stepIdx)
@@ -277,16 +285,18 @@ const HeroRowsStep = forwardRef<HTMLButtonElement, HeroRowsStepProps>(
                                         >
                                             {step.title}
                                         </div>
-                                        {step.description && (
-                                            <div
-                                                className={cn(
-                                                    'text-tiny text-default-400',
-                                                    classNames.description
-                                                )}
-                                            >
-                                                {step.description}
-                                            </div>
-                                        )}
+                                        {!isMobile &&
+                                            !isTablet &&
+                                            step.description && (
+                                                <div
+                                                    className={cn(
+                                                        'text-tiny text-default-400',
+                                                        classNames.description
+                                                    )}
+                                                >
+                                                    {step.description}
+                                                </div>
+                                            )}
                                     </div>
 
                                     {/* Connector Bar */}
