@@ -1,16 +1,11 @@
 import { PrismaService } from '@/providers/prisma/prisma.service'
-import {
-	Injectable,
-	Logger
-} from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 
 @Injectable()
 export class JobService {
 	private readonly logger = new Logger(JobService.name)
 
-	constructor(
-		private readonly prisma: PrismaService,
-	) { }
+	constructor(private readonly prisma: PrismaService) {}
 
 	async findOne(id: string) {
 		return await this.prisma.job.findUnique({ where: { id } })
@@ -32,5 +27,4 @@ export class JobService {
 		await this.prisma.pinnedJob.create({ data: { userId, jobId } })
 		return { isPinned: true }
 	}
-
 }

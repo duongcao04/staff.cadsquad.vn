@@ -302,7 +302,7 @@ export class SharePointService implements OnModuleInit, OnModuleDestroy {
 		itemId: string
 		destinationFolderId: string
 		newName: string
-	}): Promise<void> {
+	}): Promise<any> {
 		const { itemId, destinationFolderId, newName } = data
 
 		try {
@@ -319,15 +319,33 @@ export class SharePointService implements OnModuleInit, OnModuleDestroy {
 			}
 
 			// Execute the copy operation
-			const copyResult = await client
+			const response = await client
 				.api(`/drives/${driveId}/items/${itemId}/copy`)
+				.responseType(ResponseType.RAW)
 				.post(copyRequest)
+			let newFolderId: string
 
+			// 2. Handle Synchronous Success (201 Created)
+			if (response.status === 201) {
+				const result = await response.json()
+				newFolderId = result.id
+			}
+			// 3. Handle Asynchronous Success (202 Accepted)
+			else if (response.status === 202) {
+				const monitorUrl = response.headers.get('location')
+				if (!monitorUrl) throw new Error('No monitor URL returned')
+
+				newFolderId = await this.pollCopyStatus(monitorUrl)
+			} else {
+				throw new Error(`Unexpected status: ${response.status}`)
+			}
+
+			const details = await this.getItemDetails(newFolderId)
+			// 4. Fetch the full details of the NEW folder
 			this.logger.log(
-				`Copied item ${itemId} to ${destinationFolderId} (New ID: ${JSON.stringify(copyResult)})`
+				`Copied item ${itemId} to ${destinationFolderId} (New ID: ${JSON.stringify(details.id)})`
 			)
-
-			return copyResult
+			return details
 		} catch (error) {
 			this.logger.error(
 				`Copy item failed: ${JSON.stringify({
@@ -458,5 +476,53 @@ export class SharePointService implements OnModuleInit, OnModuleDestroy {
 			throw new BadRequestException('SharePoint Site is not initialized.')
 		}
 		return this.siteId
+	}
+
+	/**
+	 * Internal helper to poll the monitor URL until finished
+	 */
+	private async pollCopyStatus(monitorUrl: string): Promise<string> {
+		let isDone = false
+		let resourceId = ''
+
+		while (!isDone) {
+			// Wait 2 seconds between checks
+			await new Promise((resolve) => setTimeout(resolve, 2000))
+
+			const res = await fetch(monitorUrl)
+			const status = await res.json()
+
+			if (status.status === 'completed') {
+				resourceId = status.resourceId
+				isDone = true
+			} else if (status.status === 'failed') {
+				throw new Error(
+					`SharePoint Copy Error: ${status.error?.message}`
+				)
+			}
+		}
+		return resourceId
+	}
+
+	/**
+	 * Internal helper to fetch rich details
+	 */
+	private async getItemDetails(id: string) {
+		const client = await this.getGraphClient()
+		const item = await client
+			.api(`/drives/${this.driveId}/items/${id}`)
+			.select(
+				'id,name,webUrl,folder,size,createdDateTime,lastModifiedDateTime'
+			)
+			.get()
+
+		return {
+			id: item.id,
+			name: item.name,
+			isFolder: !!item.folder,
+			webUrl: item.webUrl,
+			size: item.size,
+			updatedAt: item.lastModifiedDateTime,
+		}
 	}
 }

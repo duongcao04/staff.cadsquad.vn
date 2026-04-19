@@ -9,6 +9,7 @@ import { ConfirmPaymentHandler } from './handlers/confirm-payment.handler'
 import { ForceChangeStatusHandler } from './handlers/force-change-status.handler'
 import { ReviewDeliveryHandler } from './handlers/review-delivery.handler'
 import { RestoreJobHandler } from './handlers/restore-job.handler'
+import { JobSyncSharepointHandler } from './handlers/job-sync-sharepoint.handler'
 
 export const CommandHandlers = [
 	CreateJobHandler,
@@ -22,5 +23,5 @@ export const CommandHandlers = [
 	ForceChangeStatusHandler,
 	ReviewDeliveryHandler,
 	RestoreJobHandler,
+	JobSyncSharepointHandler,
 ]
-
