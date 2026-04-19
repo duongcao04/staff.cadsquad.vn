@@ -375,7 +375,6 @@ export class JobController {
 	// -------------------------------------------------------------------------
 
 	@Get('next-no')
-	@UseGuards(PermissionsGuard)
 	async getNextNo(@Query('typeId') typeId: string) {
 		return this.jobTypeService.getNextJobNo(typeId)
 	}
