@@ -71,6 +71,7 @@ export class JobProcessor extends WorkerHost {
 				itemId: sharepointFolderTemplateId,
 				newName: sharepointFolderName,
 			})
+
 			// 3. COPY XONG -> UPDATE THÀNH "SUCCESS"
 			await this.prisma.job.update({
 				where: { no: jobNo },
@@ -79,17 +80,19 @@ export class JobProcessor extends WorkerHost {
 						// LƯU Ý: Đổi từ create -> update vì bước 1 đã create rồi
 						update: {
 							syncStatus: 'SUCCESS',
-							itemId: crypto.randomUUID(),
-							webUrl: copiedFolder?.['webUrl'] || '',
-							displayName: copiedFolder?.['name'] || '',
+							itemId: copiedFolder.id,
+							webUrl: copiedFolder.webUrl || '',
+							displayName: copiedFolder.name || '',
 							createdBy:
 								copiedFolder?.['createdBy']?.['name'] ||
 								copiedFolder?.['createdBy']?.['user']?.[
 									'displayName'
 								] ||
-								'Unknown',
-							createdDateTime: copiedFolder?.['createdDateTime'],
-							size: copiedFolder?.['size'] || 0,
+								'System',
+							createdDateTime:
+								copiedFolder?.['createdDateTime'] ||
+								new Date().toISOString(),
+							size: copiedFolder.size || 0,
 						},
 					},
 				},
