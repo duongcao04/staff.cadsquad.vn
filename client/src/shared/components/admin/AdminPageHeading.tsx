@@ -2,7 +2,7 @@ import { cn } from '@/lib'
 import { Badge, CardBody, CardProps } from '@heroui/react'
 import { HeroCard } from '../ui/hero-card'
 
-type Props = {
+export type AdminPageHeadingProps = {
     title: React.ReactNode
     description?: React.ReactNode
     showBadge?: boolean
@@ -26,7 +26,7 @@ export function AdminPageHeading({
     classNames,
     isSticky = false,
     ...props
-}: Props) {
+}: AdminPageHeadingProps) {
     let titleComp = (
         <div
             className={cn(

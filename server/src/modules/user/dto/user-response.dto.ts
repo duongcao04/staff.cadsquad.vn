@@ -85,4 +85,8 @@ export class UserResponseDto {
 	@ApiProperty({ description: 'Last update timestamp' })
 	@Expose()
 	updatedAt: Date
+
+	@ApiProperty({ description: 'Deleted At' })
+	@Expose()
+	deletedAt: Date
 }

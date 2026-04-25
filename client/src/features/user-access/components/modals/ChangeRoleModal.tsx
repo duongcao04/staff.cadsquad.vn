@@ -1,16 +1,19 @@
-import {
-    HeroModal,
-    HeroModalBody,
-    HeroModalContent,
-    HeroModalFooter,
-    HeroModalHeader,
-} from '@/shared/components'
 import { TRole, TUser } from '@/shared/types'
-import { Button, Select, SelectItem } from '@heroui/react'
-import { useMutation } from '@tanstack/react-query'
-import { AlertTriangle, UserCog } from 'lucide-react'
+import {
+    addToast,
+    Button,
+    Modal,
+    ModalBody,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    Select,
+    SelectItem,
+} from '@heroui/react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { ShieldUserIcon, UserCog } from 'lucide-react'
 import { useState } from 'react'
-import { assignMemberRoleOptions } from '../../../../lib'
+import { assignMemberRoleOptions, userOptions } from '../../../../lib'
 
 interface ChangeRoleModalProps {
     isOpen: boolean
@@ -27,6 +30,7 @@ export const ChangeRoleModal = ({
     roles,
     user,
 }: ChangeRoleModalProps) => {
+    const queryClient = useQueryClient()
     const userAssignRoleMutation = useMutation(assignMemberRoleOptions)
     const [selectedRole, setSelectedRole] = useState<string | null>(null)
 
@@ -39,6 +43,13 @@ export const ChangeRoleModal = ({
                 },
                 {
                     onSuccess() {
+                        addToast({
+                            title: `Change role for ${user.displayName} successful`,
+                            color: 'success',
+                        })
+                        queryClient.invalidateQueries({
+                            queryKey: userOptions(user.code).queryKey,
+                        })
                         onClose()
                     },
                 }
@@ -47,19 +58,19 @@ export const ChangeRoleModal = ({
     }
 
     return (
-        <HeroModal isOpen={isOpen} onClose={onClose} size="lg">
-            <HeroModalContent>
+        <Modal isOpen={isOpen} onClose={onClose} size="lg">
+            <ModalContent>
                 {(onClose) => (
                     <>
-                        <HeroModalHeader className="flex gap-2 items-center text-warning-600">
-                            <AlertTriangle /> Change Primary Role
-                        </HeroModalHeader>
-                        <HeroModalBody className="gap-4">
+                        <ModalHeader className="flex gap-2 items-center text-warning-600">
+                            <ShieldUserIcon />
+                            Change User Role
+                        </ModalHeader>
+                        <ModalBody className="gap-4">
                             <div className="p-3 bg-warning-50 rounded-lg text-sm text-warning-800 border border-warning-200">
-                                <strong>Warning:</strong> Changing the role will{' '}
-                                <b>reset all custom permission overrides</b>{' '}
-                                (Grants/Denials) for this user to the defaults
-                                of the new role.
+                                <strong>Warning:</strong> Defines the user’s
+                                global permissions. Changes take effect
+                                immediately across the system.
                             </div>
 
                             <Select
@@ -94,8 +105,8 @@ export const ChangeRoleModal = ({
                                         </SelectItem>
                                     ))}
                             </Select>
-                        </HeroModalBody>
-                        <HeroModalFooter>
+                        </ModalBody>
+                        <ModalFooter>
                             <Button variant="light" onPress={onClose}>
                                 Cancel
                             </Button>
@@ -107,10 +118,10 @@ export const ChangeRoleModal = ({
                             >
                                 Confirm Change
                             </Button>
-                        </HeroModalFooter>
+                        </ModalFooter>
                     </>
                 )}
-            </HeroModalContent>
-        </HeroModal>
+            </ModalContent>
+        </Modal>
     )
 }

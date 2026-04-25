@@ -1,14 +1,13 @@
-import { Button } from '@heroui/react'
+import {
+    Button,
+    Modal,
+    ModalBody,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+} from '@heroui/react'
 import { AlertCircleIcon, UserCheckIcon, UserXIcon } from 'lucide-react'
 import { useState } from 'react'
-import {
-    HeroModal,
-    HeroModalBody,
-    HeroModalContent,
-    HeroModalFooter,
-    HeroModalHeader,
-} from '../../../../shared/components/ui/hero-modal'
-
 interface UserStatusModalProps {
     isOpen: boolean
     onClose: () => void
@@ -59,7 +58,7 @@ export const ChangeUserStatusModal = ({
     }
 
     return (
-        <HeroModal
+        <Modal
             isOpen={isOpen}
             onOpenChange={onClose}
             placement="center"
@@ -67,10 +66,10 @@ export const ChangeUserStatusModal = ({
                 closeButton: 'hover:bg-default-100 active:bg-default-200',
             }}
         >
-            <HeroModalContent>
+            <ModalContent>
                 {(onClose) => (
                     <>
-                        <HeroModalHeader className="flex flex-col gap-1 items-center pt-8">
+                        <ModalHeader className="flex flex-col gap-1 items-center pt-8">
                             <div
                                 className={`p-4 rounded-full mb-2 ${
                                     isDeactivating
@@ -83,9 +82,9 @@ export const ChangeUserStatusModal = ({
                             <span className="text-xl font-bold">
                                 {config.title}
                             </span>
-                        </HeroModalHeader>
+                        </ModalHeader>
 
-                        <HeroModalBody className="text-center pb-6">
+                        <ModalBody className="text-center pb-6">
                             <p className="text-default-600">
                                 Are you sure you want to{' '}
                                 {isDeactivating ? 'deactivate' : 'reactivate'}{' '}
@@ -116,9 +115,9 @@ export const ChangeUserStatusModal = ({
                                     {config.description}
                                 </p>
                             </div>
-                        </HeroModalBody>
+                        </ModalBody>
 
-                        <HeroModalFooter className="bg-default-50/50">
+                        <ModalFooter className="bg-default-50/50">
                             <Button
                                 variant="flat"
                                 onPress={onClose}
@@ -134,10 +133,10 @@ export const ChangeUserStatusModal = ({
                             >
                                 {config.confirmText}
                             </Button>
-                        </HeroModalFooter>
+                        </ModalFooter>
                     </>
                 )}
-            </HeroModalContent>
-        </HeroModal>
+            </ModalContent>
+        </Modal>
     )
 }

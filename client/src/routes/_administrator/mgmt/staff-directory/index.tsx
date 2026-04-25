@@ -1,9 +1,15 @@
 import ViewContentDropdown from '@/features/staff-directory/components/dropdowns/ViewContentDropdown'
+import CreateUserModal from '@/features/staff-directory/components/modals/CreateUserModal'
 import StaffDirectoryGrid from '@/features/staff-directory/components/views/StaffDirectoryGrid'
 import StaffDirectoryTable from '@/features/staff-directory/components/views/StaffDirectoryTable'
 import { COLORS } from '@/lib'
 import { departmentsListOptions, usersListOptions } from '@/lib/queries'
 import { getPageTitle, RouteUtil } from '@/lib/utils'
+import {
+    AdminPageHeading,
+    AppLoading,
+    HeroButton,
+} from '@/shared/components'
 import AdminContentContainer from '@/shared/components/admin/AdminContentContainer'
 import {
     Button,
@@ -27,12 +33,6 @@ import {
 } from 'lucide-react'
 import { useMemo } from 'react'
 import { z } from 'zod'
-import CreateUserModal from '../../../../features/staff-directory/components/modals/CreateUserModal'
-import {
-    AdminPageHeading,
-    AppLoading,
-    HeroButton,
-} from '../../../../shared/components'
 
 // --- 1. CONSTANTS & SCHEMA ---
 const VIEW_OPTIONS = [

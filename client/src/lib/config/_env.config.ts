@@ -2,6 +2,7 @@ import * as yup from 'yup'
 
 // 1. Add .required() for critical variables and defaults for others
 const configSchema = yup.object({
+    MODE: yup.string().default('development'),
     APP_TITLE: yup.string().default('App'),
     APP_VERSION: yup.string().default('1.0.0'),
     API_ENDPOINT: yup.string().required('API_ENDPOINT is required'),
@@ -24,6 +25,7 @@ function configProject() {
     try {
         const config = configSchema.validateSync(
             {
+                MODE: import.meta.env.MODE,
                 APP_TITLE: import.meta.env.VITE_APP_TITLE,
                 APP_VERSION: import.meta.env.VITE_APP_VERSION,
 
@@ -49,7 +51,7 @@ function configProject() {
             }
         )
 
-        console.table(config)
+        config.MODE === 'development' && console.table(config)
         return config
     } catch (error) {
         // 3. Log specific validation errors so you know what to fix
