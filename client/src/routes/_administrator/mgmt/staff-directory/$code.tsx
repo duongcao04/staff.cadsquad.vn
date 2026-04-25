@@ -2,8 +2,6 @@ import {
     ConfirmSendPasswordResetEmail,
     UserInformationTabs,
 } from '@/features/staff-directory'
-import { ChangeUserStatusModal } from '@/features/staff-directory/components/modals/ChangeUserStatusModal'
-import { DeleteUserPermanentlyModal } from '@/features/staff-directory/components/modals/DeleteUserPermanentlyModal'
 import ResetPasswordModal from '@/features/staff-directory/components/modals/ResetPasswordModal'
 import { UploadAvatarModal } from '@/features/staff-directory/components/modals/UploadAvatarModal'
 import { ChangeRoleModal } from '@/features/user-access'
@@ -13,12 +11,7 @@ import {
     optimizeCloudinary,
     useUploadImageMutation,
 } from '@/lib'
-import {
-    rolesListOptions,
-    toggleUserStatusOptions,
-    updateUserOptions,
-    userOptions,
-} from '@/lib/queries'
+import { rolesListOptions, updateUserOptions, userOptions } from '@/lib/queries'
 import { AppLoading, RoleChip } from '@/shared/components'
 import AdminContentContainer from '@/shared/components/admin/AdminContentContainer'
 import { HeroCopyButton } from '@/shared/components/ui/hero-copy-button'
@@ -34,25 +27,22 @@ import {
     CardHeader,
     Chip,
     Divider,
-    Spinner,
-    Switch,
     useDisclosure,
 } from '@heroui/react'
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router'
 import {
-    AlertCircle,
     ArrowLeft,
     Calendar,
     Hash,
     HashIcon,
     KeyRound,
     Mail,
+    OctagonXIcon,
     Shield,
-    Trash2,
     Upload,
+    UserRoundXIcon,
 } from 'lucide-react'
-import { useState } from 'react'
 import { z } from 'zod'
 import { NavigatorHelper } from '../../../../lib/helpers/navigation.helper'
 import { useDevice } from '../../../../shared/hooks'
@@ -203,13 +193,10 @@ export const Route = createFileRoute(
 function EditStaffPage({ data: user }: { data: TUser }) {
     const { tab: activeTab } = Route.useSearch()
 
-    const toggleUserStatusMutation = useMutation(toggleUserStatusOptions)
+    const isDeletedUser = Boolean(user.deletedAt)
+
     const uploadImageMutation = useUploadImageMutation()
     const updateUser = useMutation(updateUserOptions)
-
-    const [toggleUserActive, setToggleUserActive] = useState<
-        'active' | 'deActive'
-    >(user.isActive ? 'deActive' : 'active')
 
     // --- Modals ---
     const {
@@ -222,13 +209,7 @@ function EditStaffPage({ data: user }: { data: TUser }) {
         onOpen: onOpenUploadAvatarModal,
         onClose: onCloseUploadAvatarModal,
     } = useDisclosure({ id: 'UploadAvatarModal' })
-    const {
-        isOpen: isOpenDeleteUserPermanentlyModal,
-        onOpen: onOpenDeleteUserPermanentlyModal,
-        onClose: onCloseDeleteUserPermanentlyModal,
-    } = useDisclosure({ id: 'DeleteUserPermanentlyModal' })
 
-    const changeUserStatusModal = useDisclosure({ id: 'ChangeUserStatusModal' })
     const confirmForgotPasswordModalDisclosure = useDisclosure({
         id: 'ConfirmForgotPasswordModal',
     })
@@ -237,11 +218,6 @@ function EditStaffPage({ data: user }: { data: TUser }) {
     const {
         data: { roles },
     } = useSuspenseQuery({ ...rolesListOptions() })
-
-    const handleOpenChangeUserModal = (isActive: boolean) => {
-        setToggleUserActive(isActive ? 'active' : 'deActive')
-        changeUserStatusModal.onOpen()
-    }
 
     const handleAvatarSave = async (imageFile: File) => {
         try {
@@ -263,29 +239,11 @@ function EditStaffPage({ data: user }: { data: TUser }) {
     return (
         <>
             {/* Modals Mounting */}
-            {changeUserStatusModal.isOpen && (
-                <ChangeUserStatusModal
-                    isOpen={changeUserStatusModal.isOpen}
-                    onClose={changeUserStatusModal.onClose}
-                    user={user}
-                    action={toggleUserActive}
-                    onConfirm={async (userId) => {
-                        toggleUserStatusMutation.mutateAsync({ userId })
-                    }}
-                />
-            )}
             {isOpenResetPasswordModal && user && (
                 <ResetPasswordModal
                     isOpen={isOpenResetPasswordModal}
                     onClose={onCloseResetPasswordModal}
                     data={user}
-                />
-            )}
-            {isOpenDeleteUserPermanentlyModal && (
-                <DeleteUserPermanentlyModal
-                    isOpen={isOpenDeleteUserPermanentlyModal}
-                    onClose={onCloseDeleteUserPermanentlyModal}
-                    user={user}
                 />
             )}
             {isOpenUploadAvatarModal && (
@@ -389,6 +347,18 @@ function EditStaffPage({ data: user }: { data: TUser }) {
                                         })}
                                     </span>
                                 </div>
+                                {isDeletedUser && user.deletedAt && (
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-text-subdued flex items-center gap-2">
+                                            <OctagonXIcon size={14} /> Deleted
+                                        </span>
+                                        <span className="font-medium text-text-default">
+                                            {dateFormatter(user.deletedAt, {
+                                                format: 'longDate',
+                                            })}
+                                        </span>
+                                    </div>
+                                )}
                             </div>
                         </CardBody>
                     </Card>
@@ -444,45 +414,6 @@ function EditStaffPage({ data: user }: { data: TUser }) {
                                 onPress={changeRoleModalDisclosure.onOpen}
                             >
                                 Change Admin Role
-                            </Button>
-                        </CardBody>
-                    </Card>
-
-                    {/* 3. Danger Zone */}
-                    <Card className="shadow-none border border-red-200 bg-red-50/50 dark:bg-red-950/20 dark:border-red-900">
-                        <CardHeader className="px-6 pt-6 pb-0">
-                            <h4 className="font-bold text-red-900 dark:text-red-200 text-sm flex items-center gap-2">
-                                <AlertCircle size={16} /> Danger Zone
-                            </h4>
-                        </CardHeader>
-                        <CardBody className="p-6">
-                            <p className="text-xs text-red-700 dark:text-red-500 mb-4">
-                                Deactivating this user will revoke all access to
-                                the dashboard immediately.
-                            </p>
-                            <div className="flex items-center justify-between mb-4">
-                                <span className="font-medium text-sm text-text-subdued">
-                                    Account Status
-                                </span>
-                                {toggleUserStatusMutation.isPending ? (
-                                    <Spinner size="sm" />
-                                ) : (
-                                    <Switch
-                                        color="success"
-                                        isSelected={user.isActive}
-                                        onValueChange={(val) =>
-                                            handleOpenChangeUserModal(!val)
-                                        }
-                                    />
-                                )}
-                            </div>
-                            <Button
-                                className="w-full bg-white border border-red-200 text-red-600 hover:bg-red-50 shadow-sm"
-                                variant="flat"
-                                startContent={<Trash2 size={16} />}
-                                onPress={onOpenDeleteUserPermanentlyModal}
-                            >
-                                Delete User Permanently
                             </Button>
                         </CardBody>
                     </Card>

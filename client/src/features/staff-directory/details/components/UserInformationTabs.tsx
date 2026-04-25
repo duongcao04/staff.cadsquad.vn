@@ -1,4 +1,5 @@
 import {
+    cn,
     departmentsListOptions,
     editUserSchema,
     jobTitlesListOptions,
@@ -18,6 +19,7 @@ import {
     Card,
     CardBody,
     CardHeader,
+    Chip,
     Divider,
     Input,
     Select,
@@ -26,7 +28,6 @@ import {
     Switch,
     Tab,
     Tabs,
-    Tooltip,
     useDisclosure,
 } from '@heroui/react'
 import {
@@ -50,6 +51,7 @@ import {
     Phone,
     Save,
     Settings2Icon,
+    ShieldCheck,
     Trash2,
     UserIcon,
 } from 'lucide-react'
@@ -60,6 +62,7 @@ import { ChangeUserStatusModal } from '../../components/modals/ChangeUserStatusM
 import { ConfirmSendPasswordResetEmail } from '../../components/modals/ConfirmSendPasswordResetEmail'
 import { DeleteUserPermanentlyModal } from '../../components/modals/DeleteUserPermanentlyModal'
 import ResetPasswordModal from '../../components/modals/ResetPasswordModal'
+import { RestoreUserModal } from '../../components/modals/RestoreUserModal'
 
 interface UserInformationTabsProps {
     activeTab: TStaffDetailParams['tab']
@@ -69,76 +72,92 @@ export const UserInformationTabs = ({
     activeTab,
     data,
 }: UserInformationTabsProps) => {
+    const isDeletedUser = Boolean(data.deletedAt)
     return (
-        <Card
-            shadow="none"
-            className="bg-background border border-border-default h-fit"
-        >
-            <CardHeader className="pb-3.5">
-                <Tabs
-                    aria-label="User Edit Tabs"
-                    variant="underlined"
-                    color="primary"
-                    classNames={{
-                        tabList: 'px-6 gap-6',
-                        cursor: 'w-full bg-primary',
-                        tab: 'max-w-fit px-0 h-8',
-                        tabContent:
-                            'group-data-[selected=true]:text-primary font-semibold text-text-subdued',
-                    }}
-                    selectedKey={activeTab}
-                    onSelectionChange={(k) =>
-                        RouteUtil.updateParams({ tab: k as string })
-                    }
-                >
-                    <Tab
-                        key="profile"
-                        title={
-                            <div className="flex items-center gap-2">
-                                <UserIcon size={16} /> Personal Info
-                            </div>
+        <>
+            {isDeletedUser && (
+                <div className="bg-danger-50 p-4 rounded-xl border border-danger-100 mb-6">
+                    <h4 className="font-bold text-danger-800 mb-1">
+                        User has been{' '}
+                        <strong className="font-semibold">deleted</strong>
+                    </h4>
+                    <p className="text-sm text-danger-700">
+                        This user has been deleted, so editing is disabled and
+                        view-only mode is applied. You can edit again once the
+                        user is restored.
+                    </p>
+                </div>
+            )}
+            <Card
+                shadow="none"
+                className="bg-background border border-border-default h-fit"
+            >
+                <CardHeader className="pb-3.5">
+                    <Tabs
+                        aria-label="User Edit Tabs"
+                        variant="underlined"
+                        color="primary"
+                        classNames={{
+                            tabList: 'px-6 gap-6',
+                            cursor: 'w-full bg-primary',
+                            tab: 'max-w-fit px-0 h-8',
+                            tabContent:
+                                'group-data-[selected=true]:text-primary font-semibold text-text-subdued',
+                        }}
+                        selectedKey={activeTab}
+                        onSelectionChange={(k) =>
+                            RouteUtil.updateParams({ tab: k as string })
                         }
-                    />
-                    <Tab
-                        key="organization"
-                        title={
-                            <div className="flex items-center gap-2">
-                                <BriefcaseIcon size={16} /> Organization
-                            </div>
-                        }
-                    />
-                    <Tab
-                        key="security"
-                        title={
-                            <div className="flex items-center gap-2">
-                                <KeyRoundIcon size={16} /> Security
-                            </div>
-                        }
-                    />
-                    <Tab
-                        key="account-control"
-                        title={
-                            <div className="flex items-center gap-2">
-                                <Settings2Icon size={16} /> Account Control
-                            </div>
-                        }
-                    />
-                </Tabs>
-            </CardHeader>
+                    >
+                        <Tab
+                            key="profile"
+                            title={
+                                <div className="flex items-center gap-2">
+                                    <UserIcon size={16} /> Personal Info
+                                </div>
+                            }
+                        />
+                        <Tab
+                            key="organization"
+                            title={
+                                <div className="flex items-center gap-2">
+                                    <BriefcaseIcon size={16} /> Organization
+                                </div>
+                            }
+                        />
+                        <Tab
+                            key="security"
+                            title={
+                                <div className="flex items-center gap-2">
+                                    <KeyRoundIcon size={16} /> Security
+                                </div>
+                            }
+                        />
+                        <Tab
+                            key="account-control"
+                            title={
+                                <div className="flex items-center gap-2">
+                                    <Settings2Icon size={16} /> Account Control
+                                </div>
+                            }
+                        />
+                    </Tabs>
+                </CardHeader>
 
-            <Divider />
+                <Divider />
 
-            <CardBody className="p-6">
-                {activeTab === 'profile' && <EditProfileTab user={data} />}
-                {activeTab === 'organization' && (
-                    <OrganizationDepartment user={data} />
-                )}
-                {activeTab === 'security' && <SecurityTab user={data} />}
-                {activeTab === 'account-control' && (
-                    <AccountControlTab user={data} />
-                )}
-            </CardBody>
-        </Card>
+                <CardBody className="p-6">
+                    {activeTab === 'profile' && <EditProfileTab user={data} />}
+                    {activeTab === 'organization' && (
+                        <OrganizationDepartment user={data} />
+                    )}
+                    {activeTab === 'security' && <SecurityTab user={data} />}
+                    {activeTab === 'account-control' && (
+                        <AccountControlTab user={data} />
+                    )}
+                </CardBody>
+            </Card>
+        </>
     )
 }
 
@@ -186,37 +205,35 @@ function EditProfileTab({ user }: { user: TUser }) {
     return (
         <div className="space-y-6 animate-in fade-in duration-300">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Tooltip content="User has been deleted">
-                    <Input
-                        isRequired
-                        label="Full Name"
-                        isDisabled={isDeletedUser}
-                        labelPlacement="outside-top"
-                        placeholder="e.g. Sarah Wilson"
-                        variant="bordered"
-                        name="displayName"
-                        description="Visible to teammates across the platform."
-                        value={formik.values.displayName}
-                        onValueChange={(v) =>
-                            formik.setFieldValue('displayName', v)
-                        }
-                        isInvalid={
-                            !!formik.errors.displayName &&
-                            formik.touched.displayName
-                        }
-                        errorMessage={
-                            formik.touched.displayName &&
-                            formik.errors.displayName
-                        }
-                        onBlur={formik.handleBlur}
-                        classNames={{
-                            label: 'font-semibold text-text-default',
-                        }}
-                    />
-                </Tooltip>
+                <Input
+                    label="Full Name"
+                    isDisabled={isDeletedUser}
+                    isRequired
+                    labelPlacement="outside-top"
+                    placeholder="e.g. Sarah Wilson"
+                    variant="bordered"
+                    name="displayName"
+                    description="Visible to teammates across the platform."
+                    value={formik.values.displayName}
+                    onValueChange={(v) =>
+                        formik.setFieldValue('displayName', v)
+                    }
+                    isInvalid={
+                        !!formik.errors.displayName &&
+                        formik.touched.displayName
+                    }
+                    errorMessage={
+                        formik.touched.displayName && formik.errors.displayName
+                    }
+                    onBlur={formik.handleBlur}
+                    classNames={{
+                        label: 'font-semibold text-text-default',
+                    }}
+                />
 
                 <Input
                     isRequired
+                    isDisabled={isDeletedUser}
                     label="Username"
                     labelPlacement="outside-top"
                     placeholder="e.g. sarah_w"
@@ -240,6 +257,7 @@ function EditProfileTab({ user }: { user: TUser }) {
 
                 <Input
                     isRequired
+                    isDisabled={isDeletedUser}
                     label="Work Email Address"
                     labelPlacement="outside-top"
                     placeholder="sarah@company.com"
@@ -259,6 +277,7 @@ function EditProfileTab({ user }: { user: TUser }) {
 
                 <Input
                     label="Personal Email"
+                    isDisabled={isDeletedUser}
                     labelPlacement="outside-top"
                     placeholder="example@domail.com"
                     description="Secondary contact email for recovery."
@@ -285,6 +304,7 @@ function EditProfileTab({ user }: { user: TUser }) {
 
                 <Input
                     label="Phone Number"
+                    isDisabled={isDeletedUser}
                     labelPlacement="outside-top"
                     placeholder="+84..."
                     variant="bordered"
@@ -331,6 +351,8 @@ function EditProfileTab({ user }: { user: TUser }) {
 // TAB 2: ORGANIZATION & FINANCE
 // ============================================================================
 function OrganizationDepartment({ user }: { user: TUser }) {
+    const isDeletedUser = Boolean(user.deletedAt)
+
     const updateUserMutation = useMutation(updateUserOptions)
     const [
         { data: departmentsData, isLoading: loadingDepartments },
@@ -393,6 +415,7 @@ function OrganizationDepartment({ user }: { user: TUser }) {
                     </div>
                     <Select
                         placeholder="Select department"
+                        isDisabled={isDeletedUser}
                         isLoading={loadingDepartments}
                         variant="bordered"
                         selectedKeys={
@@ -439,6 +462,7 @@ function OrganizationDepartment({ user }: { user: TUser }) {
                     <Select
                         placeholder="Select title"
                         variant="bordered"
+                        isDisabled={isDeletedUser}
                         isLoading={loadingJobTitles}
                         selectedKeys={
                             formik.values.jobTitleId
@@ -494,6 +518,8 @@ function OrganizationDepartment({ user }: { user: TUser }) {
 // TAB 3: SECURITY
 // ============================================================================
 function SecurityTab({ user }: { user: TUser }) {
+    const isDeletedUser = Boolean(user.deletedAt)
+
     const { data: rolesData } = useQuery({ ...rolesListOptions() })
     const roles = rolesData?.roles || []
 
@@ -523,7 +549,22 @@ function SecurityTab({ user }: { user: TUser }) {
                                 <p className="font-semibold text-text-default text-sm">
                                     Current Role:{' '}
                                 </p>
-                                <RoleChip data={user.role} />
+                                {isDeletedUser ? (
+                                    <Chip
+                                        variant="flat"
+                                        color="default"
+                                        classNames={{
+                                            base: 'px-2',
+                                            content:
+                                                'capitalize font-semibold gap-1',
+                                        }}
+                                        startContent={<ShieldCheck size={14} />}
+                                    >
+                                        {'No Role'}
+                                    </Chip>
+                                ) : (
+                                    <RoleChip data={user.role} />
+                                )}
                             </div>
                             <p className="text-xs text-text-subdued mt-1 max-w-md">
                                 This role defines global permissions. Changing
@@ -535,6 +576,7 @@ function SecurityTab({ user }: { user: TUser }) {
                             color="primary"
                             onPress={changeRoleModalDisclosure.onOpen}
                             className="font-semibold"
+                            isDisabled={isDeletedUser}
                         >
                             Change Role
                         </Button>
@@ -564,6 +606,7 @@ function SecurityTab({ user }: { user: TUser }) {
                             variant="bordered"
                             color="danger"
                             className="font-semibold bg-white"
+                            isDisabled={isDeletedUser}
                         >
                             Log Out All Devices
                         </Button>
@@ -579,9 +622,13 @@ function SecurityTab({ user }: { user: TUser }) {
 // ============================================================================
 export function AccountControlTab({ user }: { user: TUser }) {
     const queryClient = useQueryClient()
+
+    const isDeletedUser = Boolean(user.deletedAt)
+
     const resetPwModalState = useDisclosure()
     const recoveryPwModalState = useDisclosure()
     const deleteModalState = useDisclosure()
+    const restoreModalState = useDisclosure()
     const statusModalState = useDisclosure()
 
     const toggleUserStatusMutation = useMutation(toggleUserStatusOptions)
@@ -593,7 +640,7 @@ export function AccountControlTab({ user }: { user: TUser }) {
 
     return (
         <>
-            {statusModalState.isOpen && (
+            {!isDeletedUser && statusModalState.isOpen && (
                 <ChangeUserStatusModal
                     isOpen={statusModalState.isOpen}
                     onClose={statusModalState.onClose}
@@ -618,24 +665,31 @@ export function AccountControlTab({ user }: { user: TUser }) {
                     }}
                 />
             )}
-            {resetPwModalState.isOpen && user && (
+            {!isDeletedUser && resetPwModalState.isOpen && user && (
                 <ResetPasswordModal
                     isOpen={resetPwModalState.isOpen}
                     onClose={resetPwModalState.onClose}
                     data={user}
                 />
             )}
-            {recoveryPwModalState.isOpen && (
+            {!isDeletedUser && recoveryPwModalState.isOpen && (
                 <ConfirmSendPasswordResetEmail
                     isOpen={recoveryPwModalState.isOpen}
                     onClose={recoveryPwModalState.onClose}
                     user={user}
                 />
             )}
-            {deleteModalState.isOpen && (
+            {!isDeletedUser && deleteModalState.isOpen && (
                 <DeleteUserPermanentlyModal
                     isOpen={deleteModalState.isOpen}
                     onClose={deleteModalState.onClose}
+                    user={user}
+                />
+            )}
+            {isDeletedUser && restoreModalState.isOpen && (
+                <RestoreUserModal
+                    isOpen={restoreModalState.isOpen}
+                    onClose={restoreModalState.onClose}
                     user={user}
                 />
             )}
@@ -666,6 +720,7 @@ export function AccountControlTab({ user }: { user: TUser }) {
                                 variant="flat"
                                 className="font-semibold shrink-0 bg-default-100 hover:bg-default-200 text-default-700"
                                 onPress={resetPwModalState.onOpen}
+                                isDisabled={isDeletedUser}
                             >
                                 Reset Password
                             </Button>
@@ -692,6 +747,7 @@ export function AccountControlTab({ user }: { user: TUser }) {
                                 variant="flat"
                                 className="font-semibold shrink-0 bg-default-100 hover:bg-default-200 text-default-700"
                                 onPress={recoveryPwModalState.onOpen}
+                                isDisabled={isDeletedUser}
                             >
                                 Send Link
                             </Button>
@@ -701,60 +757,99 @@ export function AccountControlTab({ user }: { user: TUser }) {
 
                 {/* Danger Zone Section */}
                 <div>
-                    <h3 className="font-bold text-danger-600 mb-3 flex items-center gap-2">
-                        <AlertCircle size={20} strokeWidth={2.5} />
-                        Danger Zone
-                    </h3>
-                    <div className="border border-danger-200 bg-danger-50/30 rounded-xl flex flex-col overflow-hidden">
-                        {/* Account Status Toggle */}
-                        <div className="flex flex-col md:flex-row md:items-center justify-between p-5 gap-4">
-                            <div className="flex flex-col gap-1.5">
-                                <span className="font-semibold text-danger-700">
-                                    Account Status
-                                </span>
-                                <p className="text-sm text-danger-600/80 max-w-2xl">
-                                    Deactivating this user will revoke all
-                                    access to the dashboard immediately.
-                                </p>
-                            </div>
-                            {toggleUserStatusMutation.isPending ? (
-                                <Spinner size="sm" />
-                            ) : (
-                                <Switch
-                                    color="success"
-                                    isSelected={user.isActive}
-                                    onValueChange={statusModalState.onOpen}
-                                />
-                            )}
-                        </div>
+                    {!isDeletedUser && (
+                        <h3 className="font-bold text-danger-600 mb-3 flex items-center gap-2">
+                            <AlertCircle size={20} strokeWidth={2.5} />
+                            Danger Zone
+                        </h3>
+                    )}
+                    <div
+                        className={cn(
+                            'border rounded-xl flex flex-col overflow-hidden',
+                            isDeletedUser
+                                ? 'border-success-200 bg-success-50/30'
+                                : 'border-danger-200 bg-danger-50/30'
+                        )}
+                    >
+                        {!isDeletedUser && (
+                            <>
+                                {/* Account Status Toggle */}
+                                <div className="flex flex-col md:flex-row md:items-center justify-between p-5 gap-4">
+                                    <div className="flex flex-col gap-1.5">
+                                        <span className="font-semibold text-danger-700">
+                                            Account Status
+                                        </span>
+                                        <p className="text-sm text-danger-600/80 max-w-2xl">
+                                            Deactivating this user will revoke
+                                            all access to the dashboard
+                                            immediately.
+                                        </p>
+                                    </div>
+                                    {toggleUserStatusMutation.isPending ? (
+                                        <Spinner size="sm" />
+                                    ) : (
+                                        <Switch
+                                            color="success"
+                                            isSelected={user.isActive}
+                                            onValueChange={
+                                                statusModalState.onOpen
+                                            }
+                                        />
+                                    )}
+                                </div>
 
-                        <Divider className="bg-danger-200" />
-
+                                <Divider className="bg-danger-200" />
+                            </>
+                        )}
                         {/* Delete User Permanently */}
-                        <div className="flex flex-col md:flex-row md:items-center justify-between p-5 gap-4">
-                            <div className="flex flex-col gap-1.5">
-                                <span className="font-semibold text-danger-700 flex items-center gap-2">
-                                    <Trash2
-                                        size={18}
-                                        className="text-danger-500"
-                                    />
-                                    Delete User Permanently
-                                </span>
-                                <p className="text-sm text-danger-600/80 max-w-2xl">
-                                    Irreversibly erase this user's data and
-                                    account from the system. This action cannot
-                                    be undone.
-                                </p>
+                        {isDeletedUser ? (
+                            <div className="flex flex-col md:flex-row md:items-center justify-between p-5 gap-4">
+                                <div className="flex flex-col gap-1.5">
+                                    <span className="font-semibold text-success-700 flex items-center gap-2">
+                                        Restore User Account
+                                    </span>
+                                    <p className="text-sm text-success-600/80 max-w-2xl">
+                                        Reactivate this user's account and
+                                        restore their access to the dashboard.
+                                        All previous data and permissions will
+                                        be reinstated.
+                                    </p>
+                                </div>
+                                <Button
+                                    variant="bordered"
+                                    color="success"
+                                    className="bg-white font-semibold hover:bg-success-50 transition-colors shrink-0"
+                                    onPress={restoreModalState.onOpen} // Đổi thành hàm mở modal restore của bạn
+                                >
+                                    Restore User
+                                </Button>
                             </div>
-                            <Button
-                                variant="bordered"
-                                color="danger"
-                                className="bg-white font-semibold shadow-sm hover:bg-danger-50 transition-colors shrink-0"
-                                onPress={deleteModalState.onOpen}
-                            >
-                                Delete User
-                            </Button>
-                        </div>
+                        ) : (
+                            <div className="flex flex-col md:flex-row md:items-center justify-between p-5 gap-4">
+                                <div className="flex flex-col gap-1.5">
+                                    <span className="font-semibold text-danger-700 flex items-center gap-2">
+                                        <Trash2
+                                            size={18}
+                                            className="text-danger-500"
+                                        />
+                                        Delete User Permanently
+                                    </span>
+                                    <p className="text-sm text-danger-600/80 max-w-2xl">
+                                        Irreversibly erase this user's data and
+                                        account from the system. This action
+                                        cannot be undone.
+                                    </p>
+                                </div>
+                                <Button
+                                    variant="bordered"
+                                    color="danger"
+                                    className="bg-white font-semibold shadow-sm hover:bg-danger-50 transition-colors shrink-0"
+                                    onPress={deleteModalState.onOpen}
+                                >
+                                    Delete User
+                                </Button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

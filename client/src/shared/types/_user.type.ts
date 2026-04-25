@@ -1,39 +1,39 @@
-import { TDepartment } from './_department.type';
-import { TJobTitle } from './_job-title.type';
-import { TRole } from './_role.type';
+import { TDepartment } from './_department.type'
+import { TJobTitle } from './_job-title.type'
+import { TRole } from './_role.type'
 
 export interface TUser {
-    id: string;
-    displayName: string;
-    avatar: string;
-    personalEmail: string | null;
-    email: string;
-    username: string;
-    phoneNumber: string | null;
+    id: string
+    displayName: string
+    avatar: string
+    personalEmail: string | null
+    email: string
+    username: string
+    phoneNumber: string | null
     code: string
 
-    department: TDepartment | null;
-    jobTitle: TJobTitle | null;
-    role: TRole;
+    department: TDepartment | null
+    jobTitle: TJobTitle | null
+    role: TRole
 
-    isActive: boolean;
+    isActive: boolean
 
     // Arrays
-    files: any[];
-    accounts: any[];
-    notifications: any[];
-    configs: any[];
-    securityLogs: any[];
-    filesCreated: any[];
-    jobActivityLog: any[];
-    jobsCreated: any[];
-    sendedNotifications: any[];
+    files: any[]
+    accounts: any[]
+    notifications: any[]
+    configs: any[]
+    securityLogs: any[]
+    filesCreated: any[]
+    jobActivityLog: any[]
+    jobsCreated: any[]
+    sendedNotifications: any[]
 
     // Dates
-    lastLoginAt: string | Date | null;
-    createdAt: string | Date;
-    updatedAt: string | Date;
-    deletedAt: string | Date;
+    lastLoginAt: string | Date | null
+    createdAt: string | Date
+    updatedAt: string | Date
+    deletedAt?: Date | null | undefined
 }
 
 /**

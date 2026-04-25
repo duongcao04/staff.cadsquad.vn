@@ -193,7 +193,6 @@ export class UserService {
 
 		// 1. Build the dynamic filter
 		const where: Prisma.UserWhereInput = {
-			deletedAt: null,
 			...(search && {
 				OR: [
 					{ displayName: { contains: search, mode: 'insensitive' } },
@@ -405,9 +404,7 @@ export class UserService {
 				isActive: false, // Keep username, but "burn" or reset everything else
 				deletedAt: new Date(),
 				username: `${existingUser.username}_deleted-${Date.now()}`,
-				password: 'DELETED_USER_ACCOUNT', // Scramble the password
-				departmentId: null,
-				jobTitleId: null,
+				password: 'DELETED_USER_ACCOUNT',
 				roleId: null,
 			},
 		})
@@ -415,6 +412,34 @@ export class UserService {
 		return {
 			username: existingUser.username,
 			message: 'User soft-deleted successfully',
+		}
+	}
+
+	async restore(id: string) {
+		// 1. Fetch user and count active job assignments in one go if possible
+		const existingUser = await this.prismaService.user.findUnique({
+			where: { id },
+		})
+
+		if (!existingUser) {
+			throw new NotFoundException('User not found')
+		}
+		await this.prismaService.user.update({
+			where: { id },
+			data: {
+				isActive: true,
+				deletedAt: null,
+				username: existingUser.username.includes('_')
+					? existingUser.username.split('_')[0]
+					: existingUser.username,
+				password: 'cadsquad123',
+				roleId: await this.getAccountDefaultRole(),
+			},
+		})
+
+		return {
+			username: existingUser.username,
+			message: 'User restore successfully',
 		}
 	}
 

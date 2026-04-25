@@ -14,6 +14,7 @@ import {
 	ParseUUIDPipe,
 	Patch,
 	Post,
+	Put,
 	Query,
 	Req,
 	UseGuards,
@@ -275,6 +276,26 @@ export class UserController {
 		return {
 			success: true,
 			message: softDeleted.message,
+			timestamp: new Date().toISOString(),
+		}
+	}
+
+	@Patch(':id/restore')
+	@HttpCode(204)
+	@ApiBearerAuth()
+	@ApiOperation({ summary: 'Restore a user' })
+	@ApiResponse({
+		status: 200,
+		description: 'The user has been successfully restored.',
+	})
+	@UseGuards(PermissionsGuard)
+	@RequirePermissions([APP_PERMISSIONS.USER.DELETE])
+	@BypassTransform()
+	async restore(@Param('id') id: string) {
+		const restored = await this.userService.restore(id)
+		return {
+			success: true,
+			message: restored.message,
 			timestamp: new Date().toISOString(),
 		}
 	}
