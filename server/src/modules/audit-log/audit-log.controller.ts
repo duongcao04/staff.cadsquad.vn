@@ -1,16 +1,16 @@
 import {
-    Controller,
-    Get,
-    HttpCode,
-    Param,
-    Query,
-    UseGuards,
+	Controller,
+	Get,
+	HttpCode,
+	Param,
+	Query,
+	UseGuards,
 } from '@nestjs/common'
 import {
-    ApiBearerAuth,
-    ApiOperation,
-    ApiResponse,
-    ApiTags,
+	ApiBearerAuth,
+	ApiOperation,
+	ApiResponse,
+	ApiTags,
 } from '@nestjs/swagger'
 import { RequirePermissions } from '../../common/decorators/require-permissions.decorator'
 import { ResponseMessage } from '../../common/decorators/responseMessage.decorator'
@@ -25,28 +25,28 @@ import { SystemModule } from '../../generated/prisma'
 @UseGuards(JwtGuard)
 @ApiBearerAuth()
 export class AuditLogController {
-    constructor(private readonly auditLogService: AuditLogService) { }
+	constructor(private readonly auditLogService: AuditLogService) {}
 
-    @Get()
-    @HttpCode(200)
-    @ResponseMessage('Get list of audit logs successfully')
-    @ApiOperation({ summary: 'Get all audit logs' })
-    @UseGuards(PermissionsGuard)
-    @RequirePermissions(APP_PERMISSIONS.SYSTEM.MANAGE)
-    async findAll(@Query('module') moduleName?: SystemModule) {
-        if (moduleName) {
-            return this.auditLogService.findByModule(moduleName)
-        }
-        return this.auditLogService.findAll()
-    }
+	@Get()
+	@HttpCode(200)
+	@ResponseMessage('Get list of audit logs successfully')
+	@ApiOperation({ summary: 'Get all audit logs' })
+	@UseGuards(PermissionsGuard)
+	@RequirePermissions([APP_PERMISSIONS.SYSTEM.MANAGE])
+	async findAll(@Query('module') moduleName?: SystemModule) {
+		if (moduleName) {
+			return this.auditLogService.findByModule(moduleName)
+		}
+		return this.auditLogService.findAll()
+	}
 
-    @Get('target/:targetId')
-    @HttpCode(200)
-    @ResponseMessage('Get audit logs by target successfully')
-    @ApiOperation({ summary: 'Get audit logs for a specific target' })
-    @UseGuards(PermissionsGuard)
-    @RequirePermissions(APP_PERMISSIONS.SYSTEM.MANAGE)
-    async findByTargetId(@Param('targetId') targetId: string) {
-        return this.auditLogService.findByTargetId(targetId)
-    }
+	@Get('target/:targetId')
+	@HttpCode(200)
+	@ResponseMessage('Get audit logs by target successfully')
+	@ApiOperation({ summary: 'Get audit logs for a specific target' })
+	@UseGuards(PermissionsGuard)
+	@RequirePermissions([APP_PERMISSIONS.SYSTEM.MANAGE])
+	async findByTargetId(@Param('targetId') targetId: string) {
+		return this.auditLogService.findByTargetId(targetId)
+	}
 }

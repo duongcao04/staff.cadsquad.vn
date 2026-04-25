@@ -1,19 +1,19 @@
 import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    HttpCode,
-    Param,
-    Patch,
-    Post,
-    UseGuards,
+	Body,
+	Controller,
+	Delete,
+	Get,
+	HttpCode,
+	Param,
+	Patch,
+	Post,
+	UseGuards,
 } from '@nestjs/common'
 import {
-    ApiBearerAuth,
-    ApiOperation,
-    ApiResponse,
-    ApiTags,
+	ApiBearerAuth,
+	ApiOperation,
+	ApiResponse,
+	ApiTags,
 } from '@nestjs/swagger'
 import { RequirePermissions } from '../../common/decorators/require-permissions.decorator'
 import { ResponseMessage } from '../../common/decorators/responseMessage.decorator'
@@ -30,86 +30,86 @@ import { isUUID } from 'class-validator'
 @Controller('job-titles')
 @UseGuards(JwtGuard)
 export class JobTitleController {
-    constructor(private readonly jobTitleService: JobTitleService) { }
+	constructor(private readonly jobTitleService: JobTitleService) {}
 
-    @Post()
-    @HttpCode(201)
-    @ResponseMessage('Insert new job title successfully')
-    @ApiBearerAuth()
-    @ApiOperation({ summary: 'Create a new job title' })
-    @ApiResponse({
-        status: 201,
-        description: 'The job title has been successfully created.',
-        type: JobTitleResponseDto,
-    })
-    @UseGuards(PermissionsGuard)
-    @RequirePermissions(APP_PERMISSIONS.JOB_TITLE.CREATE)
-    async create(@Body() createJobTitleDto: CreateJobTitleDto) {
-        return this.jobTitleService.create(createJobTitleDto)
-    }
+	@Post()
+	@HttpCode(201)
+	@ResponseMessage('Insert new job title successfully')
+	@ApiBearerAuth()
+	@ApiOperation({ summary: 'Create a new job title' })
+	@ApiResponse({
+		status: 201,
+		description: 'The job title has been successfully created.',
+		type: JobTitleResponseDto,
+	})
+	@UseGuards(PermissionsGuard)
+	@RequirePermissions([APP_PERMISSIONS.JOB_TITLE.CREATE])
+	async create(@Body() createJobTitleDto: CreateJobTitleDto) {
+		return this.jobTitleService.create(createJobTitleDto)
+	}
 
-    @Get()
-    @HttpCode(200)
-    @ResponseMessage('Get list of job titles successfully')
-    @ApiBearerAuth()
-    @ApiOperation({ summary: 'Get all job titles' })
-    @ApiResponse({
-        status: 200,
-        description: 'Return a list of job titles.',
-        type: [JobTitleResponseDto],
-    })
-    async findAll() {
-        return this.jobTitleService.findAll()
-    }
+	@Get()
+	@HttpCode(200)
+	@ResponseMessage('Get list of job titles successfully')
+	@ApiBearerAuth()
+	@ApiOperation({ summary: 'Get all job titles' })
+	@ApiResponse({
+		status: 200,
+		description: 'Return a list of job titles.',
+		type: [JobTitleResponseDto],
+	})
+	async findAll() {
+		return this.jobTitleService.findAll()
+	}
 
-    @Get(':identify')
-    @HttpCode(200)
-    @ResponseMessage('Get job title details successfully')
-    @ApiBearerAuth()
-    @ApiOperation({ summary: 'Get a job title details' })
-    @ApiResponse({
-        status: 200,
-        description: 'Return a single job title.',
-        type: JobTitleResponseDto,
-    })
-    async findOne(@Param('identify') identify: string) {
-        if (isUUID(identify)) {
-            return this.jobTitleService.findById(identify)
-        }
-        return this.jobTitleService.findByCode(identify)
-    }
+	@Get(':identify')
+	@HttpCode(200)
+	@ResponseMessage('Get job title details successfully')
+	@ApiBearerAuth()
+	@ApiOperation({ summary: 'Get a job title details' })
+	@ApiResponse({
+		status: 200,
+		description: 'Return a single job title.',
+		type: JobTitleResponseDto,
+	})
+	async findOne(@Param('identify') identify: string) {
+		if (isUUID(identify)) {
+			return this.jobTitleService.findById(identify)
+		}
+		return this.jobTitleService.findByCode(identify)
+	}
 
-    @Patch(':id')
-    @HttpCode(200)
-    @ResponseMessage('Update job title successfully')
-    @ApiBearerAuth()
-    @ApiOperation({ summary: 'Update a job title' })
-    @ApiResponse({
-        status: 200,
-        description: 'The job title has been successfully updated.',
-        type: JobTitleResponseDto,
-    })
-    @UseGuards(PermissionsGuard)
-    @RequirePermissions(APP_PERMISSIONS.JOB_TITLE.UPDATE)
-    async update(
-        @Param('id') id: string,
-        @Body() updateJobTitleDto: UpdateJobTitleDto
-    ) {
-        return this.jobTitleService.update(id, updateJobTitleDto)
-    }
+	@Patch(':id')
+	@HttpCode(200)
+	@ResponseMessage('Update job title successfully')
+	@ApiBearerAuth()
+	@ApiOperation({ summary: 'Update a job title' })
+	@ApiResponse({
+		status: 200,
+		description: 'The job title has been successfully updated.',
+		type: JobTitleResponseDto,
+	})
+	@UseGuards(PermissionsGuard)
+	@RequirePermissions([APP_PERMISSIONS.JOB_TITLE.UPDATE])
+	async update(
+		@Param('id') id: string,
+		@Body() updateJobTitleDto: UpdateJobTitleDto
+	) {
+		return this.jobTitleService.update(id, updateJobTitleDto)
+	}
 
-    @Delete(':id')
-    @HttpCode(200)
-    @ResponseMessage('Delete job title successfully')
-    @ApiBearerAuth()
-    @ApiOperation({ summary: 'Delete a job title' })
-    @ApiResponse({
-        status: 200,
-        description: 'The job title has been successfully deleted.',
-    })
-    @UseGuards(PermissionsGuard)
-    @RequirePermissions(APP_PERMISSIONS.JOB_TITLE.DELETE)
-    async remove(@Param('id') id: string) {
-        return this.jobTitleService.delete(id)
-    }
+	@Delete(':id')
+	@HttpCode(200)
+	@ResponseMessage('Delete job title successfully')
+	@ApiBearerAuth()
+	@ApiOperation({ summary: 'Delete a job title' })
+	@ApiResponse({
+		status: 200,
+		description: 'The job title has been successfully deleted.',
+	})
+	@UseGuards(PermissionsGuard)
+	@RequirePermissions([APP_PERMISSIONS.JOB_TITLE.DELETE])
+	async remove(@Param('id') id: string) {
+		return this.jobTitleService.delete(id)
+	}
 }
