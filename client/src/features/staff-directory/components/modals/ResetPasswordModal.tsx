@@ -2,6 +2,7 @@ import {
     generatePassword,
     resetPasswordOptions,
     ResetPasswordSchema,
+    userOptions,
 } from '@/lib'
 import { HeroCopyButton } from '@/shared/components/ui/hero-copy-button'
 import {
@@ -14,7 +15,7 @@ import {
 import { HeroPasswordInput } from '@/shared/components/ui/hero-password-input'
 import type { TUser } from '@/shared/types'
 import { Button, Radio, RadioGroup } from '@heroui/react'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
 import * as yup from 'yup'
 
@@ -26,6 +27,7 @@ type Props = {
 }
 
 export default function ResetPasswordModal({ isOpen, onClose, data }: Props) {
+    const queryClient = useQueryClient()
     const [resetOption, setResetOption] = useState<'automatic' | 'manual'>(
         'automatic'
     )
@@ -83,6 +85,9 @@ export default function ResetPasswordModal({ isOpen, onClose, data }: Props) {
             },
             {
                 onSuccess: () => {
+                    queryClient.invalidateQueries({
+                        queryKey: userOptions(data.code).queryKey,
+                    })
                     setSuccess(true)
                 },
             }

@@ -33,6 +33,7 @@ export interface TUser {
     lastLoginAt: string | Date | null;
     createdAt: string | Date;
     updatedAt: string | Date;
+    deletedAt: string | Date;
 }
 
 /**

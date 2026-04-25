@@ -1,4 +1,7 @@
-import { ConfirmSendPasswordResetEmail } from '@/features/staff-directory'
+import {
+    ConfirmSendPasswordResetEmail,
+    UserInformationTabs,
+} from '@/features/staff-directory'
 import { ChangeUserStatusModal } from '@/features/staff-directory/components/modals/ChangeUserStatusModal'
 import { DeleteUserPermanentlyModal } from '@/features/staff-directory/components/modals/DeleteUserPermanentlyModal'
 import ResetPasswordModal from '@/features/staff-directory/components/modals/ResetPasswordModal'
@@ -6,91 +9,74 @@ import { UploadAvatarModal } from '@/features/staff-directory/components/modals/
 import { ChangeRoleModal } from '@/features/user-access'
 import {
     dateFormatter,
-    editUserSchema,
-    getPageTitle,
     INTERNAL_URLS,
     optimizeCloudinary,
-    TEditUser,
-    toFormikValidate,
     useUploadImageMutation,
 } from '@/lib'
 import {
-    departmentsListOptions,
-    jobTitlesListOptions,
     rolesListOptions,
     toggleUserStatusOptions,
     updateUserOptions,
     userOptions,
 } from '@/lib/queries'
-import {
-    AdminPageHeading,
-    AppLoading,
-    HeroBreadcrumbItem,
-    HeroBreadcrumbs,
-    HeroButton,
-    HeroCard,
-    HeroCardBody,
-    HeroCardHeader,
-    HeroTooltip,
-    RoleChip,
-} from '@/shared/components'
+import { AppLoading, RoleChip } from '@/shared/components'
 import AdminContentContainer from '@/shared/components/admin/AdminContentContainer'
 import { HeroCopyButton } from '@/shared/components/ui/hero-copy-button'
 import { TUser } from '@/shared/types'
 import {
     addToast,
     Avatar,
+    BreadcrumbItem,
+    Breadcrumbs,
     Button,
     Chip,
     Divider,
-    Input,
-    Select,
-    SelectItem,
     Spinner,
     Switch,
-    Tab,
-    Tabs,
     useDisclosure,
+    Card,
+    CardBody,
+    CardHeader,
 } from '@heroui/react'
-import {
-    useMutation,
-    useSuspenseQueries,
-    useSuspenseQuery,
-} from '@tanstack/react-query'
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router'
-import { useFormik } from 'formik'
 import {
     AlertCircle,
     ArrowLeft,
-    AtSignIcon,
-    Briefcase,
-    Building,
     Calendar,
     Hash,
-    Info,
-    InfoIcon,
+    HashIcon,
     KeyRound,
     Mail,
-    Phone,
-    Save,
     Shield,
     Trash2,
     Upload,
-    User,
 } from 'lucide-react'
 import { useState } from 'react'
+import { z } from 'zod'
+import { NavigatorHelper } from '../../../../lib/helpers/navigation.helper'
+
+const staffDetailParams = z.object({
+    tab: z
+        .enum(['profile', 'organization', 'security', 'account-control'])
+        .catch('profile')
+        .default('profile'),
+})
+export type TStaffDetailParams = z.infer<typeof staffDetailParams>
 
 export const Route = createFileRoute(
     '/_administrator/mgmt/staff-directory/$code'
 )({
+    validateSearch: (search) => staffDetailParams.parse(search),
     head: (ctx) => {
         const loader = ctx.loaderData as unknown as TUser
         return {
             meta: [
                 {
-                    title: getPageTitle(
-                        loader?.displayName ?? loader?.code ?? loader?.username
-                    ),
+                    title:
+                        (loader?.displayName ??
+                            loader?.code ??
+                            loader?.username) + ' | Staff Directory',
                 },
             ],
         }
@@ -105,50 +91,79 @@ export const Route = createFileRoute(
         const { code } = Route.useParams()
         const { data: user } = useSuspenseQuery(userOptions(code))
 
+        const isDeletedUser = user.deletedAt
+
         return (
             <>
-                <AdminPageHeading
-                    title={
-                        <div className="flex items-center gap-4">
-                            <Button
-                                isIconOnly
-                                variant="flat"
-                                onPress={() => router.history.back()}
-                            >
-                                <ArrowLeft size={18} />
-                            </Button>
-                            <div>
-                                <h1 className="text-2xl font-bold text-text-default">
-                                    {user.displayName}
-                                </h1>
-                                <p className="text-tiny text-text-subdued font-mono">
-                                    CODE: {user.code}
-                                </p>
+                <AdminContentContainer
+                    className="pt-0 space-y-4"
+                    showHeader
+                    headerProps={{
+                        title: (
+                            <div className="flex items-center gap-4">
+                                <Button
+                                    isIconOnly
+                                    variant="flat"
+                                    onPress={() => router.history.back()}
+                                >
+                                    <ArrowLeft size={18} />
+                                </Button>
+                                <div>
+                                    <div>
+                                        <h1 className="text-2xl font-bold text-text-default">
+                                            {user.displayName}
+                                        </h1>
+                                        <Chip>Deleted</Chip>
+                                    </div>
+                                    <Chip
+                                        size="sm"
+                                        startContent={<HashIcon size={12} />}
+                                        classNames={{
+                                            base: 'rounded-md cursor-pointer',
+                                            content: 'font-bold pt-0.5',
+                                        }}
+                                        title="Copy"
+                                        variant="flat"
+                                        onClick={() => {
+                                            NavigatorHelper.copy(
+                                                user.code,
+                                                () => {
+                                                    addToast({
+                                                        title: 'Copy user code successful',
+                                                        color: 'success',
+                                                    })
+                                                }
+                                            )
+                                        }}
+                                    >
+                                        {user.code}
+                                    </Chip>
+                                </div>
                             </div>
-                        </div>
+                        ),
+                    }}
+                    breadcrumbs={
+                        <Breadcrumbs className="text-xs" underline="hover">
+                            <BreadcrumbItem>
+                                <Link
+                                    to={INTERNAL_URLS.admin.overview}
+                                    className="text-text-subdued!"
+                                >
+                                    Management
+                                </Link>
+                            </BreadcrumbItem>
+                            <BreadcrumbItem>
+                                <Link
+                                    to={INTERNAL_URLS.management.team}
+                                    className="text-text-subdued!"
+                                >
+                                    Staff Directory
+                                </Link>
+                            </BreadcrumbItem>
+                            <BreadcrumbItem>{user.code}</BreadcrumbItem>
+                        </Breadcrumbs>
                     }
-                />
-                <AdminContentContainer className="pt-0 space-y-4">
-                    <HeroBreadcrumbs className="text-xs">
-                        <HeroBreadcrumbItem>
-                            <Link
-                                to={INTERNAL_URLS.admin.overview}
-                                className="text-text-subdued!"
-                            >
-                                Management
-                            </Link>
-                        </HeroBreadcrumbItem>
-                        <HeroBreadcrumbItem>
-                            <Link
-                                to={INTERNAL_URLS.management.team}
-                                className="text-text-subdued!"
-                            >
-                                Staff Directory
-                            </Link>
-                        </HeroBreadcrumbItem>
-                        <HeroBreadcrumbItem>{user.code}</HeroBreadcrumbItem>
-                    </HeroBreadcrumbs>
-
+                >
                     <EditStaffPage data={user} />
                 </AdminContentContainer>
             </>
@@ -157,11 +172,12 @@ export const Route = createFileRoute(
 })
 
 function EditStaffPage({ data: user }: { data: TUser }) {
+    const { tab: activeTab } = Route.useSearch()
+
     const toggleUserStatusMutation = useMutation(toggleUserStatusOptions)
     const uploadImageMutation = useUploadImageMutation()
     const updateUser = useMutation(updateUserOptions)
 
-    const [activeTab, setActiveTab] = useState('profile')
     const [toggleUserActive, setToggleUserActive] = useState<
         'active' | 'deActive'
     >(user.isActive ? 'deActive' : 'active')
@@ -193,7 +209,6 @@ function EditStaffPage({ data: user }: { data: TUser }) {
         data: { roles },
     } = useSuspenseQuery({ ...rolesListOptions() })
 
-    // --- Handlers ---
     const handleOpenChangeUserModal = (isActive: boolean) => {
         setToggleUserActive(isActive ? 'active' : 'deActive')
         changeUserStatusModal.onOpen()
@@ -277,11 +292,11 @@ function EditStaffPage({ data: user }: { data: TUser }) {
                 {/* --- LEFT COLUMN (1/3): Profile, Quick Actions, Danger Zone --- */}
                 <div className="lg:col-span-1 space-y-6">
                     {/* 1. Profile Card */}
-                    <HeroCard
+                    <Card
                         shadow="none"
                         className="border border-border-default"
                     >
-                        <HeroCardBody className="flex flex-col items-center p-8 text-center">
+                        <CardBody className="flex flex-col items-center p-8 text-center">
                             <div className="relative mb-4 group">
                                 <Avatar
                                     src={optimizeCloudinary(user.avatar, {
@@ -306,11 +321,14 @@ function EditStaffPage({ data: user }: { data: TUser }) {
                             </p>
 
                             <Chip
-                                color={user.isActive ? 'success' : 'default'}
+                                color={user.isActive ? 'success' : 'warning'}
                                 variant="flat"
-                                className="mb-6 text-sm font-medium"
+                                classNames={{
+                                    content: 'font-semibold',
+                                }}
+                                className="mb-6 text-sm"
                             >
-                                {user.isActive ? 'Active Account' : 'Inactive'}
+                                {user.isActive ? 'Active' : 'Inactive'}
                             </Chip>
 
                             <div className="w-full space-y-4 text-left">
@@ -343,20 +361,20 @@ function EditStaffPage({ data: user }: { data: TUser }) {
                                     </span>
                                 </div>
                             </div>
-                        </HeroCardBody>
-                    </HeroCard>
+                        </CardBody>
+                    </Card>
 
                     {/* 2. Quick Actions Card */}
-                    <HeroCard
+                    <Card
                         shadow="none"
                         className="border border-border-default"
                     >
-                        <HeroCardHeader className="px-6 py-4 border-b border-border-default">
+                        <CardHeader className="px-6 py-4 border-b border-border-default">
                             <h3 className="font-bold text-sm text-text-default">
                                 Quick Actions
                             </h3>
-                        </HeroCardHeader>
-                        <HeroCardBody className="p-4 flex flex-col gap-2">
+                        </CardHeader>
+                        <CardBody className="p-4 flex flex-col gap-2">
                             <Button
                                 variant="flat"
                                 className="justify-start font-medium text-sm bg-default-100/50 hover:bg-default-200"
@@ -398,17 +416,17 @@ function EditStaffPage({ data: user }: { data: TUser }) {
                             >
                                 Change Admin Role
                             </Button>
-                        </HeroCardBody>
-                    </HeroCard>
+                        </CardBody>
+                    </Card>
 
                     {/* 3. Danger Zone */}
-                    <HeroCard className="shadow-none border border-red-200 bg-red-50/50 dark:bg-red-950/20 dark:border-red-900">
-                        <HeroCardHeader className="px-6 pt-6 pb-0">
+                    <Card className="shadow-none border border-red-200 bg-red-50/50 dark:bg-red-950/20 dark:border-red-900">
+                        <CardHeader className="px-6 pt-6 pb-0">
                             <h4 className="font-bold text-red-900 dark:text-red-200 text-sm flex items-center gap-2">
                                 <AlertCircle size={16} /> Danger Zone
                             </h4>
-                        </HeroCardHeader>
-                        <HeroCardBody className="p-6">
+                        </CardHeader>
+                        <CardBody className="p-6">
                             <p className="text-xs text-red-700 dark:text-red-500 mb-4">
                                 Deactivating this user will revoke all access to
                                 the dashboard immediately.
@@ -437,491 +455,13 @@ function EditStaffPage({ data: user }: { data: TUser }) {
                             >
                                 Delete User Permanently
                             </Button>
-                        </HeroCardBody>
-                    </HeroCard>
+                        </CardBody>
+                    </Card>
                 </div>
 
                 {/* --- RIGHT COLUMN (2/3): Edit Form with Tabs --- */}
                 <div className="lg:col-span-2">
-                    <HeroCard
-                        shadow="none"
-                        className="bg-background-muted border border-border-default h-fit"
-                    >
-                        <HeroCardHeader className="p-0 border-b border-border-default">
-                            <Tabs
-                                aria-label="User Edit Tabs"
-                                variant="underlined"
-                                color="primary"
-                                classNames={{
-                                    tabList: 'px-6 pt-2 gap-6',
-                                    cursor: 'w-full bg-primary',
-                                    tab: 'max-w-fit px-0 h-12',
-                                    tabContent:
-                                        'group-data-[selected=true]:text-primary font-semibold text-text-subdued',
-                                }}
-                                selectedKey={activeTab}
-                                onSelectionChange={(k) =>
-                                    setActiveTab(k as string)
-                                }
-                            >
-                                <Tab
-                                    key="profile"
-                                    title={
-                                        <div className="flex items-center gap-2">
-                                            <User size={16} /> Personal Info
-                                        </div>
-                                    }
-                                />
-                                <Tab
-                                    key="organization"
-                                    title={
-                                        <div className="flex items-center gap-2">
-                                            <Briefcase size={16} /> Organization
-                                            & Finance
-                                        </div>
-                                    }
-                                />
-                                <Tab
-                                    key="security"
-                                    title={
-                                        <div className="flex items-center gap-2">
-                                            <KeyRound size={16} /> Security
-                                        </div>
-                                    }
-                                />
-                            </Tabs>
-                        </HeroCardHeader>
-
-                        <HeroCardBody className="p-6">
-                            {activeTab === 'profile' && (
-                                <EditProfileTab user={user} />
-                            )}
-                            {activeTab === 'organization' && (
-                                <OrganizationDepartment user={user} />
-                            )}
-                            {activeTab === 'security' && (
-                                <SecurityTab user={user} />
-                            )}
-                        </HeroCardBody>
-                    </HeroCard>
-                </div>
-            </div>
-        </>
-    )
-}
-
-// ============================================================================
-// TAB 1: EDIT PROFILE
-// ============================================================================
-function EditProfileTab({ user }: { user: TUser }) {
-    const router = useRouter()
-    const updateUserMutation = useMutation(updateUserOptions)
-
-    const formik = useFormik<TEditUser & { code?: string }>({
-        initialValues: {
-            displayName: user.displayName,
-            username: user.username,
-            code: user.code || '', // 1. Staff Code initialized here
-            email: user.email,
-            phoneNumber: user.phoneNumber || '',
-            personalEmail: user.personalEmail || '',
-        },
-        enableReinitialize: true,
-        validate: toFormikValidate(editUserSchema),
-        onSubmit: async (values) => {
-            try {
-                await updateUserMutation.mutateAsync(
-                    {
-                        username: user.username,
-                        data: values,
-                    },
-                    {
-                        onSuccess: () => {
-                            if (values.username !== user.username)
-                                router.navigate({ href: '../..' })
-                        },
-                    }
-                )
-            } catch (error) {
-                console.error('Failed to update user', error)
-            }
-        },
-    })
-
-    return (
-        <div className="space-y-6 animate-in fade-in duration-300">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Input
-                    label="Full Name"
-                    labelPlacement="outside-top"
-                    placeholder="e.g. Sarah Wilson"
-                    variant="bordered"
-                    name="displayName"
-                    description="Visible to teammates across the platform."
-                    value={formik.values.displayName}
-                    onValueChange={(v) =>
-                        formik.setFieldValue('displayName', v)
-                    }
-                    isInvalid={
-                        !!formik.errors.displayName &&
-                        formik.touched.displayName
-                    }
-                    errorMessage={
-                        formik.touched.displayName && formik.errors.displayName
-                    }
-                    onBlur={formik.handleBlur}
-                    classNames={{ label: 'font-semibold text-text-default' }}
-                />
-
-                <Input
-                    label="Username"
-                    labelPlacement="outside-top"
-                    placeholder="e.g. sarah_w"
-                    variant="bordered"
-                    name="username"
-                    description="Your unique handle for login and tags."
-                    startContent={
-                        <AtSignIcon size={14} className="text-text-subdued" />
-                    }
-                    value={formik.values.username}
-                    onValueChange={(v) => formik.setFieldValue('username', v)}
-                    isInvalid={
-                        !!formik.errors.username && formik.touched.username
-                    }
-                    errorMessage={
-                        formik.touched.username && formik.errors.username
-                    }
-                    onBlur={formik.handleBlur}
-                    classNames={{ label: 'font-semibold text-text-default' }}
-                />
-
-                <Input
-                    label="Work Email Address"
-                    labelPlacement="outside-top"
-                    placeholder="sarah@company.com"
-                    description="Used for system notifications and secure login."
-                    variant="bordered"
-                    startContent={
-                        <Mail className="text-text-subdued" size={16} />
-                    }
-                    name="email"
-                    value={formik.values.email}
-                    onValueChange={(v) => formik.setFieldValue('email', v)}
-                    isInvalid={!!formik.errors.email && formik.touched.email}
-                    errorMessage={formik.touched.email && formik.errors.email}
-                    onBlur={formik.handleBlur}
-                    classNames={{ label: 'font-semibold text-text-default' }}
-                />
-
-                <Input
-                    label="Personal Email (Optional)"
-                    labelPlacement="outside-top"
-                    placeholder="sarah.personal@gmail.com"
-                    description="Secondary contact email for recovery."
-                    variant="bordered"
-                    startContent={
-                        <Mail className="text-text-subdued" size={16} />
-                    }
-                    name="personalEmail"
-                    value={formik.values.personalEmail}
-                    onValueChange={(v) =>
-                        formik.setFieldValue('personalEmail', v)
-                    }
-                    isInvalid={
-                        !!formik.errors.personalEmail &&
-                        formik.touched.personalEmail
-                    }
-                    errorMessage={
-                        formik.touched.personalEmail &&
-                        formik.errors.personalEmail
-                    }
-                    onBlur={formik.handleBlur}
-                    classNames={{ label: 'font-semibold text-text-default' }}
-                />
-
-                <Input
-                    label="Phone Number"
-                    labelPlacement="outside-top"
-                    placeholder="+84..."
-                    variant="bordered"
-                    description="Used for direct project coordination."
-                    startContent={
-                        <Phone className="text-text-subdued" size={16} />
-                    }
-                    name="phoneNumber"
-                    value={formik.values.phoneNumber}
-                    onValueChange={(v) =>
-                        formik.setFieldValue('phoneNumber', v)
-                    }
-                    isInvalid={
-                        !!formik.errors.phoneNumber &&
-                        formik.touched.phoneNumber
-                    }
-                    errorMessage={
-                        formik.touched.phoneNumber && formik.errors.phoneNumber
-                    }
-                    onBlur={formik.handleBlur}
-                    classNames={{ label: 'font-semibold text-text-default' }}
-                />
-            </div>
-
-            <Divider />
-
-            <div className="flex justify-end">
-                <HeroButton
-                    color="primary"
-                    startContent={!formik.isSubmitting && <Save size={16} />}
-                    isLoading={formik.isSubmitting}
-                    onPress={() => formik.handleSubmit()}
-                    isDisabled={!formik.dirty}
-                    className="font-bold px-6"
-                >
-                    Save Profile
-                </HeroButton>
-            </div>
-        </div>
-    )
-}
-
-// ============================================================================
-// TAB 2: ORGANIZATION & FINANCE
-// ============================================================================
-function OrganizationDepartment({ user }: { user: TUser }) {
-    const updateUserMutation = useMutation(updateUserOptions)
-    const [
-        {
-            data: { departments },
-        },
-        {
-            data: { jobTitles },
-        },
-    ] = useSuspenseQueries({
-        queries: [
-            { ...departmentsListOptions() },
-            { ...jobTitlesListOptions() },
-        ],
-    })
-
-    const formik = useFormik({
-        initialValues: {
-            departmentId: user.department?.id || '',
-            jobTitleId: user.jobTitle?.id || '',
-        },
-        enableReinitialize: true,
-        onSubmit: async (values) => {
-            try {
-                await updateUserMutation.mutateAsync({
-                    username: user.username,
-                    data: {
-                        ...values,
-                    },
-                })
-            } catch (error) {
-                console.error('Failed to update user org data', error)
-            }
-        },
-    })
-
-    return (
-        <div className="space-y-6 animate-in fade-in duration-300">
-            <div className="bg-primary-50 p-4 rounded-xl border border-primary-100 mb-6">
-                <h4 className="text-sm font-bold text-primary-900 mb-1">
-                    Corporate & Financial Placement
-                </h4>
-                <p className="text-xs text-primary-700">
-                    Changing the Department or Role will immediately affect user
-                    access and reporting.
-                </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Department Select */}
-                <div className="space-y-1">
-                    <div className="flex items-center gap-1 mb-1">
-                        <span className="font-semibold text-sm text-text-default">
-                            Department
-                        </span>
-                        <HeroTooltip content="Determines which departmental community hubs the user can join.">
-                            <InfoIcon
-                                size={14}
-                                className="text-text-subdued cursor-help"
-                            />
-                        </HeroTooltip>
-                    </div>
-                    <Select
-                        placeholder="Select department"
-                        variant="bordered"
-                        selectedKeys={
-                            formik.values.departmentId
-                                ? [formik.values.departmentId]
-                                : []
-                        }
-                        onSelectionChange={(keys) =>
-                            formik.setFieldValue(
-                                'departmentId',
-                                Array.from(keys)[0]
-                            )
-                        }
-                        startContent={
-                            <Building className="text-text-subdued" size={16} />
-                        }
-                        isInvalid={
-                            !!formik.errors.departmentId &&
-                            formik.touched.departmentId
-                        }
-                        errorMessage={formik.errors.departmentId as string}
-                    >
-                        {departments?.map((d) => (
-                            <SelectItem key={d.id} textValue={d.displayName}>
-                                {d.displayName}
-                            </SelectItem>
-                        )) || []}
-                    </Select>
-                </div>
-
-                {/* Job Title Select */}
-                <div className="space-y-1">
-                    <div className="flex items-center gap-1 mb-1">
-                        <span className="font-semibold text-sm text-text-default">
-                            Job Title
-                        </span>
-                        <HeroTooltip content="Formal title used in the company directory and project signatures.">
-                            <Info
-                                size={14}
-                                className="text-text-subdued cursor-help"
-                            />
-                        </HeroTooltip>
-                    </div>
-                    <Select
-                        placeholder="Select title"
-                        variant="bordered"
-                        selectedKeys={
-                            formik.values.jobTitleId
-                                ? [formik.values.jobTitleId]
-                                : []
-                        }
-                        onSelectionChange={(keys) =>
-                            formik.setFieldValue(
-                                'jobTitleId',
-                                Array.from(keys)[0]
-                            )
-                        }
-                        startContent={
-                            <Briefcase
-                                className="text-text-subdued"
-                                size={16}
-                            />
-                        }
-                        isInvalid={
-                            !!formik.errors.jobTitleId &&
-                            formik.touched.jobTitleId
-                        }
-                        errorMessage={formik.errors.jobTitleId as string}
-                    >
-                        {jobTitles.map((j) => (
-                            <SelectItem key={j.id} textValue={j.displayName}>
-                                {j.displayName}
-                            </SelectItem>
-                        ))}
-                    </Select>
-                </div>
-            </div>
-
-            <Divider />
-
-            <div className="flex justify-end">
-                <HeroButton
-                    color="primary"
-                    startContent={!formik.isSubmitting && <Save size={16} />}
-                    isLoading={formik.isSubmitting}
-                    onPress={() => formik.handleSubmit()}
-                    isDisabled={!formik.dirty}
-                    className="font-bold px-6 shadow-md"
-                >
-                    Save Organization Settings
-                </HeroButton>
-            </div>
-        </div>
-    )
-}
-
-// ============================================================================
-// TAB 3: SECURITY
-// ============================================================================
-function SecurityTab({ user }: { user: TUser }) {
-    const {
-        data: { roles },
-    } = useSuspenseQuery({ ...rolesListOptions() })
-    const changeRoleModalDisclosure = useDisclosure({ id: 'ChangeRoleModal' })
-
-    return (
-        <>
-            {changeRoleModalDisclosure.isOpen && (
-                <ChangeRoleModal
-                    isOpen={changeRoleModalDisclosure.isOpen}
-                    onClose={changeRoleModalDisclosure.onClose}
-                    currentRoleId={user.role.id}
-                    roles={roles}
-                    user={user}
-                />
-            )}
-
-            <div className="space-y-6 animate-in fade-in duration-300">
-                {/* System Access Role */}
-                <div>
-                    <h3 className="font-bold text-text-default text-sm mb-3">
-                        System Access Role
-                    </h3>
-                    <div className="flex flex-col md:flex-row md:items-center justify-between p-4 border border-border-default rounded-xl bg-background hover:border-primary-200 transition-colors gap-4">
-                        <div>
-                            <p className="font-semibold text-text-default text-sm">
-                                Primary Role:{' '}
-                                {user.role?.displayName || 'Unassigned'}
-                            </p>
-                            <p className="text-xs text-text-subdued mt-1 max-w-md">
-                                This role defines global permissions. Changing
-                                this affects access immediately.
-                            </p>
-                        </div>
-                        <Button
-                            size="sm"
-                            color="primary"
-                            variant="flat"
-                            onPress={changeRoleModalDisclosure.onOpen}
-                            className="font-semibold"
-                        >
-                            Change Role
-                        </Button>
-                    </div>
-                </div>
-
-                <Divider />
-
-                {/* Session Management */}
-                <div>
-                    <h3 className="font-bold text-text-default text-sm mb-3">
-                        Session Control
-                    </h3>
-                    <div className="flex flex-col md:flex-row md:items-center justify-between p-4 border border-border-default rounded-xl bg-background hover:border-danger-200 transition-colors gap-4">
-                        <div>
-                            <p className="font-semibold text-text-default text-sm">
-                                Force Global Logout
-                            </p>
-                            <p className="text-xs text-text-subdued mt-1 max-w-md">
-                                Sign out this user from all active browsers and
-                                mobile devices. Use this if the account is
-                                compromised.
-                            </p>
-                        </div>
-                        <Button
-                            size="sm"
-                            variant="bordered"
-                            color="danger"
-                            className="font-semibold bg-white"
-                        >
-                            Log Out All Devices
-                        </Button>
-                    </div>
+                    <UserInformationTabs activeTab={activeTab} data={user} />
                 </div>
             </div>
         </>

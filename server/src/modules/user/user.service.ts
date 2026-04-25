@@ -34,38 +34,45 @@ export class UserService {
 		private readonly prismaService: PrismaService,
 		private readonly bcryptService: BcryptService,
 		private readonly mailService: MailService,
-		private readonly eventEmitter: EventEmitter2,
-	) { }
+		private readonly eventEmitter: EventEmitter2
+	) {}
 
 	async create(dto: CreateUserDto, sendInviteEmail: boolean) {
 		const existingEmail = await this.prismaService.user.findFirst({
 			where: { email: dto.email },
 		})
 		if (existingEmail) {
-			throw new ConflictException(`Email ${dto.email} already exists. Please try again with a different email address.`)
+			throw new ConflictException(
+				`Email ${dto.email} already exists. Please try again with a different email address.`
+			)
 		}
-
 
 		const hashedPassword = await this.bcryptService.hash(dto.password)
 		const username = await this.generateUsernameFromEmail(dto.email)
 		const avatar = this.generateAvatar(dto.displayName)
 		const staffCode = await this.generateStaffCode()
-		const roleId = lodash.isEmpty(dto.roleId) ? await this.getAccountDefaultRole() : dto.roleId
+		const roleId = lodash.isEmpty(dto.roleId)
+			? await this.getAccountDefaultRole()
+			: dto.roleId
 
 		const user = await this.prismaService.user.create({
 			data: {
 				displayName: dto.displayName,
 				email: dto.email,
 				personalEmail: dto.personalEmail,
-				jobTitleId: lodash.isEmpty(dto.jobTitleId) ? null : dto.jobTitleId,
-				departmentId: lodash.isEmpty(dto.departmentId) ? null : dto.departmentId,
+				jobTitleId: lodash.isEmpty(dto.jobTitleId)
+					? null
+					: dto.jobTitleId,
+				departmentId: lodash.isEmpty(dto.departmentId)
+					? null
+					: dto.departmentId,
 				roleId: roleId,
 				password: hashedPassword,
 				username,
 				avatar,
 				isActive: true,
 				deletedAt: null,
-				code: staffCode
+				code: staffCode,
 			},
 			include: { role: true },
 		})
@@ -74,7 +81,7 @@ export class UserService {
 			eventName: 'notify.user.created',
 			targetUserId: user.id,
 			data: { name: user.displayName },
-		} satisfies NotifyEventPayload);
+		} satisfies NotifyEventPayload)
 
 		// 3. Send Email
 		try {
@@ -169,7 +176,10 @@ export class UserService {
 			})
 			return { role: updated.role, username: updated.username }
 		} catch (error) {
-			this.logger.error('Updated user role failed', (error as { stack: string }).stack)
+			this.logger.error(
+				'Updated user role failed',
+				(error as { stack: string }).stack
+			)
 		}
 	}
 
@@ -261,7 +271,7 @@ export class UserService {
 	async findByStaffCode(staffCode: string): Promise<User | null> {
 		try {
 			const userData = await this.prismaService.user.findUnique({
-				where: { code: staffCode, deletedAt: null },
+				where: { code: staffCode },
 				include: {
 					department: true,
 					jobTitle: true,
@@ -565,19 +575,20 @@ export class UserService {
 		return `https://ui-avatars.com/api/?name=${formattedName}&background=random&size=128`
 	}
 
-
 	private async generateStaffCode() {
-		const result = await this.prismaService.user.findMany({
-			orderBy: {
-				code: "asc"
-			}
-		}).then(res => {
-			const arr = [...res] as Array<any>
-			const userNum = arr.at(-1).code.slice(-3)
-			return String(Number(userNum) + 1).padStart(3, '0')
-		})
+		const result = await this.prismaService.user
+			.findMany({
+				orderBy: {
+					code: 'asc',
+				},
+			})
+			.then((res) => {
+				const arr = [...res] as Array<any>
+				const userNum = arr.at(-1).code.slice(-3)
+				return String(Number(userNum) + 1).padStart(3, '0')
+			})
 
-		return "ST" + result
+		return 'ST' + result
 	}
 	private async getAccountDefaultRole() {
 		const result = await this.prismaService.role.findUnique({
