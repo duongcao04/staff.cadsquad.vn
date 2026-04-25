@@ -50,8 +50,7 @@ export const UserSchema: ZodType<TUser> = z.lazy(() =>
         lastLoginAt: z.coerce.date().nullable().catch(null),
         createdAt: z.coerce.date().catch(new Date()),
         updatedAt: z.coerce.date().catch(new Date()),
-
-        deletedAt: z.coerce.date().catch(new Date()),
+        deletedAt: z.coerce.date().nullish(),
     })
 )
 

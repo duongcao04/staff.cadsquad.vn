@@ -1,4 +1,4 @@
-import { deleteUserOptions, userOptions } from '@/lib'
+import { restoreUserOptions, userOptions } from '@/lib'
 import { HeroButton, HeroInput } from '@/shared/components'
 import { TUser } from '@/shared/types'
 import {
@@ -11,31 +11,35 @@ import {
     ModalHeader,
 } from '@heroui/react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { AlertTriangle, Trash2 } from 'lucide-react'
+import { Info, RotateCcw } from 'lucide-react'
 import { useState } from 'react'
 
-interface DeleteUserModalProps {
+interface RestoreUserModalProps {
     isOpen: boolean
     onClose: () => void
     user: TUser
 }
 
-export const DeleteUserPermanentlyModal = ({
+export const RestoreUserModal = ({
     isOpen,
     onClose,
     user,
-}: DeleteUserModalProps) => {
+}: RestoreUserModalProps) => {
     const queryClient = useQueryClient()
-    const deleteUserMutation = useMutation(deleteUserOptions)
+    const restoreUserMutation = useMutation(restoreUserOptions)
 
     const [confirmText, setConfirmText] = useState('')
 
-    const handleDelete = async () => {
-        if (confirmText !== user?.username) return
-        await deleteUserMutation.mutateAsync(user.id, {
+    const username = user.username.includes('_')
+        ? user.username.split('_')[0]
+        : user.username
+
+    const handleRestore = async () => {
+        if (confirmText !== username) return
+        await restoreUserMutation.mutateAsync(user.id, {
             onSuccess: () => {
                 addToast({
-                    title: `Deleted user ${user.displayName} successful`,
+                    title: `Restored user ${user.displayName} successful`,
                     color: 'success',
                 })
                 queryClient.invalidateQueries({
@@ -47,47 +51,49 @@ export const DeleteUserPermanentlyModal = ({
         })
     }
 
-    const isMatch = confirmText === user?.username
+    const isMatch = confirmText === username
 
     return (
         <Modal
             isOpen={isOpen}
             onClose={onClose}
             size="lg"
-            hideCloseButton={deleteUserMutation.isPending}
+            hideCloseButton={restoreUserMutation.isPending}
         >
             <ModalContent>
                 {(close) => (
                     <>
-                        <ModalHeader className="flex flex-col gap-1 bg-danger-50/50 dark:bg-danger-950/50 border-b border-red-100 dark:border-red-900/40">
-                            <div className="flex items-center gap-2 text-danger">
-                                <div className="p-2 bg-red-100 dark:border-red-900/40 rounded-full">
-                                    <AlertTriangle size={20} />
+                        <ModalHeader className="flex flex-col gap-1 bg-success-50/50 dark:bg-success-950/50 border-b border-success-100 dark:border-success-900/40">
+                            <div className="flex items-center gap-2 text-success-600">
+                                <div className="p-2 bg-success-100 dark:bg-success-900/40 rounded-full">
+                                    <RotateCcw size={20} />
                                 </div>
                                 <span className="text-lg font-bold">
-                                    Delete User Permanently?
+                                    Restore User Account?
                                 </span>
                             </div>
                         </ModalHeader>
 
                         <ModalBody className="py-6">
                             <div className="space-y-4">
-                                <div className="bg-red-50 border border-red-100 p-4 rounded-xl text-sm text-red-800">
-                                    <strong>Warning:</strong> This action is{' '}
-                                    <u>irreversible</u>.
-                                    <ul className="list-disc pl-5 mt-2 space-y-1">
+                                <div className="bg-success-50 border border-success-100 p-4 rounded-xl text-sm text-success-800 flex flex-col gap-2">
+                                    <div className="flex items-center gap-1.5 font-bold">
+                                        <Info size={16} />
+                                        Information: Reactivating this account.
+                                    </div>
+                                    <ul className="list-disc pl-5 space-y-1">
                                         <li>
                                             The user{' '}
-                                            <strong>@{user?.username}</strong>{' '}
-                                            will be removed.
+                                            <strong>@{username}</strong> will
+                                            regain access to the platform.
                                         </li>
                                         <li>
-                                            All login sessions will be
-                                            terminated.
+                                            Previous roles and system
+                                            permissions will be reinstated.
                                         </li>
                                         <li>
-                                            Historical logs (like created jobs)
-                                            may be anonymized.
+                                            Historical logs and assigned tasks
+                                            will re-link to this active profile.
                                         </li>
                                     </ul>
                                 </div>
@@ -95,27 +101,27 @@ export const DeleteUserPermanentlyModal = ({
                                 <div className="space-y-2">
                                     <label className="text-sm font-medium text-text-default">
                                         To confirm, type{' '}
-                                        <Chip variant="flat">
+                                        <Chip variant="flat" color="success">
                                             <p className="font-semibold text-sm">
-                                                {user?.username}
+                                                {username}
                                             </p>
                                         </Chip>{' '}
                                         below:
                                     </label>
                                     <div className="mt-1">
                                         <HeroInput
-                                            placeholder={user?.username}
+                                            placeholder={username}
                                             variant="bordered"
                                             color={
                                                 confirmText && !isMatch
                                                     ? 'danger'
-                                                    : 'default'
+                                                    : 'success'
                                             }
                                             labelPlacement="outside-top"
                                             value={confirmText}
                                             onValueChange={setConfirmText}
                                             isDisabled={
-                                                deleteUserMutation.isPending
+                                                restoreUserMutation.isPending
                                             }
                                             errorMessage={
                                                 confirmText && !isMatch
@@ -132,26 +138,26 @@ export const DeleteUserPermanentlyModal = ({
                             <HeroButton
                                 variant="light"
                                 onPress={close}
-                                isDisabled={deleteUserMutation.isPending}
+                                isDisabled={restoreUserMutation.isPending}
                             >
                                 Cancel
                             </HeroButton>
                             <HeroButton
-                                color="danger"
+                                color="success"
                                 variant="shadow"
-                                isLoading={deleteUserMutation.isPending}
+                                isLoading={restoreUserMutation.isPending}
                                 isDisabled={!isMatch}
-                                onPress={handleDelete}
+                                onPress={handleRestore}
                                 startContent={
-                                    !deleteUserMutation.isPending && (
-                                        <Trash2 size={18} />
+                                    !restoreUserMutation.isPending && (
+                                        <RotateCcw size={18} />
                                     )
                                 }
                                 className="font-medium"
                             >
-                                {deleteUserMutation.isPending
-                                    ? 'Deleting...'
-                                    : 'Permanently Delete'}
+                                {restoreUserMutation.isPending
+                                    ? 'Restoring...'
+                                    : 'Restore Account'}
                             </HeroButton>
                         </ModalFooter>
                     </>

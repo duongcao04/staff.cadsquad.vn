@@ -60,9 +60,9 @@ export const userApi = {
             .then((res) => res.data)
     },
     getSecurityLogs: async () => {
-        return axiosClient.get<ApiResponse<TUserSecurityLog[]>>(
-            '/v1/users/security-logs'
-        ).then(res => res.data)
+        return axiosClient
+            .get<ApiResponse<TUserSecurityLog[]>>('/v1/users/security-logs')
+            .then((res) => res.data)
     },
     toggleStatus: async (userId: string, forceStatus?: boolean) => {
         const url = forceStatus
@@ -133,6 +133,11 @@ export const userApi = {
     remove: (id: string) => {
         return axiosClient.delete<ApiResponse<{ username: string }>>(
             `/v1/users/${id}`
+        )
+    },
+    restore: (id: string) => {
+        return axiosClient.patch<ApiResponse<{ username: string }>>(
+            `/v1/users/${id}/restore`
         )
     },
 }
