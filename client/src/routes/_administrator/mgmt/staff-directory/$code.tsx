@@ -29,14 +29,14 @@ import {
     BreadcrumbItem,
     Breadcrumbs,
     Button,
+    Card,
+    CardBody,
+    CardHeader,
     Chip,
     Divider,
     Spinner,
     Switch,
     useDisclosure,
-    Card,
-    CardBody,
-    CardHeader,
 } from '@heroui/react'
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, Link, useRouter } from '@tanstack/react-router'
@@ -55,6 +55,7 @@ import {
 import { useState } from 'react'
 import { z } from 'zod'
 import { NavigatorHelper } from '../../../../lib/helpers/navigation.helper'
+import { useDevice } from '../../../../shared/hooks'
 
 const staffDetailParams = z.object({
     tab: z
@@ -87,11 +88,12 @@ export const Route = createFileRoute(
     },
     pendingComponent: AppLoading,
     component: () => {
+        const { isSmallView } = useDevice()
         const router = useRouter()
         const { code } = Route.useParams()
         const { data: user } = useSuspenseQuery(userOptions(code))
 
-        const isDeletedUser = user.deletedAt
+        const isDeletedUser = Boolean(user.deletedAt)
 
         return (
             <>
@@ -109,35 +111,62 @@ export const Route = createFileRoute(
                                     <ArrowLeft size={18} />
                                 </Button>
                                 <div>
-                                    <div>
+                                    <div className="flex items-center justify-start gap-3">
                                         <h1 className="text-2xl font-bold text-text-default">
                                             {user.displayName}
                                         </h1>
-                                        <Chip>Deleted</Chip>
+                                        {!isSmallView && isDeletedUser && (
+                                            <Chip
+                                                color="danger"
+                                                variant="shadow"
+                                                classNames={{
+                                                    base: 'shadow-md',
+                                                    content: 'font-semibold',
+                                                }}
+                                            >
+                                                Deleted Account
+                                            </Chip>
+                                        )}
                                     </div>
-                                    <Chip
-                                        size="sm"
-                                        startContent={<HashIcon size={12} />}
-                                        classNames={{
-                                            base: 'rounded-md cursor-pointer',
-                                            content: 'font-bold pt-0.5',
-                                        }}
-                                        title="Copy"
-                                        variant="flat"
-                                        onClick={() => {
-                                            NavigatorHelper.copy(
-                                                user.code,
-                                                () => {
-                                                    addToast({
-                                                        title: 'Copy user code successful',
-                                                        color: 'success',
-                                                    })
-                                                }
-                                            )
-                                        }}
-                                    >
-                                        {user.code}
-                                    </Chip>
+                                    <div className="flex items-center justify-start gap-3">
+                                        <Chip
+                                            size="sm"
+                                            startContent={
+                                                <HashIcon size={12} />
+                                            }
+                                            classNames={{
+                                                base: 'rounded-md cursor-pointer',
+                                                content: 'font-bold pt-0.5',
+                                            }}
+                                            title="Copy"
+                                            variant="flat"
+                                            onClick={() => {
+                                                NavigatorHelper.copy(
+                                                    user.code,
+                                                    () => {
+                                                        addToast({
+                                                            title: 'Copy user code successful',
+                                                            color: 'success',
+                                                        })
+                                                    }
+                                                )
+                                            }}
+                                        >
+                                            {user.code}
+                                        </Chip>
+                                        {isSmallView && isDeletedUser && (
+                                            <Chip
+                                                color="danger"
+                                                variant="shadow"
+                                                classNames={{
+                                                    base: 'shadow-md',
+                                                    content: 'font-semibold',
+                                                }}
+                                            >
+                                                Deleted Account
+                                            </Chip>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         ),

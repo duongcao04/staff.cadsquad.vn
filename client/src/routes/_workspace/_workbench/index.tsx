@@ -7,7 +7,7 @@ import {
     WorkbenchToolbar,
     WorkbenchViewColumnsDrawer,
 } from '@/features/workbench'
-import { jobsListOptions, workbenchDataOptions } from '@/lib/queries'
+import { workbenchDataOptions } from '@/lib/queries'
 import { jobFiltersSchema, TJobFilters } from '@/lib/validationSchemas'
 import { PageHeading } from '@/shared/components'
 import { useDevice } from '@/shared/hooks'
@@ -53,7 +53,7 @@ export const Route = createFileRoute('/_workspace/_workbench/')({
             sort = DEFAULT_SORT,
         } = deps.search
         void context.queryClient.ensureQueryData(
-            workbenchDataOptions({ limit, page, search, sort: [sort] })
+            workbenchDataOptions({ limit, page, search, sort: [sort], status })
         )
     },
     component: WorkbenchPage,
@@ -134,12 +134,11 @@ function WorkbenchPageContent() {
         isFetching,
         refetch,
     } = useSuspenseQuery({
-        ...jobsListOptions({
+        ...workbenchDataOptions({
             ...search,
             limit: search.limit,
             page: search.page,
             sort: [search.sort ?? DEFAULT_SORT],
-            isAll: search.showAll ? '1' : '0',
         }),
     })
 

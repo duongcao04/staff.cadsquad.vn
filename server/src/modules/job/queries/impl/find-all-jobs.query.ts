@@ -1,11 +1,10 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs'
-import { JobQueryBuilder, JobQueryDto } from '../../dto/job-query.dto'
 import { Job } from 'bullmq'
 import { plainToInstance } from 'class-transformer'
 import { Prisma } from '../../../../generated/prisma'
 import { PrismaService } from '../../../../providers/prisma/prisma.service'
-import { UserService } from '../../../user/user.service'
 import { JobFiltersBuilder } from '../../dto/job-filters.dto'
+import { JobQueryBuilder, JobQueryDto } from '../../dto/job-query.dto'
 import { JobResponseDto } from '../../dto/job-response.dto'
 import { JobSortBuilder } from '../../dto/job-sort.dto'
 import { JobHelpersService } from '../../job-helpers.service'
@@ -15,7 +14,7 @@ export class FindAllJobsQuery {
 		public readonly userId: string,
 		public readonly userPermissions: string[],
 		public readonly queryDto: JobQueryDto
-	) { }
+	) {}
 }
 
 @QueryHandler(FindAllJobsQuery)
@@ -23,14 +22,14 @@ export class FindAllJobsHandler implements IQueryHandler<FindAllJobsQuery> {
 	constructor(
 		private readonly prisma: PrismaService,
 		private readonly jobHelpers: JobHelpersService
-	) { }
+	) {}
 
 	async execute(query: FindAllJobsQuery) {
 		const { userId, userPermissions, queryDto } = query
 
 		const {
 			tab,
-			hideFinishItems,
+			hideFinishedJobs,
 			page = 1,
 			limit = 10,
 			search,
@@ -49,8 +48,28 @@ export class FindAllJobsHandler implements IQueryHandler<FindAllJobsQuery> {
 
 		const userPermission = await this.jobHelpers.buildPermission(userId)
 		const queryBuilder: Prisma.JobWhereInput = {
-			AND: [userPermission, tabQuery, filtersQuery, searchQuery],
+			AND: [
+				userPermission,
+				tabQuery,
+				filtersQuery,
+				{
+					...(hideFinishedJobs && {
+						status: {
+							isNot: { systemType: 'TERMINATED' },
+						},
+					}),
+				},
+				searchQuery,
+			],
 		}
+
+		console.log({
+			...(hideFinishedJobs && {
+				status: {
+					isNot: { systemType: 'TERMINATED' },
+				},
+			}),
+		})
 
 		const [rawData, total] = await Promise.all([
 			this.prisma.job.findMany({
@@ -65,13 +84,16 @@ export class FindAllJobsHandler implements IQueryHandler<FindAllJobsQuery> {
 					client: { select: { name: true } },
 					assignments: { include: { user: true } },
 					folderTemplate: true,
-					sharepointFolder: true
+					sharepointFolder: true,
 				},
 			}),
 			this.prisma.job.count({ where: queryBuilder }),
 		])
 
-		const mappedData = await this.jobHelpers.mapRoleBasedData(rawData, userId)
+		const mappedData = await this.jobHelpers.mapRoleBasedData(
+			rawData,
+			userId
+		)
 		const result = plainToInstance(JobResponseDto, mappedData, {
 			excludeExtraneousValues: true,
 			groups: userPermissions,

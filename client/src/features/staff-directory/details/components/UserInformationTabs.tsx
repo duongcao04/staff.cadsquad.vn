@@ -26,6 +26,7 @@ import {
     Switch,
     Tab,
     Tabs,
+    Tooltip,
     useDisclosure,
 } from '@heroui/react'
 import {
@@ -148,6 +149,8 @@ function EditProfileTab({ user }: { user: TUser }) {
     const queryClient = useQueryClient()
     const updateUserMutation = useMutation(updateUserOptions)
 
+    const isDeletedUser = Boolean(user.deletedAt)
+
     const formik = useFormik<TEditUser & { code?: string }>({
         initialValues: {
             displayName: user.displayName,
@@ -183,28 +186,34 @@ function EditProfileTab({ user }: { user: TUser }) {
     return (
         <div className="space-y-6 animate-in fade-in duration-300">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Input
-                    isRequired
-                    label="Full Name"
-                    labelPlacement="outside-top"
-                    placeholder="e.g. Sarah Wilson"
-                    variant="bordered"
-                    name="displayName"
-                    description="Visible to teammates across the platform."
-                    value={formik.values.displayName}
-                    onValueChange={(v) =>
-                        formik.setFieldValue('displayName', v)
-                    }
-                    isInvalid={
-                        !!formik.errors.displayName &&
-                        formik.touched.displayName
-                    }
-                    errorMessage={
-                        formik.touched.displayName && formik.errors.displayName
-                    }
-                    onBlur={formik.handleBlur}
-                    classNames={{ label: 'font-semibold text-text-default' }}
-                />
+                <Tooltip content="User has been deleted">
+                    <Input
+                        isRequired
+                        label="Full Name"
+                        isDisabled={isDeletedUser}
+                        labelPlacement="outside-top"
+                        placeholder="e.g. Sarah Wilson"
+                        variant="bordered"
+                        name="displayName"
+                        description="Visible to teammates across the platform."
+                        value={formik.values.displayName}
+                        onValueChange={(v) =>
+                            formik.setFieldValue('displayName', v)
+                        }
+                        isInvalid={
+                            !!formik.errors.displayName &&
+                            formik.touched.displayName
+                        }
+                        errorMessage={
+                            formik.touched.displayName &&
+                            formik.errors.displayName
+                        }
+                        onBlur={formik.handleBlur}
+                        classNames={{
+                            label: 'font-semibold text-text-default',
+                        }}
+                    />
+                </Tooltip>
 
                 <Input
                     isRequired

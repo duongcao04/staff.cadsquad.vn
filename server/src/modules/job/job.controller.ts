@@ -148,7 +148,10 @@ export class JobController {
 	) {
 		const user: TokenPayload = request['user']
 		return this.queryBus.execute(
-			new FindAllJobsQuery(user.sub, user.permissions, query)
+			new FindAllJobsQuery(user.sub, user.permissions, {
+				...query,
+				hideFinishedJobs: true,
+			})
 		)
 	}
 
