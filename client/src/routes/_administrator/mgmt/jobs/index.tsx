@@ -190,7 +190,7 @@ function ManageJobsPage() {
         [searchParams.dueIn]
     )
 
-    const { data, isFetching,refetch } = useSuspenseQuery(
+    const { data, isFetching, refetch } = useSuspenseQuery(
         jobsListOptions({
             ...params,
             sort: [params.sort || DEFAULT_SORT],

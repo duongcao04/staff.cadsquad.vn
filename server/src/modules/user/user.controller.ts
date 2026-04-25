@@ -49,7 +49,7 @@ export class UserController {
 		private readonly userService: UserService,
 		private readonly userSecurityService: UserSecurityService,
 		private readonly queryBus: QueryBus
-	) { }
+	) {}
 
 	@Get('search')
 	@HttpCode(200)
@@ -136,7 +136,7 @@ export class UserController {
 
 	@Post(':id/permissions')
 	@UseGuards(PermissionsGuard)
-	@RequirePermissions('user.update')
+	@RequirePermissions([APP_PERMISSIONS.USER.UPDATE])
 	async managePermission(
 		@Param('id', ParseUUIDPipe) userId: string,
 		@Body() dto: AssignUserPermissionDto
@@ -171,7 +171,7 @@ export class UserController {
 		description: 'The password has been successfully reset.',
 	})
 	@UseGuards(PermissionsGuard)
-	@RequirePermissions(APP_PERMISSIONS.USER.RESET_PASSWORD)
+	@RequirePermissions([APP_PERMISSIONS.USER.RESET_PASSWORD])
 	async resetPassword(
 		@Param('id') id: string,
 		@Body() dto: ResetPasswordDto
@@ -224,7 +224,7 @@ export class UserController {
 		type: UserResponseDto,
 	})
 	@UseGuards(PermissionsGuard)
-	@RequirePermissions(APP_PERMISSIONS.USER.UPDATE)
+	@RequirePermissions([APP_PERMISSIONS.USER.UPDATE])
 	async update(
 		@Param('username') username: string,
 		@Body() updateUserDto: UpdateUserDto
@@ -234,10 +234,10 @@ export class UserController {
 
 	@Patch(':id/assign-role')
 	@UseGuards(PermissionsGuard)
-	@RequirePermissions(
+	@RequirePermissions([
 		APP_PERMISSIONS.ROLE.MANAGE,
-		APP_PERMISSIONS.USER.UPDATE
-	)
+		APP_PERMISSIONS.USER.UPDATE,
+	])
 	@ResponseMessage('Assign role for user successfully')
 	async assignUserRole(
 		@Param('id') id: string,
@@ -248,7 +248,7 @@ export class UserController {
 
 	@Patch(':id/status')
 	@UseGuards(PermissionsGuard)
-	@RequirePermissions(APP_PERMISSIONS.USER.BLOCK)
+	@RequirePermissions([APP_PERMISSIONS.USER.BLOCK])
 	@ResponseMessage('User status updated successfully')
 	async toggleStatus(
 		@Param('id') id: string,
@@ -268,7 +268,7 @@ export class UserController {
 		description: 'The user has been successfully deleted.',
 	})
 	@UseGuards(PermissionsGuard)
-	@RequirePermissions(APP_PERMISSIONS.USER.DELETE)
+	@RequirePermissions([APP_PERMISSIONS.USER.DELETE])
 	@BypassTransform()
 	async remove(@Param('id') id: string) {
 		const softDeleted = await this.userService.softDelete(id)

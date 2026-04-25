@@ -183,14 +183,14 @@ export class JobController {
 
 	@Get('pending-payouts')
 	@UseGuards(PermissionsGuard)
-	@RequirePermissions(APP_PERMISSIONS.JOB.PAID)
+	@RequirePermissions([APP_PERMISSIONS.JOB.PAID])
 	async getPendingPayouts() {
 		return this.queryBus.execute(new FindJobsPendingPayoutsQuery())
 	}
 
 	@Get('payouts/:no')
 	@UseGuards(PermissionsGuard)
-	@RequirePermissions(APP_PERMISSIONS.JOB.PAID)
+	@RequirePermissions([APP_PERMISSIONS.JOB.PAID])
 	async getPayoutDetails(
 		@Req() request: Request,
 		@Param('no') jobNo: string
@@ -207,7 +207,7 @@ export class JobController {
 
 	@Post()
 	@UseGuards(PermissionsGuard)
-	@RequirePermissions(APP_PERMISSIONS.JOB.CREATE)
+	@RequirePermissions([APP_PERMISSIONS.JOB.CREATE])
 	@ResponseMessage('The job has been successfully created.')
 	@AuditLog('Create new job', SystemModule.JOB)
 	async createJob(
@@ -228,7 +228,7 @@ export class JobController {
 
 	@Post(':id/deliver')
 	@UseGuards(PermissionsGuard)
-	@RequirePermissions(APP_PERMISSIONS.JOB.DELIVER)
+	@RequirePermissions([APP_PERMISSIONS.JOB.DELIVER])
 	@AuditLog('Delivered job', SystemModule.DELIVERY)
 	async deliverJob(
 		@Req() request: Request,
@@ -241,7 +241,7 @@ export class JobController {
 
 	@Post('deliver/:deliveryId/:action')
 	@UseGuards(PermissionsGuard)
-	@RequirePermissions(APP_PERMISSIONS.JOB.REVIEW)
+	@RequirePermissions([APP_PERMISSIONS.JOB.REVIEW])
 	async reviewDeliver(
 		@Req() request: Request,
 		@Param('deliveryId') deliveryId: string,
@@ -264,7 +264,7 @@ export class JobController {
 
 	@Post(':id/mark-paid')
 	@UseGuards(PermissionsGuard)
-	@RequirePermissions(APP_PERMISSIONS.JOB.PAID)
+	@RequirePermissions([APP_PERMISSIONS.JOB.PAID])
 	@AuditLog('Paid for job', SystemModule.FINANCIAL)
 	async confirmPayment(@Req() request: Request, @Param('id') jobId: string) {
 		const user: TokenPayload = request['user']
@@ -278,7 +278,7 @@ export class JobController {
 	// -------------------------------------------------------------------------
 	@Patch(':id/general')
 	@UseGuards(PermissionsGuard)
-	@RequirePermissions(APP_PERMISSIONS.JOB.UPDATE)
+	@RequirePermissions([APP_PERMISSIONS.JOB.UPDATE])
 	@ResponseMessage('Update job successfully')
 	async updateJob(
 		@Req() request: Request,
@@ -294,7 +294,7 @@ export class JobController {
 
 	@Patch(':id/assign')
 	@UseGuards(PermissionsGuard)
-	@RequirePermissions(APP_PERMISSIONS.JOB.ASSIGNMENT)
+	@RequirePermissions([APP_PERMISSIONS.JOB.ASSIGNMENT])
 	@ResponseMessage('Member assigned successfully')
 	@AuditLog('Assign new member for job', SystemModule.JOB)
 	async assignMember(
@@ -310,7 +310,7 @@ export class JobController {
 
 	@Patch(':id/assignments/:memberId')
 	@UseGuards(PermissionsGuard)
-	@RequirePermissions(APP_PERMISSIONS.JOB.ASSIGNMENT)
+	@RequirePermissions([APP_PERMISSIONS.JOB.ASSIGNMENT])
 	@ResponseMessage('Assignment cost updated')
 	async updateAssignment(
 		@Req() request: Request,
@@ -326,7 +326,7 @@ export class JobController {
 
 	@Delete(':id/assignments/:memberId')
 	@UseGuards(PermissionsGuard)
-	@RequirePermissions(APP_PERMISSIONS.JOB.ASSIGNMENT)
+	@RequirePermissions([APP_PERMISSIONS.JOB.ASSIGNMENT])
 	@AuditLog('Remove assignment member from job', SystemModule.JOB)
 	async unassignMember(
 		@Req() request: Request,
@@ -341,7 +341,7 @@ export class JobController {
 
 	@Patch(':id/update-revenue')
 	@UseGuards(PermissionsGuard)
-	@RequirePermissions(APP_PERMISSIONS.JOB.UPDATE)
+	@RequirePermissions([APP_PERMISSIONS.JOB.UPDATE])
 	@AuditLog('Update revenue', SystemModule.FINANCIAL)
 	async updateRevenue(
 		@Req() request: Request,
@@ -356,7 +356,7 @@ export class JobController {
 
 	@Patch(':id/change-status')
 	@UseGuards(PermissionsGuard)
-	@RequirePermissions(APP_PERMISSIONS.JOB.UPDATE)
+	@RequirePermissions([APP_PERMISSIONS.JOB.UPDATE])
 	@AuditLog('Force update job status', SystemModule.JOB)
 	async changeStatus(
 		@Req() request: Request,
@@ -381,7 +381,7 @@ export class JobController {
 
 	@Delete(':id')
 	@UseGuards(PermissionsGuard)
-	@RequirePermissions(APP_PERMISSIONS.JOB.DELETE)
+	@RequirePermissions([APP_PERMISSIONS.JOB.DELETE])
 	@AuditLog('Cancelled job', SystemModule.JOB)
 	async remove(@Req() request: Request, @Param('id') id: string) {
 		const user: TokenPayload = request['user']
@@ -394,7 +394,7 @@ export class JobController {
 
 	@Patch(':id/restore')
 	@UseGuards(PermissionsGuard)
-	@RequirePermissions(APP_PERMISSIONS.JOB.DELETE)
+	@RequirePermissions([APP_PERMISSIONS.JOB.DELETE])
 	@AuditLog('Restored job', SystemModule.JOB)
 	async restore(@Req() request: Request, @Param('id') id: string) {
 		const user: TokenPayload = request['user']
