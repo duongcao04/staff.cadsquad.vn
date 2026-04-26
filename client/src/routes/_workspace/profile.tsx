@@ -158,13 +158,7 @@ export default function ProfilePage() {
                                         </Button>
                                     </div>
                                     <Image
-                                        src={optimizeCloudinary(
-                                            profile.avatar,
-                                            {
-                                                width: 256,
-                                                height: 256,
-                                            }
-                                        )}
+                                        src={profile.avatar}
                                         preview={false}
                                         alt={profile?.displayName}
                                         rootClassName="size-32! rounded-full!"
