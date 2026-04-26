@@ -47880,6 +47880,8 @@ export namespace Prisma {
     webUrl: string | null
     createdDateTime: string | null
     createdBy: string | null
+    publicWebUrl: string | null
+    isAnonymous: boolean | null
     syncStatus: $Enums.SharepointSyncStatus | null
   }
 
@@ -47892,6 +47894,8 @@ export namespace Prisma {
     webUrl: string | null
     createdDateTime: string | null
     createdBy: string | null
+    publicWebUrl: string | null
+    isAnonymous: boolean | null
     syncStatus: $Enums.SharepointSyncStatus | null
   }
 
@@ -47904,6 +47908,8 @@ export namespace Prisma {
     webUrl: number
     createdDateTime: number
     createdBy: number
+    publicWebUrl: number
+    isAnonymous: number
     syncStatus: number
     _all: number
   }
@@ -47926,6 +47932,8 @@ export namespace Prisma {
     webUrl?: true
     createdDateTime?: true
     createdBy?: true
+    publicWebUrl?: true
+    isAnonymous?: true
     syncStatus?: true
   }
 
@@ -47938,6 +47946,8 @@ export namespace Prisma {
     webUrl?: true
     createdDateTime?: true
     createdBy?: true
+    publicWebUrl?: true
+    isAnonymous?: true
     syncStatus?: true
   }
 
@@ -47950,6 +47960,8 @@ export namespace Prisma {
     webUrl?: true
     createdDateTime?: true
     createdBy?: true
+    publicWebUrl?: true
+    isAnonymous?: true
     syncStatus?: true
     _all?: true
   }
@@ -48049,6 +48061,8 @@ export namespace Prisma {
     webUrl: string | null
     createdDateTime: string | null
     createdBy: string | null
+    publicWebUrl: string | null
+    isAnonymous: boolean | null
     syncStatus: $Enums.SharepointSyncStatus
     _count: SharepointItemCountAggregateOutputType | null
     _avg: SharepointItemAvgAggregateOutputType | null
@@ -48080,6 +48094,8 @@ export namespace Prisma {
     webUrl?: boolean
     createdDateTime?: boolean
     createdBy?: boolean
+    publicWebUrl?: boolean
+    isAnonymous?: boolean
     syncStatus?: boolean
     jobs?: boolean | SharepointItem$jobsArgs<ExtArgs>
     _count?: boolean | SharepointItemCountOutputTypeDefaultArgs<ExtArgs>
@@ -48094,6 +48110,8 @@ export namespace Prisma {
     webUrl?: boolean
     createdDateTime?: boolean
     createdBy?: boolean
+    publicWebUrl?: boolean
+    isAnonymous?: boolean
     syncStatus?: boolean
   }, ExtArgs["result"]["sharepointItem"]>
 
@@ -48106,6 +48124,8 @@ export namespace Prisma {
     webUrl?: boolean
     createdDateTime?: boolean
     createdBy?: boolean
+    publicWebUrl?: boolean
+    isAnonymous?: boolean
     syncStatus?: boolean
   }, ExtArgs["result"]["sharepointItem"]>
 
@@ -48118,10 +48138,12 @@ export namespace Prisma {
     webUrl?: boolean
     createdDateTime?: boolean
     createdBy?: boolean
+    publicWebUrl?: boolean
+    isAnonymous?: boolean
     syncStatus?: boolean
   }
 
-  export type SharepointItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "itemId" | "displayName" | "isFolder" | "size" | "webUrl" | "createdDateTime" | "createdBy" | "syncStatus", ExtArgs["result"]["sharepointItem"]>
+  export type SharepointItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "itemId" | "displayName" | "isFolder" | "size" | "webUrl" | "createdDateTime" | "createdBy" | "publicWebUrl" | "isAnonymous" | "syncStatus", ExtArgs["result"]["sharepointItem"]>
   export type SharepointItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     jobs?: boolean | SharepointItem$jobsArgs<ExtArgs>
     _count?: boolean | SharepointItemCountOutputTypeDefaultArgs<ExtArgs>
@@ -48143,6 +48165,8 @@ export namespace Prisma {
       webUrl: string | null
       createdDateTime: string | null
       createdBy: string | null
+      publicWebUrl: string | null
+      isAnonymous: boolean | null
       syncStatus: $Enums.SharepointSyncStatus
     }, ExtArgs["result"]["sharepointItem"]>
     composites: {}
@@ -48576,6 +48600,8 @@ export namespace Prisma {
     readonly webUrl: FieldRef<"SharepointItem", 'String'>
     readonly createdDateTime: FieldRef<"SharepointItem", 'String'>
     readonly createdBy: FieldRef<"SharepointItem", 'String'>
+    readonly publicWebUrl: FieldRef<"SharepointItem", 'String'>
+    readonly isAnonymous: FieldRef<"SharepointItem", 'Boolean'>
     readonly syncStatus: FieldRef<"SharepointItem", 'SharepointSyncStatus'>
   }
     
@@ -53059,6 +53085,8 @@ export namespace Prisma {
     webUrl: 'webUrl',
     createdDateTime: 'createdDateTime',
     createdBy: 'createdBy',
+    publicWebUrl: 'publicWebUrl',
+    isAnonymous: 'isAnonymous',
     syncStatus: 'syncStatus'
   };
 
@@ -56459,6 +56487,8 @@ export namespace Prisma {
     webUrl?: StringNullableFilter<"SharepointItem"> | string | null
     createdDateTime?: StringNullableFilter<"SharepointItem"> | string | null
     createdBy?: StringNullableFilter<"SharepointItem"> | string | null
+    publicWebUrl?: StringNullableFilter<"SharepointItem"> | string | null
+    isAnonymous?: BoolNullableFilter<"SharepointItem"> | boolean | null
     syncStatus?: EnumSharepointSyncStatusFilter<"SharepointItem"> | $Enums.SharepointSyncStatus
     jobs?: JobListRelationFilter
   }
@@ -56472,6 +56502,8 @@ export namespace Prisma {
     webUrl?: SortOrderInput | SortOrder
     createdDateTime?: SortOrderInput | SortOrder
     createdBy?: SortOrderInput | SortOrder
+    publicWebUrl?: SortOrderInput | SortOrder
+    isAnonymous?: SortOrderInput | SortOrder
     syncStatus?: SortOrder
     jobs?: JobOrderByRelationAggregateInput
   }
@@ -56489,6 +56521,8 @@ export namespace Prisma {
     webUrl?: StringNullableFilter<"SharepointItem"> | string | null
     createdDateTime?: StringNullableFilter<"SharepointItem"> | string | null
     createdBy?: StringNullableFilter<"SharepointItem"> | string | null
+    publicWebUrl?: StringNullableFilter<"SharepointItem"> | string | null
+    isAnonymous?: BoolNullableFilter<"SharepointItem"> | boolean | null
     syncStatus?: EnumSharepointSyncStatusFilter<"SharepointItem"> | $Enums.SharepointSyncStatus
     jobs?: JobListRelationFilter
   }, "id" | "itemId_id">
@@ -56502,6 +56536,8 @@ export namespace Prisma {
     webUrl?: SortOrderInput | SortOrder
     createdDateTime?: SortOrderInput | SortOrder
     createdBy?: SortOrderInput | SortOrder
+    publicWebUrl?: SortOrderInput | SortOrder
+    isAnonymous?: SortOrderInput | SortOrder
     syncStatus?: SortOrder
     _count?: SharepointItemCountOrderByAggregateInput
     _avg?: SharepointItemAvgOrderByAggregateInput
@@ -56522,6 +56558,8 @@ export namespace Prisma {
     webUrl?: StringNullableWithAggregatesFilter<"SharepointItem"> | string | null
     createdDateTime?: StringNullableWithAggregatesFilter<"SharepointItem"> | string | null
     createdBy?: StringNullableWithAggregatesFilter<"SharepointItem"> | string | null
+    publicWebUrl?: StringNullableWithAggregatesFilter<"SharepointItem"> | string | null
+    isAnonymous?: BoolNullableWithAggregatesFilter<"SharepointItem"> | boolean | null
     syncStatus?: EnumSharepointSyncStatusWithAggregatesFilter<"SharepointItem"> | $Enums.SharepointSyncStatus
   }
 
@@ -59954,6 +59992,8 @@ export namespace Prisma {
     webUrl?: string | null
     createdDateTime?: string | null
     createdBy?: string | null
+    publicWebUrl?: string | null
+    isAnonymous?: boolean | null
     syncStatus?: $Enums.SharepointSyncStatus
     jobs?: JobCreateNestedManyWithoutSharepointFolderInput
   }
@@ -59967,6 +60007,8 @@ export namespace Prisma {
     webUrl?: string | null
     createdDateTime?: string | null
     createdBy?: string | null
+    publicWebUrl?: string | null
+    isAnonymous?: boolean | null
     syncStatus?: $Enums.SharepointSyncStatus
     jobs?: JobUncheckedCreateNestedManyWithoutSharepointFolderInput
   }
@@ -59980,6 +60022,8 @@ export namespace Prisma {
     webUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdDateTime?: NullableStringFieldUpdateOperationsInput | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    publicWebUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isAnonymous?: NullableBoolFieldUpdateOperationsInput | boolean | null
     syncStatus?: EnumSharepointSyncStatusFieldUpdateOperationsInput | $Enums.SharepointSyncStatus
     jobs?: JobUpdateManyWithoutSharepointFolderNestedInput
   }
@@ -59993,6 +60037,8 @@ export namespace Prisma {
     webUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdDateTime?: NullableStringFieldUpdateOperationsInput | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    publicWebUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isAnonymous?: NullableBoolFieldUpdateOperationsInput | boolean | null
     syncStatus?: EnumSharepointSyncStatusFieldUpdateOperationsInput | $Enums.SharepointSyncStatus
     jobs?: JobUncheckedUpdateManyWithoutSharepointFolderNestedInput
   }
@@ -60006,6 +60052,8 @@ export namespace Prisma {
     webUrl?: string | null
     createdDateTime?: string | null
     createdBy?: string | null
+    publicWebUrl?: string | null
+    isAnonymous?: boolean | null
     syncStatus?: $Enums.SharepointSyncStatus
   }
 
@@ -60018,6 +60066,8 @@ export namespace Prisma {
     webUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdDateTime?: NullableStringFieldUpdateOperationsInput | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    publicWebUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isAnonymous?: NullableBoolFieldUpdateOperationsInput | boolean | null
     syncStatus?: EnumSharepointSyncStatusFieldUpdateOperationsInput | $Enums.SharepointSyncStatus
   }
 
@@ -60030,6 +60080,8 @@ export namespace Prisma {
     webUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdDateTime?: NullableStringFieldUpdateOperationsInput | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    publicWebUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isAnonymous?: NullableBoolFieldUpdateOperationsInput | boolean | null
     syncStatus?: EnumSharepointSyncStatusFieldUpdateOperationsInput | $Enums.SharepointSyncStatus
   }
 
@@ -62660,6 +62712,11 @@ export namespace Prisma {
     postId?: SortOrder
   }
 
+  export type BoolNullableFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
+  }
+
   export type EnumSharepointSyncStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.SharepointSyncStatus | EnumSharepointSyncStatusFieldRefInput<$PrismaModel>
     in?: $Enums.SharepointSyncStatus[] | ListEnumSharepointSyncStatusFieldRefInput<$PrismaModel>
@@ -62681,6 +62738,8 @@ export namespace Prisma {
     webUrl?: SortOrder
     createdDateTime?: SortOrder
     createdBy?: SortOrder
+    publicWebUrl?: SortOrder
+    isAnonymous?: SortOrder
     syncStatus?: SortOrder
   }
 
@@ -62697,6 +62756,8 @@ export namespace Prisma {
     webUrl?: SortOrder
     createdDateTime?: SortOrder
     createdBy?: SortOrder
+    publicWebUrl?: SortOrder
+    isAnonymous?: SortOrder
     syncStatus?: SortOrder
   }
 
@@ -62709,11 +62770,21 @@ export namespace Prisma {
     webUrl?: SortOrder
     createdDateTime?: SortOrder
     createdBy?: SortOrder
+    publicWebUrl?: SortOrder
+    isAnonymous?: SortOrder
     syncStatus?: SortOrder
   }
 
   export type SharepointItemSumOrderByAggregateInput = {
     size?: SortOrder
+  }
+
+  export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBoolNullableFilter<$PrismaModel>
+    _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
   export type EnumSharepointSyncStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -66075,6 +66146,10 @@ export namespace Prisma {
     connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
   }
 
+  export type NullableBoolFieldUpdateOperationsInput = {
+    set?: boolean | null
+  }
+
   export type EnumSharepointSyncStatusFieldUpdateOperationsInput = {
     set?: $Enums.SharepointSyncStatus
   }
@@ -66763,11 +66838,24 @@ export namespace Prisma {
     _max?: NestedEnumTopicTypeFilter<$PrismaModel>
   }
 
+  export type NestedBoolNullableFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
+  }
+
   export type NestedEnumSharepointSyncStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.SharepointSyncStatus | EnumSharepointSyncStatusFieldRefInput<$PrismaModel>
     in?: $Enums.SharepointSyncStatus[] | ListEnumSharepointSyncStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.SharepointSyncStatus[] | ListEnumSharepointSyncStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumSharepointSyncStatusFilter<$PrismaModel> | $Enums.SharepointSyncStatus
+  }
+
+  export type NestedBoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBoolNullableFilter<$PrismaModel>
+    _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumSharepointSyncStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -72128,6 +72216,8 @@ export namespace Prisma {
     webUrl?: string | null
     createdDateTime?: string | null
     createdBy?: string | null
+    publicWebUrl?: string | null
+    isAnonymous?: boolean | null
     syncStatus?: $Enums.SharepointSyncStatus
   }
 
@@ -72140,6 +72230,8 @@ export namespace Prisma {
     webUrl?: string | null
     createdDateTime?: string | null
     createdBy?: string | null
+    publicWebUrl?: string | null
+    isAnonymous?: boolean | null
     syncStatus?: $Enums.SharepointSyncStatus
   }
 
@@ -72714,6 +72806,8 @@ export namespace Prisma {
     webUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdDateTime?: NullableStringFieldUpdateOperationsInput | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    publicWebUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isAnonymous?: NullableBoolFieldUpdateOperationsInput | boolean | null
     syncStatus?: EnumSharepointSyncStatusFieldUpdateOperationsInput | $Enums.SharepointSyncStatus
   }
 
@@ -72726,6 +72820,8 @@ export namespace Prisma {
     webUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdDateTime?: NullableStringFieldUpdateOperationsInput | string | null
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    publicWebUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isAnonymous?: NullableBoolFieldUpdateOperationsInput | boolean | null
     syncStatus?: EnumSharepointSyncStatusFieldUpdateOperationsInput | $Enums.SharepointSyncStatus
   }
 

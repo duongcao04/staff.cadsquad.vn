@@ -69,12 +69,18 @@ export class JobHelper {
     }
 
     static getSharepointDisplay(data: TJob) {
-        const result = {
+        const result: {
+            folderName: string
+            internalUrl: string | null
+            publicWebUrl: string | null
+            isAnonymous: boolean
+            isFolder: boolean
+        } = {
             folderName: 'Unlinked',
-            url:
-                data?.sharepointFolder?.webUrl ||
-                data?.folderTemplate?.webUrl ||
-                null,
+            publicWebUrl: data?.sharepointFolder?.publicWebUrl || null,
+            isAnonymous: !!data?.sharepointFolder?.publicWebUrl,
+            internalUrl: data?.sharepointFolder?.webUrl || null,
+            isFolder: data.sharepointFolder?.isFolder || true,
         }
         if (!data?.sharepointFolder && !data?.folderTemplate) {
             result.folderName = 'Unlinked'

@@ -70,33 +70,38 @@ export class JobProcessor extends WorkerHost {
 				destinationId: destinationFolderCreationId,
 				itemId: sharepointFolderTemplateId,
 				newName: sharepointFolderName,
-			})
-
-			// 3. COPY XONG -> UPDATE THÀNH "SUCCESS"
-			await this.prisma.job.update({
-				where: { no: jobNo },
-				data: {
-					sharepointFolder: {
-						// LƯU Ý: Đổi từ create -> update vì bước 1 đã create rồi
-						update: {
-							syncStatus: 'SUCCESS',
-							itemId: copiedFolder.id,
-							webUrl: copiedFolder.webUrl || '',
-							displayName: copiedFolder.name || '',
-							createdBy:
-								copiedFolder?.['createdBy']?.['name'] ||
-								copiedFolder?.['createdBy']?.['user']?.[
-									'displayName'
-								] ||
-								'System',
-							createdDateTime:
-								copiedFolder?.['createdDateTime'] ||
-								new Date().toISOString(),
-							size: copiedFolder.size || 0,
+			}).then(async (res) => {
+				const folder = res
+				await this.prisma.job.update({
+					where: { no: jobNo },
+					data: {
+						sharepointFolder: {
+							// LƯU Ý: Đổi từ create -> update vì bước 1 đã create rồi
+							update: {
+								syncStatus: 'SUCCESS',
+								itemId: folder.id,
+								webUrl: folder.webUrl || '',
+								displayName: folder.name || '',
+								createdBy:
+									folder?.['createdBy']?.['name'] ||
+									folder?.['createdBy']?.['user']?.[
+										'displayName'
+									] ||
+									'System',
+								publicWebUrl: folder.publicWebUrl,
+								isAnonymous: folder.isAnonymous,
+								createdDateTime:
+									folder?.['createdDateTime'] ||
+									new Date().toISOString(),
+								size: folder.size || 0,
+							},
 						},
 					},
-				},
+				})
 			})
+			console.log(copiedFolder)
+
+			// 3. COPY XONG -> UPDATE THÀNH "SUCCESS"
 		} catch (error) {
 			this.logger.log(
 				`Job created event have error: ${JSON.stringify(data)}`
