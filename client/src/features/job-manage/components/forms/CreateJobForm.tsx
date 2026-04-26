@@ -18,7 +18,6 @@ import JobAttachmentsField from '@/shared/components/form-fields/JobAttachmentsF
 import { PaymentChannelSelect } from '@/shared/components/form-fields/PaymentChannelSelect'
 import { HeroButton } from '@/shared/components/ui/hero-button'
 import { HeroDateRangePicker } from '@/shared/components/ui/hero-date-picker'
-import { HeroInput } from '@/shared/components/ui/hero-input'
 import { HeroNumberInput } from '@/shared/components/ui/hero-number-input'
 import HeroRowsStep from '@/shared/components/ui/hero-rows-steps'
 import { HeroTooltip } from '@/shared/components/ui/hero-tooltip'
@@ -30,12 +29,9 @@ import {
     SelectItem,
     Switch,
     User,
+    Input,
 } from '@heroui/react'
-import {
-    useQuery,
-    useSuspenseQueries,
-    useSuspenseQuery,
-} from '@tanstack/react-query'
+import { useQueries, useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { useFormik } from 'formik'
 import HTMLReactParser from 'html-react-parser/lib/index'
@@ -66,19 +62,11 @@ export default function CreateJobForm({
         Array<{ id: string; name: string }>
     >([])
     const [
-        {
-            data: { users },
-        },
-        {
-            data: { jobTypes },
-        },
-        {
-            data: { paymentChannels },
-        },
-        {
-            data: { jobFolderTemplates },
-        },
-    ] = useSuspenseQueries({
+        { data: dataUsers },
+        { data: dataJobTypes, isLoading: loadingJobTypes },
+        { data: dataPaymentChannels, isLoading: loadingPaymentChannels },
+        { data: dataFolderTemplates },
+    ] = useQueries({
         queries: [
             usersListOptions(),
             jobTypesListOptions(),
@@ -86,6 +74,17 @@ export default function CreateJobForm({
             jobFolderTemplatesListOptions(),
         ],
     })
+
+    const users = useMemo(() => dataUsers?.users || [], [dataUsers])
+    const jobTypes = useMemo(() => dataJobTypes?.jobTypes || [], [dataJobTypes])
+    const paymentChannels = useMemo(
+        () => dataPaymentChannels?.paymentChannels || [],
+        [dataPaymentChannels]
+    )
+    const jobFolderTemplates = useMemo(
+        () => dataFolderTemplates?.jobFolderTemplates || [],
+        [dataFolderTemplates]
+    )
 
     const [currentStep, setCurrentStep] = useState(0)
 
@@ -257,6 +256,7 @@ export default function CreateJobForm({
                             <div className="py-5 pr-6 space-y-5 duration-300 animate-in fade-in slide-in-from-right-4 pl-7">
                                 <JobNoField
                                     jobTypes={jobTypes}
+                                    isLoading={loadingJobTypes}
                                     defaultSelectedKey={jobTypes[0]?.id}
                                     onSelectionChange={(key, jobNoResult) => {
                                         formik.setFieldValue('typeId', key)
@@ -286,8 +286,9 @@ export default function CreateJobForm({
                                     }}
                                 />
                                 {/* Job Name */}
-                                <HeroInput
+                                <Input
                                     isRequired
+                                    variant="bordered"
                                     id="displayName"
                                     name="displayName"
                                     label="Job name"
@@ -306,9 +307,10 @@ export default function CreateJobForm({
                                 />
 
                                 {/* Client Name */}
-                                <HeroInput
+                                <Input
                                     isRequired
                                     id="clientName"
+                                    variant="bordered"
                                     name="clientName"
                                     label="Client name"
                                     placeholder="e.g. Tom Jain"
@@ -407,6 +409,7 @@ export default function CreateJobForm({
                                         />
                                         <PaymentChannelSelect
                                             channels={paymentChannels}
+                                            isLoading={loadingPaymentChannels}
                                             onSelectionChange={(key) => {
                                                 const value = key
                                                 formik.setFieldValue(

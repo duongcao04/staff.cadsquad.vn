@@ -94,12 +94,18 @@ export const axiosClientMultipart = axios.create({
 // Request Interceptor: ONLY handles Authentication
 axiosClientMultipart.interceptors.request.use(
     (config) => {
+        // 1. Lấy Access Token từ cookie
         const token = cookie.get(COOKIES.authentication)
         if (token) {
             config.headers.Authorization = `Bearer ${token}`
         }
-        // CRITICAL: We do NOT set 'Content-Type' here.
-        // We let the browser detect FormData and set it automatically.
+
+        // 2. Lấy Session ID từ cookie (Đã lưu khi login)
+        const sessionId = cookie.get(COOKIES.sessionId) // Đảm bảo bạn đã định nghĩa key này trong COOKIES
+        if (sessionId) {
+            config.headers['x-session-id'] = sessionId
+        }
+
         return config
     },
     (error) => {
