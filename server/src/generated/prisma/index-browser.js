@@ -558,6 +558,8 @@ exports.Prisma.SharepointItemScalarFieldEnum = {
   webUrl: 'webUrl',
   createdDateTime: 'createdDateTime',
   createdBy: 'createdBy',
+  publicWebUrl: 'publicWebUrl',
+  isAnonymous: 'isAnonymous',
   syncStatus: 'syncStatus'
 };
 

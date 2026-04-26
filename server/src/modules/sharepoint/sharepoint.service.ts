@@ -298,6 +298,31 @@ export class SharePointService implements OnModuleInit, OnModuleDestroy {
 		this.logger.log(`Queued copy item: ${itemId} to ${destinationFolderId}`)
 	}
 
+	/**
+	 * Tạo link chia sẻ công khai (không cần đăng nhập)
+	 */
+	async createAnonymousLink(itemId: string) {
+		const client = await this.getGraphClient()
+
+		try {
+			const response = await client
+				.api(`/drives/${this.driveId}/items/${itemId}/createLink`)
+				.post({
+					type: 'view', // Hoặc 'edit' nếu muốn cho phép sửa
+					scope: 'anonymous', // 'anonymous' = ai có link cũng vào được
+				})
+
+			// Link công khai nằm trong response.link.webUrl
+			return response.link.webUrl
+		} catch (error) {
+			this.logger.error(
+				`Failed to create anonymous link: ${(error as { message: string }).message}`
+			)
+			// Nếu Tenant của bạn bị Admin cấm share anonymous, lệnh này sẽ lỗi 403
+			return null
+		}
+	}
+
 	async excuteCopySharepointFolder(data: {
 		itemId: string
 		destinationFolderId: string
@@ -341,11 +366,18 @@ export class SharePointService implements OnModuleInit, OnModuleDestroy {
 			}
 
 			const details = await this.getItemDetails(newFolderId)
+
+			const publicUrl = await this.createAnonymousLink(newFolderId)
+
 			// 4. Fetch the full details of the NEW folder
 			this.logger.log(
 				`Copied item ${itemId} to ${destinationFolderId} (New ID: ${JSON.stringify(details.id)})`
 			)
-			return details
+			return {
+				...details,
+				publicWebUrl: publicUrl || details.webUrl,
+				isAnonymous: !!publicUrl,
+			}
 		} catch (error) {
 			this.logger.error(
 				`Copy item failed: ${JSON.stringify({
@@ -404,7 +436,14 @@ export class SharePointService implements OnModuleInit, OnModuleDestroy {
 					'lastModifiedDateTime',
 					'file', // Will be present if it's a file, null if folder
 				])
+				// Expand permissions để kiểm tra các link chia sẻ hiện có
+				.expand('permissions')
 				.get()
+
+			// Tìm permission loại anonymous (nếu có)
+			const anonymousPermission = item.permissions?.find(
+				(p: any) => p.link?.scope === 'anonymous'
+			)
 
 			return {
 				id: item.id,
@@ -417,6 +456,12 @@ export class SharePointService implements OnModuleInit, OnModuleDestroy {
 				createdAt: item.createdDateTime,
 				updatedAt: item.lastModifiedDateTime,
 				raw: item, // Keep the original response if needed
+
+				// Link công khai (nếu có), nếu không có trả về null hoặc link nội bộ tùy bạn
+				publicWebUrl: anonymousPermission?.link?.webUrl || null,
+
+				// Trạng thái Anonymous
+				isAnonymous: !!anonymousPermission,
 			}
 		} catch (error) {
 			this.logger.error(

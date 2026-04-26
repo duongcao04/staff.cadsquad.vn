@@ -9,6 +9,9 @@ model SharepointItem {
     createdBy       String?
     jobs            Job[]
 
+    publicWebUrl String?
+    isAnonymous  Boolean? @default(false)
+
     syncStatus SharepointSyncStatus @default(FAILED)
 
     @@unique([itemId, id])

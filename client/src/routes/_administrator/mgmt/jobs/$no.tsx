@@ -526,13 +526,13 @@ function JobEditPage() {
                                                 href={
                                                     JobHelper.getSharepointDisplay(
                                                         job
-                                                    ).url
+                                                    ).publicWebUrl
                                                 }
                                                 target="_blank"
                                                 isDisabled={
                                                     !JobHelper.getSharepointDisplay(
                                                         job
-                                                    ).url
+                                                    ).publicWebUrl
                                                 }
                                                 color="primary"
                                                 variant="light"

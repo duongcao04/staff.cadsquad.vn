@@ -67,7 +67,7 @@ import {
     RotateCcw,
     TagIcon,
     UsersIcon,
-    Wallet
+    Wallet,
 } from 'lucide-react'
 import { useMemo } from 'react'
 import { z } from 'zod'
@@ -287,7 +287,6 @@ function JobDetailPage({ job }: { job: TJob }) {
         updateAttachmentsMutationOptions
     )
     const { data: profile } = useProfile()
-    const { hasPermission } = usePermission()
 
     const {
         data: { jobStatuses },
@@ -317,24 +316,7 @@ function JobDetailPage({ job }: { job: TJob }) {
         job?.paymentStatus
     )
 
-    const sharepointDisplay = (() => {
-        if (!job?.sharepointFolder && !job?.folderTemplate) {
-            return 'Unlinked'
-        }
-        if (job?.sharepointFolder) {
-            return (
-                job?.sharepointFolder.displayName ||
-                job?.sharepointFolder.itemId
-            )
-        } else {
-            return (
-                job?.folderTemplate?.folderName || job?.folderTemplate?.folderId
-            )
-        }
-    })()
-
-    const sharepointUrl =
-        job?.sharepointFolder?.webUrl || job?.folderTemplate?.webUrl || null
+    const sharepointDisplay = JobHelper.getSharepointDisplay(job)
 
     const totalCalculatedStaffCost =
         job?.assignments.reduce(
@@ -623,10 +605,10 @@ function JobDetailPage({ job }: { job: TJob }) {
                                             <Cloud size={14} /> SharePoint
                                         </p>
                                         <p
-                                            title={sharepointDisplay}
+                                            title={sharepointDisplay.folderName}
                                             className="text-sm font-medium text-default-900 bg-background p-2.5 rounded-lg border border-default-100 truncate"
                                         >
-                                            {sharepointDisplay}
+                                            {sharepointDisplay.folderName}
                                         </p>
                                     </div>
                                 </div>
@@ -1036,9 +1018,9 @@ function JobDetailPage({ job }: { job: TJob }) {
                                     <div className="flex flex-col flex-1 min-w-0">
                                         <span
                                             className="text-sm font-bold truncate text-default-900"
-                                            title={sharepointDisplay}
+                                            title={sharepointDisplay.folderName}
                                         >
-                                            {sharepointDisplay}
+                                            {sharepointDisplay.folderName}
                                         </span>
                                         <span className="text-xs text-default-500 mt-0.5">
                                             {job?.sharepointFolder?.isFolder
@@ -1143,62 +1125,72 @@ function JobDetailPage({ job }: { job: TJob }) {
                                 )}
 
                                 {/* Action Buttons Area */}
-                                <div className="flex flex-col gap-2 mt-1 px-1">
-                                    <p className="text-[10px] uppercase font-bold text-default-400 tracking-wider">
-                                        Actions
-                                    </p>
-                                    <div className="flex gap-2 w-full">
-                                        <Tooltip
-                                            content="Open the source directory in SharePoint"
-                                            placement="top"
-                                            delay={500}
-                                        >
-                                            <Button
-                                                as="a"
-                                                href={sharepointUrl || '#'}
-                                                target="_blank"
-                                                isDisabled={!sharepointUrl}
-                                                color="primary"
-                                                variant="flat"
-                                                size="sm"
-                                                className="flex-1 font-bold shadow-sm"
-                                                endContent={
-                                                    <ExternalLink size={14} />
-                                                }
-                                            >
-                                                Open SharePoint
-                                            </Button>
-                                        </Tooltip>
-
-                                        {resultFolder && (
+                                {sharepointDisplay.publicWebUrl && (
+                                    <div className="flex flex-col gap-2 mt-1 px-1">
+                                        <p className="text-[10px] uppercase font-bold text-default-400 tracking-wider">
+                                            Actions
+                                        </p>
+                                        <div className="flex gap-2 w-full">
                                             <Tooltip
-                                                content="Open the folder containing the processed results"
+                                                content="Open the source directory in SharePoint"
                                                 placement="top"
                                                 delay={500}
                                             >
                                                 <Button
                                                     as="a"
-                                                    href={resultFolder.webUrl}
+                                                    href={
+                                                        sharepointDisplay.publicWebUrl
+                                                    }
                                                     target="_blank"
                                                     isDisabled={
-                                                        !resultFolder.webUrl
+                                                        !sharepointDisplay.publicWebUrl
                                                     }
                                                     color="primary"
-                                                    variant="light"
+                                                    variant="flat"
                                                     size="sm"
-                                                    className="flex-1 font-medium shadow-sm"
+                                                    className="flex-1 font-bold shadow-sm"
                                                     endContent={
                                                         <ExternalLink
                                                             size={14}
                                                         />
                                                     }
                                                 >
-                                                    Open Result Folder
+                                                    Open SharePoint
                                                 </Button>
                                             </Tooltip>
-                                        )}
+
+                                            {resultFolder && (
+                                                <Tooltip
+                                                    content="Open the folder containing the processed results"
+                                                    placement="top"
+                                                    delay={500}
+                                                >
+                                                    <Button
+                                                        as="a"
+                                                        href={
+                                                            resultFolder.webUrl
+                                                        }
+                                                        target="_blank"
+                                                        isDisabled={
+                                                            !resultFolder.webUrl
+                                                        }
+                                                        color="primary"
+                                                        variant="light"
+                                                        size="sm"
+                                                        className="flex-1 font-medium shadow-sm"
+                                                        endContent={
+                                                            <ExternalLink
+                                                                size={14}
+                                                            />
+                                                        }
+                                                    >
+                                                        Open Result Folder
+                                                    </Button>
+                                                </Tooltip>
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
+                                )}
                             </div>
                         </CardBody>
                     </Card>
