@@ -1,17 +1,17 @@
-import { forwardRef, Inject, Injectable } from "@nestjs/common"
-import { APP_PERMISSIONS } from "@/utils"
-import slugify from "slugify"
-import { Prisma } from "../../generated/prisma"
-import { AuthService } from "../auth/auth.service"
-import { UserService } from "../user/user.service"
+import { forwardRef, Inject, Injectable } from '@nestjs/common'
+import { APP_PERMISSIONS } from '@/utils'
+import slugify from 'slugify'
+import { Prisma } from '../../generated/prisma'
+import { AuthService } from '../auth/auth.service'
+import { UserService } from '../user/user.service'
 
 @Injectable()
 export class JobHelpersService {
 	constructor(
 		private readonly authService: AuthService,
 		@Inject(forwardRef(() => UserService))
-		private readonly userService: UserService,
-	) { }
+		private readonly userService: UserService
+	) {}
 
 	async mapRoleBasedData(
 		rawData: Prisma.JobGetPayload<{
@@ -41,28 +41,41 @@ export class JobHelpersService {
 					staffCost: canReadStaffCost ? asm.staffCost : undefined,
 					user: asm.user
 						? {
-							id: asm.user.id,
-							displayName: asm.user.displayName,
-							username: asm.user.username,
-							avatar: asm.user.avatar,
-							department: asm.user.department,
-							code: asm.user.code
-						}
+								id: asm.user.id,
+								displayName: asm.user.displayName,
+								username: asm.user.username,
+								avatar: asm.user.avatar,
+								department: asm.user.department,
+								code: asm.user.code,
+							}
 						: undefined,
 				})),
 			}
 		})
 	}
 
-	async buildPermission(
-		userId: string
-	): Promise<Prisma.JobWhereInput> {
-		const userPermissions = await this.userService.userPermissions(userId)
-		const canReadAll = userPermissions.includes(
-			APP_PERMISSIONS.JOB.READ_ALL
-		)
-		if (canReadAll) return {}
-		return { assignments: { some: { userId } } }
+	async buildPermission(userId: string): Promise<Prisma.JobWhereInput> {
+		const permissions =
+			await this.authService.getEffectivePermissions(userId)
+
+		// Admin/Manager bypass
+		if (
+			permissions.includes(APP_PERMISSIONS.JOB.MANAGE) ||
+			permissions.includes(APP_PERMISSIONS.JOB.READ_ALL)
+		) {
+			return {}
+		}
+
+		const baseFilter: Prisma.JobWhereInput = {
+			assignments: { some: { userId } },
+		}
+
+		// Example: Hide cancelled jobs unless they have permission
+		if (!permissions.includes(APP_PERMISSIONS.JOB.READ_CANCELLED)) {
+			baseFilter.deletedAt !== null
+		}
+
+		return baseFilter
 	}
 
 	async generateClientCode(
