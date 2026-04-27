@@ -308,7 +308,7 @@ export class SharePointService implements OnModuleInit, OnModuleDestroy {
 			const response = await client
 				.api(`/drives/${this.driveId}/items/${itemId}/createLink`)
 				.post({
-					type: 'view', // Hoặc 'edit' nếu muốn cho phép sửa
+					type: 'edit', // Hoặc 'edit' nếu muốn cho phép sửa
 					scope: 'anonymous', // 'anonymous' = ai có link cũng vào được
 				})
 

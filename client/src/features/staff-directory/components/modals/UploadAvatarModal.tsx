@@ -11,14 +11,14 @@ import Cropper from 'react-easy-crop'
 import { z } from 'zod'
 import {
     HeroModal,
-    HeroModalContent,
-    HeroModalHeader,
     HeroModalBody,
+    HeroModalContent,
     HeroModalFooter,
+    HeroModalHeader,
 } from '../../../../shared/components/ui/hero-modal'
 
 // --- Configuration ---
-const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
+// const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 const ACCEPTED_IMAGE_TYPES = [
     'image/jpeg',
     'image/jpg',
@@ -30,9 +30,9 @@ const ACCEPTED_IMAGE_TYPES = [
 const avatarSchema = z.object({
     file: z
         .instanceof(File, { message: 'File is required' })
-        .refine((file) => file.size <= MAX_FILE_SIZE, `Max file size is 5MB.`)
+        // .refine((file) => file.size <= MAX_FILE_SIZE, `Max file size is 5MB.`)
         .refine(
-            (file) => ACCEPTED_IMAGE_TYPES.includes(file.type),
+            (file) => ACCEPTED_IMAGE_TYPES.includes(file.type), 
             'Only .jpg, .png, and .webp formats are supported.'
         ),
 })
