@@ -2,11 +2,13 @@ import {
     Popover,
     PopoverContent,
     PopoverTrigger,
+    Spinner,
     useDisclosure,
 } from '@heroui/react'
 
 import { IconCalendar, IconCalendarOutline } from '../../icons/sidebar-icons'
 import TaskCalendar from './TaskCalendar'
+import { Suspense } from 'react'
 
 export default function TaskCalendarPopover() {
     const { isOpen, onClose, onOpen } = useDisclosure({
@@ -52,7 +54,16 @@ export default function TaskCalendarPopover() {
                         </button>
                     </PopoverTrigger>
                     <PopoverContent aria-label="Calendar" className="">
-                        <TaskCalendar />
+                        <Suspense
+                            fallback={
+                                <div className="min-h-80 flex items-center justify-center">
+                                    <Spinner />
+                                </div>
+                            }
+                        >
+                            {' '}
+                            <TaskCalendar />
+                        </Suspense>
                     </PopoverContent>
                 </Popover>
             </div>

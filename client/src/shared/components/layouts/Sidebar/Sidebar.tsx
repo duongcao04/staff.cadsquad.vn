@@ -1,7 +1,7 @@
 import { Link, useLocation } from '@tanstack/react-router'
 import { useStore } from '@tanstack/react-store'
 import { type Variants } from 'motion/react'
-import React, { type SVGProps, useState } from 'react'
+import React, { Suspense, type SVGProps, useState } from 'react'
 import { MotionAside, MotionButton, MotionDiv, MotionP } from '@/lib/motion'
 import {
     ActionButton,
@@ -18,9 +18,9 @@ import {
     IconWorkbenchOutline,
 } from '@/shared/components/icons/sidebar-icons/IconWorkbench'
 import { appStore, ESidebarStatus, toggleSidebar } from '@/shared/stores'
-
 import TaskCalendar from './TaskCalendar'
 import TaskCalendarPopover from './TaskCalendarPopover'
+import { Spinner } from '@heroui/react'
 
 // --- Types ---
 export type TSidebarItem = {
@@ -133,11 +133,19 @@ export function Sidebar() {
                 {sidebarStatus === ESidebarStatus.COLLAPSE && (
                     <TaskCalendarPopover />
                 )}
-                <div className="mt-1.5 px-2 size-full bg-background overflow-hidden">
-                    {sidebarStatus === ESidebarStatus.EXPAND && (
-                        <TaskCalendar />
-                    )}
-                </div>
+                <Suspense
+                    fallback={
+                        <div className="min-h-80 flex items-center justify-center">
+                            <Spinner />
+                        </div>
+                    }
+                >
+                    <div className="mt-1.5 px-2 size-full bg-background overflow-hidden">
+                        {sidebarStatus === ESidebarStatus.EXPAND && (
+                            <TaskCalendar />
+                        )}
+                    </div>
+                </Suspense>
             </div>
         </MotionAside>
     )
