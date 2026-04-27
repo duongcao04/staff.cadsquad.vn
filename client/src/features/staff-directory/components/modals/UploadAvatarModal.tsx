@@ -30,9 +30,9 @@ const ACCEPTED_IMAGE_TYPES = [
 const avatarSchema = z.object({
     file: z
         .instanceof(File, { message: 'File is required' })
-        .refine((file) => file.size <= MAX_FILE_SIZE, `Max file size is 5MB.`)
+        // .refine((file) => file.size <= MAX_FILE_SIZE, `Max file size is 5MB.`)
         .refine(
-            (file) => ACCEPTED_IMAGE_TYPES.includes(file.type),
+            (file) => ACCEPTED_IMAGE_TYPES.includes(file.type), 
             'Only .jpg, .png, and .webp formats are supported.'
         ),
 })
