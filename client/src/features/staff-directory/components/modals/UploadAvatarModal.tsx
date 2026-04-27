@@ -11,14 +11,14 @@ import Cropper from 'react-easy-crop'
 import { z } from 'zod'
 import {
     HeroModal,
-    HeroModalContent,
-    HeroModalHeader,
     HeroModalBody,
+    HeroModalContent,
     HeroModalFooter,
+    HeroModalHeader,
 } from '../../../../shared/components/ui/hero-modal'
 
 // --- Configuration ---
-const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
+// const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 const ACCEPTED_IMAGE_TYPES = [
     'image/jpeg',
     'image/jpg',
