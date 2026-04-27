@@ -8,6 +8,8 @@
 @plugin '../lib/hero.ts';
 @source '../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* 1. Font Face Definitions
     Changed format('ttf') to format('truetype')
 */
@@ -98,10 +100,6 @@
     --font-quicksand: 'quicksand', sans-serif;
     --font-googleSans: 'GoogleSans', sans-serif;
 }
-
-/* 3. Global Styles
-*/
-@custom-variant dark (&:is(.dark *));
 
 body {
     color: var(--color-text-default) !important;
