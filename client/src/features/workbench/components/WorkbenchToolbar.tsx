@@ -1,30 +1,25 @@
 import { jobStatusesListOptions } from '@/lib/queries'
-import { DUE_DATE_PRESETS, getDueDateRange } from '@/lib/utils'
-import { TJobFilters } from '@/lib/validationSchemas'
-import { HeroButton, HeroSelect, HeroSelectItem } from '@/shared/components'
-import { Divider, Input } from '@heroui/react'
+import { DUE_DATE_PRESETS, getDueDateRange, RouteUtil } from '@/lib/utils'
+import { Button, Divider, Input, Select, SelectItem } from '@heroui/react'
 import { useQuery } from '@tanstack/react-query'
+import { useSearch } from '@tanstack/react-router'
 import { Columns3Cog, RefreshCwIcon, SearchIcon } from 'lucide-react'
 
 type Props = {
-    search?: string
     onSearchChange: (newSearch?: string) => void
     isLoadingData: boolean
     onRefresh: () => void
-    filters: TJobFilters
-    onFiltersChange: (newFilters: TJobFilters) => void
     openViewColDrawer: () => void
 }
 
 export function WorkbenchToolbar({
-    search,
     onSearchChange,
     isLoadingData,
     onRefresh,
-    filters,
-    onFiltersChange,
     openViewColDrawer,
 }: Props) {
+    const { search } = useSearch({ from: '/_workspace/_workbench/' })
+
     const { data } = useQuery({ ...jobStatusesListOptions() })
     const jobStatuses = data?.jobStatuses || []
 
@@ -51,7 +46,7 @@ export function WorkbenchToolbar({
             <Divider orientation="vertical" className="h-5" />
 
             <div className="flex gap-3 items-center">
-                <HeroButton
+                <Button
                     className="border-1"
                     variant="bordered"
                     size="sm"
@@ -66,9 +61,9 @@ export function WorkbenchToolbar({
                     }
                 >
                     Refresh
-                </HeroButton>
+                </Button>
 
-                <HeroButton
+                <Button
                     startContent={<Columns3Cog size={14} />}
                     variant="bordered"
                     size="sm"
@@ -76,30 +71,30 @@ export function WorkbenchToolbar({
                     onPress={openViewColDrawer}
                 >
                     Columns
-                </HeroButton>
+                </Button>
             </div>
 
             <Divider orientation="vertical" className="h-5" />
 
             {/* Filters */}
             <div className="flex gap-3 items-center">
-                <HeroSelect
+                <Select
                     selectionMode="multiple"
                     className="min-w-34"
                     size="sm"
+                    variant="bordered"
                     classNames={{
                         trigger:
-                            'hover:shadow-SM border-border-default border cursor-pointer',
+                            'shadow-none hover:shadow-SM border-border-default border cursor-pointer',
                         popoverContent: 'w-[200px]!',
                     }}
                     placeholder="Status"
                     isClearable
                     onClear={() =>
-                        onFiltersChange({ ...filters, status: undefined })
+                        RouteUtil.updateParams({ status: undefined })
                     }
                     onSelectionChange={(value) =>
-                        onFiltersChange?.({
-                            ...filters,
+                        RouteUtil.updateParams({
                             status: Array.from(value).join(','),
                         })
                     }
@@ -113,7 +108,7 @@ export function WorkbenchToolbar({
                     {jobStatuses
                         .filter((it) => it.systemType !== 'TERMINATED')
                         .map((jobStatus) => (
-                            <HeroSelectItem key={jobStatus.code}>
+                            <SelectItem key={jobStatus.code}>
                                 <div className="flex items-center justify-start gap-2">
                                     <div
                                         className="size-2 rounded-full"
@@ -124,16 +119,17 @@ export function WorkbenchToolbar({
                                     />
                                     <p>{jobStatus.displayName}</p>
                                 </div>
-                            </HeroSelectItem>
+                            </SelectItem>
                         ))}
-                </HeroSelect>
+                </Select>
 
-                <HeroSelect
+                <Select
                     className="min-w-34"
                     size="sm"
+                    variant="bordered"
                     classNames={{
                         trigger:
-                            'hover:shadow-SM border-border-default border cursor-pointer',
+                            'shadow-none hover:shadow-SM border-border-default border cursor-pointer',
                         popoverContent: 'w-[200px]!',
                     }}
                     placeholder="Due in"
@@ -142,8 +138,7 @@ export function WorkbenchToolbar({
                         const { dueAtFrom, dueAtTo } = getDueDateRange(
                             value.currentKey
                         )
-                        onFiltersChange?.({
-                            ...filters,
+                        RouteUtil.updateParams({
                             dueAtFrom: dueAtFrom?.split('T')[0],
                             dueAtTo: dueAtTo?.split('T')[0],
                         })
@@ -153,11 +148,9 @@ export function WorkbenchToolbar({
                     )}
                 >
                     {DUE_DATE_PRESETS.map((dueIn) => (
-                        <HeroSelectItem key={dueIn.key}>
-                            {dueIn.label}
-                        </HeroSelectItem>
+                        <SelectItem key={dueIn.key}>{dueIn.label}</SelectItem>
                     ))}
-                </HeroSelect>
+                </Select>
             </div>
         </div>
     )

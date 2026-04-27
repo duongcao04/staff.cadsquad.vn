@@ -4,29 +4,21 @@ import AssignMemberModal from '@/features/project-center/components/modals/Assig
 import {
     WorkbenchMobileContent,
     WorkbenchMobileSkeleton,
+    WorkbenchTable,
+    WorkbenchTableWrapper,
     WorkbenchToolbar,
-    WorkbenchViewColumnsDrawer,
 } from '@/features/workbench'
 import { workbenchDataOptions } from '@/lib/queries'
-import { jobFiltersSchema, TJobFilters } from '@/lib/validationSchemas'
+import { jobFiltersSchema } from '@/lib/validationSchemas'
 import { PageHeading } from '@/shared/components'
 import { useDevice } from '@/shared/hooks'
-import {
-    Button,
-    Pagination,
-    Select,
-    SelectItem,
-    Spinner,
-    useDisclosure,
-} from '@heroui/react'
-import { useSuspenseQuery } from '@tanstack/react-query'
+import { Button, useDisclosure } from '@heroui/react'
+import { useQueryClient } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import lodash from 'lodash'
-import { Suspense, useMemo, useState } from 'react'
+import { Suspense, useCallback, useMemo, useState } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { z } from 'zod'
-import WorkbenchTable from '../../../features/workbench/components/views/WorkbenchTable'
-import { RouteUtil, TABLE_ROW_PER_PAGE_OPTIONS } from '../../../lib'
 import { useWorkbenchFilters } from './-hooks/useWorkbenchFilters'
 
 const DEFAULT_SORT = 'displayName:asc'
@@ -50,55 +42,85 @@ export const Route = createFileRoute('/_workspace/_workbench/')({
             limit = 10,
             page = 1,
             search,
+            status,
+            dueAtFrom,
+            dueAtTo,
             sort = DEFAULT_SORT,
         } = deps.search
-        void context.queryClient.ensureQueryData(
-            workbenchDataOptions({ limit, page, search, sort: [sort], status })
+        const queryOptions = workbenchDataOptions({
+            limit,
+            page,
+            search,
+            status,
+            dueAtFrom,
+            dueAtTo,
+            sort: [sort],
+        })
+        void context.queryClient.ensureQueryData(queryOptions)
+    },
+    component: () => {
+        const { isSmallView } = useDevice()
+        return (
+            <>
+                <PageHeading
+                    title="Workbench"
+                    classNames={{
+                        wrapper: `${isSmallView ? '!py-3' : '!py-2'} pl-6 pr-3.5 border-b border-border-default`,
+                    }}
+                />
+                <div
+                    className={`size-full ${isSmallView ? 'container' : 'pl-5 pr-3.5'} pt-5`}
+                >
+                    <ErrorBoundary
+                        fallback={
+                            <div className="p-10 text-center text-danger">
+                                <p>Failed to load data</p>
+                                <Button
+                                    onPress={() => window.location.reload()}
+                                >
+                                    Retry
+                                </Button>
+                            </div>
+                        }
+                    >
+                        <WorkbenchPageContent />
+                    </ErrorBoundary>
+                </div>
+            </>
         )
     },
-    component: WorkbenchPage,
 })
 
-function WorkbenchPage() {
-    const { isSmallView } = useDevice()
-    return (
-        <>
-            <PageHeading
-                title="Workbench"
-                classNames={{
-                    wrapper: `${isSmallView ? '!py-3' : '!py-2'} pl-6 pr-3.5 border-b border-border-default`,
-                }}
-            />
-            <div
-                className={`size-full ${isSmallView ? 'container' : 'pl-5 pr-3.5'} pt-5`}
-            >
-                <ErrorBoundary
-                    fallback={
-                        <div className="p-10 text-center text-danger">
-                            <p>Failed to load data</p>
-                            <Button onPress={() => window.location.reload()}>
-                                Retry
-                            </Button>
-                        </div>
-                    }
-                >
-                    <WorkbenchPageContent />
-                </ErrorBoundary>
-            </div>
-        </>
-    )
-}
-
 function WorkbenchPageContent() {
+    const searchParams = Route.useSearch()
+
     const { isSmallView } = useDevice()
-    const {
-        search,
-        isPending,
-        onFiltersChange,
-        onPageChange,
-        onSearchChange,
-        onSortChange,
-    } = useWorkbenchFilters()
+
+    const queryClient = useQueryClient()
+
+    const { search, isPending, onPageChange, onSearchChange } =
+        useWorkbenchFilters()
+
+    const queryOptions = useMemo(() => {
+        const sort = searchParams.sort ?? 'displayName:asc'
+        return workbenchDataOptions({
+            ...searchParams,
+            sort: [sort],
+        })
+    }, [
+        searchParams.limit,
+        searchParams.page,
+        searchParams.search,
+        searchParams.sort,
+        searchParams.status,
+        searchParams.dueAtFrom,
+        searchParams.dueAtTo,
+    ])
+    const handleRefetch = () => {
+        queryClient.refetchQueries({
+            queryKey: queryOptions.queryKey,
+        })
+    }
 
     // Modals
     const [selectedJob, setSelectedJob] = useState<string | null>(null)
@@ -107,16 +129,19 @@ function WorkbenchPageContent() {
     const assignMemberDisclosure = useDisclosure()
     const attachmentsDisclosure = useDisclosure()
 
-    const handleAction = (
-        action: 'view' | 'assign' | 'attachments',
-        jobNo: string
-    ) => {
-        setSelectedJob(jobNo)
-        if (action === 'view') jobDetailDisclosure.onOpen()
-        if (action === 'assign') assignMemberDisclosure.onOpen()
-        if (action === 'assign') assignMemberDisclosure.onOpen()
-        if (action === 'attachments') attachmentsDisclosure.onOpen()
-    }
+    const handleAction = useCallback(
+        (action: 'view' | 'assign' | 'attachments', jobNo: string) => {
+            setSelectedJob(jobNo)
+            if (action === 'view') jobDetailDisclosure.onOpen()
+            if (action === 'assign') assignMemberDisclosure.onOpen()
+            if (action === 'attachments') attachmentsDisclosure.onOpen()
+        },
+        [
+            jobDetailDisclosure.onOpen,
+            assignMemberDisclosure.onOpen,
+            attachmentsDisclosure.onOpen,
+        ]
+    )
 
     const closeModals = () => {
         setSelectedJob(null)
@@ -129,42 +154,12 @@ function WorkbenchPageContent() {
         [onSearchChange]
     )
 
-    const {
-        data: { jobs, paginate },
-        isFetching,
-        refetch,
-    } = useSuspenseQuery({
-        ...workbenchDataOptions({
-            ...search,
-            limit: search.limit,
-            page: search.page,
-            sort: [search.sort ?? DEFAULT_SORT],
-        }),
-    })
-
-    const pagination = useMemo(
-        () => ({
-            limit: paginate?.limit ?? 10,
-            page: paginate?.page ?? 1,
-            totalPages: paginate?.totalPages ?? 1,
-            total: paginate?.total ?? 0,
-        }),
-        [paginate]
-    )
-
     return (
         <>
-            {/* Drawers */}
-            {viewColDisclosure.isOpen && (
-                <WorkbenchViewColumnsDrawer
-                    isOpen
-                    onClose={viewColDisclosure.onClose}
-                />
-            )}
             {attachmentsDisclosure.isOpen && selectedJob && (
                 <AddAttachmentsModal
                     isOpen
-                    onClose={viewColDisclosure.onClose}
+                    onClose={attachmentsDisclosure.onClose}
                     jobNo={selectedJob}
                 />
             )}
@@ -196,16 +191,13 @@ function WorkbenchPageContent() {
                 <div className="flex flex-col gap-4">
                     {/* A. Toolbar (Always Visible) */}
                     <WorkbenchToolbar
-                        search={search.search}
-                        filters={search as TJobFilters}
                         isLoadingData={isPending}
                         onSearchChange={(val) =>
                             val
                                 ? debouncedSearchChange(val)
                                 : onSearchChange(undefined)
                         }
-                        onFiltersChange={onFiltersChange}
-                        onRefresh={refetch}
+                        onRefresh={handleRefetch}
                         openViewColDrawer={viewColDisclosure.onOpen}
                     />
 
@@ -213,14 +205,8 @@ function WorkbenchPageContent() {
                     <div
                         className={`${isPending ? 'opacity-70 pointer-events-none' : 'opacity-100'} transition-opacity min-h-125 flex flex-col h-full space-y-4`}
                     >
-                        <Suspense fallback={<TableLoadingFallback />}>
+                        <WorkbenchTableWrapper>
                             <WorkbenchTable
-                                data={jobs}
-                                isLoadingData={isFetching}
-                                // Pagination props đã bị loại bỏ khỏi đây
-                                sort={search.sort ?? DEFAULT_SORT}
-                                onSortChange={onSortChange}
-                                onRefresh={refetch}
                                 onViewDetail={(jobNo) =>
                                     handleAction('view', jobNo)
                                 }
@@ -230,69 +216,12 @@ function WorkbenchPageContent() {
                                 onAddAttachments={(jobNo) =>
                                     handleAction('attachments', jobNo)
                                 }
+                                columnSettingState={viewColDisclosure}
                             />
-
-                            {/* 2. PAGINATION (Nằm ngay bên dưới Table) */}
-                            <div className="flex justify-between items-center">
-                                <Select
-                                    className="w-40"
-                                    label="Rows per page"
-                                    variant="bordered"
-                                    size="sm"
-                                    defaultSelectedKeys={[
-                                        pagination.limit.toString(),
-                                    ]}
-                                    onSelectionChange={(keys) => {
-                                        if (!keys.anchorKey) {
-                                            RouteUtil.updateParams<TWorkbenchSearch>(
-                                                {
-                                                    limit: undefined,
-                                                    page: undefined,
-                                                    showAll: true,
-                                                }
-                                            )
-                                        } else {
-                                            const limit = Number(
-                                                Array.from(keys)[0]
-                                            )
-                                            RouteUtil.updateParams<TWorkbenchSearch>(
-                                                {
-                                                    limit,
-                                                    page: 1,
-                                                    showAll: false,
-                                                }
-                                            )
-                                        }
-                                    }}
-                                >
-                                    {TABLE_ROW_PER_PAGE_OPTIONS.map((opt) => (
-                                        <SelectItem key={opt.value}>
-                                            {opt.displayName}
-                                        </SelectItem>
-                                    ))}
-                                </Select>
-                                <Pagination
-                                    isCompact
-                                    showControls
-                                    color="primary"
-                                    page={pagination.page}
-                                    total={pagination.totalPages}
-                                    onChange={onPageChange}
-                                />
-                                <div className="w-40" />
-                            </div>
-                        </Suspense>
+                        </WorkbenchTableWrapper>
                     </div>
                 </div>
             )}
         </>
-    )
-}
-
-function TableLoadingFallback() {
-    return (
-        <div className="flex h-[60vh] w-full flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-divider bg-background">
-            <Spinner size="lg" color="primary" label="Loading workbench..." />
-        </div>
     )
 }

@@ -12,68 +12,144 @@ import { PaymentChannelSchema } from './_payment-channel.schema'
 import { UserSchema } from './_user.schema'
 import { JobFolderTemplateSchema } from './_job-folder-template.schema'
 import { SharepointItemSchema } from './_sharepoint-item.schema'
+import { IMAGES } from '../utils'
+import { optimizeCloudinary } from '../cloudinary'
 
-export const JobSchema: ZodType<TJob> = z.lazy(() => z.object({
-    id: z.string().catch('N/A'),
-    no: z.string().catch('UNKNOWN'),
-    displayName: z.string().catch('Untitled Job'),
-    assignments: z.array(z.any()).default([]),
-    activityLog: z.array(z.lazy(() => JobActivityLogSchema)).default([]),
-    attachmentUrls: z.array(z.string()).default([]),
-    createdBy: z.lazy(() => UserSchema).optional(),
-    files: z.array(z.any()).default([]),
-    client: z.lazy(() => ClientSchema.partial()).nullable().catch(null),
-    comments: z.array(z.any()).default([]),
-    jobDeliveries: z.array(z.any()).default([]),
-    sharepointFolderId: z.string().nullish(),
-    sharepointFolder: z.lazy(() => SharepointItemSchema).nullish(),
-    // Tự động ép kiểu số cho các trường tiền tệ
-    incomeCost: z.coerce.number().catch(0),
-    staffCost: z.coerce.number().catch(0),
-    folderTemplate: z.lazy(() => JobFolderTemplateSchema).nullable().catch(null),
-    folderTemplateId: z.string().nullable().catch(null),
-    totalStaffCost: z.coerce.number().catch(0),
-    paymentStatus: z
-        .nativeEnum(EJobPaymentStatus)
-        .optional()
-        .default(EJobPaymentStatus.FAILED),
-    isPinned: z.preprocess((v) => Boolean(v), z.boolean().default(false)),
-    isPublished: z.preprocess((v) => Boolean(v), z.boolean().default(false)),
-    paymentChannel: z.lazy(() => PaymentChannelSchema).nullable().catch(null),
-    status: z.lazy(() => JobStatusSchema).optional(),
-    description: z.string().nullable().catch(null),
-    type: z.lazy(() => JobTypeSchema).optional(),
-    // Dates
-    payoutDate: z.coerce.date().nullable().catch(null),
-    finishedAt: z.coerce.date().nullable().catch(null),
-    createdAt: z.coerce.date().catch(new Date()),
-    dueAt: z.coerce.date().catch(new Date()),
-    completedAt: z.coerce.date().nullable().catch(null),
-    deletedAt: z.coerce.date().nullable().catch(null),
-    startedAt: z.coerce.date().catch(new Date()),
-    updatedAt: z.coerce.date().catch(new Date()),
-}) as any);
+export const JobSchema: ZodType<TJob> = z.lazy(
+    () =>
+        z.object({
+            id: z.string().catch('N/A'),
+            no: z.string().catch('UNKNOWN'),
+            displayName: z.string().catch('Untitled Job'),
+            assignments: z
+                .array(
+                    z.object({
+                        id: z.string().nullish(),
+                        jobId: z.string().nullish(),
+                        userId: z.string().nullish(),
+                        staffCost: z.coerce.number().nullish(),
+                        assignedAt: z.coerce.date().nullish(),
+                        user: z
+                            .object({
+                                id: z.string().nullish(),
+                                displayName: z.string().nullish(),
+                                userName: z.string().nullish(),
+                                code: z.string().nullish(),
+                                avatar: z
+                                    .string()
+                                    .nullish()
+                                    .default(IMAGES.emptyAvatar)
+                                    .transform((val) => {
+                                        if (!val) return IMAGES.emptyAvatar
+                                        return optimizeCloudinary(val)
+                                    }),
+                            })
+                            .nullish(),
+                    })
+                )
+                .default([]),
+            activityLog: z
+                .array(z.lazy(() => JobActivityLogSchema))
+                .default([]),
+            attachmentUrls: z.array(z.string()).default([]),
+            createdBy: z.lazy(() => UserSchema).optional(),
+            files: z.array(z.any()).default([]),
+            client: z
+                .lazy(() => ClientSchema.partial())
+                .nullable()
+                .catch(null),
+            comments: z.array(z.any()).default([]),
+            jobDeliveries: z.array(z.any()).default([]),
+            sharepointFolderId: z.string().nullish(),
+            sharepointFolder: z.lazy(() => SharepointItemSchema).nullish(),
+            // Tự động ép kiểu số cho các trường tiền tệ
+            incomeCost: z.coerce.number().catch(0),
+            staffCost: z.coerce.number().catch(0),
+            folderTemplate: z
+                .lazy(() => JobFolderTemplateSchema)
+                .nullable()
+                .catch(null),
+            folderTemplateId: z.string().nullable().catch(null),
+            totalStaffCost: z.coerce.number().catch(0),
+            paymentStatus: z
+                .nativeEnum(EJobPaymentStatus)
+                .optional()
+                .default(EJobPaymentStatus.FAILED),
+            isPinned: z.preprocess(
+                (v) => Boolean(v),
+                z.boolean().default(false)
+            ),
+            isPublished: z.preprocess(
+                (v) => Boolean(v),
+                z.boolean().default(false)
+            ),
+            paymentChannel: z
+                .lazy(() => PaymentChannelSchema)
+                .nullable()
+                .catch(null),
+            status: z.lazy(() => JobStatusSchema).optional(),
+            description: z.string().nullable().catch(null),
+            type: z.lazy(() => JobTypeSchema).optional(),
+            // Dates
+            payoutDate: z.coerce.date().nullable().catch(null),
+            finishedAt: z.coerce.date().nullable().catch(null),
+            createdAt: z.coerce.date().catch(new Date()),
+            dueAt: z.coerce.date().catch(new Date()),
+            completedAt: z.coerce.date().nullable().catch(null),
+            deletedAt: z.coerce.date().nullable().catch(null),
+            startedAt: z.coerce.date().catch(new Date()),
+            updatedAt: z.coerce.date().catch(new Date()),
+        }) as any
+)
 
 // 1. Define the base object WITHOUT refinements
 const BaseJobFormSchema = z.object({
-    no: z.string("Job number is required").min(1, 'Job number is required'),
-    typeId: z.string().uuid('Invalid typeId format').min(1, 'Job type is required'),
-    displayName: z.string("Display name is required").min(1, 'Display name is required'),
+    no: z.string('Job number is required').min(1, 'Job number is required'),
+    typeId: z
+        .string()
+        .uuid('Invalid typeId format')
+        .min(1, 'Job type is required'),
+    displayName: z
+        .string('Display name is required')
+        .min(1, 'Display name is required'),
     description: z.string().optional(),
     attachmentUrls: z.array(z.string()).default([]),
     clientId: z.string().optional(),
-    clientName: z.string("Client name is required").min(1, 'Client name is required'),
-    incomeCost: z.coerce.number({ message: 'Income cost must be a number' }).min(1, 'Income cost must be greater than 1'),
-    totalStaffCost: z.coerce.number({ message: 'Total staff cost must be a number' }).optional().default(0),
-    jobAssignments: z.array(
-        z.object({
-            userId: z.string().min(1, 'User ID is required'),
-            staffCost: z.coerce.number({ message: 'Member cost must be a number' }).min(1, "Member cost must greater than 1"),
-        })
-    ).min(1, 'At least one member is required'),
+    clientName: z
+        .string('Client name is required')
+        .min(1, 'Client name is required'),
+    incomeCost: z.coerce
+        .number({ message: 'Income cost must be a number' })
+        .min(1, 'Income cost must be greater than 1'),
+    totalStaffCost: z.coerce
+        .number({ message: 'Total staff cost must be a number' })
+        .optional()
+        .default(0),
+    jobAssignments: z
+        .array(
+            z.object({
+                userId: z.string().min(1, 'User ID is required'),
+                staffCost: z.coerce
+                    .number({ message: 'Member cost must be a number' })
+                    .min(1, 'Member cost must greater than 1'),
+            })
+        )
+        .min(1, 'At least one member is required'),
     paymentChannelId: z.string().uuid('Invalid Payment Channel').nullish(),
-    startedAt: z.string().min(1, 'Started at is required').refine((val) => isValid(parseISO(val)), 'Date must be a valid ISO string'),
-    dueAt: z.string().min(1, 'Due date is required').refine((val) => isValid(parseISO(val)), 'Date must be a valid ISO string'),
+    startedAt: z
+        .string()
+        .min(1, 'Started at is required')
+        .refine(
+            (val) => isValid(parseISO(val)),
+            'Date must be a valid ISO string'
+        ),
+    dueAt: z
+        .string()
+        .min(1, 'Due date is required')
+        .refine(
+            (val) => isValid(parseISO(val)),
+            'Date must be a valid ISO string'
+        ),
     folderTemplateId: z.string().nullish(),
     isCreateSharepointFolder: z.boolean().default(false),
     sharepointTemplateId: z.string().nullish(),
@@ -82,34 +158,47 @@ const BaseJobFormSchema = z.object({
 })
 
 // 2. Export the CREATE schema (with refinements attached)
-export const CreateJobFormSchema = BaseJobFormSchema
-    .refine(
-        (data) => {
-            if (!data.startedAt || !data.dueAt) return true
-            const start = parseISO(data.startedAt)
-            const end = parseISO(data.dueAt)
-            return isValid(start) && isValid(end) && isAfter(end, start)
-        },
-        { message: 'Due date must be after start date', path: ['dueAt'] }
-    )
+export const CreateJobFormSchema = BaseJobFormSchema.refine(
+    (data) => {
+        if (!data.startedAt || !data.dueAt) return true
+        const start = parseISO(data.startedAt)
+        const end = parseISO(data.dueAt)
+        return isValid(start) && isValid(end) && isAfter(end, start)
+    },
+    { message: 'Due date must be after start date', path: ['dueAt'] }
+)
     // require template when user creates a new SP folder
     .refine(
-        (data) => !(data.isCreateSharepointFolder && !data.sharepointTemplateId),
-        { message: 'Folder template is required', path: ['sharepointTemplateId'] }
+        (data) =>
+            !(data.isCreateSharepointFolder && !data.sharepointTemplateId),
+        {
+            message: 'Folder template is required',
+            path: ['sharepointTemplateId'],
+        }
     )
     // ensure user does not both create and select existing at same time
     .refine(
-        (data) => !(data.isCreateSharepointFolder && data.useExistingSharepointFolder),
-        { message: 'Cannot create and pick existing folder simultaneously', path: ['useExistingSharepointFolder'] }
+        (data) =>
+            !(
+                data.isCreateSharepointFolder &&
+                data.useExistingSharepointFolder
+            ),
+        {
+            message: 'Cannot create and pick existing folder simultaneously',
+            path: ['useExistingSharepointFolder'],
+        }
     )
     // when existing mode is enabled, require folder id
     .refine(
-        (data) => !(data.useExistingSharepointFolder && !data.sharepointFolderId),
-        { message: 'Please select an existing folder', path: ['sharepointFolderId'] }
+        (data) =>
+            !(data.useExistingSharepointFolder && !data.sharepointFolderId),
+        {
+            message: 'Please select an existing folder',
+            path: ['sharepointFolderId'],
+        }
     )
 
 export type TCreateJobFormValues = z.infer<typeof CreateJobFormSchema>
-
 
 // 3. Export the UPDATE schema (using .partial() on the BASE schema)
 export const UpdateJobSchema = BaseJobFormSchema.partial()
@@ -208,7 +297,7 @@ export const DeliverJobInputSchema = z.object({
         .min(1, 'Please select a job to deliver'),
 
     note: z
-        .string({ message: "Note cannot be empty" })
+        .string({ message: 'Note cannot be empty' })
         .min(1, 'Note cannot be empty')
         .max(1000, 'Note is too long (max 1000 characters)'),
 
@@ -217,51 +306,61 @@ export const DeliverJobInputSchema = z.object({
             z.object({
                 webUrl: z.string().url('Each attachment must be a valid URL'),
                 fileName: z.string(),
-                sharepointId: z.string()
+                sharepointId: z.string(),
             })
         )
         .default([]),
-});
+})
 
 // Type inference (Tương đương InferType của Yup)
-export type TDeliverJobInput = z.infer<typeof DeliverJobInputSchema>;
+export type TDeliverJobInput = z.infer<typeof DeliverJobInputSchema>
 
-
-export const JobPayoutSchema = z.lazy(() => z.object({
-    id: z.string().catch('N/A'),
-    no: z.string().catch('UNKNOWN'),
-    displayName: z.string().catch('Untitled Job'),
-    assignments: z.array(z.any()).default([]),
-    attachmentUrls: z.array(z.string()).default([]),
-    createdBy: z.lazy(() => UserSchema).optional(),
-    client: z.lazy(() => ClientSchema.partial()).nullable().catch(null),
-    jobDeliveries: z.array(z.any()).default([]),
-    sharepointFolderId: z.string().nullish(),
-    sharepointFolder: z.lazy(() => SharepointItemSchema).nullish(),
-    // Tự động ép kiểu số cho các trường tiền tệ
-    incomeCost: z.coerce.number().catch(0),
-    staffCost: z.coerce.number().catch(0),
-    folderTemplate: z.lazy(() => JobFolderTemplateSchema).nullable().catch(null),
-    folderTemplateId: z.string().nullable().catch(null),
-    totalStaffCost: z.coerce.number().catch(0),
-    paymentStatus: z
-        .nativeEnum(EJobPaymentStatus)
-        .optional()
-        .default(EJobPaymentStatus.FAILED),
-    paymentChannel: z.lazy(() => PaymentChannelSchema).nullable().catch(null),
-    status: z.lazy(() => JobStatusSchema).optional(),
-    description: z.string().nullable().catch(null),
-    type: z.lazy(() => JobTypeSchema).optional(),
-    // Dates
-    payoutDate: z.coerce.date().nullable().catch(null),
-    finishedAt: z.coerce.date().nullable().catch(null),
-    createdAt: z.coerce.date().catch(new Date()),
-    dueAt: z.coerce.date().catch(new Date()),
-    completedAt: z.coerce.date().nullable().catch(null),
-    deletedAt: z.coerce.date().nullable().catch(null),
-    startedAt: z.coerce.date().catch(new Date()),
-    updatedAt: z.coerce.date().catch(new Date()),
-}));
+export const JobPayoutSchema = z.lazy(() =>
+    z.object({
+        id: z.string().catch('N/A'),
+        no: z.string().catch('UNKNOWN'),
+        displayName: z.string().catch('Untitled Job'),
+        assignments: z.array(z.any()).default([]),
+        attachmentUrls: z.array(z.string()).default([]),
+        createdBy: z.lazy(() => UserSchema).optional(),
+        client: z
+            .lazy(() => ClientSchema.partial())
+            .nullable()
+            .catch(null),
+        jobDeliveries: z.array(z.any()).default([]),
+        sharepointFolderId: z.string().nullish(),
+        sharepointFolder: z.lazy(() => SharepointItemSchema).nullish(),
+        // Tự động ép kiểu số cho các trường tiền tệ
+        incomeCost: z.coerce.number().catch(0),
+        staffCost: z.coerce.number().catch(0),
+        folderTemplate: z
+            .lazy(() => JobFolderTemplateSchema)
+            .nullable()
+            .catch(null),
+        folderTemplateId: z.string().nullable().catch(null),
+        totalStaffCost: z.coerce.number().catch(0),
+        paymentStatus: z
+            .nativeEnum(EJobPaymentStatus)
+            .optional()
+            .default(EJobPaymentStatus.FAILED),
+        paymentChannel: z
+            .lazy(() => PaymentChannelSchema)
+            .nullable()
+            .catch(null),
+        status: z.lazy(() => JobStatusSchema).optional(),
+        description: z.string().nullable().catch(null),
+        type: z.lazy(() => JobTypeSchema).optional(),
+        // Dates
+        payoutDate: z.coerce.date().nullable().catch(null),
+        finishedAt: z.coerce.date().nullable().catch(null),
+        createdAt: z.coerce.date().catch(new Date()),
+        dueAt: z.coerce.date().catch(new Date()),
+        completedAt: z.coerce.date().nullable().catch(null),
+        deletedAt: z.coerce.date().nullable().catch(null),
+        startedAt: z.coerce.date().catch(new Date()),
+        updatedAt: z.coerce.date().catch(new Date()),
+    })
+)
 
 export type TJobPayoutDetail = z.infer<typeof JobPayoutSchema>
 
@@ -271,16 +370,19 @@ export type TJobPayoutDetail = z.infer<typeof JobPayoutSchema>
 export const JobFinancialFieldSchema = z.object({
     totalPaid: z.coerce.number().default(0),
     remainingAmount: z.coerce.number().default(0),
-    isPartiallyPaid: z.preprocess((v) => Boolean(v), z.boolean().default(false)),
-});
+    isPartiallyPaid: z.preprocess(
+        (v) => Boolean(v),
+        z.boolean().default(false)
+    ),
+})
 
 /**
  * JobReceivableSchema: Kết hợp JobSchema gốc với field financial
  * Dùng cho các query liệt kê công nợ khách hàng
  */
 export const JobReceivableSchema = (JobSchema as any)._def.getter().extend({
-    financial: JobFinancialFieldSchema
-});
+    financial: JobFinancialFieldSchema,
+})
 
 // Loại bỏ type inference nếu cần
-export type TJobReceivable = z.infer<typeof JobReceivableSchema>;
+export type TJobReceivable = z.infer<typeof JobReceivableSchema>

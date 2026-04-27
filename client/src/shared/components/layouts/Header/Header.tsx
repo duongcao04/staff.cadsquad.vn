@@ -34,7 +34,7 @@ export const Header = () => {
 
     return (
         <div
-            className="w-full container fixed top-0 border-b border-border-muted z-50 grid grid-cols-[130px_1fr_220px] gap-5 items-center bg-background"
+            className="w-full container fixed top-0 border-b border-border-muted z-50 grid grid-cols-[130px_1fr_220px] gap-5 items-center bg-background-muted"
             style={{ height: headerHeight }}
         >
             <CadsquadLogo

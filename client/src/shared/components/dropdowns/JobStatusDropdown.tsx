@@ -11,7 +11,6 @@ import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { ChevronDown } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { useState } from 'react'
-
 import { updateJobStatusOptions, useProfile } from '@/lib/queries'
 import {
     jobStatusesListOptions,
@@ -19,7 +18,6 @@ import {
 } from '@/lib/queries/options/job-status-queries'
 import { darkenHexColor, JOB_STATUS_CODES, lightenHexColor } from '@/lib/utils'
 import type { TJob, TJobStatus } from '@/shared/types'
-
 import { JobStatusSystemTypeEnum } from '../../enums'
 import { JobStatusChip } from '../chips/JobStatusChip'
 
@@ -42,25 +40,17 @@ export default function JobStatusDropdown({
     const changeStatusMutation = useMutation(updateJobStatusOptions)
 
     const { data: nextStatus } = useQuery({
-        // If nextStatusOrder is null/undefined, pass -1 (or 0) to satisfy TS.
-        // The query won't run because of 'enabled' below.
         ...statusByOrderOptions(statusData.nextStatusOrder ?? -1),
-
-        // Only fetch if nextStatusOrder exists
         enabled:
-            isOpen &&
+            !!isOpen &&
             !!statusData.nextStatusOrder &&
             statusData.nextStatusOrder !== null,
     })
 
     const { data: prevStatus } = useQuery({
-        // If prevStatusOrder is null/undefined, pass -1 (or 0) to satisfy TS.
-        // The query won't run because of 'enabled' below.
         ...statusByOrderOptions(statusData.prevStatusOrder ?? -1),
-
-        // Only fetch if prevStatusOrder exists
         enabled:
-            isOpen &&
+            !!isOpen &&
             !!statusData.prevStatusOrder &&
             statusData.prevStatusOrder !== null,
     })
@@ -127,7 +117,7 @@ export default function JobStatusDropdown({
                   )
                 : '#ffffff'
             : data
-              ? darkenHexColor(data?.hexColor ? data.hexColor : '#000000', 70)
+              ? darkenHexColor(data?.hexColor ? data.hexColor : '#000000', 40)
               : '#000000'
     }
 

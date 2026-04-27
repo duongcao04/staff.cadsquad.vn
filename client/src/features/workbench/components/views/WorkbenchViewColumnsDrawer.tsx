@@ -1,134 +1,50 @@
 import { useProfile } from '@/lib'
-import { getAllowedJobColumns } from '@/lib/utils'
-import { ColumnMeta, ViewColumnsDrawer } from '@/shared/components'
-import type { JobColumnKey } from '@/shared/types'
-import { useStore } from '@tanstack/react-store'
-import {
-    AtSign,
-    BanknoteArrowUp,
-    Calendar,
-    CalendarClock,
-    DollarSign,
-    GalleryThumbnails,
-    Hand,
-    Handshake,
-    Landmark,
-    Layers2,
-    Loader,
-    Paperclip,
-    Text,
-    UsersRound,
-    Wallet,
-} from 'lucide-react'
+import type { JobColumnKey, TJob } from '@/shared/types'
+import { Switch } from '@heroui/react'
+import { Column } from '@tanstack/react-table'
+import { Drawer } from 'antd'
+import { ArrowLeftIcon, Grid2X2Icon } from 'lucide-react'
 import { useMemo } from 'react'
-import {
-    toggleWorkbenchColumns,
-    workbenchStore,
-} from '../../stores/_workbench.store'
+import { PrivilegeHelper } from '@/lib/helpers'
+import { toggleWorkbenchColumns } from '../../stores/_workbench.store'
 
-// Define icons specific to Jobs
-const JOB_COLUMN_META: ColumnMeta = {
-    no: {
-        title: 'Job no',
-        icon: (
-            <p className="font-bold text-lg text-text-subdued leading-none">
-                #
-            </p>
-        ),
-    },
-    type: {
-        title: 'Type',
-        icon: <Layers2 size={20} className="text-text-subdued" />,
-    },
-    thumbnailUrl: {
-        title: 'Thumbnail',
-        icon: <GalleryThumbnails size={20} className="text-text-subdued" />,
-    },
-    displayName: {
-        title: 'Display name',
-        icon: <AtSign size={20} className="text-text-subdued" />,
-    },
-    description: {
-        title: 'Description',
-        icon: <Text size={20} className="text-text-subdued" />,
-    },
-    attachmentUrls: {
-        title: 'Attachments',
-        icon: <Paperclip size={20} className="text-text-subdued" />,
-    },
-    clientName: {
-        title: 'Client name',
-        icon: <Handshake size={20} className="text-text-subdued" />,
-    },
-    incomeCost: {
-        title: 'Income cost',
-        icon: <DollarSign size={20} className="text-text-subdued" />,
-    },
-    totalStaffCost: {
-        title: 'Total Staff Cost',
-        icon: <Wallet size={20} className="text-text-subdued" />,
-    },
-    staffCost: {
-        title: 'Your Cost',
-        icon: (
-            <p className="font-medium text-lg text-text-subdued leading-none">
-                đ
-            </p>
-        ),
-    },
-    assignments: {
-        title: 'Assignees',
-        icon: <UsersRound size={20} className="text-text-subdued" />,
-    },
-    paymentChannel: {
-        title: 'Payment channel',
-        icon: <Landmark size={20} className="text-text-subdued" />,
-    },
-    status: {
-        title: 'Status',
-        icon: <Loader size={20} className="text-text-subdued" />,
-    },
-    isPaid: {
-        title: 'Paid status',
-        icon: <BanknoteArrowUp size={20} className="text-text-subdued" />,
-    },
-    dueAt: {
-        title: 'Due on',
-        icon: <CalendarClock size={20} className="text-text-subdued" />,
-    },
-    completedAt: {
-        title: 'Completed at',
-        icon: <Calendar size={20} className="text-text-subdued" />,
-    },
-    createdAt: {
-        title: 'Created at',
-        icon: <Calendar size={20} className="text-text-subdued" />,
-    },
-    updatedAt: {
-        title: 'Updated at',
-        icon: <Calendar size={20} className="text-text-subdued" />,
-    },
-    action: {
-        title: 'Actions',
-        icon: <Hand size={20} className="text-text-subdued" />,
-    },
+type Props = {
+    isOpen: boolean
+    onClose: () => void
+    tableColumns: Column<TJob, unknown>[]
+    visibleColumns: Column<TJob, unknown>[]
 }
 
-type Props = { isOpen: boolean; onClose: () => void }
+export function WorkbenchViewColumnsDrawer({
+    isOpen,
+    onClose,
+    tableColumns,
+    visibleColumns,
+}: Props) {
+    console.log(tableColumns)
 
-export function WorkbenchViewColumnsDrawer({ isOpen, onClose }: Props) {
     const { userPermissions } = useProfile()
 
     // 1. Get ALL allowed columns (not just the visible ones)
     const availableColumns = useMemo(() => {
-        return getAllowedJobColumns('all', userPermissions)
-    }, [userPermissions])
-
-    // 2. Get current visible state from Store
-    const visibleColumns = useStore(
-        workbenchStore,
-        (state) => state.tableColumns
-    )
+        const filterdColumns = tableColumns.filter((column) => {
+            const meta = column.columnDef.meta as {
+                icon: React.ElementType
+                requiredPermissions: string[]
+                bypassPermission: string
+            }
+            if (meta.requiredPermissions) {
+                return PrivilegeHelper.hasEveryPermission(
+                    userPermissions,
+                    meta.requiredPermissions,
+                    meta.bypassPermission
+                )
+            } else {
+                return true
+            }
+        })
+        return filterdColumns
+    }, [userPermissions, tableColumns])
 
     // 3. Action to update store
     const handleToggle = (key: string, isVisible: boolean) => {
@@ -136,14 +52,85 @@ export function WorkbenchViewColumnsDrawer({ isOpen, onClose }: Props) {
     }
 
     return (
-        <ViewColumnsDrawer
-            isOpen={isOpen}
-            onClose={onClose}
+        <Drawer
+            open={isOpen}
             title="Workbench Columns"
-            availableColumns={availableColumns}
-            visibleKeys={visibleColumns}
-            onToggle={handleToggle}
-            meta={JOB_COLUMN_META}
-        />
+            width={400}
+            maskClosable
+            closeIcon={
+                <ArrowLeftIcon size={16} className="text-text-default" />
+            }
+            onClose={onClose}
+            classNames={{
+                body: '!py-3 !px-5',
+            }}
+        >
+            <div className="flex flex-col gap-1">
+                <div className="flex items-center justify-between mb-2">
+                    <p className="font-medium text-text-subdued text-xs uppercase tracking-wider">
+                        Available Columns
+                    </p>
+                </div>
+
+                <div className="divide-y divide-border/50">
+                    {availableColumns.map((column, idx) => {
+                        // 1. Calculate State
+                        const isSelected = column.getIsVisible()
+
+                        // 2. Resolve Metadata (Icon & Title)
+                        const Icon = (
+                            column.columnDef.meta as {
+                                icon: React.ElementType
+                                requiredPermissions: string[]
+                                bypassPermission: string
+                            }
+                        )?.['icon'] || (
+                            <Grid2X2Icon
+                                size={20}
+                                className="text-text-subdued"
+                            />
+                        )
+
+                        const displayTitle =
+                            typeof column.columnDef.header === 'string'
+                                ? column.columnDef.header
+                                : (
+                                      column.columnDef.meta as {
+                                          headerName: string
+                                      }
+                                  )?.headerName
+
+                        // 3. Return JSX
+                        return (
+                            <div
+                                key={idx}
+                                className="flex items-center justify-between py-3 hover:bg-content2/50 px-2 -mx-2 rounded-lg transition-colors group"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 flex justify-center">
+                                        <div className="size-4!">
+                                            <Icon />
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <p className="text-sm font-medium text-text-default">
+                                            {displayTitle}
+                                        </p>
+                                    </div>
+                                </div>
+                                <Switch
+                                    size="sm"
+                                    isSelected={isSelected}
+                                    classNames={{
+                                        base: 'bg-background',
+                                    }}
+                                    onChange={column.getToggleVisibilityHandler()}
+                                />
+                            </div>
+                        )
+                    })}
+                </div>
+            </div>
+        </Drawer>
     )
 }

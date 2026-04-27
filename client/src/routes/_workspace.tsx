@@ -38,7 +38,7 @@ function WorkspaceLayout() {
                     )}
 
                     <div
-                        className="size-full bg-background-muted"
+                        className="size-full bg-background"
                         style={{
                             marginLeft: leftMargin,
                             transition:

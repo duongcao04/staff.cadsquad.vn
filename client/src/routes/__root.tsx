@@ -61,7 +61,7 @@ export const Route = createRootRouteWithContext<AppRouterContext>()({
                                         />
                                         <div
                                             id="app"
-                                            className="max-w-screen bg-background-muted scroll-smooth"
+                                            className="max-w-screen bg-background scroll-smooth"
                                         >
                                             {/* hidden scrollbar */}
                                             {/* <style jsx global>{`

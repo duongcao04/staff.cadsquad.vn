@@ -33,8 +33,8 @@
     --brand: oklch(0.623 0.214 259.815);
 
     /* Backgrounds & Foreground */
-    --background: var(--text-1);
-    --background-muted: var(--text-2);
+    --background: var(--text-2);
+    --background-muted: var(--text-1);
     --background-hovered: var(--primary-50);
     --foreground: hsl(0, 0%, 0%);
 
@@ -68,14 +68,14 @@
     --secondary: var(--color-secondary-500);
 
     /* Backgrounds & Foreground */
-    --background: var(--text-8);
-    --background-muted: var(--text-9);
+    --background-muted: hsl(200, 4%, 15%);
+    --background: hsl(240, 3%, 11%);
     --background-hovered: hsl(0, 0%, 24%);
     --foreground: var(--text-1);
 
     /* Borders */
-    --border: var(--text-6);
-    --border-muted: var(--text-7);
+    --border: hsl(0, 0%, 30%);
+    --border-muted: hsl(0, 0%, 21%);
 
     /* Typography */
     --text-default: var(--text-3);
@@ -86,7 +86,7 @@
 
     /* Misc Elements */
     --color-link: var(--color-blue-800);
-    --color-currency: #6169a3;
+    --color-currency: #6273f3;
 }
 
 /* =========================================

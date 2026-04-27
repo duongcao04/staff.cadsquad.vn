@@ -97,7 +97,6 @@ export const workbenchDataOptions = (
                 ...newParams,
             })
         },
-        // ✅ Select & Map data ngay tại đây
         select: (res) => {
             return {
                 jobs: parseList(JobSchema, res.result?.data),
