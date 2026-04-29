@@ -13,6 +13,8 @@ import { JwtGuard } from './jwt.guard'
 import { SessionService } from './session.service'
 import { TokenService } from './token.service'
 import { WsJwtGuard } from './ws-jwt.guard'
+import { MfaController } from '../mfa/mfa.controller'
+import { MfaService } from '../mfa/mfa.service'
 
 @Global()
 @Module({
@@ -36,6 +38,7 @@ import { WsJwtGuard } from './ws-jwt.guard'
 		AuthService,
 		BcryptService,
 		TokenService,
+		MfaService,
 		JwtGuard,
 		WsJwtGuard,
 		SessionService,

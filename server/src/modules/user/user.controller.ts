@@ -41,6 +41,7 @@ import { UserResponseDto } from './dto/user-response.dto'
 import { GetScheduleQuery } from './queries/impl/get-schedule.query'
 import { UserSecurityService } from './user-security.service'
 import { UserService } from './user.service'
+import { plainToInstance } from 'class-transformer'
 
 @ApiTags('Users')
 @Controller('users')
@@ -208,10 +209,18 @@ export class UserController {
 	async findOne(@Param('identifier') identifier: string) {
 		// Check if the parameter looks like a UUID
 		if (isUUID(identifier)) {
-			return this.userService.findById(identifier)
+			const userData = await this.userService.findById(identifier)
+			const userRes = plainToInstance(UserResponseDto, userData, {
+				excludeExtraneousValues: true,
+			})
+			return userRes
 		}
+		const userData = await this.userService.findByStaffCode(identifier)
+		const userRes = plainToInstance(UserResponseDto, userData, {
+			excludeExtraneousValues: true,
+		})
 		// Otherwise treat it as a username
-		return this.userService.findByStaffCode(identifier)
+		return userRes
 	}
 
 	@Patch(':username')

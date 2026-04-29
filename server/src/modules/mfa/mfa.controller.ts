@@ -6,11 +6,13 @@ import {
 	Req,
 	Body,
 	UnauthorizedException,
+	Get,
 } from '@nestjs/common'
-import { MfaService } from './mfa.service'
-import { JwtGuard } from './jwt.guard'
+import { JwtGuard } from '../auth/jwt.guard'
 import { UserService } from '../user/user.service'
 import type { Response } from 'express'
+import { MfaService } from './mfa.service'
+import { TokenPayload } from '../auth/dto/token-payload.dto'
 
 @Controller('mfa')
 export class MfaController {
@@ -20,13 +22,15 @@ export class MfaController {
 	) {}
 
 	// --- SETUP STAGE 1: Generate QR Code ---
-	@Post('generate')
+	@Get('generate')
 	@UseGuards(JwtGuard)
-	async register(@Res() response: Response, @Req() request: any) {
+	async register(@Res() response: Response, @Req() request: Request) {
+		const user: TokenPayload = request['user']
 		const { otpauthUrl } =
-			await this.mfaService.generateTwoFactorAuthenticationSecret(
-				request.user
-			)
+			await this.mfaService.generateTwoFactorAuthenticationSecret({
+				code: user.code,
+				id: user.sub,
+			})
 
 		const qrCodeImage =
 			await this.mfaService.generateQrCodeDataURL(otpauthUrl)
@@ -39,20 +43,22 @@ export class MfaController {
 	@Post('turn-on')
 	@UseGuards(JwtGuard)
 	async turnOnTwoFactorAuthentication(
-		@Req() request: any,
+		@Req() request: Request,
 		@Body('code') code: string
 	) {
-		const isCodeValid = this.mfaService.isTwoFactorAuthenticationCodeValid(
-			code,
-			request.user
-		)
+		const user: TokenPayload = request['user']
+		const isCodeValid =
+			await this.mfaService.isTwoFactorAuthenticationCodeValid(
+				code,
+				user.sub
+			)
 
 		if (!isCodeValid) {
 			throw new UnauthorizedException('Wrong authentication code')
 		}
 
 		// Mark MFA as enabled in the database
-		await this.userService.turnOnTwoFactorAuthentication(request.user.id)
+		await this.userService.turnOnTwoFactorAuthentication(user.sub)
 		return { message: 'MFA enabled successfully' }
 	}
 
@@ -60,10 +66,11 @@ export class MfaController {
 	@Post('authenticate')
 	@UseGuards(JwtGuard)
 	// NOTE: This guard should only check if a valid initial login token exists.
-	async authenticate(@Req() request: any, @Body('code') code: string) {
+	async authenticate(@Req() request: Request, @Body('code') code: string) {
+		const user: TokenPayload = request['user']
 		const isCodeValid = this.mfaService.isTwoFactorAuthenticationCodeValid(
 			code,
-			request.user
+			user.sub
 		)
 
 		if (!isCodeValid) {
@@ -75,7 +82,7 @@ export class MfaController {
 		// const accessToken = this.authService.getCookieWithJwtToken(request.user.id, true);
 
 		return {
-			message: 'Authenticated successfully' /* token: accessToken */,
+			message: 'Authenticated successfully',
 		}
 	}
 }

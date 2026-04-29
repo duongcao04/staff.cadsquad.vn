@@ -74,6 +74,12 @@ export class UserResponseDto {
 	@Expose()
 	isActive: boolean
 
+	@ApiProperty({ description: '', example: true })
+	@Expose()
+	isTwoFactorAuthenticationEnabled!: boolean
+
+	twoFactorAuthenticationSecret?: string
+
 	@ApiProperty({ description: 'Last login timestamp', required: false })
 	@Expose()
 	lastLoginAt?: Date

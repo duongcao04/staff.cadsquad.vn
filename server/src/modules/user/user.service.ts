@@ -251,10 +251,7 @@ export class UserService {
 			const userData = await this.prismaService.user.findUnique({
 				where: { id: userId, deletedAt: null },
 			})
-			const userRes = plainToInstance(UserResponseDto, userData, {
-				excludeExtraneousValues: true,
-			})
-			return userRes as unknown as User
+			return userData as unknown as User
 		} catch (error) {
 			throw new NotFoundException('User not found')
 		}

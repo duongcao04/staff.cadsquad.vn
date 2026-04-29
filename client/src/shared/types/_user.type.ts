@@ -12,6 +12,8 @@ export interface TUser {
     phoneNumber: string | null
     code: string
 
+    isTwoFactorAuthenticationEnabled: boolean
+
     department: TDepartment | null
     jobTitle: TJobTitle | null
     role: TRole

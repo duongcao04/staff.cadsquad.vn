@@ -25,6 +25,7 @@ export const UserSchema: ZodType<TUser> = z.lazy(() =>
         email: z.string().email().catch('unknown@cadsquad.vn'),
 
         username: z.string().catch('unknown'),
+        isTwoFactorAuthenticationEnabled: z.coerce.boolean().default(false),
         phoneNumber: z.string().nullable().catch('Unknown phone number'),
 
         department: DepartmentSchema.nullable().catch(null),
