@@ -556,6 +556,30 @@ export class UserService {
 		})
 	}
 
+	async setTwoFactorAuthenticationSecret(secret: string, userId: string) {
+		await this.prismaService.user.update({
+			where: {
+				id: userId,
+			},
+			data: {
+				twoFactorAuthenticationSecret: secret,
+			},
+		})
+		return true
+	}
+
+	async turnOnTwoFactorAuthentication(userId: string) {
+		await this.prismaService.user.update({
+			where: {
+				id: userId,
+			},
+			data: {
+				isTwoFactorAuthenticationEnabled: true,
+			},
+		})
+		return true
+	}
+
 	/**
 	 * Input: ch.duong@cadsquad.vn -> Output: ch.duong
 	 * Nếu ch.duong đã tồn tại -> Output: ch.duong.a1b2

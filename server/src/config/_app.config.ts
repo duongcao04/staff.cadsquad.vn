@@ -8,8 +8,9 @@ const appSchema = z.object({
 	BACKEND_PORT: z.coerce.number().default(8000),
 	CLIENT_URL: z.string().url(),
 	BACKEND_URL: z.string().url(),
+	APP_CODE: z.string().default('CADSQUAD'),
 	APP_VERSION: z.string().default('release-0.0.0.1'),
-	APP_TITLE: z.string().default('Nest App'),
+	APP_TITLE: z.string().default('Cadsquad Gov'),
 	API_PREFIX: z.string().optional(),
 	WS_URL: z.string().url().optional(),
 

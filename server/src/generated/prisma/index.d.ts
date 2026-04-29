@@ -8933,6 +8933,8 @@ export namespace Prisma {
     isActive: boolean | null
     managerId: string | null
     roleId: string | null
+    isTwoFactorAuthenticationEnabled: boolean | null
+    twoFactorAuthenticationSecret: string | null
     deletedAt: Date | null
     lastLoginAt: Date | null
     createdAt: Date | null
@@ -8955,6 +8957,8 @@ export namespace Prisma {
     isActive: boolean | null
     managerId: string | null
     roleId: string | null
+    isTwoFactorAuthenticationEnabled: boolean | null
+    twoFactorAuthenticationSecret: string | null
     deletedAt: Date | null
     lastLoginAt: Date | null
     createdAt: Date | null
@@ -8977,6 +8981,8 @@ export namespace Prisma {
     isActive: number
     managerId: number
     roleId: number
+    isTwoFactorAuthenticationEnabled: number
+    twoFactorAuthenticationSecret: number
     deletedAt: number
     lastLoginAt: number
     createdAt: number
@@ -9001,6 +9007,8 @@ export namespace Prisma {
     isActive?: true
     managerId?: true
     roleId?: true
+    isTwoFactorAuthenticationEnabled?: true
+    twoFactorAuthenticationSecret?: true
     deletedAt?: true
     lastLoginAt?: true
     createdAt?: true
@@ -9023,6 +9031,8 @@ export namespace Prisma {
     isActive?: true
     managerId?: true
     roleId?: true
+    isTwoFactorAuthenticationEnabled?: true
+    twoFactorAuthenticationSecret?: true
     deletedAt?: true
     lastLoginAt?: true
     createdAt?: true
@@ -9045,6 +9055,8 @@ export namespace Prisma {
     isActive?: true
     managerId?: true
     roleId?: true
+    isTwoFactorAuthenticationEnabled?: true
+    twoFactorAuthenticationSecret?: true
     deletedAt?: true
     lastLoginAt?: true
     createdAt?: true
@@ -9140,6 +9152,8 @@ export namespace Prisma {
     isActive: boolean
     managerId: string | null
     roleId: string | null
+    isTwoFactorAuthenticationEnabled: boolean
+    twoFactorAuthenticationSecret: string | null
     deletedAt: Date | null
     lastLoginAt: Date | null
     createdAt: Date
@@ -9179,6 +9193,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: boolean
     roleId?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: boolean
     deletedAt?: boolean
     lastLoginAt?: boolean
     createdAt?: boolean
@@ -9231,6 +9247,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: boolean
     roleId?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: boolean
     deletedAt?: boolean
     lastLoginAt?: boolean
     createdAt?: boolean
@@ -9257,6 +9275,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: boolean
     roleId?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: boolean
     deletedAt?: boolean
     lastLoginAt?: boolean
     createdAt?: boolean
@@ -9283,13 +9303,15 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: boolean
     roleId?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: boolean
     deletedAt?: boolean
     lastLoginAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "code" | "email" | "personalEmail" | "username" | "displayName" | "avatar" | "jobTitleId" | "password" | "emailVerified" | "departmentId" | "phoneNumber" | "isActive" | "managerId" | "roleId" | "deletedAt" | "lastLoginAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "code" | "email" | "personalEmail" | "username" | "displayName" | "avatar" | "jobTitleId" | "password" | "emailVerified" | "departmentId" | "phoneNumber" | "isActive" | "managerId" | "roleId" | "isTwoFactorAuthenticationEnabled" | "twoFactorAuthenticationSecret" | "deletedAt" | "lastLoginAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     jobTitle?: boolean | User$jobTitleArgs<ExtArgs>
     department?: boolean | User$departmentArgs<ExtArgs>
@@ -9384,6 +9406,8 @@ export namespace Prisma {
       isActive: boolean
       managerId: string | null
       roleId: string | null
+      isTwoFactorAuthenticationEnabled: boolean
+      twoFactorAuthenticationSecret: string | null
       deletedAt: Date | null
       lastLoginAt: Date | null
       createdAt: Date
@@ -9855,6 +9879,8 @@ export namespace Prisma {
     readonly isActive: FieldRef<"User", 'Boolean'>
     readonly managerId: FieldRef<"User", 'String'>
     readonly roleId: FieldRef<"User", 'String'>
+    readonly isTwoFactorAuthenticationEnabled: FieldRef<"User", 'Boolean'>
+    readonly twoFactorAuthenticationSecret: FieldRef<"User", 'String'>
     readonly deletedAt: FieldRef<"User", 'DateTime'>
     readonly lastLoginAt: FieldRef<"User", 'DateTime'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
@@ -52595,6 +52621,8 @@ export namespace Prisma {
     isActive: 'isActive',
     managerId: 'managerId',
     roleId: 'roleId',
+    isTwoFactorAuthenticationEnabled: 'isTwoFactorAuthenticationEnabled',
+    twoFactorAuthenticationSecret: 'twoFactorAuthenticationSecret',
     deletedAt: 'deletedAt',
     lastLoginAt: 'lastLoginAt',
     createdAt: 'createdAt',
@@ -53782,6 +53810,8 @@ export namespace Prisma {
     isActive?: BoolFilter<"User"> | boolean
     managerId?: StringNullableFilter<"User"> | string | null
     roleId?: StringNullableFilter<"User"> | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFilter<"User"> | boolean
+    twoFactorAuthenticationSecret?: StringNullableFilter<"User"> | string | null
     deletedAt?: DateTimeNullableFilter<"User"> | Date | string | null
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
@@ -53833,6 +53863,8 @@ export namespace Prisma {
     isActive?: SortOrder
     managerId?: SortOrderInput | SortOrder
     roleId?: SortOrderInput | SortOrder
+    isTwoFactorAuthenticationEnabled?: SortOrder
+    twoFactorAuthenticationSecret?: SortOrderInput | SortOrder
     deletedAt?: SortOrderInput | SortOrder
     lastLoginAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -53887,6 +53919,8 @@ export namespace Prisma {
     isActive?: BoolFilter<"User"> | boolean
     managerId?: StringNullableFilter<"User"> | string | null
     roleId?: StringNullableFilter<"User"> | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFilter<"User"> | boolean
+    twoFactorAuthenticationSecret?: StringNullableFilter<"User"> | string | null
     deletedAt?: DateTimeNullableFilter<"User"> | Date | string | null
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
@@ -53938,6 +53972,8 @@ export namespace Prisma {
     isActive?: SortOrder
     managerId?: SortOrderInput | SortOrder
     roleId?: SortOrderInput | SortOrder
+    isTwoFactorAuthenticationEnabled?: SortOrder
+    twoFactorAuthenticationSecret?: SortOrderInput | SortOrder
     deletedAt?: SortOrderInput | SortOrder
     lastLoginAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -53966,6 +54002,8 @@ export namespace Prisma {
     isActive?: BoolWithAggregatesFilter<"User"> | boolean
     managerId?: StringNullableWithAggregatesFilter<"User"> | string | null
     roleId?: StringNullableWithAggregatesFilter<"User"> | string | null
+    isTwoFactorAuthenticationEnabled?: BoolWithAggregatesFilter<"User"> | boolean
+    twoFactorAuthenticationSecret?: StringNullableWithAggregatesFilter<"User"> | string | null
     deletedAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     lastLoginAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -57029,6 +57067,8 @@ export namespace Prisma {
     emailVerified?: boolean
     phoneNumber?: string | null
     isActive?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -57080,6 +57120,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: string | null
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -57123,6 +57165,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -57174,6 +57218,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -57221,6 +57267,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: string | null
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -57239,6 +57287,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -57261,6 +57311,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -60879,6 +60931,8 @@ export namespace Prisma {
     isActive?: SortOrder
     managerId?: SortOrder
     roleId?: SortOrder
+    isTwoFactorAuthenticationEnabled?: SortOrder
+    twoFactorAuthenticationSecret?: SortOrder
     deletedAt?: SortOrder
     lastLoginAt?: SortOrder
     createdAt?: SortOrder
@@ -60901,6 +60955,8 @@ export namespace Prisma {
     isActive?: SortOrder
     managerId?: SortOrder
     roleId?: SortOrder
+    isTwoFactorAuthenticationEnabled?: SortOrder
+    twoFactorAuthenticationSecret?: SortOrder
     deletedAt?: SortOrder
     lastLoginAt?: SortOrder
     createdAt?: SortOrder
@@ -60923,6 +60979,8 @@ export namespace Prisma {
     isActive?: SortOrder
     managerId?: SortOrder
     roleId?: SortOrder
+    isTwoFactorAuthenticationEnabled?: SortOrder
+    twoFactorAuthenticationSecret?: SortOrder
     deletedAt?: SortOrder
     lastLoginAt?: SortOrder
     createdAt?: SortOrder
@@ -66948,6 +67006,8 @@ export namespace Prisma {
     emailVerified?: boolean
     phoneNumber?: string | null
     isActive?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -66998,6 +67058,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: string | null
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -67056,6 +67118,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -67106,6 +67170,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -67148,6 +67214,8 @@ export namespace Prisma {
     emailVerified?: boolean
     phoneNumber?: string | null
     isActive?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -67198,6 +67266,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: string | null
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -67256,6 +67326,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -67306,6 +67378,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -67819,6 +67893,8 @@ export namespace Prisma {
     emailVerified?: boolean
     phoneNumber?: string | null
     isActive?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -67869,6 +67945,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: string | null
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -67916,6 +67994,8 @@ export namespace Prisma {
     emailVerified?: boolean
     phoneNumber?: string | null
     isActive?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -67965,6 +68045,8 @@ export namespace Prisma {
     phoneNumber?: string | null
     isActive?: boolean
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -68831,6 +68913,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -68881,6 +68965,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -68946,6 +69032,8 @@ export namespace Prisma {
     isActive?: BoolFilter<"User"> | boolean
     managerId?: StringNullableFilter<"User"> | string | null
     roleId?: StringNullableFilter<"User"> | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFilter<"User"> | boolean
+    twoFactorAuthenticationSecret?: StringNullableFilter<"User"> | string | null
     deletedAt?: DateTimeNullableFilter<"User"> | Date | string | null
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
@@ -69354,6 +69442,8 @@ export namespace Prisma {
     emailVerified?: boolean
     phoneNumber?: string | null
     isActive?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -69404,6 +69494,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: string | null
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -69462,6 +69554,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -69512,6 +69606,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -69583,6 +69679,8 @@ export namespace Prisma {
     emailVerified?: boolean
     phoneNumber?: string | null
     isActive?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -69632,6 +69730,8 @@ export namespace Prisma {
     phoneNumber?: string | null
     isActive?: boolean
     managerId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -69872,6 +69972,8 @@ export namespace Prisma {
     emailVerified?: boolean
     phoneNumber?: string | null
     isActive?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -69922,6 +70024,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: string | null
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -70009,6 +70113,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -70059,6 +70165,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -70186,6 +70294,8 @@ export namespace Prisma {
     emailVerified?: boolean
     phoneNumber?: string | null
     isActive?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -70236,6 +70346,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: string | null
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -70294,6 +70406,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -70344,6 +70458,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -70386,6 +70502,8 @@ export namespace Prisma {
     emailVerified?: boolean
     phoneNumber?: string | null
     isActive?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -70436,6 +70554,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: string | null
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -70494,6 +70614,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -70544,6 +70666,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -70586,6 +70710,8 @@ export namespace Prisma {
     emailVerified?: boolean
     phoneNumber?: string | null
     isActive?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -70636,6 +70762,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: string | null
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -70694,6 +70822,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -70744,6 +70874,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -70861,6 +70993,8 @@ export namespace Prisma {
     emailVerified?: boolean
     phoneNumber?: string | null
     isActive?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -70911,6 +71045,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: string | null
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -71105,6 +71241,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -71155,6 +71293,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -71244,6 +71384,8 @@ export namespace Prisma {
     emailVerified?: boolean
     phoneNumber?: string | null
     isActive?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -71293,6 +71435,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: string | null
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -71362,6 +71506,8 @@ export namespace Prisma {
     emailVerified?: boolean
     phoneNumber?: string | null
     isActive?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -71411,6 +71557,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: string | null
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -71480,6 +71628,8 @@ export namespace Prisma {
     emailVerified?: boolean
     phoneNumber?: string | null
     isActive?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -71530,6 +71680,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: string | null
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -71588,6 +71740,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -71638,6 +71792,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -71680,6 +71836,8 @@ export namespace Prisma {
     emailVerified?: boolean
     phoneNumber?: string | null
     isActive?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -71730,6 +71888,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: string | null
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -71777,6 +71937,8 @@ export namespace Prisma {
     emailVerified?: boolean
     phoneNumber?: string | null
     isActive?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -71827,6 +71989,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: string | null
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -71960,6 +72124,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -72010,6 +72176,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -72278,6 +72446,8 @@ export namespace Prisma {
     emailVerified?: boolean
     phoneNumber?: string | null
     isActive?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -72328,6 +72498,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: string | null
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -72864,6 +73036,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -72914,6 +73088,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -73270,6 +73446,8 @@ export namespace Prisma {
     emailVerified?: boolean
     phoneNumber?: string | null
     isActive?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -73320,6 +73498,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: string | null
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -73503,6 +73683,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -73553,6 +73735,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -73863,6 +74047,8 @@ export namespace Prisma {
     emailVerified?: boolean
     phoneNumber?: string | null
     isActive?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -73913,6 +74099,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: string | null
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -74046,6 +74234,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -74096,6 +74286,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -74754,6 +74946,8 @@ export namespace Prisma {
     emailVerified?: boolean
     phoneNumber?: string | null
     isActive?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -74804,6 +74998,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: string | null
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -74971,6 +75167,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -75021,6 +75219,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -75206,6 +75406,8 @@ export namespace Prisma {
     emailVerified?: boolean
     phoneNumber?: string | null
     isActive?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -75256,6 +75458,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: string | null
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -75440,6 +75644,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -75490,6 +75696,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -75607,6 +75815,8 @@ export namespace Prisma {
     emailVerified?: boolean
     phoneNumber?: string | null
     isActive?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -75657,6 +75867,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: string | null
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -75796,6 +76008,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -75846,6 +76060,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -75888,6 +76104,8 @@ export namespace Prisma {
     emailVerified?: boolean
     phoneNumber?: string | null
     isActive?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -75938,6 +76156,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: string | null
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -75985,6 +76205,8 @@ export namespace Prisma {
     emailVerified?: boolean
     phoneNumber?: string | null
     isActive?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -76035,6 +76257,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: string | null
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -76093,6 +76317,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -76143,6 +76369,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -76196,6 +76424,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -76246,6 +76476,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -76393,6 +76625,8 @@ export namespace Prisma {
     emailVerified?: boolean
     phoneNumber?: string | null
     isActive?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -76443,6 +76677,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: string | null
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -76532,6 +76768,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -76582,6 +76820,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -76781,6 +77021,8 @@ export namespace Prisma {
     emailVerified?: boolean
     phoneNumber?: string | null
     isActive?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -76831,6 +77073,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: string | null
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -76941,6 +77185,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -76991,6 +77237,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -77261,6 +77509,8 @@ export namespace Prisma {
     emailVerified?: boolean
     phoneNumber?: string | null
     isActive?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -77311,6 +77561,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: string | null
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -77369,6 +77621,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -77419,6 +77673,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -77461,6 +77717,8 @@ export namespace Prisma {
     emailVerified?: boolean
     phoneNumber?: string | null
     isActive?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -77511,6 +77769,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: string | null
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -77569,6 +77829,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -77619,6 +77881,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -77845,6 +78109,8 @@ export namespace Prisma {
     emailVerified?: boolean
     phoneNumber?: string | null
     isActive?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -77895,6 +78161,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: string | null
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -78161,6 +78429,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -78211,6 +78481,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -78386,6 +78658,8 @@ export namespace Prisma {
     phoneNumber?: string | null
     isActive?: boolean
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -78979,6 +79253,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -79028,6 +79304,8 @@ export namespace Prisma {
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -79074,6 +79352,8 @@ export namespace Prisma {
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -79470,6 +79750,8 @@ export namespace Prisma {
     phoneNumber?: string | null
     isActive?: boolean
     managerId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -79523,6 +79805,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -79572,6 +79856,8 @@ export namespace Prisma {
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -79618,6 +79904,8 @@ export namespace Prisma {
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -79776,6 +80064,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: string | null
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -79794,6 +80084,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -79843,6 +80135,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -79889,6 +80183,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -79910,6 +80206,8 @@ export namespace Prisma {
     isActive?: boolean
     managerId?: string | null
     roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
     deletedAt?: Date | string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -79928,6 +80226,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -79977,6 +80277,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -80023,6 +80325,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -80041,6 +80345,8 @@ export namespace Prisma {
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -80091,6 +80397,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -80137,6 +80445,8 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     managerId?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
