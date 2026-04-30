@@ -202,7 +202,7 @@ function InboxPage() {
                 </HeroBreadcrumbItem>
                 <HeroBreadcrumbItem>Inbox</HeroBreadcrumbItem>
             </HeroBreadcrumbs>
-            <AdminContentContainer className="mt-1 h-[calc(100vh-150px)]">
+            <AdminContentContainer className="mt-1 h-[calc(100svh-150px)]">
                 {/* Main Content Area (Split View) */}
                 <Card className="h-full flex-1 min-h-0 overflow-hidden shadow-sm border border-border-default">
                     <div className="flex h-full">

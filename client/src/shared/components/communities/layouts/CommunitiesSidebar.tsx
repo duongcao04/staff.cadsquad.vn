@@ -106,7 +106,7 @@ export default function CommunitiesSidebar({
     }
 
     return (
-        <div className="w-96 h-[calc(100vh-57px)] shrink-0 flex flex-col bg-background">
+        <div className="w-96 h-[calc(100svh-57px)] shrink-0 flex flex-col bg-background">
             {createCommunityModalDisclosure.isOpen && (
                 <CreateCommunityModal
                     isOpen={createCommunityModalDisclosure.isOpen}

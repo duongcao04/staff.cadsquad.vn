@@ -1,12 +1,12 @@
 import {
     AppLoading,
-    PageWithHeaderContainer,
+    PageWithHeaderLayout,
     ScrollArea,
     ScrollBar,
 } from '@/shared/components'
 import { DashboardRightPanel } from '@/shared/components/admin/DashboardRightPanel'
 import { AdminSidebar } from '@/shared/components/admin/layouts/AdminSidebar'
-import MobileHeader from '@/shared/components/layouts/Header/MobileHeader'
+import { MobileHeader } from '@/shared/components'
 import { useDevice } from '@/shared/hooks'
 import { appStore, ESidebarStatus } from '@/shared/stores'
 import { createFileRoute, Outlet } from '@tanstack/react-router'
@@ -45,7 +45,7 @@ function AdminLayout() {
     const topOffset = IS_SHOW_HEADER ? (isSmallView ? '44px' : '56px') : 0
 
     return (
-        <PageWithHeaderContainer
+        <PageWithHeaderLayout
             // header={<AdminHeader />}
             header={<></>}
             mobileHeader={<MobileHeader />}
@@ -122,6 +122,6 @@ function AdminLayout() {
                     </div>
                 )}
             </div>
-        </PageWithHeaderContainer>
+        </PageWithHeaderLayout>
     )
 }

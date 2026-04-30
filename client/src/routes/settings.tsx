@@ -1,6 +1,6 @@
 import SettingsSidebar from '@/features/settings/components/SettingsSidebar'
-import { Header, PageWithHeaderContainer } from '@/shared/components'
-import MobileHeader from '@/shared/components/layouts/Header/MobileHeader'
+import { Header, PageWithHeaderLayout } from '@/shared/components'
+import { MobileHeader } from '@/shared/components'
 import { AuthGuard } from '@/shared/guards'
 import { useDevice } from '@/shared/hooks'
 import { createFileRoute, Outlet } from '@tanstack/react-router'
@@ -14,7 +14,7 @@ function SettingsLayout() {
 
     return (
         <AuthGuard>
-            <PageWithHeaderContainer
+            <PageWithHeaderLayout
                 header={<Header />}
                 mobileHeader={<MobileHeader />}
             >
@@ -51,7 +51,7 @@ function SettingsLayout() {
                         </main>
                     </div>
                 </div>
-            </PageWithHeaderContainer>
+            </PageWithHeaderLayout>
         </AuthGuard>
     )
 }

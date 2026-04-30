@@ -28,7 +28,7 @@ function NotificationsPage() {
                     wrapper: 'pl-6 pr-3.5 py-4 border-b border-border-default',
                 }}
             />
-            <div className="container mx-auto p-4 md:p-6 min-h-[calc(100vh-80px)]">
+            <div className="container mx-auto p-4 md:p-6 min-h-[calc(100svh-80px)]">
                 <ErrorBoundary
                     fallback={
                         <div className="p-10 text-center text-danger">

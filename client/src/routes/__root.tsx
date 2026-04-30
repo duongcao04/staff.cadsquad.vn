@@ -17,6 +17,7 @@ import { AblyProvider } from 'ably/react'
 import { ConfigProvider } from 'antd'
 import { ThemeProvider } from 'antd-style'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
+import { useDevice } from '../shared/hooks'
 
 // 1. Định nghĩa Interface cho Context
 interface AppRouterContext {
@@ -27,6 +28,7 @@ export const Route = createRootRouteWithContext<AppRouterContext>()({
         return <AppLoading />
     },
     component: () => {
+        const { isSmallView } = useDevice()
         return (
             <>
                 <HeadContent />
@@ -75,7 +77,7 @@ export const Route = createRootRouteWithContext<AppRouterContext>()({
                                 </HeroUIConfigurationProvider>
                             </NextThemesProvider>
 
-                            <ReactQueryDevtools />
+                            {!isSmallView && <ReactQueryDevtools />}
                             {/* <TanStackRouterDevtools /> */}
                         </QueryClientProvider>
                     </AblyProvider>

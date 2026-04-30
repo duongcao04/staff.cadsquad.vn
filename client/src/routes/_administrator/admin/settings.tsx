@@ -176,7 +176,7 @@ function AdminSettingsPage() {
     }
 
     return (
-        <div className="p-6 pb-24 mx-auto max-w-7xl h-[calc(100vh-4rem)] overflow-y-auto">
+        <div className="p-6 pb-24 mx-auto max-w-7xl h-[calc(100svh-4rem)] overflow-y-auto">
             <AdminPageHeading
                 title="System Configuration"
                 description="Manage global defaults, notifications, and system health."
