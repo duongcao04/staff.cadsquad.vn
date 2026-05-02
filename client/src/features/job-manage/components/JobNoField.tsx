@@ -1,15 +1,13 @@
-import { Avatar } from '@heroui/react'
-import { Slash } from 'lucide-react'
-import { useEffect, useState } from 'react'
-
 import { jobApi } from '@/lib/api'
-import type { TJobType } from '@/shared/types'
-
 import {
     HeroAutocomplete,
     HeroAutocompleteItem,
-} from '../../../shared/components/ui/hero-autocomplete'
-import { useDevice } from '../../../shared/hooks'
+} from '@/shared/components/ui/hero-autocomplete'
+import { useDevice } from '@/shared/hooks'
+import type { TJobType } from '@/shared/types'
+import { Avatar } from '@heroui/react'
+import { Slash } from 'lucide-react'
+import { useEffect, useState } from 'react'
 
 type JobNoFieldProps = {
     jobTypes: TJobType[]

@@ -5,11 +5,7 @@ import StaffDirectoryTable from '@/features/staff-directory/components/views/Sta
 import { COLORS } from '@/lib'
 import { departmentsListOptions, usersListOptions } from '@/lib/queries'
 import { getPageTitle, RouteUtil } from '@/lib/utils'
-import {
-    AdminPageHeading,
-    AppLoading,
-    HeroButton,
-} from '@/shared/components'
+import { AdminPageHeading, AppLoading, HeroButton } from '@/shared/components'
 import AdminContentContainer from '@/shared/components/admin/AdminContentContainer'
 import {
     Button,
@@ -51,8 +47,8 @@ const VIEW_OPTIONS = [
 ]
 
 const staffSearchSchema = z.object({
-    page: z.number().catch(1),
-    limit: z.number().catch(8),
+    page: z.coerce.number().optional().default(1).catch(1),
+    limit: z.coerce.number().optional().default(8).catch(8),
     search: z.string().optional(),
     departmentId: z.string().optional(),
     // Fixed: Default to 'table' instead of 'grid'

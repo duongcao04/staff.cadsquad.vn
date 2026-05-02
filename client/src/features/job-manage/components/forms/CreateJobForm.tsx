@@ -1090,7 +1090,7 @@ type DeliveryFieldProps = {
         dueAt?: string
     }
 }
-function DeliveryField({
+export function DeliveryField({
     value,
     onValueChange,
     isInvalid,

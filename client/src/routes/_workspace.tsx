@@ -9,11 +9,12 @@ import {
 import { AuthGuard } from '@/shared/guards'
 import { useDevice } from '@/shared/hooks'
 import { appStore, ESidebarStatus } from '@/shared/stores'
+import { useDisclosure } from '@heroui/react'
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 import { useStore } from '@tanstack/react-store'
 import { MobileBottomNav } from '../shared/components/layouts/mobile-bottom-nav'
 import PushMobileLayout from '../shared/components/layouts/push-mobile-layout'
-import { useDisclosure } from '@heroui/react'
+import { useLayout } from '../shared/contexts'
 
 export const Route = createFileRoute('/_workspace')({
     pendingComponent: AppLoading,
@@ -21,6 +22,9 @@ export const Route = createFileRoute('/_workspace')({
 })
 
 function WorkspaceLayout() {
+    const { showHeader } = useLayout()
+    console.log(showHeader)
+
     const sidebarStatus = useStore(appStore, (state) => state.sidebarStatus)
     const { isSmallView } = useDevice()
 
@@ -44,6 +48,7 @@ function WorkspaceLayout() {
                 <PageWithHeaderLayout
                     header={<Header />}
                     mobileHeader={<MobileHeader onOpenMenu={onOpen} />}
+                    showHeader={showHeader}
                 >
                     <main>
                         {!isSmallView && (
@@ -68,7 +73,7 @@ function WorkspaceLayout() {
                     </main>
                 </PageWithHeaderLayout>
 
-                <MobileBottomNav />
+                {isSmallView && <MobileBottomNav />}
             </PushMobileLayout>
         </AuthGuard>
     )

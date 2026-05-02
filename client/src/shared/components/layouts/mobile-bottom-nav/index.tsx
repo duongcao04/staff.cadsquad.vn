@@ -18,7 +18,7 @@ export function MobileBottomNav() {
     const location = useLocation()
     const currentPath = location.pathname
 
-    const isHidden = useHideOnScroll({ threshold: 10, topOffset: 50 })
+    const isHidden = useHideOnScroll({ threshold: 0, topOffset: 50 })
 
     const bottomNavItems = useMemo(
         () => [

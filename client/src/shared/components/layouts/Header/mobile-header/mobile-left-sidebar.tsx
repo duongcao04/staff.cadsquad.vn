@@ -1,10 +1,25 @@
 import { INTERNAL_URLS, profileOptions } from '@/lib'
 import {
     Bell,
+    Briefcase,
+    Circles4Diamond,
+    CloudGear,
     DisplayPulse,
+    Dots9,
+    Factory,
     FileDollar,
+    Folder,
     Gear,
     LifeRing,
+    Lock,
+    LogoYandexTracker,
+    Paintbrush,
+    PersonNutHex,
+    Persons,
+    PersonsLock,
+    Sack,
+    SealPercent,
+    Shapes4,
     SlidersVertical,
     SquareDashedText,
 } from '@gravity-ui/icons'
@@ -92,7 +107,7 @@ export const MobileLeftSidebar = ({ onHidden }: { onHidden: () => void }) => {
                 </div>
             </div>
 
-            <div className="py-3 px-4 flex flex-col">
+            <div className="py-3 px-2 flex flex-col">
                 <div className="px-2">
                     <h3 className="text-sm font-bold text-default-900 mb-3">
                         Quick actions
@@ -126,7 +141,7 @@ export const MobileLeftSidebar = ({ onHidden }: { onHidden: () => void }) => {
 
             <Divider className="bg-border-default h-px" />
 
-            <div className="px-2 py-2">
+            <div className="py-2">
                 <Accordion
                     showDivider={false}
                     itemClasses={{
@@ -139,7 +154,7 @@ export const MobileLeftSidebar = ({ onHidden }: { onHidden: () => void }) => {
                     }}
                 >
                     <AccordionItem
-                        key="settings"
+                        key="settings-and-privacy"
                         title="Settings and privacy"
                         startContent={
                             <Gear
@@ -148,11 +163,90 @@ export const MobileLeftSidebar = ({ onHidden }: { onHidden: () => void }) => {
                             />
                         }
                     >
-                        Settings, Privacy shortcuts, Time on App.
+                        <div className="flex flex-col gap-2">
+                            <Button
+                                className="w-full justify-start h-12 px-4 bg-background-muted rounded-xl"
+                                startContent={
+                                    <PersonNutHex
+                                        strokeWidth={1}
+                                        className="text-default-800 mr-2 size-6"
+                                    />
+                                }
+                                onPress={() => {
+                                    router.navigate({
+                                        to: INTERNAL_URLS.settings.overview,
+                                    })
+                                    onHidden()
+                                }}
+                            >
+                                <span className="font-medium text-base text-default-900">
+                                    Settings
+                                </span>
+                            </Button>
+                            <Button
+                                className="w-full justify-start h-12 px-4 bg-background-muted rounded-xl"
+                                startContent={
+                                    <Lock
+                                        strokeWidth={1}
+                                        className="text-default-800 mr-2 size-6"
+                                    />
+                                }
+                                onPress={() => {
+                                    router.navigate({
+                                        to: INTERNAL_URLS.settings
+                                            .loginAndSecurity,
+                                    })
+                                    onHidden()
+                                }}
+                            >
+                                <span className="font-medium text-base text-default-900">
+                                    Login & Security
+                                </span>
+                            </Button>
+                            <Button
+                                className="w-full justify-start h-12 px-4 bg-background-muted rounded-xl"
+                                startContent={
+                                    <Paintbrush
+                                        strokeWidth={1}
+                                        className="text-default-800 mr-2 size-6"
+                                    />
+                                }
+                                onPress={() => {
+                                    router.navigate({
+                                        to: INTERNAL_URLS.settings.appearance,
+                                    })
+                                    onHidden()
+                                }}
+                            >
+                                <span className="font-medium text-base text-default-900">
+                                    Appearance
+                                </span>
+                            </Button>
+                            <Button
+                                className="w-full justify-start h-12 px-4 bg-background-muted rounded-xl"
+                                startContent={
+                                    <Bell
+                                        strokeWidth={1}
+                                        className="text-default-800 mr-2 size-6"
+                                    />
+                                }
+                                onPress={() => {
+                                    router.navigate({
+                                        to: INTERNAL_URLS.settings
+                                            .notifications,
+                                    })
+                                    onHidden()
+                                }}
+                            >
+                                <span className="font-medium text-base text-default-900">
+                                    Notifications
+                                </span>
+                            </Button>
+                        </div>
                     </AccordionItem>
 
                     <AccordionItem
-                        key="help"
+                        key="resource-managements"
                         title="Resource Managements"
                         startContent={
                             <SlidersVertical
@@ -161,11 +255,129 @@ export const MobileLeftSidebar = ({ onHidden }: { onHidden: () => void }) => {
                             />
                         }
                     >
-                        Help Center, Support Inbox, Report a problem.
+                        <div className="flex flex-col gap-2">
+                            <Button
+                                className="w-full justify-start h-12 px-4 bg-background-muted rounded-xl"
+                                startContent={
+                                    <Persons
+                                        strokeWidth={1}
+                                        className="text-default-800 mr-2 size-6"
+                                    />
+                                }
+                                onPress={() => {
+                                    router.navigate({
+                                        href: INTERNAL_URLS.management.team,
+                                    })
+                                    onHidden()
+                                }}
+                            >
+                                <span className="font-medium text-base text-default-900">
+                                    Team
+                                </span>
+                            </Button>
+                            <Button
+                                className="w-full justify-start h-12 px-4 bg-background-muted rounded-xl"
+                                startContent={
+                                    <Briefcase
+                                        strokeWidth={1}
+                                        className="text-default-800 mr-2 size-6"
+                                    />
+                                }
+                                onPress={() => {
+                                    router.navigate({
+                                        href: INTERNAL_URLS.management.jobs,
+                                    })
+                                    onHidden()
+                                }}
+                            >
+                                <span className="font-medium text-base text-default-900">
+                                    Jobs
+                                </span>
+                            </Button>
+                            <Button
+                                className="w-full justify-start h-12 px-4 bg-background-muted rounded-xl"
+                                startContent={
+                                    <Circles4Diamond
+                                        strokeWidth={1}
+                                        className="text-default-800 mr-2 size-6"
+                                    />
+                                }
+                                onPress={() => {
+                                    router.navigate({
+                                        href: INTERNAL_URLS.management.jobTypes,
+                                    })
+                                    onHidden()
+                                }}
+                            >
+                                <span className="font-medium text-base text-default-900">
+                                    Job Types
+                                </span>
+                            </Button>
+                            <Button
+                                className="w-full justify-start h-12 px-4 bg-background-muted rounded-xl"
+                                startContent={
+                                    <Folder
+                                        strokeWidth={1}
+                                        className="text-default-800 mr-2 size-6"
+                                    />
+                                }
+                                onPress={() => {
+                                    router.navigate({
+                                        href: INTERNAL_URLS.management
+                                            .jobFolderTemplates,
+                                    })
+                                    onHidden()
+                                }}
+                            >
+                                <span className="font-medium text-base text-default-900">
+                                    Folder Templates
+                                </span>
+                            </Button>
+                            <Button
+                                className="w-full justify-start h-12 px-4 bg-background-muted rounded-xl"
+                                startContent={
+                                    <Factory
+                                        strokeWidth={1}
+                                        className="text-default-800 mr-2 size-6"
+                                    />
+                                }
+                                onPress={() => {
+                                    router.navigate({
+                                        href: INTERNAL_URLS.management
+                                            .departments,
+                                    })
+                                    onHidden()
+                                }}
+                            >
+                                <span className="font-medium text-base text-default-900">
+                                    Department
+                                </span>
+                            </Button>
+                            <Button
+                                className="w-full justify-start h-12 px-4 bg-background-muted rounded-xl"
+                                startContent={
+                                    <LogoYandexTracker
+                                        strokeWidth={1}
+                                        className="text-default-800 mr-2 size-6"
+                                    />
+                                }
+                                onPress={() => {
+                                    router.navigate({
+                                        href: INTERNAL_URLS.management
+                                            .jobTitles,
+                                    })
+                                    onHidden()
+                                }}
+                            >
+                                <span className="font-medium text-base text-default-900">
+                                    Job Titles
+                                </span>
+                            </Button>
+                        </div>
                     </AccordionItem>
 
                     <AccordionItem
-                        key="help"
+                        key="overseeing-systems"
                         title="Overseeing systems"
                         startContent={
                             <DisplayPulse
@@ -174,11 +386,70 @@ export const MobileLeftSidebar = ({ onHidden }: { onHidden: () => void }) => {
                             />
                         }
                     >
-                        Help Center, Support Inbox, Report a problem.
+                        <div className="flex flex-col gap-2">
+                            <Button
+                                className="w-full justify-start h-12 px-4 bg-background-muted rounded-xl"
+                                startContent={
+                                    <Dots9
+                                        strokeWidth={1}
+                                        className="text-default-800 mr-2 size-6"
+                                    />
+                                }
+                                onPress={() => {
+                                    router.navigate({
+                                        href: INTERNAL_URLS.admin.overview,
+                                    })
+                                    onHidden()
+                                }}
+                            >
+                                <span className="font-medium text-base text-default-900">
+                                    Admin Control Center
+                                </span>
+                            </Button>
+                            <Button
+                                className="w-full justify-start h-12 px-4 bg-background-muted rounded-xl"
+                                startContent={
+                                    <CloudGear
+                                        strokeWidth={1}
+                                        className="text-default-800 mr-2 size-6"
+                                    />
+                                }
+                                onPress={() => {
+                                    router.navigate({
+                                        href: INTERNAL_URLS.admin.settings,
+                                    })
+                                    onHidden()
+                                }}
+                            >
+                                <span className="font-medium text-base text-default-900">
+                                    System Configuration
+                                </span>
+                            </Button>
+                            <Button
+                                className="w-full justify-start h-12 px-4 bg-background-muted rounded-xl"
+                                startContent={
+                                    <PersonsLock
+                                        strokeWidth={1}
+                                        className="text-default-800 mr-2 size-6"
+                                    />
+                                }
+                                onPress={() => {
+                                    router.navigate({
+                                        href: INTERNAL_URLS.management
+                                            .accessControl,
+                                    })
+                                    onHidden()
+                                }}
+                            >
+                                <span className="font-medium text-base text-default-900">
+                                    Roles & Permissions
+                                </span>
+                            </Button>
+                        </div>
                     </AccordionItem>
 
                     <AccordionItem
-                        key="professional"
+                        key="financial"
                         title="Financial"
                         startContent={
                             <FileDollar
@@ -187,7 +458,66 @@ export const MobileLeftSidebar = ({ onHidden }: { onHidden: () => void }) => {
                             />
                         }
                     >
-                        Ad Center, Insights, Page Settings.
+                        <div className="flex flex-col gap-2">
+                            <Button
+                                className="w-full justify-start h-12 px-4 bg-background-muted rounded-xl"
+                                startContent={
+                                    <Shapes4
+                                        strokeWidth={1}
+                                        className="text-default-800 mr-2 size-6"
+                                    />
+                                }
+                                onPress={() => {
+                                    router.navigate({
+                                        href: INTERNAL_URLS.financial.overview,
+                                    })
+                                    onHidden()
+                                }}
+                            >
+                                <span className="font-medium text-base text-default-900">
+                                    Financial Hub
+                                </span>
+                            </Button>
+                            <Button
+                                className="w-full justify-start h-12 px-4 bg-background-muted rounded-xl"
+                                startContent={
+                                    <Sack
+                                        strokeWidth={1}
+                                        className="text-default-800 mr-2 size-6"
+                                    />
+                                }
+                                onPress={() => {
+                                    router.navigate({
+                                        href: INTERNAL_URLS.financial.payouts,
+                                    })
+                                    onHidden()
+                                }}
+                            >
+                                <span className="font-medium text-base text-default-900">
+                                    Payouts
+                                </span>
+                            </Button>
+                            <Button
+                                className="w-full justify-start h-12 px-4 bg-background-muted rounded-xl"
+                                startContent={
+                                    <SealPercent
+                                        strokeWidth={1}
+                                        className="text-default-800 mr-2 size-6"
+                                    />
+                                }
+                                onPress={() => {
+                                    router.navigate({
+                                        href: INTERNAL_URLS.management
+                                            .paymentChannels,
+                                    })
+                                    onHidden()
+                                }}
+                            >
+                                <span className="font-medium text-base text-default-900">
+                                    Payment Channel
+                                </span>
+                            </Button>
+                        </div>
                     </AccordionItem>
                 </Accordion>
             </div>

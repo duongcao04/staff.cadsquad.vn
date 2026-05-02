@@ -9,6 +9,7 @@ import {
     Landmark,
     Users,
 } from 'lucide-react'
+import { EJobManagementTableTabs } from '../../../routes/_administrator/mgmt/jobs'
 
 interface AdminKpiCardsProps {
     stats: {
@@ -22,7 +23,7 @@ interface AdminKpiCardsProps {
 
 export function AdminKpiCards({ stats }: AdminKpiCardsProps) {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 tablet:grid-cols-3 desktop:grid-cols-6 gap-4">
             <Card
                 shadow="sm"
                 className="border border-primary-200 bg-primary-50"
@@ -44,6 +45,9 @@ export function AdminKpiCards({ stats }: AdminKpiCardsProps) {
                     <div className="w-full flex justify-end">
                         <Link
                             to={INTERNAL_URLS.management.jobs}
+                            search={{
+                                tab: EJobManagementTableTabs.ALL,
+                            }}
                             className="text-right text-tiny font-semibold text-warning-700 hover:underline"
                         >
                             View all
@@ -73,6 +77,9 @@ export function AdminKpiCards({ stats }: AdminKpiCardsProps) {
                     <div className="w-full flex justify-end">
                         <Link
                             to={INTERNAL_URLS.management.jobs}
+                            search={{
+                                tab: EJobManagementTableTabs.DELIVERED,
+                            }}
                             className="text-right text-tiny font-semibold text-warning-700 hover:underline"
                         >
                             View all
@@ -99,6 +106,9 @@ export function AdminKpiCards({ stats }: AdminKpiCardsProps) {
                     <div className="w-full flex justify-end">
                         <Link
                             to={INTERNAL_URLS.management.jobs}
+                            search={{
+                                tab: EJobManagementTableTabs.COMPLETED,
+                            }}
                             className="text-right text-tiny font-semibold text-warning-700 hover:underline"
                         >
                             View all

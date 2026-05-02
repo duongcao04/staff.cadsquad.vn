@@ -90,6 +90,15 @@
     font-display: swap;
 }
 
+@theme {
+    /* --breakpoint-*: initial; */
+    --breakpoint-mobile: 480px;
+    --breakpoint-tablet: 768px;
+    --breakpoint-laptop: 64rem;
+    --breakpoint-desktop: 1024px;
+    --breakpoint-large_device: 1440px;
+}
+
 /* 2. Register Fonts in Tailwind Theme
    This automatically creates --font-* variables and utilities
 */

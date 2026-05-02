@@ -6,7 +6,7 @@ type Props = {
     header: React.ReactNode
     mobileHeader?: React.ReactNode
     children: React.ReactNode
-    scrollable?: boolean // Add this prop
+    scrollable?: boolean
     showHeader?: boolean
 }
 
@@ -28,7 +28,13 @@ export function PageWithHeaderLayout({
 
     return (
         <>
-            <>{isSmallView && hasResponsive ? mobileHeader : header}</>
+            <>
+                {showHeader
+                    ? isSmallView && hasResponsive
+                        ? mobileHeader
+                        : header
+                    : null}
+            </>
 
             {/* Height spacer for fixed header */}
             <div
