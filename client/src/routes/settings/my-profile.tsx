@@ -7,7 +7,7 @@ import {
     phoneNumberFormatter,
     updateProfileSchema,
     useUpdateProfileMutation,
-    useUploadImageMutation
+    useUploadImageMutation,
 } from '@/lib'
 import { profileOptions } from '@/lib/queries/options/user-queries'
 import { HeroBreadcrumbItem, HeroBreadcrumbs } from '@/shared/components'
@@ -65,7 +65,6 @@ function SettingsProfilePage() {
     const uploadImageMutation = useUploadImageMutation()
     const updateProfileMutation = useUpdateProfileMutation()
 
-    // Avatar Modal State
     const {
         isOpen: isOpenUploadAvatarModal,
         onOpen: onOpenUploadAvatarModal,
@@ -117,26 +116,6 @@ function SettingsProfilePage() {
 
     return (
         <>
-            <HeroBreadcrumbs className="text-xs">
-                <HeroBreadcrumbItem>
-                    <Link
-                        to={INTERNAL_URLS.home}
-                        className="text-text-subdued!"
-                    >
-                        <House size={16} />
-                    </Link>
-                </HeroBreadcrumbItem>
-                <HeroBreadcrumbItem>
-                    <Link
-                        to={INTERNAL_URLS.settings.overview}
-                        className="text-text-subdued!"
-                    >
-                        Settings
-                    </Link>
-                </HeroBreadcrumbItem>
-                <HeroBreadcrumbItem>My Profile</HeroBreadcrumbItem>
-            </HeroBreadcrumbs>
-
             <div className="mt-5">
                 {/* Header */}
                 <SettingTitle

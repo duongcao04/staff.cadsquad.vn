@@ -126,6 +126,10 @@ model User {
   userPermissions UserPermission[]
   securityLogs    UserSecurityLog[]
 
+  // MFA Store
+  isTwoFactorAuthenticationEnabled Boolean @default(false)
+  twoFactorAuthenticationSecret    String?
+
   deletedAt       DateTime?
   lastLoginAt     DateTime?
   createdAt       DateTime         @default(now())

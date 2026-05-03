@@ -19,6 +19,7 @@ import { Route } from '../../../../routes/_administrator/mgmt/jobs/index'
 import dayjs, { Dayjs } from 'dayjs'
 import quarterOfYear from 'dayjs/plugin/quarterOfYear'
 import updateLocale from 'dayjs/plugin/updateLocale'
+import { useDevice } from '../../../../shared/hooks'
 
 dayjs.extend(quarterOfYear)
 dayjs.extend(updateLocale)
@@ -221,7 +222,7 @@ export function JobManagementStats() {
                                     className="text-text-subdued"
                                 />
                             }
-                            className='border-1 bg-background'
+                            className="border-1 bg-background"
                         >
                             <p className="font-medium">{currentLabel}</p>
                         </Button>

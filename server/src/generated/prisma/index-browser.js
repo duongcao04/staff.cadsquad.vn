@@ -167,6 +167,8 @@ exports.Prisma.UserScalarFieldEnum = {
   isActive: 'isActive',
   managerId: 'managerId',
   roleId: 'roleId',
+  isTwoFactorAuthenticationEnabled: 'isTwoFactorAuthenticationEnabled',
+  twoFactorAuthenticationSecret: 'twoFactorAuthenticationSecret',
   deletedAt: 'deletedAt',
   lastLoginAt: 'lastLoginAt',
   createdAt: 'createdAt',

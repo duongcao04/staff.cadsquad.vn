@@ -6,11 +6,11 @@ type Props = {
     header: React.ReactNode
     mobileHeader?: React.ReactNode
     children: React.ReactNode
-    scrollable?: boolean // Add this prop
+    scrollable?: boolean
     showHeader?: boolean
 }
 
-export function PageWithHeaderContainer({
+export function PageWithHeaderLayout({
     header,
     children,
     mobileHeader,
@@ -28,9 +28,13 @@ export function PageWithHeaderContainer({
 
     return (
         <>
-            <div className="fixed top-0 w-full z-50">
-                {isSmallView && hasResponsive ? mobileHeader : header}
-            </div>
+            <>
+                {showHeader
+                    ? isSmallView && hasResponsive
+                        ? mobileHeader
+                        : header
+                    : null}
+            </>
 
             {/* Height spacer for fixed header */}
             <div
@@ -42,8 +46,8 @@ export function PageWithHeaderContainer({
             <div
                 style={{
                     height: showHeader
-                        ? `calc(100vh - ${headerHeight})`
-                        : '100vh',
+                        ? `calc(100svh - ${headerHeight})`
+                        : '100svh',
                     // If not scrollable, we hide overflow to let children handle it,
                     // or 'visible' if the child needs to stick out.
                     // Usually 'hidden' or 'clip' is safer for app layouts.

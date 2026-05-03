@@ -41,6 +41,7 @@ import { Route as AdministratorFinancialSettingRouteImport } from './routes/_adm
 import { Route as AdministratorFinancialReceivablesRouteImport } from './routes/_administrator/financial/receivables'
 import { Route as AdministratorFinancialPaymentChannelsRouteImport } from './routes/_administrator/financial/payment-channels'
 import { Route as AdministratorFinancialInvoiceTemplatesRouteImport } from './routes/_administrator/financial/invoice-templates'
+import { Route as AdministratorAdministratorMoreRouteImport } from './routes/_administrator/administrator.more'
 import { Route as AdministratorAdminSettingsRouteImport } from './routes/_administrator/admin/settings'
 import { Route as AdministratorAdminScheduleRouteImport } from './routes/_administrator/admin/schedule'
 import { Route as AdministratorAdminInboxRouteImport } from './routes/_administrator/admin/inbox'
@@ -237,6 +238,12 @@ const AdministratorFinancialInvoiceTemplatesRoute =
     path: '/financial/invoice-templates',
     getParentRoute: () => AdministratorRoute,
   } as any)
+const AdministratorAdministratorMoreRoute =
+  AdministratorAdministratorMoreRouteImport.update({
+    id: '/administrator/more',
+    path: '/administrator/more',
+    getParentRoute: () => AdministratorRoute,
+  } as any)
 const AdministratorAdminSettingsRoute =
   AdministratorAdminSettingsRouteImport.update({
     id: '/admin/settings',
@@ -416,6 +423,7 @@ export interface FileRoutesByFullPath {
   '/admin/inbox': typeof AdministratorAdminInboxRoute
   '/admin/schedule': typeof AdministratorAdminScheduleRoute
   '/admin/settings': typeof AdministratorAdminSettingsRoute
+  '/administrator/more': typeof AdministratorAdministratorMoreRoute
   '/financial/invoice-templates': typeof AdministratorFinancialInvoiceTemplatesRoute
   '/financial/payment-channels': typeof AdministratorFinancialPaymentChannelsRoute
   '/financial/receivables': typeof AdministratorFinancialReceivablesRoute
@@ -471,6 +479,7 @@ export interface FileRoutesByTo {
   '/admin/inbox': typeof AdministratorAdminInboxRoute
   '/admin/schedule': typeof AdministratorAdminScheduleRoute
   '/admin/settings': typeof AdministratorAdminSettingsRoute
+  '/administrator/more': typeof AdministratorAdministratorMoreRoute
   '/financial/invoice-templates': typeof AdministratorFinancialInvoiceTemplatesRoute
   '/financial/payment-channels': typeof AdministratorFinancialPaymentChannelsRoute
   '/financial/receivables': typeof AdministratorFinancialReceivablesRoute
@@ -531,6 +540,7 @@ export interface FileRoutesById {
   '/_administrator/admin/inbox': typeof AdministratorAdminInboxRoute
   '/_administrator/admin/schedule': typeof AdministratorAdminScheduleRoute
   '/_administrator/admin/settings': typeof AdministratorAdminSettingsRoute
+  '/_administrator/administrator/more': typeof AdministratorAdministratorMoreRoute
   '/_administrator/financial/invoice-templates': typeof AdministratorFinancialInvoiceTemplatesRoute
   '/_administrator/financial/payment-channels': typeof AdministratorFinancialPaymentChannelsRoute
   '/_administrator/financial/receivables': typeof AdministratorFinancialReceivablesRoute
@@ -591,6 +601,7 @@ export interface FileRouteTypes {
     | '/admin/inbox'
     | '/admin/schedule'
     | '/admin/settings'
+    | '/administrator/more'
     | '/financial/invoice-templates'
     | '/financial/payment-channels'
     | '/financial/receivables'
@@ -646,6 +657,7 @@ export interface FileRouteTypes {
     | '/admin/inbox'
     | '/admin/schedule'
     | '/admin/settings'
+    | '/administrator/more'
     | '/financial/invoice-templates'
     | '/financial/payment-channels'
     | '/financial/receivables'
@@ -705,6 +717,7 @@ export interface FileRouteTypes {
     | '/_administrator/admin/inbox'
     | '/_administrator/admin/schedule'
     | '/_administrator/admin/settings'
+    | '/_administrator/administrator/more'
     | '/_administrator/financial/invoice-templates'
     | '/_administrator/financial/payment-channels'
     | '/_administrator/financial/receivables'
@@ -980,6 +993,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdministratorFinancialInvoiceTemplatesRouteImport
       parentRoute: typeof AdministratorRoute
     }
+    '/_administrator/administrator/more': {
+      id: '/_administrator/administrator/more'
+      path: '/administrator/more'
+      fullPath: '/administrator/more'
+      preLoaderRoute: typeof AdministratorAdministratorMoreRouteImport
+      parentRoute: typeof AdministratorRoute
+    }
     '/_administrator/admin/settings': {
       id: '/_administrator/admin/settings'
       path: '/admin/settings'
@@ -1200,6 +1220,7 @@ interface AdministratorRouteChildren {
   AdministratorAdminInboxRoute: typeof AdministratorAdminInboxRoute
   AdministratorAdminScheduleRoute: typeof AdministratorAdminScheduleRoute
   AdministratorAdminSettingsRoute: typeof AdministratorAdminSettingsRoute
+  AdministratorAdministratorMoreRoute: typeof AdministratorAdministratorMoreRoute
   AdministratorFinancialInvoiceTemplatesRoute: typeof AdministratorFinancialInvoiceTemplatesRoute
   AdministratorFinancialPaymentChannelsRoute: typeof AdministratorFinancialPaymentChannelsRoute
   AdministratorFinancialReceivablesRoute: typeof AdministratorFinancialReceivablesRoute
@@ -1234,6 +1255,7 @@ const AdministratorRouteChildren: AdministratorRouteChildren = {
   AdministratorAdminInboxRoute: AdministratorAdminInboxRoute,
   AdministratorAdminScheduleRoute: AdministratorAdminScheduleRoute,
   AdministratorAdminSettingsRoute: AdministratorAdminSettingsRoute,
+  AdministratorAdministratorMoreRoute: AdministratorAdministratorMoreRoute,
   AdministratorFinancialInvoiceTemplatesRoute:
     AdministratorFinancialInvoiceTemplatesRoute,
   AdministratorFinancialPaymentChannelsRoute:

@@ -276,7 +276,7 @@ export default function ProfilePage() {
                                             </p>
                                         </CardHeader>
                                         <CardBody>
-                                            <ScrollArea className="size-full h-[calc(100vh-300px)]">
+                                            <ScrollArea className="size-full h-[calc(100svh-300px)]">
                                                 <ScrollBar orientation="horizontal" />
                                                 <ScrollBar orientation="vertical" />
                                                 {activeJobs?.length ? (

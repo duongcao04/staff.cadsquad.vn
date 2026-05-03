@@ -1,7 +1,7 @@
+import { envConfig, INTERNAL_URLS } from '@/lib'
 import { cn, Listbox, ListboxItem, ListboxSection } from '@heroui/react'
 import { useRouter, useRouterState } from '@tanstack/react-router'
-import { HelpCircle, Lock, LogOut, Palette, User } from 'lucide-react'
-import { envConfig, INTERNAL_URLS } from '@/lib'
+import { BellIcon, HelpCircle, Lock, LogOut, Palette, User } from 'lucide-react'
 
 // Define the structure of the settings menu
 const SETTINGS_MENU = [
@@ -10,22 +10,22 @@ const SETTINGS_MENU = [
         items: [
             {
                 key: 'profile',
-                label: 'My Profile',
+                label: 'Profile',
                 icon: User,
                 href: INTERNAL_URLS.settings.profile,
             },
             {
                 key: 'security',
-                label: 'Login & Security',
+                label: 'Security',
                 icon: Lock,
                 href: INTERNAL_URLS.settings.loginAndSecurity,
             },
-            // {
-            //     key: 'notifications',
-            //     label: 'Notifications',
-            //     icon: Bell,
-            //     href: INTERNAL_URLS.notificationsSettings,
-            // },
+            {
+                key: 'notifications',
+                label: 'Notifications',
+                icon: BellIcon,
+                href: INTERNAL_URLS.settings.notifications,
+            },
         ],
     },
     {
@@ -52,8 +52,7 @@ export default function SettingsSidebar() {
         select: (state) => state.location.pathname,
     })
     const router = useRouter()
-    // Wrapper class for the centered layout style
-    // Often used inside a grid like: grid-cols-[280px_1fr] max-w-5xl mx-auto
+
     return (
         <aside className="w-full max-w-70 hidden md:flex flex-col gap-6 sticky top-8 h-fit">
             <div className="w-full bg-background rounded-2xl shadow-sm border border-border-default overflow-hidden py-2">
@@ -112,7 +111,6 @@ export default function SettingsSidebar() {
                         </ListboxSection>
                     ))}
                 </Listbox>
-
                 {/* Bottom Actions */}
                 <div className="mt-2 pt-2 px-4 border-t border-border-default space-y-1 pb-1">
                     <button

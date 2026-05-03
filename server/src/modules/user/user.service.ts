@@ -251,10 +251,7 @@ export class UserService {
 			const userData = await this.prismaService.user.findUnique({
 				where: { id: userId, deletedAt: null },
 			})
-			const userRes = plainToInstance(UserResponseDto, userData, {
-				excludeExtraneousValues: true,
-			})
-			return userRes as unknown as User
+			return userData as unknown as User
 		} catch (error) {
 			throw new NotFoundException('User not found')
 		}
@@ -554,6 +551,30 @@ export class UserService {
 			},
 			take: 20,
 		})
+	}
+
+	async setTwoFactorAuthenticationSecret(secret: string, userId: string) {
+		await this.prismaService.user.update({
+			where: {
+				id: userId,
+			},
+			data: {
+				twoFactorAuthenticationSecret: secret,
+			},
+		})
+		return true
+	}
+
+	async turnOnTwoFactorAuthentication(userId: string) {
+		await this.prismaService.user.update({
+			where: {
+				id: userId,
+			},
+			data: {
+				isTwoFactorAuthenticationEnabled: true,
+			},
+		})
+		return true
 	}
 
 	/**

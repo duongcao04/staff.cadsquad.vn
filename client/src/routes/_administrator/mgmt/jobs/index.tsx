@@ -2,20 +2,20 @@ import {
     CreateJobModal,
     getDateRangeOptions,
     getDueInPresets,
+    JobManagementGrid,
     JobManagementStats,
     JobManagementStatsSkeleton,
     JobManagementTable,
     JobManagementTableToolbar,
+    MobileJobManagementToolbar,
 } from '@/features/job-manage'
 import { APP_PERMISSIONS } from '@/lib'
 import { adminJobStatsOptions, jobsListOptions } from '@/lib/queries'
-import {
-    AdminPageHeading,
-    AppLoading,
-    ErrorPageContent,
-    HeroButton,
-} from '@/shared/components'
+import { AppLoading, ErrorPageContent, HeroButton } from '@/shared/components'
 import AdminContentContainer from '@/shared/components/admin/AdminContentContainer'
+import { ProjectCenterTabEnum } from '@/shared/enums'
+import { ProtectedRoute } from '@/shared/guards/protected-route'
+import { useDevice } from '@/shared/hooks'
 import { TJob } from '@/shared/types'
 import {
     Button,
@@ -43,8 +43,6 @@ import {
 } from 'lucide-react'
 import { Suspense, useMemo, useState } from 'react'
 import { z } from 'zod'
-import { ProjectCenterTabEnum } from '../../../../shared/enums'
-import { ProtectedRoute } from '../../../../shared/guards/protected-route'
 
 export enum EJobManagementTableTabs {
     ALL = 'all',
@@ -140,6 +138,7 @@ function ManageJobLayout({
     badgeCount?: number
     children: React.ReactNode
 }) {
+    const { isSmallView } = useDevice()
     const createJobModalState = useDisclosure({ id: 'CreateJobModal' })
     return (
         <>
@@ -150,23 +149,24 @@ function ManageJobLayout({
                 />
             )}
 
-            <AdminPageHeading
-                title="All Jobs"
-                showBadge
-                badgeCount={badgeCount}
-                actions={
-                    <HeroButton
-                        color="primary"
-                        className="px-6"
-                        startContent={<PlusIcon size={16} />}
-                        onPress={createJobModalState.onOpen}
-                    >
-                        New Job
-                    </HeroButton>
-                }
-            />
-
-            <AdminContentContainer className="relative space-y-6">
+            <AdminContentContainer
+                headerProps={{
+                    title: 'All Jobs',
+                    showBadge: !isSmallView,
+                    badgeCount,
+                    showActions: !isSmallView,
+                    actions: (
+                        <HeroButton
+                            color="primary"
+                            className="px-6"
+                            startContent={<PlusIcon size={16} />}
+                            onPress={createJobModalState.onOpen}
+                        >
+                            New Job
+                        </HeroButton>
+                    ),
+                }}
+            >
                 {children}
             </AdminContentContainer>
         </>
@@ -181,6 +181,8 @@ function ManageJobsPageSkeleton() {
 }
 
 function ManageJobsPage() {
+    const { isSmallView } = useDevice()
+
     const searchParams = Route.useSearch()
     const { dateRange, ...params } = searchParams
 
@@ -203,8 +205,8 @@ function ManageJobsPage() {
         })
     )
 
-    const jobs = data.jobs
-    const paginate = data.paginate
+    const jobs = useMemo(() => data.jobs, [data.jobs])
+    const paginate = useMemo(() => data.paginate, [data.paginate])
 
     const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]))
 
@@ -244,23 +246,45 @@ function ManageJobsPage() {
 
     return (
         <>
-            <JobManagementTableToolbar
-                searchParams={searchParams}
-                isLoadingData={isFetching}
-                onRefetch={refetch}
-            />
+            {isSmallView ? (
+                <MobileJobManagementToolbar
+                    searchParams={searchParams}
+                    isLoadingData={isFetching}
+                    onRefetch={refetch}
+                />
+            ) : (
+                <JobManagementTableToolbar
+                    searchParams={searchParams}
+                    isLoadingData={isFetching}
+                    onRefetch={refetch}
+                />
+            )}
 
-            <JobManagementTable
-                data={jobs}
-                isLoadingData={isFetching}
-                pagination={pagination}
-                sort={searchParams.sort ?? DEFAULT_SORT}
-                selectedKeys={selectedKeys}
-                onSelectionChange={setSelectedKeys}
-                onBulkAction={onBulkAction}
-                searchParams={searchParams}
-                onRefetch={refetch}
-            />
+            {isSmallView ? (
+                <JobManagementGrid
+                    data={jobs}
+                    isLoadingData={isFetching}
+                    pagination={pagination}
+                    sort={searchParams.sort ?? DEFAULT_SORT}
+                    selectedKeys={selectedKeys}
+                    onSelectionChange={setSelectedKeys}
+                    onBulkAction={onBulkAction}
+                    searchParams={searchParams}
+                    onRefetch={refetch}
+                />
+            ) : (
+                <JobManagementTable
+                    data={jobs}
+                    isLoadingData={isFetching}
+                    pagination={pagination}
+                    sort={searchParams.sort ?? DEFAULT_SORT}
+                    selectedKeys={selectedKeys}
+                    onSelectionChange={setSelectedKeys}
+                    onBulkAction={onBulkAction}
+                    searchParams={searchParams}
+                    onRefetch={refetch}
+                />
+            )}
 
             {hasSelection && (
                 <div className="fixed z-50 duration-200 transform -translate-x-1/2 shadow-2xl bottom-8 left-1/2 animate-in slide-in-from-bottom-6 fade-in rounded-2xl">

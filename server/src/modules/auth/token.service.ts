@@ -40,6 +40,7 @@ export class TokenService {
 		// 3. Tạo Payload (Không cần iat thủ công)
 		const payload = {
 			sub: user.id,
+			code: user.code,
 			email: user.email,
 			role: userData?.role?.code,
 			permissions: userPermissions,

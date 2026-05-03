@@ -166,7 +166,7 @@ function ScheduleLayout({ children }: { children: React.ReactNode }) {
                     </>
                 }
             />
-            <AdminContentContainer className="mt-1 flex flex-col h-[calc(100vh-180px)]">
+            <AdminContentContainer className="mt-1 flex flex-col h-[calc(100svh-180px)]">
                 {children}
             </AdminContentContainer>
         </>

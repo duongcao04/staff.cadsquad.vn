@@ -50,6 +50,7 @@ export const INTERNAL_URLS = {
         overview: '/admin',
         settings: '/admin/settings',
         schedule: '/admin/schedule',
+        more: '/administrator/more',
     },
 
     /**
@@ -72,7 +73,7 @@ export const INTERNAL_URLS = {
         jobTitles: '/mgmt/job-titles',
         jobTitlesDetail: (jobTitleCode: string) =>
             `/mgmt/job-titles/${jobTitleCode}`,
-        paymentChannels: '/mgmt/payments',
+        paymentChannels: '/financial/payment-channels',
         accessControl: '/mgmt/access-control',
         accessControlUser: '/mgmt/access-control/user',
         roles: '/mgmt/access-control/roles',

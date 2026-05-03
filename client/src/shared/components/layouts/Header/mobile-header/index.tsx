@@ -1,3 +1,7 @@
+import { CreateJobModal, DeliverJobModal } from '@/features/job-manage'
+import CreateUserModal from '@/features/staff-directory/components/modals/CreateUserModal'
+import { cn, INTERNAL_URLS, optimizeCloudinary, useProfile } from '@/lib'
+import { Bars, Gear, Magnifier } from '@gravity-ui/icons'
 import {
     Avatar,
     Button,
@@ -6,7 +10,8 @@ import {
     Tabs,
     useDisclosure,
 } from '@heroui/react'
-import { useRouter } from '@tanstack/react-router'
+import { ScrollArea } from '@radix-ui/react-scroll-area'
+import { Link, useRouter } from '@tanstack/react-router'
 import {
     ArrowLeftIcon,
     BriefcaseBusinessIcon,
@@ -16,7 +21,6 @@ import {
     ListTodoIcon,
     LogOutIcon,
     MoonIcon,
-    SearchIcon,
     SunIcon,
     UserCogIcon,
     UserIcon,
@@ -25,25 +29,21 @@ import {
 } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { Key, useState } from 'react'
-import { INTERNAL_URLS, optimizeCloudinary, useProfile } from '../../../../lib'
-import { TUser } from '../../../types'
-import CadsquadLogo from '../../CadsquadLogo'
-import { FluentColorApprovalsApp20 } from '../../icons/FluentColorApprovalsApp20'
-import { FluentColorBriefcase20 } from '../../icons/FluentColorBriefcase20'
-import { IconPeopleColorful } from '../../icons/IconPeopleColorful'
-import { CreateJobModal } from '../../../../features/job-manage/components/modals/CreateJobModal'
-import CreateUserModal from '../../../../features/staff-directory/components/modals/CreateUserModal'
-import { DeliverJobModal } from '../../../../features/job-manage/components/modals/DeliverJobModal'
-import { HeroButton } from '../../ui/hero-button'
+import { useHideOnScroll } from '../../../../hooks'
+import { TUser } from '../../../../types'
+import CadsquadLogo from '../../../CadsquadLogo'
+import { FluentColorApprovalsApp20 } from '../../../icons/FluentColorApprovalsApp20'
+import { FluentColorBriefcase20 } from '../../../icons/FluentColorBriefcase20'
+import { IconPeopleColorful } from '../../../icons/IconPeopleColorful'
+import { SearchModal } from '../../../search/search-modal'
 import {
     HeroDrawer,
     HeroDrawerBody,
     HeroDrawerContent,
-} from '../../ui/hero-drawer'
-import { ScrollArea, ScrollBar } from '../../ui/scroll-area'
-import { SearchModal } from '../../search/search-modal'
+} from '../../../ui/hero-drawer'
+import { ScrollBar } from '../../../ui/scroll-area'
 
-export default function MobileHeader() {
+export function MobileHeader({ onOpenMenu }: { onOpenMenu: () => void }) {
     const { profile, isAdmin } = useProfile()
     const searchModalDisclosure = useDisclosure({
         id: 'SearchModal',
@@ -61,6 +61,8 @@ export default function MobileHeader() {
     const deliverJobModalDisclosure = useDisclosure({
         id: 'DeliverJobModal',
     })
+
+    const isHidden = useHideOnScroll({ threshold: 10, topOffset: 50 })
 
     return (
         <>
@@ -98,31 +100,54 @@ export default function MobileHeader() {
                     onClose={deliverJobModalDisclosure.onClose}
                 />
             )}
-            <div className="w-full h-11 container fixed top-0 border-b border-border-muted z-50 grid grid-cols-[44px_1fr_32px] items-center bg-background">
-                <Avatar
-                    src={optimizeCloudinary(profile.avatar)}
-                    classNames={{
-                        base: 'size-6! cursor-pointer',
-                    }}
-                    isBordered
-                    onClick={userDrawerDisclosure.onOpen}
-                />
+            <div
+                className={cn(
+                    'w-full h-11 container fixed top-0 border-b border-border-muted z-50 grid grid-cols-[30px_60px_1fr] gap-1 items-center bg-background',
+                    'transition-transform duration-300 ease-in-out',
+                    isHidden ? 'translate-y-full' : 'translate-y-0'
+                )}
+            >
+                <Button
+                    disableRipple
+                    disableAnimation
+                    isIconOnly
+                    size="sm"
+                    variant="light"
+                    onPress={onOpenMenu}
+                >
+                    <Bars strokeWidth={1} fontSize={24} />
+                </Button>
                 <div className="w-full flex items-center justify-center">
                     <CadsquadLogo
                         classNames={{
-                            logo: 'h-6',
+                            logo: 'h-7',
                         }}
                     />
                 </div>
-                <HeroButton
-                    variant="light"
-                    size="sm"
-                    color="default"
-                    isIconOnly
-                    onPress={searchModalDisclosure.onOpen}
-                >
-                    <SearchIcon size={16} className="text-text-subdued" />
-                </HeroButton>
+                <div className="w-full flex justify-end gap-1">
+                    <Button
+                        disableRipple
+                        disableAnimation
+                        isIconOnly
+                        size="sm"
+                        variant="light"
+                        as={Link}
+                        to={INTERNAL_URLS.settings.overview}
+                    >
+                        <Magnifier strokeWidth={1} fontSize={24} />
+                    </Button>
+                    <Button
+                        disableRipple
+                        disableAnimation
+                        isIconOnly
+                        size="sm"
+                        variant="light"
+                        as={Link}
+                        to={INTERNAL_URLS.settings.overview}
+                    >
+                        <Gear strokeWidth={1} fontSize={24} />
+                    </Button>
+                </div>
             </div>
         </>
     )

@@ -1,10 +1,8 @@
 import { ablyClient } from '@/lib/ably'
 import { queryClient } from '@/main'
 import { AppLoading } from '@/shared/components'
-import {
-    AppThemeProvider,
-    useAppTheme,
-} from '@/shared/contexts/AppThemeContext'
+import { useAppTheme } from '@/shared/contexts'
+import { useDevice } from '@/shared/hooks'
 import { HeroUIProvider, ToastProvider } from '@heroui/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
@@ -27,59 +25,58 @@ export const Route = createRootRouteWithContext<AppRouterContext>()({
         return <AppLoading />
     },
     component: () => {
+        const { isSmallView } = useDevice()
         return (
             <>
                 <HeadContent />
-                <AppThemeProvider>
-                    <AblyProvider client={ablyClient}>
-                        <QueryClientProvider client={queryClient}>
-                            <NextThemesProvider
-                                attribute="class"
-                                defaultTheme="light"
-                                enableSystem={true}
-                            >
-                                <HeroUIConfigurationProvider>
-                                    <AntdProvider>
-                                        <ToastProvider
-                                            placement="bottom-right"
-                                            maxVisibleToasts={1}
-                                            toastOffset={20}
-                                            toastProps={{
-                                                radius: 'sm',
-                                                timeout: 4000,
-                                                variant: 'bordered',
-                                                classNames: {
-                                                    closeButton:
-                                                        'opacity-100 absolute right-4 top-1/2 -translate-y-1/2',
-                                                },
-                                            }}
-                                            regionProps={{
-                                                classNames: {
-                                                    base: '!z-[10000]',
-                                                },
-                                            }}
-                                        />
-                                        <div
-                                            id="app"
-                                            className="max-w-screen bg-background-muted scroll-smooth"
-                                        >
-                                            {/* hidden scrollbar */}
-                                            {/* <style jsx global>{`
-                                            body::-webkit-scrollbar {
-                                                display: none;
-                                            }
-                                        `}</style> */}
-                                            <Outlet />
-                                        </div>
-                                    </AntdProvider>
-                                </HeroUIConfigurationProvider>
-                            </NextThemesProvider>
+                <AblyProvider client={ablyClient}>
+                    <QueryClientProvider client={queryClient}>
+                        <NextThemesProvider
+                            attribute="class"
+                            defaultTheme="light"
+                            enableSystem={true}
+                        >
+                            <HeroUIConfigurationProvider>
+                                <AntdProvider>
+                                    <ToastProvider
+                                        placement="bottom-right"
+                                        maxVisibleToasts={1}
+                                        toastOffset={20}
+                                        toastProps={{
+                                            radius: 'sm',
+                                            timeout: 4000,
+                                            variant: 'bordered',
+                                            classNames: {
+                                                closeButton:
+                                                    'opacity-100 absolute right-4 top-1/2 -translate-y-1/2',
+                                            },
+                                        }}
+                                        regionProps={{
+                                            classNames: {
+                                                base: '!z-[10000]',
+                                            },
+                                        }}
+                                    />
+                                    <div
+                                        id="app"
+                                        className="max-w-screen bg-background-muted scroll-smooth"
+                                    >
+                                        {/* hidden scrollbar */}
+                                        {/* <style jsx global>{`
+                                                    body::-webkit-scrollbar {
+                                                        display: none;
+                                                    }
+                                                `}</style> */}
+                                        <Outlet />
+                                    </div>
+                                </AntdProvider>
+                            </HeroUIConfigurationProvider>
+                        </NextThemesProvider>
 
-                            <ReactQueryDevtools />
-                            {/* <TanStackRouterDevtools /> */}
-                        </QueryClientProvider>
-                    </AblyProvider>
-                </AppThemeProvider>
+                        {!isSmallView && <ReactQueryDevtools />}
+                        {/* <TanStackRouterDevtools /> */}
+                    </QueryClientProvider>
+                </AblyProvider>
             </>
         )
     },

@@ -11,13 +11,14 @@ import {
     adminDashboardKpisOptions,
     adminDashboardOvewviewOptions,
 } from '@/lib/queries/options/administrator-queries'
-import { AdminPageHeading, AppLoading, HeroButton } from '@/shared/components'
+import { AppLoading, HeroButton } from '@/shared/components'
 import { ErrorPageContent } from '@/shared/components/admin'
 import AdminContentContainer from '@/shared/components/admin/AdminContentContainer'
 import { useDisclosure } from '@heroui/react'
 import { useSuspenseQueries } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Plus, Settings } from 'lucide-react'
+import { useDevice } from '../../../shared/hooks'
 
 export const Route = createFileRoute('/_administrator/admin/')({
     head: () => ({
@@ -49,40 +50,47 @@ export const Route = createFileRoute('/_administrator/admin/')({
 
 function AdminDashboardLayout({ children }: { children: React.ReactNode }) {
     const createJobModalState = useDisclosure()
+    const { isSmallView } = useDevice()
     return (
         <>
-            <CreateJobModal
-                isOpen={createJobModalState.isOpen}
-                onClose={createJobModalState.onClose}
-            />
-            <AdminPageHeading
-                title="Admin Control Center"
-                description="System overview, business intelligence, operations, and quick administrative actions."
-                actions={
-                    <div className="flex flex-wrap items-center gap-3">
-                        <Link
-                            to={INTERNAL_URLS.admin.settings}
-                            className="block"
-                        >
-                            <HeroButton
-                                variant="flat"
-                                color="default"
-                                startContent={<Settings size={16} />}
+            {createJobModalState.isOpen && (
+                <CreateJobModal
+                    isOpen={createJobModalState.isOpen}
+                    onClose={createJobModalState.onClose}
+                />
+            )}
+            <AdminContentContainer
+                showHeader
+                headerProps={{
+                    title: 'Admin Control Center',
+                    description:
+                        'System overview, business intelligence, operations, and quick administrative actions.',
+                    showActions: !isSmallView,
+                    actions: (
+                        <div className="flex flex-wrap items-center gap-3">
+                            <Link
+                                to={INTERNAL_URLS.admin.settings}
+                                className="block"
                             >
-                                Settings
+                                <HeroButton
+                                    variant="flat"
+                                    color="default"
+                                    startContent={<Settings size={16} />}
+                                >
+                                    Settings
+                                </HeroButton>
+                            </Link>
+                            <HeroButton
+                                color="primary"
+                                startContent={<Plus size={16} />}
+                                onPress={createJobModalState.onOpen}
+                            >
+                                Create Job
                             </HeroButton>
-                        </Link>
-                        <HeroButton
-                            color="primary"
-                            startContent={<Plus size={16} />}
-                            onPress={createJobModalState.onOpen}
-                        >
-                            Create Job
-                        </HeroButton>
-                    </div>
-                }
-            />
-            <AdminContentContainer className="space-y-6">
+                        </div>
+                    ),
+                }}
+            >
                 {children}
             </AdminContentContainer>
         </>

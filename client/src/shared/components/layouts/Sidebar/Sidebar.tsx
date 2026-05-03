@@ -68,7 +68,7 @@ export function Sidebar() {
             animate={
                 sidebarStatus === ESidebarStatus.EXPAND ? 'expand' : 'collapse'
             }
-            className="min-h-[calc(100vh-56px)] bg-background border-r border-border-muted pt-3 flex flex-col justify-between"
+            className="min-h-[calc(100svh-56px)] bg-background border-r border-border-muted pt-3 flex flex-col justify-between"
         >
             <div id="sidebar-actions">
                 <div className="my-4 pl-4">

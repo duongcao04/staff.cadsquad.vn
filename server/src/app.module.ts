@@ -51,6 +51,7 @@ import { SystemSettingsModule } from './modules/system-settings/system-settings.
 import { BullConfigProvider } from './providers/bull-mq/bull-mq.provider'
 import { FinancialModule } from './modules/financial/financial.module'
 import { SupportModule } from './modules/support/support.module'
+import { MfaModule } from './modules/mfa/mfa.module'
 
 const environment = process.env.NODE_ENV || 'development'
 
@@ -59,7 +60,7 @@ const environment = process.env.NODE_ENV || 'development'
 		ConfigModule.forRoot({
 			isGlobal: true, // Để dùng được ở mọi nơi
 			envFilePath: [
-				'../.env.local', // 0. 
+				'../.env.local', // 0.
 				`../.env.${environment}.local`, // 1. Ưu tiên cao nhất (.env.production.local)
 				`../.env.${environment}`, // 2. Ưu tiên thứ hai (.env.production)
 				'../.env', // 3. Dự phòng cuối cùng (.env)
@@ -127,6 +128,7 @@ const environment = process.env.NODE_ENV || 'development'
 		AuditLogModule,
 		FinancialModule,
 		SupportModule,
+		MfaModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],

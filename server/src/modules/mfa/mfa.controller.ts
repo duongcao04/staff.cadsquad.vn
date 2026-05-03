@@ -1,0 +1,88 @@
+import {
+	Controller,
+	Post,
+	Res,
+	UseGuards,
+	Req,
+	Body,
+	UnauthorizedException,
+	Get,
+} from '@nestjs/common'
+import { JwtGuard } from '../auth/jwt.guard'
+import { UserService } from '../user/user.service'
+import type { Response } from 'express'
+import { MfaService } from './mfa.service'
+import { TokenPayload } from '../auth/dto/token-payload.dto'
+
+@Controller('mfa')
+export class MfaController {
+	constructor(
+		private readonly mfaService: MfaService,
+		private readonly userService: UserService
+	) {}
+
+	// --- SETUP STAGE 1: Generate QR Code ---
+	@Get('generate')
+	@UseGuards(JwtGuard)
+	async register(@Res() response: Response, @Req() request: Request) {
+		const user: TokenPayload = request['user']
+		const { otpauthUrl } =
+			await this.mfaService.generateTwoFactorAuthenticationSecret({
+				code: user.code,
+				id: user.sub,
+			})
+
+		const qrCodeImage =
+			await this.mfaService.generateQrCodeDataURL(otpauthUrl)
+
+		// Send the QR code image back to the client to be scanned
+		return response.json({ qrCode: qrCodeImage })
+	}
+
+	// --- SETUP STAGE 2: Turn on MFA ---
+	@Post('turn-on')
+	@UseGuards(JwtGuard)
+	async turnOnTwoFactorAuthentication(
+		@Req() request: Request,
+		@Body('code') code: string
+	) {
+		const user: TokenPayload = request['user']
+		const isCodeValid =
+			await this.mfaService.isTwoFactorAuthenticationCodeValid(
+				code,
+				user.sub
+			)
+
+		if (!isCodeValid) {
+			throw new UnauthorizedException('Wrong authentication code')
+		}
+
+		// Mark MFA as enabled in the database
+		await this.userService.turnOnTwoFactorAuthentication(user.sub)
+		return { message: 'MFA enabled successfully' }
+	}
+
+	// --- LOGIN STAGE: Authenticate with MFA ---
+	@Post('authenticate')
+	@UseGuards(JwtGuard)
+	// NOTE: This guard should only check if a valid initial login token exists.
+	async authenticate(@Req() request: Request, @Body('code') code: string) {
+		const user: TokenPayload = request['user']
+		const isCodeValid = this.mfaService.isTwoFactorAuthenticationCodeValid(
+			code,
+			user.sub
+		)
+
+		if (!isCodeValid) {
+			throw new UnauthorizedException('Wrong authentication code')
+		}
+
+		// Here, you would issue the FINAL JWT token that grants full access
+		// to your application, now that 2FA has passed.
+		// const accessToken = this.authService.getCookieWithJwtToken(request.user.id, true);
+
+		return {
+			message: 'Authenticated successfully',
+		}
+	}
+}

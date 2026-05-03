@@ -10,7 +10,7 @@ import {
 	Inject,
 	Injectable,
 	NotFoundException,
-	UnauthorizedException
+	UnauthorizedException,
 } from '@nestjs/common'
 import { plainToInstance } from 'class-transformer'
 import Redis from 'ioredis'
@@ -32,7 +32,7 @@ export class AuthService {
 		private readonly userSecurityService: UserSecurityService,
 		private readonly sessionService: SessionService,
 		private readonly mailService: MailService
-	) { }
+	) {}
 
 	async login(ip: string, userAgent: string, loginDto: LoginUserDto) {
 		// 1. Check user existing
@@ -107,7 +107,7 @@ export class AuthService {
 			return updatedUser
 		} catch (error) {
 			throw new Error(
-				`Failed to update last logined time: ${error.message}`
+				`Failed to update last logined time: ${(error as { message: string }).message}`
 			)
 		}
 	}
