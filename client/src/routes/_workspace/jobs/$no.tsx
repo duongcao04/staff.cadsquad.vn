@@ -23,7 +23,7 @@ import JobAttachmentsField from '@/shared/components/form-fields/JobAttachmentsF
 import CountdownTimer from '@/shared/components/ui/countdown-timer'
 import HtmlReactParser from '@/shared/components/ui/html-react-parser'
 import { JobStatusSystemTypeEnum } from '@/shared/enums'
-import { useDevice, usePermission } from '@/shared/hooks'
+import { useDevice } from '@/shared/hooks'
 import { TJob } from '@/shared/types'
 import { PencilToLine } from '@gravity-ui/icons'
 import {
@@ -69,10 +69,11 @@ import {
     UsersIcon,
     Wallet,
 } from 'lucide-react'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { z } from 'zod'
 import { JobTimelineCard } from '../../../features/job-edit'
 import JobFinishChip from '../../../shared/components/chips/JobFinishChip'
+import { useLayout } from '../../../shared/contexts'
 import { PermissionGuard } from '../../../shared/guards/permission'
 
 export enum JobDetailTabEnum {
@@ -104,6 +105,13 @@ export const Route = createFileRoute('/_workspace/jobs/$no')({
         })
     },
     component: () => {
+        const { setShowHeader } = useLayout()
+
+        useEffect(() => {
+            setShowHeader(false)
+            return () => setShowHeader(true)
+        }, [setShowHeader])
+
         const { no } = Route.useParams()
         const { isSmallView } = useDevice()
 

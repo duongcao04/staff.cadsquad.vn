@@ -1,6 +1,5 @@
 import SettingsSidebar from '@/features/settings/components/SettingsSidebar'
 import { Header, PageWithHeaderLayout } from '@/shared/components'
-import { MobileHeader } from '@/shared/components'
 import { AuthGuard } from '@/shared/guards'
 import { useDevice } from '@/shared/hooks'
 import { createFileRoute, Outlet } from '@tanstack/react-router'
@@ -16,7 +15,8 @@ function SettingsLayout() {
         <AuthGuard>
             <PageWithHeaderLayout
                 header={<Header />}
-                mobileHeader={<MobileHeader />}
+                mobileHeader={<></>}
+                showHeader={!isSmallView}
             >
                 <div
                     className="size-full max-w-7xl mx-auto"

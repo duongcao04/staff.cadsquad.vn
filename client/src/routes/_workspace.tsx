@@ -23,7 +23,6 @@ export const Route = createFileRoute('/_workspace')({
 
 function WorkspaceLayout() {
     const { showHeader } = useLayout()
-    console.log(showHeader)
 
     const sidebarStatus = useStore(appStore, (state) => state.sidebarStatus)
     const { isSmallView } = useDevice()
