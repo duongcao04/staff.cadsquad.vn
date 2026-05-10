@@ -1,17 +1,13 @@
 import { ActivityType, Prisma } from '@/generated/prisma'
 import { PrismaService } from '@/providers/prisma/prisma.service'
-import { InjectQueue } from '@nestjs/bullmq'
 import { InternalServerErrorException } from '@nestjs/common'
 import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs'
-import { Queue } from 'bullmq'
 import { plainToInstance } from 'class-transformer'
 import slugify from 'slugify'
-import { SharePointService } from '../../../sharepoint/sharepoint.service'
 import { ActivityLogService } from '../../activity-log.service'
 import { JobResponseDto } from '../../dto/job-response.dto'
 import { JobActionEvent } from '../../events/job-action.event'
 import { JobCreatedEvent } from '../../events/job-created.event'
-import { JOB_QUEUE } from '../../job.constants'
 import { CreateJobCommand } from '../impl/create-job.command'
 
 @CommandHandler(CreateJobCommand)
@@ -19,9 +15,7 @@ export class CreateJobHandler implements ICommandHandler<CreateJobCommand> {
 	constructor(
 		private readonly prisma: PrismaService,
 		private readonly activityLogService: ActivityLogService,
-		private readonly sharepointService: SharePointService,
-		private readonly eventBus: EventBus,
-		@InjectQueue(JOB_QUEUE) private readonly spQueue: Queue
+		private readonly eventBus: EventBus
 	) {}
 
 	async execute(command: CreateJobCommand) {
@@ -134,6 +128,7 @@ export class CreateJobHandler implements ICommandHandler<CreateJobCommand> {
 				no: dto.no,
 				sharepointTemplateId: dto.sharepointTemplateId,
 				typeId: dto.typeId,
+				sharepointFolderId: dto.sharepointFolderId,
 				useExistingSharepointFolder: dto.useExistingSharepointFolder,
 			})
 		)

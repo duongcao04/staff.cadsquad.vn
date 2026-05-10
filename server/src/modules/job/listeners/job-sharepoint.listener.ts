@@ -17,12 +17,12 @@ export class JobSharepointListener implements IEventHandler<JobCreatedEvent> {
 	) {}
 
 	async handle(event: JobCreatedEvent) {
-		// Giả sử event.data chứa object CreateJobDto
 		const {
 			typeId,
 			sharepointTemplateId: folderTemplateId,
 			useExistingSharepointFolder,
 			no,
+			sharepointFolderId,
 			displayName,
 			clientName,
 		} = event.data
@@ -30,13 +30,53 @@ export class JobSharepointListener implements IEventHandler<JobCreatedEvent> {
 		this.logger.log(
 			`[JobSharepointListener] Bắt được sự kiện tạo job cho mã: ${no}`
 		)
+
 		try {
 			// 1. NẾU LÀ LUỒNG NHANH (Folder có sẵn) -> Đã xử lý DB ở CreateJobHandler -> BỎ QUA QUEUE
 			if (useExistingSharepointFolder === '1') {
 				this.logger.log(
 					`Job ${no} sử dụng Folder có sẵn. Bỏ qua Queue.`
 				)
-				return
+				const findSharepointItem =
+					await this.prisma.sharepointItem.findFirst({
+						where: {
+							itemId: sharepointFolderId,
+						},
+						select: { id: true, itemId: true },
+					})
+				const findFolderTemplate = findSharepointItem?.id
+					? await this.prisma.jobFolderTemplate.findFirst({
+							where: {
+								jobs: {
+									some: {
+										sharepointFolderId:
+											findSharepointItem?.id,
+									},
+								},
+							},
+							select: { id: true },
+						})
+					: undefined
+
+				console.log(findFolderTemplate)
+
+				return await this.prisma.job.update({
+					where: { no },
+					data: {
+						...(findFolderTemplate?.id && {
+							folderTemplate: {
+								connect: { id: findFolderTemplate?.id },
+							},
+						}),
+						...(findSharepointItem?.id && {
+							sharepointFolder: {
+								connect: {
+									id: findSharepointItem?.id,
+								},
+							},
+						}),
+					},
+				})
 			}
 
 			// Gom dữ liệu cần thiết cho Queue

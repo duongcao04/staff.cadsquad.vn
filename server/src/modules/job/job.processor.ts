@@ -2,12 +2,10 @@ import { Processor, WorkerHost } from '@nestjs/bullmq'
 import { BadRequestException, Logger } from '@nestjs/common'
 import { Job } from 'bullmq'
 import { randomUUID } from 'crypto'
-import { SharePointService } from '../sharepoint/sharepoint.service'
-import { CreateJobDto } from './dto/create-job.dto'
-import { JOB_CREATED_HANDLER, JOB_QUEUE } from './job.constants'
 import { PrismaService } from '../../providers/prisma/prisma.service'
-import crypto from 'node:crypto'
+import { SharePointService } from '../sharepoint/sharepoint.service'
 import { JobCreatedHandlerDto } from './dto/queue/job-created-handler.dto'
+import { JOB_CREATED_HANDLER, JOB_QUEUE } from './job.constants'
 
 @Processor(JOB_QUEUE)
 export class JobProcessor extends WorkerHost {
