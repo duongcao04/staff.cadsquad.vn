@@ -67,7 +67,10 @@ export class JobResponseDto {
 	@Expose()
 	attachmentUrls!: string[]
 
-	@ApiProperty({ description: 'Linked SharePoint folder ID', required: false })
+	@ApiProperty({
+		description: 'Linked SharePoint folder ID',
+		required: false,
+	})
 	@Expose()
 	sharepointFolderId?: string
 
@@ -113,6 +116,15 @@ export class JobResponseDto {
 	@Expose()
 	@Type(() => UserResponseDto)
 	createdBy!: UserResponseDto
+
+	@ApiProperty({
+		type: () => UserResponseDto,
+		isArray: true,
+		description: 'List of people responsible for checking output',
+	})
+	@Expose()
+	@Type(() => UserResponseDto) // Cần thiết để class-transformer map dữ liệu mảng
+	reviewers!: UserResponseDto[]
 
 	folderTemplateId?: string
 

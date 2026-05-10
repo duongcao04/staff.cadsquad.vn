@@ -17,10 +17,9 @@ export class NotificationService {
 
 	constructor(
 		private readonly prisma: PrismaService,
-		// Inject Queue thay vì Ably/Firebase Service trực tiếp
 		@InjectQueue(NOTIFICATION_QUEUE)
 		private readonly notificationQueue: Queue
-	) { }
+	) {}
 
 	/**
 	 * Gửi 1 thông báo
@@ -129,7 +128,9 @@ export class NotificationService {
 
 			this.logger.log(`Queued ${jobs.length} notifications successfully`)
 		} catch (error) {
-			this.logger.error(`Bulk notification error: ${(error as { message: string }).message}`)
+			this.logger.error(
+				`Bulk notification error: ${(error as { message: string }).message}`
+			)
 		}
 	}
 

@@ -65,4 +65,3 @@ const EventListeners = [JobNotificationListener, JobSharepointListener]
 	exports: [JobService, ActivityLogService, JobCommentService],
 })
 export class JobModule {}
-

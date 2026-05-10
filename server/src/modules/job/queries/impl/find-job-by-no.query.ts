@@ -11,7 +11,7 @@ export class FindJobByNoQuery {
 		public readonly userId: string,
 		public readonly userPermissions: string[],
 		public readonly jobNo: string
-	) { }
+	) {}
 }
 
 @QueryHandler(FindJobByNoQuery)
@@ -19,7 +19,7 @@ export class FindJobByNoHandler implements IQueryHandler<FindJobByNoQuery> {
 	constructor(
 		private readonly prisma: PrismaService,
 		private readonly jobHelper: JobHelpersService
-	) { }
+	) {}
 
 	async execute(query: FindJobByNoQuery) {
 		const { jobNo, userId, userPermissions } = query
@@ -44,11 +44,15 @@ export class FindJobByNoHandler implements IQueryHandler<FindJobByNoQuery> {
 					orderBy: { modifiedAt: 'desc' },
 				},
 				sharepointFolder: true,
-				folderTemplate: true
+				folderTemplate: true,
+				reviewers: true,
 			},
 		})
 		if (!job) throw new NotFoundException('Job not found')
-		const mappedData = (await this.jobHelper.mapRoleBasedData([job], userId))[0]
+
+		const mappedData = (
+			await this.jobHelper.mapRoleBasedData([job], userId)
+		)[0]
 
 		return plainToInstance(JobResponseDto, mappedData, {
 			excludeExtraneousValues: true,

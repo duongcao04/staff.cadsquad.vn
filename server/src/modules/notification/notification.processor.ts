@@ -12,9 +12,7 @@ import {
 export class NotificationProcessor extends WorkerHost {
 	private readonly logger = new Logger(NotificationProcessor.name)
 
-	constructor(
-		private readonly ablyService: AblyService,
-	) {
+	constructor(private readonly ablyService: AblyService) {
 		super()
 	}
 
@@ -45,10 +43,9 @@ export class NotificationProcessor extends WorkerHost {
 			this.logger.log(`Sent notification to User ${notification.userId}`)
 		} catch (error) {
 			this.logger.error(
-				`Failed to send notification: ${error.message}`,
-				error.stack
+				`Failed to send notification: ${(error as { message: string }).message}`
 			)
-			throw error // Ném lỗi để BullMQ retry
+			throw error
 		}
 	}
 }
