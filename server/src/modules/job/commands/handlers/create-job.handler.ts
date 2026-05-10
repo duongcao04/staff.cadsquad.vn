@@ -1,21 +1,18 @@
 import { ActivityType, Prisma } from '@/generated/prisma'
 import { PrismaService } from '@/providers/prisma/prisma.service'
 import { InjectQueue } from '@nestjs/bullmq'
-import { InternalServerErrorException, NotFoundException } from '@nestjs/common'
+import { InternalServerErrorException } from '@nestjs/common'
 import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs'
-import { EventEmitter2 } from '@nestjs/event-emitter'
 import { Queue } from 'bullmq'
 import { plainToInstance } from 'class-transformer'
 import slugify from 'slugify'
 import { SharePointService } from '../../../sharepoint/sharepoint.service'
 import { ActivityLogService } from '../../activity-log.service'
-import { CreateJobDto } from '../../dto/create-job.dto'
 import { JobResponseDto } from '../../dto/job-response.dto'
 import { JobActionEvent } from '../../events/job-action.event'
-import { JOB_CREATED_HANDLER, JOB_QUEUE } from '../../job.constants'
-import { CreateJobCommand } from '../impl/create-job.command'
 import { JobCreatedEvent } from '../../events/job-created.event'
-import { JobCreatedHandlerDto } from '../../dto/queue/job-created-handler.dto'
+import { JOB_QUEUE } from '../../job.constants'
+import { CreateJobCommand } from '../impl/create-job.command'
 
 @CommandHandler(CreateJobCommand)
 export class CreateJobHandler implements ICommandHandler<CreateJobCommand> {
@@ -59,6 +56,9 @@ export class CreateJobHandler implements ICommandHandler<CreateJobCommand> {
 			const createdJob = await tx.job.create({
 				data: {
 					...jobData,
+					reviewers: {
+						connect: [{ id: creatorId }],
+					},
 					status: { connect: { id: defaultStatus.id } },
 					createdBy: { connect: { id: creatorId } },
 					type: { connect: { id: typeId } },

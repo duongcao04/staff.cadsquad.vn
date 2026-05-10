@@ -95,6 +95,8 @@ model User {
 
     systemSettings SystemSetting[]
     transactions   Transaction[]
+
+    reviewedJobs Job[] @relation("JobReviewers")
 }
 
 model UserSecurityLog {
@@ -390,8 +392,11 @@ model Job {
 
     assignments JobAssignment[]
 
-    createdBy        User               @relation("JobCreator", fields: [createdById], references: [id])
-    createdById      String
+    createdBy   User   @relation("JobCreator", fields: [createdById], references: [id])
+    createdById String
+
+    reviewers User[] @relation("JobReviewers")
+
     paymentChannel   PaymentChannel?    @relation(fields: [paymentChannelId], references: [id])
     paymentChannelId String?
     status           JobStatus          @relation(fields: [statusId], references: [id])

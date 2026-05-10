@@ -4787,6 +4787,7 @@ export namespace Prisma {
     supportTickets: number
     systemSettings: number
     transactions: number
+    reviewedJobs: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4815,6 +4816,7 @@ export namespace Prisma {
     supportTickets?: boolean | UserCountOutputTypeCountSupportTicketsArgs
     systemSettings?: boolean | UserCountOutputTypeCountSystemSettingsArgs
     transactions?: boolean | UserCountOutputTypeCountTransactionsArgs
+    reviewedJobs?: boolean | UserCountOutputTypeCountReviewedJobsArgs
   }
 
   // Custom InputTypes
@@ -5001,6 +5003,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountTransactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TransactionWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountReviewedJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JobWhereInput
   }
 
 
@@ -5245,6 +5254,7 @@ export namespace Prisma {
 
   export type JobCountOutputType = {
     assignments: number
+    reviewers: number
     activityLog: number
     files: number
     comments: number
@@ -5256,6 +5266,7 @@ export namespace Prisma {
 
   export type JobCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     assignments?: boolean | JobCountOutputTypeCountAssignmentsArgs
+    reviewers?: boolean | JobCountOutputTypeCountReviewersArgs
     activityLog?: boolean | JobCountOutputTypeCountActivityLogArgs
     files?: boolean | JobCountOutputTypeCountFilesArgs
     comments?: boolean | JobCountOutputTypeCountCommentsArgs
@@ -5281,6 +5292,13 @@ export namespace Prisma {
    */
   export type JobCountOutputTypeCountAssignmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: JobAssignmentWhereInput
+  }
+
+  /**
+   * JobCountOutputType without action
+   */
+  export type JobCountOutputTypeCountReviewersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserWhereInput
   }
 
   /**
@@ -9228,6 +9246,7 @@ export namespace Prisma {
     supportTickets?: boolean | User$supportTicketsArgs<ExtArgs>
     systemSettings?: boolean | User$systemSettingsArgs<ExtArgs>
     transactions?: boolean | User$transactionsArgs<ExtArgs>
+    reviewedJobs?: boolean | User$reviewedJobsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -9342,6 +9361,7 @@ export namespace Prisma {
     supportTickets?: boolean | User$supportTicketsArgs<ExtArgs>
     systemSettings?: boolean | User$systemSettingsArgs<ExtArgs>
     transactions?: boolean | User$transactionsArgs<ExtArgs>
+    reviewedJobs?: boolean | User$reviewedJobsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9389,6 +9409,7 @@ export namespace Prisma {
       supportTickets: Prisma.$SupportTicketPayload<ExtArgs>[]
       systemSettings: Prisma.$SystemSettingPayload<ExtArgs>[]
       transactions: Prisma.$TransactionPayload<ExtArgs>[]
+      reviewedJobs: Prisma.$JobPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -9835,6 +9856,7 @@ export namespace Prisma {
     supportTickets<T extends User$supportTicketsArgs<ExtArgs> = {}>(args?: Subset<T, User$supportTicketsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SupportTicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     systemSettings<T extends User$systemSettingsArgs<ExtArgs> = {}>(args?: Subset<T, User$systemSettingsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SystemSettingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     transactions<T extends User$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, User$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    reviewedJobs<T extends User$reviewedJobsArgs<ExtArgs> = {}>(args?: Subset<T, User$reviewedJobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10959,6 +10981,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
+  }
+
+  /**
+   * User.reviewedJobs
+   */
+  export type User$reviewedJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Job
+     */
+    select?: JobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Job
+     */
+    omit?: JobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobInclude<ExtArgs> | null
+    where?: JobWhereInput
+    orderBy?: JobOrderByWithRelationInput | JobOrderByWithRelationInput[]
+    cursor?: JobWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JobScalarFieldEnum | JobScalarFieldEnum[]
   }
 
   /**
@@ -26940,6 +26986,7 @@ export namespace Prisma {
     sharepointFolder?: boolean | Job$sharepointFolderArgs<ExtArgs>
     assignments?: boolean | Job$assignmentsArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    reviewers?: boolean | Job$reviewersArgs<ExtArgs>
     paymentChannel?: boolean | Job$paymentChannelArgs<ExtArgs>
     status?: boolean | JobStatusDefaultArgs<ExtArgs>
     activityLog?: boolean | Job$activityLogArgs<ExtArgs>
@@ -27058,6 +27105,7 @@ export namespace Prisma {
     sharepointFolder?: boolean | Job$sharepointFolderArgs<ExtArgs>
     assignments?: boolean | Job$assignmentsArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    reviewers?: boolean | Job$reviewersArgs<ExtArgs>
     paymentChannel?: boolean | Job$paymentChannelArgs<ExtArgs>
     status?: boolean | JobStatusDefaultArgs<ExtArgs>
     activityLog?: boolean | Job$activityLogArgs<ExtArgs>
@@ -27097,6 +27145,7 @@ export namespace Prisma {
       sharepointFolder: Prisma.$SharepointItemPayload<ExtArgs> | null
       assignments: Prisma.$JobAssignmentPayload<ExtArgs>[]
       createdBy: Prisma.$UserPayload<ExtArgs>
+      reviewers: Prisma.$UserPayload<ExtArgs>[]
       paymentChannel: Prisma.$PaymentChannelPayload<ExtArgs> | null
       status: Prisma.$JobStatusPayload<ExtArgs>
       activityLog: Prisma.$JobActivityLogPayload<ExtArgs>[]
@@ -27533,6 +27582,7 @@ export namespace Prisma {
     sharepointFolder<T extends Job$sharepointFolderArgs<ExtArgs> = {}>(args?: Subset<T, Job$sharepointFolderArgs<ExtArgs>>): Prisma__SharepointItemClient<$Result.GetResult<Prisma.$SharepointItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     assignments<T extends Job$assignmentsArgs<ExtArgs> = {}>(args?: Subset<T, Job$assignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     createdBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    reviewers<T extends Job$reviewersArgs<ExtArgs> = {}>(args?: Subset<T, Job$reviewersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     paymentChannel<T extends Job$paymentChannelArgs<ExtArgs> = {}>(args?: Subset<T, Job$paymentChannelArgs<ExtArgs>>): Prisma__PaymentChannelClient<$Result.GetResult<Prisma.$PaymentChannelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     status<T extends JobStatusDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobStatusDefaultArgs<ExtArgs>>): Prisma__JobStatusClient<$Result.GetResult<Prisma.$JobStatusPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     activityLog<T extends Job$activityLogArgs<ExtArgs> = {}>(args?: Subset<T, Job$activityLogArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobActivityLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -28057,6 +28107,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: JobAssignmentScalarFieldEnum | JobAssignmentScalarFieldEnum[]
+  }
+
+  /**
+   * Job.reviewers
+   */
+  export type Job$reviewersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    cursor?: UserWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
   }
 
   /**
@@ -53845,6 +53919,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketListRelationFilter
     systemSettings?: SystemSettingListRelationFilter
     transactions?: TransactionListRelationFilter
+    reviewedJobs?: JobListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -53898,6 +53973,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketOrderByRelationAggregateInput
     systemSettings?: SystemSettingOrderByRelationAggregateInput
     transactions?: TransactionOrderByRelationAggregateInput
+    reviewedJobs?: JobOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -53954,6 +54030,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketListRelationFilter
     systemSettings?: SystemSettingListRelationFilter
     transactions?: TransactionListRelationFilter
+    reviewedJobs?: JobListRelationFilter
   }, "id" | "code" | "email" | "username">
 
   export type UserOrderByWithAggregationInput = {
@@ -55005,6 +55082,7 @@ export namespace Prisma {
     sharepointFolder?: XOR<SharepointItemNullableScalarRelationFilter, SharepointItemWhereInput> | null
     assignments?: JobAssignmentListRelationFilter
     createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    reviewers?: UserListRelationFilter
     paymentChannel?: XOR<PaymentChannelNullableScalarRelationFilter, PaymentChannelWhereInput> | null
     status?: XOR<JobStatusScalarRelationFilter, JobStatusWhereInput>
     activityLog?: JobActivityLogListRelationFilter
@@ -55048,6 +55126,7 @@ export namespace Prisma {
     sharepointFolder?: SharepointItemOrderByWithRelationInput
     assignments?: JobAssignmentOrderByRelationAggregateInput
     createdBy?: UserOrderByWithRelationInput
+    reviewers?: UserOrderByRelationAggregateInput
     paymentChannel?: PaymentChannelOrderByWithRelationInput
     status?: JobStatusOrderByWithRelationInput
     activityLog?: JobActivityLogOrderByRelationAggregateInput
@@ -55094,6 +55173,7 @@ export namespace Prisma {
     sharepointFolder?: XOR<SharepointItemNullableScalarRelationFilter, SharepointItemWhereInput> | null
     assignments?: JobAssignmentListRelationFilter
     createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    reviewers?: UserListRelationFilter
     paymentChannel?: XOR<PaymentChannelNullableScalarRelationFilter, PaymentChannelWhereInput> | null
     status?: XOR<JobStatusScalarRelationFilter, JobStatusWhereInput>
     activityLog?: JobActivityLogListRelationFilter
@@ -57102,6 +57182,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
     transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobCreateNestedManyWithoutReviewersInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -57151,6 +57232,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobUncheckedCreateNestedManyWithoutReviewersInput
   }
 
   export type UserUpdateInput = {
@@ -57200,6 +57282,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -57249,6 +57332,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUncheckedUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -58374,6 +58458,7 @@ export namespace Prisma {
     sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
+    reviewers?: UserCreateNestedManyWithoutReviewedJobsInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
     status: JobStatusCreateNestedOneWithoutJobsInput
     activityLog?: JobActivityLogCreateNestedManyWithoutJobInput
@@ -58413,6 +58498,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     folderTemplateId?: string | null
     assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
+    reviewers?: UserUncheckedCreateNestedManyWithoutReviewedJobsInput
     activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
     files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
     comments?: JobCommentUncheckedCreateNestedManyWithoutJobInput
@@ -58446,6 +58532,7 @@ export namespace Prisma {
     sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
+    reviewers?: UserUpdateManyWithoutReviewedJobsNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
     status?: JobStatusUpdateOneRequiredWithoutJobsNestedInput
     activityLog?: JobActivityLogUpdateManyWithoutJobNestedInput
@@ -58485,6 +58572,7 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
+    reviewers?: UserUncheckedUpdateManyWithoutReviewedJobsNestedInput
     activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
     files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
     comments?: JobCommentUncheckedUpdateManyWithoutJobNestedInput
@@ -63292,6 +63380,12 @@ export namespace Prisma {
     connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
   }
 
+  export type JobCreateNestedManyWithoutReviewersInput = {
+    create?: XOR<JobCreateWithoutReviewersInput, JobUncheckedCreateWithoutReviewersInput> | JobCreateWithoutReviewersInput[] | JobUncheckedCreateWithoutReviewersInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutReviewersInput | JobCreateOrConnectWithoutReviewersInput[]
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+  }
+
   export type NotificationUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
     connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
@@ -63464,6 +63558,12 @@ export namespace Prisma {
     connectOrCreate?: TransactionCreateOrConnectWithoutCreatedByInput | TransactionCreateOrConnectWithoutCreatedByInput[]
     createMany?: TransactionCreateManyCreatedByInputEnvelope
     connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
+  export type JobUncheckedCreateNestedManyWithoutReviewersInput = {
+    create?: XOR<JobCreateWithoutReviewersInput, JobUncheckedCreateWithoutReviewersInput> | JobCreateWithoutReviewersInput[] | JobUncheckedCreateWithoutReviewersInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutReviewersInput | JobCreateOrConnectWithoutReviewersInput[]
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
   }
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -63859,6 +63959,19 @@ export namespace Prisma {
     deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
   }
 
+  export type JobUpdateManyWithoutReviewersNestedInput = {
+    create?: XOR<JobCreateWithoutReviewersInput, JobUncheckedCreateWithoutReviewersInput> | JobCreateWithoutReviewersInput[] | JobUncheckedCreateWithoutReviewersInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutReviewersInput | JobCreateOrConnectWithoutReviewersInput[]
+    upsert?: JobUpsertWithWhereUniqueWithoutReviewersInput | JobUpsertWithWhereUniqueWithoutReviewersInput[]
+    set?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    disconnect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    delete?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    update?: JobUpdateWithWhereUniqueWithoutReviewersInput | JobUpdateWithWhereUniqueWithoutReviewersInput[]
+    updateMany?: JobUpdateManyWithWhereWithoutReviewersInput | JobUpdateManyWithWhereWithoutReviewersInput[]
+    deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
+  }
+
   export type NotificationUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
     connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
@@ -64206,6 +64319,19 @@ export namespace Prisma {
     update?: TransactionUpdateWithWhereUniqueWithoutCreatedByInput | TransactionUpdateWithWhereUniqueWithoutCreatedByInput[]
     updateMany?: TransactionUpdateManyWithWhereWithoutCreatedByInput | TransactionUpdateManyWithWhereWithoutCreatedByInput[]
     deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
+  export type JobUncheckedUpdateManyWithoutReviewersNestedInput = {
+    create?: XOR<JobCreateWithoutReviewersInput, JobUncheckedCreateWithoutReviewersInput> | JobCreateWithoutReviewersInput[] | JobUncheckedCreateWithoutReviewersInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutReviewersInput | JobCreateOrConnectWithoutReviewersInput[]
+    upsert?: JobUpsertWithWhereUniqueWithoutReviewersInput | JobUpsertWithWhereUniqueWithoutReviewersInput[]
+    set?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    disconnect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    delete?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    update?: JobUpdateWithWhereUniqueWithoutReviewersInput | JobUpdateWithWhereUniqueWithoutReviewersInput[]
+    updateMany?: JobUpdateManyWithWhereWithoutReviewersInput | JobUpdateManyWithWhereWithoutReviewersInput[]
+    deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutSecurityLogsInput = {
@@ -64836,6 +64962,12 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type UserCreateNestedManyWithoutReviewedJobsInput = {
+    create?: XOR<UserCreateWithoutReviewedJobsInput, UserUncheckedCreateWithoutReviewedJobsInput> | UserCreateWithoutReviewedJobsInput[] | UserUncheckedCreateWithoutReviewedJobsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutReviewedJobsInput | UserCreateOrConnectWithoutReviewedJobsInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
   export type PaymentChannelCreateNestedOneWithoutJobsInput = {
     create?: XOR<PaymentChannelCreateWithoutJobsInput, PaymentChannelUncheckedCreateWithoutJobsInput>
     connectOrCreate?: PaymentChannelCreateOrConnectWithoutJobsInput
@@ -64908,6 +65040,12 @@ export namespace Prisma {
     connectOrCreate?: JobAssignmentCreateOrConnectWithoutJobInput | JobAssignmentCreateOrConnectWithoutJobInput[]
     createMany?: JobAssignmentCreateManyJobInputEnvelope
     connect?: JobAssignmentWhereUniqueInput | JobAssignmentWhereUniqueInput[]
+  }
+
+  export type UserUncheckedCreateNestedManyWithoutReviewedJobsInput = {
+    create?: XOR<UserCreateWithoutReviewedJobsInput, UserUncheckedCreateWithoutReviewedJobsInput> | UserCreateWithoutReviewedJobsInput[] | UserUncheckedCreateWithoutReviewedJobsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutReviewedJobsInput | UserCreateOrConnectWithoutReviewedJobsInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
   export type JobActivityLogUncheckedCreateNestedManyWithoutJobInput = {
@@ -65028,6 +65166,19 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutJobsCreatedInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutJobsCreatedInput, UserUpdateWithoutJobsCreatedInput>, UserUncheckedUpdateWithoutJobsCreatedInput>
+  }
+
+  export type UserUpdateManyWithoutReviewedJobsNestedInput = {
+    create?: XOR<UserCreateWithoutReviewedJobsInput, UserUncheckedCreateWithoutReviewedJobsInput> | UserCreateWithoutReviewedJobsInput[] | UserUncheckedCreateWithoutReviewedJobsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutReviewedJobsInput | UserCreateOrConnectWithoutReviewedJobsInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutReviewedJobsInput | UserUpsertWithWhereUniqueWithoutReviewedJobsInput[]
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutReviewedJobsInput | UserUpdateWithWhereUniqueWithoutReviewedJobsInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutReviewedJobsInput | UserUpdateManyWithWhereWithoutReviewedJobsInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
   export type PaymentChannelUpdateOneWithoutJobsNestedInput = {
@@ -65168,6 +65319,19 @@ export namespace Prisma {
     update?: JobAssignmentUpdateWithWhereUniqueWithoutJobInput | JobAssignmentUpdateWithWhereUniqueWithoutJobInput[]
     updateMany?: JobAssignmentUpdateManyWithWhereWithoutJobInput | JobAssignmentUpdateManyWithWhereWithoutJobInput[]
     deleteMany?: JobAssignmentScalarWhereInput | JobAssignmentScalarWhereInput[]
+  }
+
+  export type UserUncheckedUpdateManyWithoutReviewedJobsNestedInput = {
+    create?: XOR<UserCreateWithoutReviewedJobsInput, UserUncheckedCreateWithoutReviewedJobsInput> | UserCreateWithoutReviewedJobsInput[] | UserUncheckedCreateWithoutReviewedJobsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutReviewedJobsInput | UserCreateOrConnectWithoutReviewedJobsInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutReviewedJobsInput | UserUpsertWithWhereUniqueWithoutReviewedJobsInput[]
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutReviewedJobsInput | UserUpdateWithWhereUniqueWithoutReviewedJobsInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutReviewedJobsInput | UserUpdateManyWithWhereWithoutReviewedJobsInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
   export type JobActivityLogUncheckedUpdateManyWithoutJobNestedInput = {
@@ -67040,6 +67204,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
     transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobCreateNestedManyWithoutReviewersInput
   }
 
   export type UserUncheckedCreateWithoutSystemAuditLogsInput = {
@@ -67088,6 +67253,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobUncheckedCreateNestedManyWithoutReviewersInput
   }
 
   export type UserCreateOrConnectWithoutSystemAuditLogsInput = {
@@ -67152,6 +67318,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSystemAuditLogsInput = {
@@ -67200,6 +67367,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUncheckedUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserCreateWithoutUserDevicesInput = {
@@ -67248,6 +67416,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
     transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobCreateNestedManyWithoutReviewersInput
   }
 
   export type UserUncheckedCreateWithoutUserDevicesInput = {
@@ -67296,6 +67465,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobUncheckedCreateNestedManyWithoutReviewersInput
   }
 
   export type UserCreateOrConnectWithoutUserDevicesInput = {
@@ -67360,6 +67530,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUserDevicesInput = {
@@ -67408,6 +67579,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUncheckedUpdateManyWithoutReviewersNestedInput
   }
 
   export type JobTitleCreateWithoutUsersInput = {
@@ -67517,6 +67689,7 @@ export namespace Prisma {
     client?: ClientCreateNestedOneWithoutJobsInput
     sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
+    reviewers?: UserCreateNestedManyWithoutReviewedJobsInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
     status: JobStatusCreateNestedOneWithoutJobsInput
     activityLog?: JobActivityLogCreateNestedManyWithoutJobInput
@@ -67555,6 +67728,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     folderTemplateId?: string | null
     assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
+    reviewers?: UserUncheckedCreateNestedManyWithoutReviewedJobsInput
     activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
     files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
     comments?: JobCommentUncheckedCreateNestedManyWithoutJobInput
@@ -67927,6 +68101,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
     transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobCreateNestedManyWithoutReviewersInput
   }
 
   export type UserUncheckedCreateWithoutReportsInput = {
@@ -67975,6 +68150,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobUncheckedCreateNestedManyWithoutReviewersInput
   }
 
   export type UserCreateOrConnectWithoutReportsInput = {
@@ -68028,6 +68204,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
     transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobCreateNestedManyWithoutReviewersInput
   }
 
   export type UserUncheckedCreateWithoutManagerInput = {
@@ -68076,6 +68253,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobUncheckedCreateNestedManyWithoutReviewersInput
   }
 
   export type UserCreateOrConnectWithoutManagerInput = {
@@ -68479,6 +68657,83 @@ export namespace Prisma {
   export type TransactionCreateManyCreatedByInputEnvelope = {
     data: TransactionCreateManyCreatedByInput | TransactionCreateManyCreatedByInput[]
     skipDuplicates?: boolean
+  }
+
+  export type JobCreateWithoutReviewersInput = {
+    id?: string
+    no: string
+    displayName: string
+    description?: string | null
+    attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    incomeCost: number
+    totalStaffCost?: number
+    startedAt?: Date | string
+    priority?: $Enums.JobPriority
+    isPublished?: boolean
+    dueAt: Date | string
+    completedAt?: Date | string | null
+    finishedAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    type: JobTypeCreateNestedOneWithoutJobsInput
+    client?: ClientCreateNestedOneWithoutJobsInput
+    sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
+    assignments?: JobAssignmentCreateNestedManyWithoutJobInput
+    createdBy: UserCreateNestedOneWithoutJobsCreatedInput
+    paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
+    status: JobStatusCreateNestedOneWithoutJobsInput
+    activityLog?: JobActivityLogCreateNestedManyWithoutJobInput
+    files?: FileSystemCreateNestedManyWithoutJobInput
+    comments?: JobCommentCreateNestedManyWithoutJobInput
+    statusHistory?: JobStatusHistoryCreateNestedManyWithoutJobInput
+    pinnedByUsers?: PinnedJobCreateNestedManyWithoutJobInput
+    jobDeliveries?: JobDeliveryCreateNestedManyWithoutJobInput
+    folderTemplate?: JobFolderTemplateCreateNestedOneWithoutJobsInput
+    transactions?: TransactionCreateNestedManyWithoutJobInput
+  }
+
+  export type JobUncheckedCreateWithoutReviewersInput = {
+    id?: string
+    no: string
+    typeId: string
+    displayName: string
+    description?: string | null
+    attachmentUrls?: JobCreateattachmentUrlsInput | string[]
+    clientId?: string | null
+    incomeCost: number
+    sharepointFolderId?: string | null
+    totalStaffCost?: number
+    createdById: string
+    paymentChannelId?: string | null
+    statusId: string
+    startedAt?: Date | string
+    priority?: $Enums.JobPriority
+    isPublished?: boolean
+    dueAt: Date | string
+    completedAt?: Date | string | null
+    finishedAt?: Date | string | null
+    paymentStatus?: $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    folderTemplateId?: string | null
+    assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
+    activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
+    files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
+    comments?: JobCommentUncheckedCreateNestedManyWithoutJobInput
+    statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
+    pinnedByUsers?: PinnedJobUncheckedCreateNestedManyWithoutJobInput
+    jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutJobInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutJobInput
+  }
+
+  export type JobCreateOrConnectWithoutReviewersInput = {
+    where: JobWhereUniqueInput
+    create: XOR<JobCreateWithoutReviewersInput, JobUncheckedCreateWithoutReviewersInput>
   }
 
   export type JobTitleUpsertWithoutUsersInput = {
@@ -68947,6 +69202,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReportsInput = {
@@ -68995,6 +69251,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUncheckedUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUpsertWithWhereUniqueWithoutManagerInput = {
@@ -69430,6 +69687,22 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Transaction"> | Date | string
   }
 
+  export type JobUpsertWithWhereUniqueWithoutReviewersInput = {
+    where: JobWhereUniqueInput
+    update: XOR<JobUpdateWithoutReviewersInput, JobUncheckedUpdateWithoutReviewersInput>
+    create: XOR<JobCreateWithoutReviewersInput, JobUncheckedCreateWithoutReviewersInput>
+  }
+
+  export type JobUpdateWithWhereUniqueWithoutReviewersInput = {
+    where: JobWhereUniqueInput
+    data: XOR<JobUpdateWithoutReviewersInput, JobUncheckedUpdateWithoutReviewersInput>
+  }
+
+  export type JobUpdateManyWithWhereWithoutReviewersInput = {
+    where: JobScalarWhereInput
+    data: XOR<JobUpdateManyMutationInput, JobUncheckedUpdateManyWithoutReviewersInput>
+  }
+
   export type UserCreateWithoutSecurityLogsInput = {
     id?: string
     code: string
@@ -69476,6 +69749,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
     transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobCreateNestedManyWithoutReviewersInput
   }
 
   export type UserUncheckedCreateWithoutSecurityLogsInput = {
@@ -69524,6 +69798,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobUncheckedCreateNestedManyWithoutReviewersInput
   }
 
   export type UserCreateOrConnectWithoutSecurityLogsInput = {
@@ -69588,6 +69863,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSecurityLogsInput = {
@@ -69636,6 +69912,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUncheckedUpdateManyWithoutReviewersNestedInput
   }
 
   export type PermissionCreateWithoutRolesInput = {
@@ -69713,6 +69990,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
     transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobCreateNestedManyWithoutReviewersInput
   }
 
   export type UserUncheckedCreateWithoutRoleInput = {
@@ -69761,6 +70039,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobUncheckedCreateNestedManyWithoutReviewersInput
   }
 
   export type UserCreateOrConnectWithoutRoleInput = {
@@ -70006,6 +70285,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
     transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobCreateNestedManyWithoutReviewersInput
   }
 
   export type UserUncheckedCreateWithoutUserPermissionsInput = {
@@ -70054,6 +70334,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobUncheckedCreateNestedManyWithoutReviewersInput
   }
 
   export type UserCreateOrConnectWithoutUserPermissionsInput = {
@@ -70147,6 +70428,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUserPermissionsInput = {
@@ -70195,6 +70477,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUncheckedUpdateManyWithoutReviewersNestedInput
   }
 
   export type PermissionUpsertWithoutUserPermissionsInput = {
@@ -70328,6 +70611,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
     transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobCreateNestedManyWithoutReviewersInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -70376,6 +70660,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobUncheckedCreateNestedManyWithoutReviewersInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -70440,6 +70725,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -70488,6 +70774,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUncheckedUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -70536,6 +70823,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
     transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobCreateNestedManyWithoutReviewersInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -70584,6 +70872,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobUncheckedCreateNestedManyWithoutReviewersInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -70648,6 +70937,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -70696,6 +70986,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUncheckedUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserCreateWithoutGalleryInput = {
@@ -70744,6 +71035,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
     transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobCreateNestedManyWithoutReviewersInput
   }
 
   export type UserUncheckedCreateWithoutGalleryInput = {
@@ -70792,6 +71084,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobUncheckedCreateNestedManyWithoutReviewersInput
   }
 
   export type UserCreateOrConnectWithoutGalleryInput = {
@@ -70856,6 +71149,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutGalleryInput = {
@@ -70904,6 +71198,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUncheckedUpdateManyWithoutReviewersNestedInput
   }
 
   export type JobCreateWithoutCommentsInput = {
@@ -70930,6 +71225,7 @@ export namespace Prisma {
     sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
+    reviewers?: UserCreateNestedManyWithoutReviewedJobsInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
     status: JobStatusCreateNestedOneWithoutJobsInput
     activityLog?: JobActivityLogCreateNestedManyWithoutJobInput
@@ -70968,6 +71264,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     folderTemplateId?: string | null
     assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
+    reviewers?: UserUncheckedCreateNestedManyWithoutReviewedJobsInput
     activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
     files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
     statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
@@ -71027,6 +71324,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
     transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobCreateNestedManyWithoutReviewersInput
   }
 
   export type UserUncheckedCreateWithoutJobCommentsInput = {
@@ -71075,6 +71373,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobUncheckedCreateNestedManyWithoutReviewersInput
   }
 
   export type UserCreateOrConnectWithoutJobCommentsInput = {
@@ -71172,6 +71471,7 @@ export namespace Prisma {
     sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
+    reviewers?: UserUpdateManyWithoutReviewedJobsNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
     status?: JobStatusUpdateOneRequiredWithoutJobsNestedInput
     activityLog?: JobActivityLogUpdateManyWithoutJobNestedInput
@@ -71210,6 +71510,7 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
+    reviewers?: UserUncheckedUpdateManyWithoutReviewedJobsNestedInput
     activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
     files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
     statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
@@ -71275,6 +71576,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJobCommentsInput = {
@@ -71323,6 +71625,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUncheckedUpdateManyWithoutReviewersNestedInput
   }
 
   export type JobCommentUpsertWithoutRepliesInput = {
@@ -71418,6 +71721,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
     transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobCreateNestedManyWithoutReviewersInput
   }
 
   export type UserUncheckedCreateWithoutJobTitleInput = {
@@ -71466,6 +71770,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobUncheckedCreateNestedManyWithoutReviewersInput
   }
 
   export type UserCreateOrConnectWithoutJobTitleInput = {
@@ -71540,6 +71845,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
     transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobCreateNestedManyWithoutReviewersInput
   }
 
   export type UserUncheckedCreateWithoutDepartmentInput = {
@@ -71588,6 +71894,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobUncheckedCreateNestedManyWithoutReviewersInput
   }
 
   export type UserCreateOrConnectWithoutDepartmentInput = {
@@ -71662,6 +71969,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
     transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobCreateNestedManyWithoutReviewersInput
   }
 
   export type UserUncheckedCreateWithoutConfigsInput = {
@@ -71710,6 +72018,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobUncheckedCreateNestedManyWithoutReviewersInput
   }
 
   export type UserCreateOrConnectWithoutConfigsInput = {
@@ -71774,6 +72083,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutConfigsInput = {
@@ -71822,6 +72132,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUncheckedUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserCreateWithoutFilesCreatedInput = {
@@ -71870,6 +72181,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
     transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobCreateNestedManyWithoutReviewersInput
   }
 
   export type UserUncheckedCreateWithoutFilesCreatedInput = {
@@ -71918,6 +72230,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobUncheckedCreateNestedManyWithoutReviewersInput
   }
 
   export type UserCreateOrConnectWithoutFilesCreatedInput = {
@@ -71971,6 +72284,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
     transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobCreateNestedManyWithoutReviewersInput
   }
 
   export type UserUncheckedCreateWithoutFilesInput = {
@@ -72019,6 +72333,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobUncheckedCreateNestedManyWithoutReviewersInput
   }
 
   export type UserCreateOrConnectWithoutFilesInput = {
@@ -72050,6 +72365,7 @@ export namespace Prisma {
     sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
+    reviewers?: UserCreateNestedManyWithoutReviewedJobsInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
     status: JobStatusCreateNestedOneWithoutJobsInput
     activityLog?: JobActivityLogCreateNestedManyWithoutJobInput
@@ -72088,6 +72404,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     folderTemplateId?: string | null
     assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
+    reviewers?: UserUncheckedCreateNestedManyWithoutReviewedJobsInput
     activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
     comments?: JobCommentUncheckedCreateNestedManyWithoutJobInput
     statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
@@ -72158,6 +72475,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFilesCreatedInput = {
@@ -72206,6 +72524,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUncheckedUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUpsertWithWhereUniqueWithoutFilesInput = {
@@ -72259,6 +72578,7 @@ export namespace Prisma {
     sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
+    reviewers?: UserUpdateManyWithoutReviewedJobsNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
     status?: JobStatusUpdateOneRequiredWithoutJobsNestedInput
     activityLog?: JobActivityLogUpdateManyWithoutJobNestedInput
@@ -72297,6 +72617,7 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
+    reviewers?: UserUncheckedUpdateManyWithoutReviewedJobsNestedInput
     activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
     comments?: JobCommentUncheckedUpdateManyWithoutJobNestedInput
     statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
@@ -72480,6 +72801,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
     transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobCreateNestedManyWithoutReviewersInput
   }
 
   export type UserUncheckedCreateWithoutJobsCreatedInput = {
@@ -72528,11 +72850,115 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobUncheckedCreateNestedManyWithoutReviewersInput
   }
 
   export type UserCreateOrConnectWithoutJobsCreatedInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutJobsCreatedInput, UserUncheckedCreateWithoutJobsCreatedInput>
+  }
+
+  export type UserCreateWithoutReviewedJobsInput = {
+    id?: string
+    code: string
+    email: string
+    personalEmail?: string | null
+    username: string
+    displayName: string
+    avatar: string
+    password: string
+    emailVerified?: boolean
+    phoneNumber?: string | null
+    isActive?: boolean
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
+    deletedAt?: Date | string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    jobTitle?: JobTitleCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    jobsCreated?: JobCreateNestedManyWithoutCreatedByInput
+    filesCreated?: FileSystemCreateNestedManyWithoutCreatedByInput
+    files?: FileSystemCreateNestedManyWithoutVisibleToUsersInput
+    sendedNotifications?: NotificationCreateNestedManyWithoutSenderInput
+    jobActivityLog?: JobActivityLogCreateNestedManyWithoutModifiedByInput
+    configs?: UserConfigCreateNestedManyWithoutUserInput
+    jobComments?: JobCommentCreateNestedManyWithoutUserInput
+    gallery?: GalleryCreateNestedManyWithoutUserInput
+    userDevices?: UserDevicesCreateNestedManyWithoutUserInput
+    statusChanges?: JobStatusHistoryCreateNestedManyWithoutChangedByInput
+    pinnedJobs?: PinnedJobCreateNestedManyWithoutUserInput
+    manager?: UserCreateNestedOneWithoutReportsInput
+    reports?: UserCreateNestedManyWithoutManagerInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    jobDeliveries?: JobDeliveryCreateNestedManyWithoutUserInput
+    communities?: CommunityMemberCreateNestedManyWithoutUserInput
+    posts?: PostCreateNestedManyWithoutAuthorInput
+    jobAssignments?: JobAssignmentCreateNestedManyWithoutUserInput
+    role?: RoleCreateNestedOneWithoutUsersInput
+    userPermissions?: UserPermissionCreateNestedManyWithoutUserInput
+    securityLogs?: UserSecurityLogCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
+    supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
+    systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserUncheckedCreateWithoutReviewedJobsInput = {
+    id?: string
+    code: string
+    email: string
+    personalEmail?: string | null
+    username: string
+    displayName: string
+    avatar: string
+    jobTitleId?: string | null
+    password: string
+    emailVerified?: boolean
+    departmentId?: string | null
+    phoneNumber?: string | null
+    isActive?: boolean
+    managerId?: string | null
+    roleId?: string | null
+    isTwoFactorAuthenticationEnabled?: boolean
+    twoFactorAuthenticationSecret?: string | null
+    deletedAt?: Date | string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    jobsCreated?: JobUncheckedCreateNestedManyWithoutCreatedByInput
+    filesCreated?: FileSystemUncheckedCreateNestedManyWithoutCreatedByInput
+    files?: FileSystemUncheckedCreateNestedManyWithoutVisibleToUsersInput
+    sendedNotifications?: NotificationUncheckedCreateNestedManyWithoutSenderInput
+    jobActivityLog?: JobActivityLogUncheckedCreateNestedManyWithoutModifiedByInput
+    configs?: UserConfigUncheckedCreateNestedManyWithoutUserInput
+    jobComments?: JobCommentUncheckedCreateNestedManyWithoutUserInput
+    gallery?: GalleryUncheckedCreateNestedManyWithoutUserInput
+    userDevices?: UserDevicesUncheckedCreateNestedManyWithoutUserInput
+    statusChanges?: JobStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
+    pinnedJobs?: PinnedJobUncheckedCreateNestedManyWithoutUserInput
+    reports?: UserUncheckedCreateNestedManyWithoutManagerInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    jobDeliveries?: JobDeliveryUncheckedCreateNestedManyWithoutUserInput
+    communities?: CommunityMemberUncheckedCreateNestedManyWithoutUserInput
+    posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    jobAssignments?: JobAssignmentUncheckedCreateNestedManyWithoutUserInput
+    userPermissions?: UserPermissionUncheckedCreateNestedManyWithoutUserInput
+    securityLogs?: UserSecurityLogUncheckedCreateNestedManyWithoutUserInput
+    systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
+    supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
+    systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserCreateOrConnectWithoutReviewedJobsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutReviewedJobsInput, UserUncheckedCreateWithoutReviewedJobsInput>
   }
 
   export type PaymentChannelCreateWithoutJobsInput = {
@@ -73070,6 +73496,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJobsCreatedInput = {
@@ -73118,6 +73545,23 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUncheckedUpdateManyWithoutReviewersNestedInput
+  }
+
+  export type UserUpsertWithWhereUniqueWithoutReviewedJobsInput = {
+    where: UserWhereUniqueInput
+    update: XOR<UserUpdateWithoutReviewedJobsInput, UserUncheckedUpdateWithoutReviewedJobsInput>
+    create: XOR<UserCreateWithoutReviewedJobsInput, UserUncheckedCreateWithoutReviewedJobsInput>
+  }
+
+  export type UserUpdateWithWhereUniqueWithoutReviewedJobsInput = {
+    where: UserWhereUniqueInput
+    data: XOR<UserUpdateWithoutReviewedJobsInput, UserUncheckedUpdateWithoutReviewedJobsInput>
+  }
+
+  export type UserUpdateManyWithWhereWithoutReviewedJobsInput = {
+    where: UserScalarWhereInput
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutReviewedJobsInput>
   }
 
   export type PaymentChannelUpsertWithoutJobsInput = {
@@ -73382,6 +73826,7 @@ export namespace Prisma {
     client?: ClientCreateNestedOneWithoutJobsInput
     sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
+    reviewers?: UserCreateNestedManyWithoutReviewedJobsInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
     status: JobStatusCreateNestedOneWithoutJobsInput
     activityLog?: JobActivityLogCreateNestedManyWithoutJobInput
@@ -73420,6 +73865,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     folderTemplateId?: string | null
+    reviewers?: UserUncheckedCreateNestedManyWithoutReviewedJobsInput
     activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
     files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
     comments?: JobCommentUncheckedCreateNestedManyWithoutJobInput
@@ -73480,6 +73926,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
     transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobCreateNestedManyWithoutReviewersInput
   }
 
   export type UserUncheckedCreateWithoutJobAssignmentsInput = {
@@ -73528,6 +73975,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobUncheckedCreateNestedManyWithoutReviewersInput
   }
 
   export type UserCreateOrConnectWithoutJobAssignmentsInput = {
@@ -73613,6 +74061,7 @@ export namespace Prisma {
     client?: ClientUpdateOneWithoutJobsNestedInput
     sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
+    reviewers?: UserUpdateManyWithoutReviewedJobsNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
     status?: JobStatusUpdateOneRequiredWithoutJobsNestedInput
     activityLog?: JobActivityLogUpdateManyWithoutJobNestedInput
@@ -73651,6 +74100,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewers?: UserUncheckedUpdateManyWithoutReviewedJobsNestedInput
     activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
     files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
     comments?: JobCommentUncheckedUpdateManyWithoutJobNestedInput
@@ -73717,6 +74167,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJobAssignmentsInput = {
@@ -73765,6 +74216,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUncheckedUpdateManyWithoutReviewersNestedInput
   }
 
   export type TransactionUpsertWithWhereUniqueWithoutAssignmentInput = {
@@ -73807,6 +74259,7 @@ export namespace Prisma {
     sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
+    reviewers?: UserCreateNestedManyWithoutReviewedJobsInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
     status: JobStatusCreateNestedOneWithoutJobsInput
     activityLog?: JobActivityLogCreateNestedManyWithoutJobInput
@@ -73844,6 +74297,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
+    reviewers?: UserUncheckedCreateNestedManyWithoutReviewedJobsInput
     activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
     files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
     comments?: JobCommentUncheckedCreateNestedManyWithoutJobInput
@@ -73902,6 +74356,7 @@ export namespace Prisma {
     sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
+    reviewers?: UserCreateNestedManyWithoutReviewedJobsInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
     status: JobStatusCreateNestedOneWithoutJobsInput
     activityLog?: JobActivityLogCreateNestedManyWithoutJobInput
@@ -73940,6 +74395,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     folderTemplateId?: string | null
     assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
+    reviewers?: UserUncheckedCreateNestedManyWithoutReviewedJobsInput
     activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
     files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
     comments?: JobCommentUncheckedCreateNestedManyWithoutJobInput
@@ -74081,6 +74537,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
     transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobCreateNestedManyWithoutReviewersInput
   }
 
   export type UserUncheckedCreateWithoutPinnedJobsInput = {
@@ -74129,6 +74586,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobUncheckedCreateNestedManyWithoutReviewersInput
   }
 
   export type UserCreateOrConnectWithoutPinnedJobsInput = {
@@ -74160,6 +74618,7 @@ export namespace Prisma {
     sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
+    reviewers?: UserCreateNestedManyWithoutReviewedJobsInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
     status: JobStatusCreateNestedOneWithoutJobsInput
     activityLog?: JobActivityLogCreateNestedManyWithoutJobInput
@@ -74198,6 +74657,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     folderTemplateId?: string | null
     assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
+    reviewers?: UserUncheckedCreateNestedManyWithoutReviewedJobsInput
     activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
     files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
     comments?: JobCommentUncheckedCreateNestedManyWithoutJobInput
@@ -74268,6 +74728,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPinnedJobsInput = {
@@ -74316,6 +74777,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUncheckedUpdateManyWithoutReviewersNestedInput
   }
 
   export type JobUpsertWithoutPinnedByUsersInput = {
@@ -74353,6 +74815,7 @@ export namespace Prisma {
     sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
+    reviewers?: UserUpdateManyWithoutReviewedJobsNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
     status?: JobStatusUpdateOneRequiredWithoutJobsNestedInput
     activityLog?: JobActivityLogUpdateManyWithoutJobNestedInput
@@ -74391,6 +74854,7 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
+    reviewers?: UserUncheckedUpdateManyWithoutReviewedJobsNestedInput
     activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
     files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
     comments?: JobCommentUncheckedUpdateManyWithoutJobNestedInput
@@ -74423,6 +74887,7 @@ export namespace Prisma {
     sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
+    reviewers?: UserCreateNestedManyWithoutReviewedJobsInput
     status: JobStatusCreateNestedOneWithoutJobsInput
     activityLog?: JobActivityLogCreateNestedManyWithoutJobInput
     files?: FileSystemCreateNestedManyWithoutJobInput
@@ -74460,6 +74925,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     folderTemplateId?: string | null
     assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
+    reviewers?: UserUncheckedCreateNestedManyWithoutReviewedJobsInput
     activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
     files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
     comments?: JobCommentUncheckedCreateNestedManyWithoutJobInput
@@ -74578,6 +75044,7 @@ export namespace Prisma {
     sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
+    reviewers?: UserCreateNestedManyWithoutReviewedJobsInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
     status: JobStatusCreateNestedOneWithoutJobsInput
     activityLog?: JobActivityLogCreateNestedManyWithoutJobInput
@@ -74616,6 +75083,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     folderTemplateId?: string | null
     assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
+    reviewers?: UserUncheckedCreateNestedManyWithoutReviewedJobsInput
     activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
     files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
     comments?: JobCommentUncheckedCreateNestedManyWithoutJobInput
@@ -74675,6 +75143,7 @@ export namespace Prisma {
     sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
+    reviewers?: UserCreateNestedManyWithoutReviewedJobsInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
     activityLog?: JobActivityLogCreateNestedManyWithoutJobInput
     files?: FileSystemCreateNestedManyWithoutJobInput
@@ -74712,6 +75181,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     folderTemplateId?: string | null
     assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
+    reviewers?: UserUncheckedCreateNestedManyWithoutReviewedJobsInput
     activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
     files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
     comments?: JobCommentUncheckedCreateNestedManyWithoutJobInput
@@ -74883,6 +75353,7 @@ export namespace Prisma {
     sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
+    reviewers?: UserCreateNestedManyWithoutReviewedJobsInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
     status: JobStatusCreateNestedOneWithoutJobsInput
     activityLog?: JobActivityLogCreateNestedManyWithoutJobInput
@@ -74921,6 +75392,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     folderTemplateId?: string | null
     assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
+    reviewers?: UserUncheckedCreateNestedManyWithoutReviewedJobsInput
     activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
     files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
     comments?: JobCommentUncheckedCreateNestedManyWithoutJobInput
@@ -74980,6 +75452,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
     transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobCreateNestedManyWithoutReviewersInput
   }
 
   export type UserUncheckedCreateWithoutJobDeliveriesInput = {
@@ -75028,6 +75501,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobUncheckedCreateNestedManyWithoutReviewersInput
   }
 
   export type UserCreateOrConnectWithoutJobDeliveriesInput = {
@@ -75098,6 +75572,7 @@ export namespace Prisma {
     sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
+    reviewers?: UserUpdateManyWithoutReviewedJobsNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
     status?: JobStatusUpdateOneRequiredWithoutJobsNestedInput
     activityLog?: JobActivityLogUpdateManyWithoutJobNestedInput
@@ -75136,6 +75611,7 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
+    reviewers?: UserUncheckedUpdateManyWithoutReviewedJobsNestedInput
     activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
     files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
     comments?: JobCommentUncheckedUpdateManyWithoutJobNestedInput
@@ -75201,6 +75677,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJobDeliveriesInput = {
@@ -75249,6 +75726,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUncheckedUpdateManyWithoutReviewersNestedInput
   }
 
   export type JobDeliverFileUpsertWithWhereUniqueWithoutJobDeliveryInput = {
@@ -75304,6 +75782,7 @@ export namespace Prisma {
     sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
+    reviewers?: UserCreateNestedManyWithoutReviewedJobsInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
     status: JobStatusCreateNestedOneWithoutJobsInput
     activityLog?: JobActivityLogCreateNestedManyWithoutJobInput
@@ -75342,6 +75821,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     folderTemplateId?: string | null
     assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
+    reviewers?: UserUncheckedCreateNestedManyWithoutReviewedJobsInput
     activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
     files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
     comments?: JobCommentUncheckedCreateNestedManyWithoutJobInput
@@ -75440,6 +75920,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
     transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobCreateNestedManyWithoutReviewersInput
   }
 
   export type UserUncheckedCreateWithoutStatusChangesInput = {
@@ -75488,6 +75969,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobUncheckedCreateNestedManyWithoutReviewersInput
   }
 
   export type UserCreateOrConnectWithoutStatusChangesInput = {
@@ -75530,6 +76012,7 @@ export namespace Prisma {
     sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
+    reviewers?: UserUpdateManyWithoutReviewedJobsNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
     status?: JobStatusUpdateOneRequiredWithoutJobsNestedInput
     activityLog?: JobActivityLogUpdateManyWithoutJobNestedInput
@@ -75568,6 +76051,7 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
+    reviewers?: UserUncheckedUpdateManyWithoutReviewedJobsNestedInput
     activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
     files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
     comments?: JobCommentUncheckedUpdateManyWithoutJobNestedInput
@@ -75678,6 +76162,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutStatusChangesInput = {
@@ -75726,6 +76211,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUncheckedUpdateManyWithoutReviewersNestedInput
   }
 
   export type JobCreateWithoutActivityLogInput = {
@@ -75752,6 +76238,7 @@ export namespace Prisma {
     sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
+    reviewers?: UserCreateNestedManyWithoutReviewedJobsInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
     status: JobStatusCreateNestedOneWithoutJobsInput
     files?: FileSystemCreateNestedManyWithoutJobInput
@@ -75790,6 +76277,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     folderTemplateId?: string | null
     assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
+    reviewers?: UserUncheckedCreateNestedManyWithoutReviewedJobsInput
     files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
     comments?: JobCommentUncheckedCreateNestedManyWithoutJobInput
     statusHistory?: JobStatusHistoryUncheckedCreateNestedManyWithoutJobInput
@@ -75849,6 +76337,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
     transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobCreateNestedManyWithoutReviewersInput
   }
 
   export type UserUncheckedCreateWithoutJobActivityLogInput = {
@@ -75897,6 +76386,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobUncheckedCreateNestedManyWithoutReviewersInput
   }
 
   export type UserCreateOrConnectWithoutJobActivityLogInput = {
@@ -75939,6 +76429,7 @@ export namespace Prisma {
     sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
+    reviewers?: UserUpdateManyWithoutReviewedJobsNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
     status?: JobStatusUpdateOneRequiredWithoutJobsNestedInput
     files?: FileSystemUpdateManyWithoutJobNestedInput
@@ -75977,6 +76468,7 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
+    reviewers?: UserUncheckedUpdateManyWithoutReviewedJobsNestedInput
     files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
     comments?: JobCommentUncheckedUpdateManyWithoutJobNestedInput
     statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
@@ -76042,6 +76534,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJobActivityLogInput = {
@@ -76090,6 +76583,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUncheckedUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserCreateWithoutNotificationsInput = {
@@ -76138,6 +76632,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
     transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobCreateNestedManyWithoutReviewersInput
   }
 
   export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -76186,6 +76681,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobUncheckedCreateNestedManyWithoutReviewersInput
   }
 
   export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -76239,6 +76735,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
     transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobCreateNestedManyWithoutReviewersInput
   }
 
   export type UserUncheckedCreateWithoutSendedNotificationsInput = {
@@ -76287,6 +76784,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobUncheckedCreateNestedManyWithoutReviewersInput
   }
 
   export type UserCreateOrConnectWithoutSendedNotificationsInput = {
@@ -76351,6 +76849,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -76399,6 +76898,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUncheckedUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUpsertWithoutSendedNotificationsInput = {
@@ -76458,6 +76958,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSendedNotificationsInput = {
@@ -76506,6 +77007,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUncheckedUpdateManyWithoutReviewersNestedInput
   }
 
   export type TopicCreateWithoutCommunityInput = {
@@ -76659,6 +77161,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
     transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobCreateNestedManyWithoutReviewersInput
   }
 
   export type UserUncheckedCreateWithoutCommunitiesInput = {
@@ -76707,6 +77210,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobUncheckedCreateNestedManyWithoutReviewersInput
   }
 
   export type UserCreateOrConnectWithoutCommunitiesInput = {
@@ -76802,6 +77306,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCommunitiesInput = {
@@ -76850,6 +77355,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUncheckedUpdateManyWithoutReviewersNestedInput
   }
 
   export type CommunityUpsertWithoutMembersInput = {
@@ -77055,6 +77561,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
     transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobCreateNestedManyWithoutReviewersInput
   }
 
   export type UserUncheckedCreateWithoutPostsInput = {
@@ -77103,6 +77610,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobUncheckedCreateNestedManyWithoutReviewersInput
   }
 
   export type UserCreateOrConnectWithoutPostsInput = {
@@ -77219,6 +77727,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPostsInput = {
@@ -77267,6 +77776,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUncheckedUpdateManyWithoutReviewersNestedInput
   }
 
   export type TopicUpsertWithoutPostsInput = {
@@ -77424,6 +77934,7 @@ export namespace Prisma {
     client?: ClientCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
+    reviewers?: UserCreateNestedManyWithoutReviewedJobsInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
     status: JobStatusCreateNestedOneWithoutJobsInput
     activityLog?: JobActivityLogCreateNestedManyWithoutJobInput
@@ -77462,6 +77973,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     folderTemplateId?: string | null
     assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
+    reviewers?: UserUncheckedCreateNestedManyWithoutReviewedJobsInput
     activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
     files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
     comments?: JobCommentUncheckedCreateNestedManyWithoutJobInput
@@ -77543,6 +78055,7 @@ export namespace Prisma {
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
     transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobCreateNestedManyWithoutReviewersInput
   }
 
   export type UserUncheckedCreateWithoutSupportTicketsInput = {
@@ -77591,6 +78104,7 @@ export namespace Prisma {
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobUncheckedCreateNestedManyWithoutReviewersInput
   }
 
   export type UserCreateOrConnectWithoutSupportTicketsInput = {
@@ -77655,6 +78169,7 @@ export namespace Prisma {
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSupportTicketsInput = {
@@ -77703,6 +78218,7 @@ export namespace Prisma {
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUncheckedUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserCreateWithoutSystemSettingsInput = {
@@ -77751,6 +78267,7 @@ export namespace Prisma {
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
     transactions?: TransactionCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobCreateNestedManyWithoutReviewersInput
   }
 
   export type UserUncheckedCreateWithoutSystemSettingsInput = {
@@ -77799,6 +78316,7 @@ export namespace Prisma {
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCreatedByInput
+    reviewedJobs?: JobUncheckedCreateNestedManyWithoutReviewersInput
   }
 
   export type UserCreateOrConnectWithoutSystemSettingsInput = {
@@ -77863,6 +78381,7 @@ export namespace Prisma {
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
     transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSystemSettingsInput = {
@@ -77911,6 +78430,7 @@ export namespace Prisma {
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUncheckedUpdateManyWithoutReviewersNestedInput
   }
 
   export type JobCreateWithoutTransactionsInput = {
@@ -77937,6 +78457,7 @@ export namespace Prisma {
     sharepointFolder?: SharepointItemCreateNestedOneWithoutJobsInput
     assignments?: JobAssignmentCreateNestedManyWithoutJobInput
     createdBy: UserCreateNestedOneWithoutJobsCreatedInput
+    reviewers?: UserCreateNestedManyWithoutReviewedJobsInput
     paymentChannel?: PaymentChannelCreateNestedOneWithoutJobsInput
     status: JobStatusCreateNestedOneWithoutJobsInput
     activityLog?: JobActivityLogCreateNestedManyWithoutJobInput
@@ -77975,6 +78496,7 @@ export namespace Prisma {
     deletedAt?: Date | string | null
     folderTemplateId?: string | null
     assignments?: JobAssignmentUncheckedCreateNestedManyWithoutJobInput
+    reviewers?: UserUncheckedCreateNestedManyWithoutReviewedJobsInput
     activityLog?: JobActivityLogUncheckedCreateNestedManyWithoutJobInput
     files?: FileSystemUncheckedCreateNestedManyWithoutJobInput
     comments?: JobCommentUncheckedCreateNestedManyWithoutJobInput
@@ -78143,6 +78665,7 @@ export namespace Prisma {
     systemAuditLogs?: SystemAuditLogCreateNestedManyWithoutActorInput
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingCreateNestedManyWithoutModifierByInput
+    reviewedJobs?: JobCreateNestedManyWithoutReviewersInput
   }
 
   export type UserUncheckedCreateWithoutTransactionsInput = {
@@ -78191,6 +78714,7 @@ export namespace Prisma {
     systemAuditLogs?: SystemAuditLogUncheckedCreateNestedManyWithoutActorInput
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
     systemSettings?: SystemSettingUncheckedCreateNestedManyWithoutModifierByInput
+    reviewedJobs?: JobUncheckedCreateNestedManyWithoutReviewersInput
   }
 
   export type UserCreateOrConnectWithoutTransactionsInput = {
@@ -78233,6 +78757,7 @@ export namespace Prisma {
     sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
+    reviewers?: UserUpdateManyWithoutReviewedJobsNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
     status?: JobStatusUpdateOneRequiredWithoutJobsNestedInput
     activityLog?: JobActivityLogUpdateManyWithoutJobNestedInput
@@ -78271,6 +78796,7 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
+    reviewers?: UserUncheckedUpdateManyWithoutReviewedJobsNestedInput
     activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
     files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
     comments?: JobCommentUncheckedUpdateManyWithoutJobNestedInput
@@ -78463,6 +78989,7 @@ export namespace Prisma {
     systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    reviewedJobs?: JobUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransactionsInput = {
@@ -78511,6 +79038,7 @@ export namespace Prisma {
     systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    reviewedJobs?: JobUncheckedUpdateManyWithoutReviewersNestedInput
   }
 
   export type NotificationCreateManyUserInput = {
@@ -78851,6 +79379,7 @@ export namespace Prisma {
     client?: ClientUpdateOneWithoutJobsNestedInput
     sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
+    reviewers?: UserUpdateManyWithoutReviewedJobsNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
     status?: JobStatusUpdateOneRequiredWithoutJobsNestedInput
     activityLog?: JobActivityLogUpdateManyWithoutJobNestedInput
@@ -78889,6 +79418,7 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
+    reviewers?: UserUncheckedUpdateManyWithoutReviewedJobsNestedInput
     activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
     files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
     comments?: JobCommentUncheckedUpdateManyWithoutJobNestedInput
@@ -79287,6 +79817,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutManagerInput = {
@@ -79335,6 +79866,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUncheckedUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutManagerInput = {
@@ -79735,6 +80267,106 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type JobUpdateWithoutReviewersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    no?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    incomeCost?: FloatFieldUpdateOperationsInput | number
+    totalStaffCost?: FloatFieldUpdateOperationsInput | number
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
+    isPublished?: BoolFieldUpdateOperationsInput | boolean
+    dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    type?: JobTypeUpdateOneRequiredWithoutJobsNestedInput
+    client?: ClientUpdateOneWithoutJobsNestedInput
+    sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
+    assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
+    paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
+    status?: JobStatusUpdateOneRequiredWithoutJobsNestedInput
+    activityLog?: JobActivityLogUpdateManyWithoutJobNestedInput
+    files?: FileSystemUpdateManyWithoutJobNestedInput
+    comments?: JobCommentUpdateManyWithoutJobNestedInput
+    statusHistory?: JobStatusHistoryUpdateManyWithoutJobNestedInput
+    pinnedByUsers?: PinnedJobUpdateManyWithoutJobNestedInput
+    jobDeliveries?: JobDeliveryUpdateManyWithoutJobNestedInput
+    folderTemplate?: JobFolderTemplateUpdateOneWithoutJobsNestedInput
+    transactions?: TransactionUpdateManyWithoutJobNestedInput
+  }
+
+  export type JobUncheckedUpdateWithoutReviewersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    no?: StringFieldUpdateOperationsInput | string
+    typeId?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalStaffCost?: FloatFieldUpdateOperationsInput | number
+    createdById?: StringFieldUpdateOperationsInput | string
+    paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
+    statusId?: StringFieldUpdateOperationsInput | string
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
+    isPublished?: BoolFieldUpdateOperationsInput | boolean
+    dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
+    activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
+    files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
+    comments?: JobCommentUncheckedUpdateManyWithoutJobNestedInput
+    statusHistory?: JobStatusHistoryUncheckedUpdateManyWithoutJobNestedInput
+    pinnedByUsers?: PinnedJobUncheckedUpdateManyWithoutJobNestedInput
+    jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutJobNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutJobNestedInput
+  }
+
+  export type JobUncheckedUpdateManyWithoutReviewersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    no?: StringFieldUpdateOperationsInput | string
+    typeId?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    attachmentUrls?: JobUpdateattachmentUrlsInput | string[]
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    incomeCost?: FloatFieldUpdateOperationsInput | number
+    sharepointFolderId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalStaffCost?: FloatFieldUpdateOperationsInput | number
+    createdById?: StringFieldUpdateOperationsInput | string
+    paymentChannelId?: NullableStringFieldUpdateOperationsInput | string | null
+    statusId?: StringFieldUpdateOperationsInput | string
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    priority?: EnumJobPriorityFieldUpdateOperationsInput | $Enums.JobPriority
+    isPublished?: BoolFieldUpdateOperationsInput | boolean
+    dueAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentStatus?: EnumJOB_PAYMENT_STATUSFieldUpdateOperationsInput | $Enums.JOB_PAYMENT_STATUS
+    payoutDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
   export type UserCreateManyRoleInput = {
     id?: string
     code: string
@@ -79839,6 +80471,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRoleInput = {
@@ -79887,6 +80520,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUncheckedUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutRoleInput = {
@@ -80118,6 +80752,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJobTitleInput = {
@@ -80166,6 +80801,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUncheckedUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutJobTitleInput = {
@@ -80260,6 +80896,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDepartmentInput = {
@@ -80308,6 +80945,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUncheckedUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutDepartmentInput = {
@@ -80379,6 +81017,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutFilesInput = {
@@ -80427,6 +81066,7 @@ export namespace Prisma {
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+    reviewedJobs?: JobUncheckedUpdateManyWithoutReviewersNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutFilesInput = {
@@ -80559,6 +81199,128 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     staffCost?: FloatFieldUpdateOperationsInput | number
     assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUpdateWithoutReviewedJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    jobTitle?: JobTitleUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    jobsCreated?: JobUpdateManyWithoutCreatedByNestedInput
+    filesCreated?: FileSystemUpdateManyWithoutCreatedByNestedInput
+    files?: FileSystemUpdateManyWithoutVisibleToUsersNestedInput
+    sendedNotifications?: NotificationUpdateManyWithoutSenderNestedInput
+    jobActivityLog?: JobActivityLogUpdateManyWithoutModifiedByNestedInput
+    configs?: UserConfigUpdateManyWithoutUserNestedInput
+    jobComments?: JobCommentUpdateManyWithoutUserNestedInput
+    gallery?: GalleryUpdateManyWithoutUserNestedInput
+    userDevices?: UserDevicesUpdateManyWithoutUserNestedInput
+    statusChanges?: JobStatusHistoryUpdateManyWithoutChangedByNestedInput
+    pinnedJobs?: PinnedJobUpdateManyWithoutUserNestedInput
+    manager?: UserUpdateOneWithoutReportsNestedInput
+    reports?: UserUpdateManyWithoutManagerNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    jobDeliveries?: JobDeliveryUpdateManyWithoutUserNestedInput
+    communities?: CommunityMemberUpdateManyWithoutUserNestedInput
+    posts?: PostUpdateManyWithoutAuthorNestedInput
+    jobAssignments?: JobAssignmentUpdateManyWithoutUserNestedInput
+    role?: RoleUpdateOneWithoutUsersNestedInput
+    userPermissions?: UserPermissionUpdateManyWithoutUserNestedInput
+    securityLogs?: UserSecurityLogUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUpdateManyWithoutActorNestedInput
+    supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
+    systemSettings?: SystemSettingUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutReviewedJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
+    jobTitleId?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    managerId?: NullableStringFieldUpdateOperationsInput | string | null
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    jobsCreated?: JobUncheckedUpdateManyWithoutCreatedByNestedInput
+    filesCreated?: FileSystemUncheckedUpdateManyWithoutCreatedByNestedInput
+    files?: FileSystemUncheckedUpdateManyWithoutVisibleToUsersNestedInput
+    sendedNotifications?: NotificationUncheckedUpdateManyWithoutSenderNestedInput
+    jobActivityLog?: JobActivityLogUncheckedUpdateManyWithoutModifiedByNestedInput
+    configs?: UserConfigUncheckedUpdateManyWithoutUserNestedInput
+    jobComments?: JobCommentUncheckedUpdateManyWithoutUserNestedInput
+    gallery?: GalleryUncheckedUpdateManyWithoutUserNestedInput
+    userDevices?: UserDevicesUncheckedUpdateManyWithoutUserNestedInput
+    statusChanges?: JobStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+    pinnedJobs?: PinnedJobUncheckedUpdateManyWithoutUserNestedInput
+    reports?: UserUncheckedUpdateManyWithoutManagerNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    jobDeliveries?: JobDeliveryUncheckedUpdateManyWithoutUserNestedInput
+    communities?: CommunityMemberUncheckedUpdateManyWithoutUserNestedInput
+    posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    jobAssignments?: JobAssignmentUncheckedUpdateManyWithoutUserNestedInput
+    userPermissions?: UserPermissionUncheckedUpdateManyWithoutUserNestedInput
+    securityLogs?: UserSecurityLogUncheckedUpdateManyWithoutUserNestedInput
+    systemAuditLogs?: SystemAuditLogUncheckedUpdateManyWithoutActorNestedInput
+    supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
+    systemSettings?: SystemSettingUncheckedUpdateManyWithoutModifierByNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUncheckedUpdateManyWithoutReviewedJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    displayName?: StringFieldUpdateOperationsInput | string
+    avatar?: StringFieldUpdateOperationsInput | string
+    jobTitleId?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    managerId?: NullableStringFieldUpdateOperationsInput | string | null
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    isTwoFactorAuthenticationEnabled?: BoolFieldUpdateOperationsInput | boolean
+    twoFactorAuthenticationSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type JobActivityLogUpdateWithoutJobInput = {
@@ -80920,6 +81682,7 @@ export namespace Prisma {
     sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
+    reviewers?: UserUpdateManyWithoutReviewedJobsNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
     status?: JobStatusUpdateOneRequiredWithoutJobsNestedInput
     activityLog?: JobActivityLogUpdateManyWithoutJobNestedInput
@@ -80957,6 +81720,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
+    reviewers?: UserUncheckedUpdateManyWithoutReviewedJobsNestedInput
     activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
     files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
     comments?: JobCommentUncheckedUpdateManyWithoutJobNestedInput
@@ -81060,6 +81824,7 @@ export namespace Prisma {
     sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
+    reviewers?: UserUpdateManyWithoutReviewedJobsNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
     status?: JobStatusUpdateOneRequiredWithoutJobsNestedInput
     activityLog?: JobActivityLogUpdateManyWithoutJobNestedInput
@@ -81098,6 +81863,7 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
+    reviewers?: UserUncheckedUpdateManyWithoutReviewedJobsNestedInput
     activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
     files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
     comments?: JobCommentUncheckedUpdateManyWithoutJobNestedInput
@@ -81253,6 +82019,7 @@ export namespace Prisma {
     sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
+    reviewers?: UserUpdateManyWithoutReviewedJobsNestedInput
     status?: JobStatusUpdateOneRequiredWithoutJobsNestedInput
     activityLog?: JobActivityLogUpdateManyWithoutJobNestedInput
     files?: FileSystemUpdateManyWithoutJobNestedInput
@@ -81290,6 +82057,7 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
+    reviewers?: UserUncheckedUpdateManyWithoutReviewedJobsNestedInput
     activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
     files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
     comments?: JobCommentUncheckedUpdateManyWithoutJobNestedInput
@@ -81427,6 +82195,7 @@ export namespace Prisma {
     sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
+    reviewers?: UserUpdateManyWithoutReviewedJobsNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
     status?: JobStatusUpdateOneRequiredWithoutJobsNestedInput
     activityLog?: JobActivityLogUpdateManyWithoutJobNestedInput
@@ -81465,6 +82234,7 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
+    reviewers?: UserUncheckedUpdateManyWithoutReviewedJobsNestedInput
     activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
     files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
     comments?: JobCommentUncheckedUpdateManyWithoutJobNestedInput
@@ -81563,6 +82333,7 @@ export namespace Prisma {
     sharepointFolder?: SharepointItemUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
+    reviewers?: UserUpdateManyWithoutReviewedJobsNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
     activityLog?: JobActivityLogUpdateManyWithoutJobNestedInput
     files?: FileSystemUpdateManyWithoutJobNestedInput
@@ -81600,6 +82371,7 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
+    reviewers?: UserUncheckedUpdateManyWithoutReviewedJobsNestedInput
     activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
     files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
     comments?: JobCommentUncheckedUpdateManyWithoutJobNestedInput
@@ -81879,6 +82651,7 @@ export namespace Prisma {
     client?: ClientUpdateOneWithoutJobsNestedInput
     assignments?: JobAssignmentUpdateManyWithoutJobNestedInput
     createdBy?: UserUpdateOneRequiredWithoutJobsCreatedNestedInput
+    reviewers?: UserUpdateManyWithoutReviewedJobsNestedInput
     paymentChannel?: PaymentChannelUpdateOneWithoutJobsNestedInput
     status?: JobStatusUpdateOneRequiredWithoutJobsNestedInput
     activityLog?: JobActivityLogUpdateManyWithoutJobNestedInput
@@ -81917,6 +82690,7 @@ export namespace Prisma {
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     folderTemplateId?: NullableStringFieldUpdateOperationsInput | string | null
     assignments?: JobAssignmentUncheckedUpdateManyWithoutJobNestedInput
+    reviewers?: UserUncheckedUpdateManyWithoutReviewedJobsNestedInput
     activityLog?: JobActivityLogUncheckedUpdateManyWithoutJobNestedInput
     files?: FileSystemUncheckedUpdateManyWithoutJobNestedInput
     comments?: JobCommentUncheckedUpdateManyWithoutJobNestedInput

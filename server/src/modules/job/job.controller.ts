@@ -58,6 +58,7 @@ import {
 	GetPayoutDetailsQuery,
 } from './queries/impl/get-payout-details'
 import { GetJobFinancialDetailsQuery } from './queries/impl/get-job-financial-details.query'
+import { DeliverJobCommand } from './commands/impl/deliver-job.command'
 
 @ApiTags('Jobs')
 @Controller('jobs')
@@ -239,7 +240,10 @@ export class JobController {
 		@Body() data: DeliverJobDto
 	) {
 		const user: TokenPayload = request['user']
-		return this.jobDeliverService.deliverJob(user.sub, id, data)
+
+		return this.commandBus.execute(
+			new DeliverJobCommand(user.sub, id, data)
+		)
 	}
 
 	@Post('deliver/:deliveryId/:action')
