@@ -43,7 +43,6 @@ export class CreateJobHandler implements ICommandHandler<CreateJobCommand> {
 			...jobData
 		} = dto
 
-		// Xử lý Transaction y hệt logic cũ của bạn
 		const newJob = await this.prisma.$transaction(async (tx) => {
 			const client = await this.getClient(tx, dto.clientName)
 

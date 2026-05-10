@@ -38,16 +38,19 @@ CREATE TYPE "DeliveryStatus" AS ENUM ('PENDING', 'APPROVED', 'REJECTED');
 CREATE TYPE "ActivityType" AS ENUM ('CREATE_JOB', 'ASSIGN_MEMBER', 'UNASSIGN_MEMBER', 'UPDATE_MEMBER_COST', 'FORCE_CHANGE_STATUS', 'DELIVER', 'APPROVE', 'REJECT', 'PAID', 'UPDATE_ATTACHMENTS', 'UPDATE_GENERAL_INFORMATION', 'UPDATE_CLIENT_INFORMATION', 'RESCHEDULE', 'DELETE', 'PRIVATE');
 
 -- CreateEnum
-CREATE TYPE "NotificationStatus" AS ENUM ('SEEN', 'UNSEEN');
-
--- CreateEnum
-CREATE TYPE "NotificationType" AS ENUM ('INFO', 'WARNING', 'ERROR', 'SUCCESS', 'JOB_DEADLINE_REMINDER', 'JOB_UPDATE', 'JOB_CREATED', 'JOB_DELIVERED', 'JOB_APPROVED', 'JOB_REJECTED', 'JOB_ASSIGNED_MEMBER', 'JOB_PAID', 'JOB_DELETED', 'JOB_WAITING_PAYOUT', 'USER_CREATED', 'USER_RESTORED', 'ISSUE_REPORT');
-
--- CreateEnum
 CREATE TYPE "CommunityRole" AS ENUM ('MEMBER', 'MODERATOR', 'OWNER');
 
 -- CreateEnum
 CREATE TYPE "TopicType" AS ENUM ('GENERAL', 'ANNOUNCEMENT', 'FILES', 'IDEA', 'SUPPORT');
+
+-- CreateEnum
+CREATE TYPE "NotificationSeverity" AS ENUM ('INFO', 'SUCCESS', 'WARNING', 'ERROR');
+
+-- CreateEnum
+CREATE TYPE "NotificationType" AS ENUM ('JOB_CREATED', 'JOB_UPDATED', 'JOB_DELETED', 'JOB_CANCELLED', 'JOB_ASSIGNED', 'JOB_DEADLINE_NEAR', 'JOB_DELIVERED', 'JOB_REVIEW_REQUESTED', 'JOB_APPROVED', 'JOB_REJECTED', 'JOB_WAITING_PAYOUT', 'JOB_PAID', 'USER_CREATED', 'USER_RESTORED', 'NEW_COMMENT', 'USER_MENTIONED', 'SYSTEM_ISSUE_REPORTED', 'SYSTEM_ALERT');
+
+-- CreateEnum
+CREATE TYPE "NotificationStatus" AS ENUM ('SEEN', 'UNSEEN');
 
 -- CreateEnum
 CREATE TYPE "SharepointSyncStatus" AS ENUM ('FAILED', 'SUCCESS', 'SYNCING');
@@ -121,6 +124,8 @@ CREATE TABLE "User" (
     "isActive" BOOLEAN NOT NULL DEFAULT true,
     "managerId" TEXT,
     "roleId" TEXT,
+    "isTwoFactorAuthenticationEnabled" BOOLEAN NOT NULL DEFAULT false,
+    "twoFactorAuthenticationSecret" TEXT,
     "deletedAt" TIMESTAMP(3),
     "lastLoginAt" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -515,23 +520,6 @@ CREATE TABLE "JobActivityLog" (
 );
 
 -- CreateTable
-CREATE TABLE "Notification" (
-    "id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
-    "title" TEXT,
-    "content" TEXT NOT NULL,
-    "imageUrl" TEXT,
-    "senderId" TEXT,
-    "redirectUrl" TEXT,
-    "type" "NotificationType" NOT NULL DEFAULT 'INFO',
-    "status" "NotificationStatus" NOT NULL DEFAULT 'UNSEEN',
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "Notification_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "Community" (
     "id" TEXT NOT NULL,
     "code" TEXT NOT NULL,
@@ -602,6 +590,25 @@ CREATE TABLE "PostEvent" (
 );
 
 -- CreateTable
+CREATE TABLE "Notification" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "senderId" TEXT,
+    "type" "NotificationType" NOT NULL,
+    "severity" "NotificationSeverity" NOT NULL DEFAULT 'INFO',
+    "status" "NotificationStatus" NOT NULL DEFAULT 'UNSEEN',
+    "title" TEXT,
+    "content" TEXT NOT NULL,
+    "imageUrl" TEXT,
+    "redirectUrl" TEXT,
+    "jobId" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Notification_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "SharepointItem" (
     "id" TEXT NOT NULL,
     "itemId" TEXT NOT NULL,
@@ -611,6 +618,8 @@ CREATE TABLE "SharepointItem" (
     "webUrl" TEXT,
     "createdDateTime" TEXT,
     "createdBy" TEXT,
+    "publicWebUrl" TEXT,
+    "isAnonymous" BOOLEAN DEFAULT false,
     "syncStatus" "SharepointSyncStatus" NOT NULL DEFAULT 'FAILED',
 
     CONSTRAINT "SharepointItem_pkey" PRIMARY KEY ("id")
@@ -675,6 +684,14 @@ CREATE TABLE "_UserFiles" (
     "B" TEXT NOT NULL,
 
     CONSTRAINT "_UserFiles_AB_pkey" PRIMARY KEY ("A","B")
+);
+
+-- CreateTable
+CREATE TABLE "_JobReviewers" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL,
+
+    CONSTRAINT "_JobReviewers_AB_pkey" PRIMARY KEY ("A","B")
 );
 
 -- CreateIndex
@@ -816,15 +833,6 @@ CREATE INDEX "JobActivityLog_jobId_modifiedAt_idx" ON "JobActivityLog"("jobId", 
 CREATE INDEX "JobActivityLog_modifiedById_idx" ON "JobActivityLog"("modifiedById");
 
 -- CreateIndex
-CREATE INDEX "Notification_type_idx" ON "Notification"("type");
-
--- CreateIndex
-CREATE INDEX "Notification_userId_status_idx" ON "Notification"("userId", "status");
-
--- CreateIndex
-CREATE INDEX "Notification_createdAt_idx" ON "Notification"("createdAt");
-
--- CreateIndex
 CREATE UNIQUE INDEX "Community_code_key" ON "Community"("code");
 
 -- CreateIndex
@@ -855,6 +863,18 @@ CREATE INDEX "Post_createdAt_idx" ON "Post"("createdAt");
 CREATE UNIQUE INDEX "PostEvent_postId_key" ON "PostEvent"("postId");
 
 -- CreateIndex
+CREATE INDEX "Notification_type_idx" ON "Notification"("type");
+
+-- CreateIndex
+CREATE INDEX "Notification_severity_idx" ON "Notification"("severity");
+
+-- CreateIndex
+CREATE INDEX "Notification_userId_status_idx" ON "Notification"("userId", "status");
+
+-- CreateIndex
+CREATE INDEX "Notification_createdAt_idx" ON "Notification"("createdAt");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "SharepointItem_itemId_id_key" ON "SharepointItem"("itemId", "id");
 
 -- CreateIndex
@@ -877,6 +897,9 @@ CREATE INDEX "_PermissionToRole_B_index" ON "_PermissionToRole"("B");
 
 -- CreateIndex
 CREATE INDEX "_UserFiles_B_index" ON "_UserFiles"("B");
+
+-- CreateIndex
+CREATE INDEX "_JobReviewers_B_index" ON "_JobReviewers"("B");
 
 -- AddForeignKey
 ALTER TABLE "SystemAuditLog" ADD CONSTRAINT "SystemAuditLog_actorId_fkey" FOREIGN KEY ("actorId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -993,12 +1016,6 @@ ALTER TABLE "JobActivityLog" ADD CONSTRAINT "JobActivityLog_jobId_fkey" FOREIGN 
 ALTER TABLE "JobActivityLog" ADD CONSTRAINT "JobActivityLog_modifiedById_fkey" FOREIGN KEY ("modifiedById") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Notification" ADD CONSTRAINT "Notification_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Notification" ADD CONSTRAINT "Notification_senderId_fkey" FOREIGN KEY ("senderId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "CommunityMember" ADD CONSTRAINT "CommunityMember_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -1015,6 +1032,15 @@ ALTER TABLE "Post" ADD CONSTRAINT "Post_topicId_fkey" FOREIGN KEY ("topicId") RE
 
 -- AddForeignKey
 ALTER TABLE "PostEvent" ADD CONSTRAINT "PostEvent_postId_fkey" FOREIGN KEY ("postId") REFERENCES "Post"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Notification" ADD CONSTRAINT "Notification_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Notification" ADD CONSTRAINT "Notification_senderId_fkey" FOREIGN KEY ("senderId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Notification" ADD CONSTRAINT "Notification_jobId_fkey" FOREIGN KEY ("jobId") REFERENCES "Job"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "SupportTicket" ADD CONSTRAINT "SupportTicket_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -1048,3 +1074,9 @@ ALTER TABLE "_UserFiles" ADD CONSTRAINT "_UserFiles_A_fkey" FOREIGN KEY ("A") RE
 
 -- AddForeignKey
 ALTER TABLE "_UserFiles" ADD CONSTRAINT "_UserFiles_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_JobReviewers" ADD CONSTRAINT "_JobReviewers_A_fkey" FOREIGN KEY ("A") REFERENCES "Job"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_JobReviewers" ADD CONSTRAINT "_JobReviewers_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

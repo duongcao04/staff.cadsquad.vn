@@ -869,26 +869,28 @@ SET
 	"updatedAt" = NOW ();
 
 INSERT INTO
-	"Notification" (
-		id,
-		"userId",
-		"title",
-		"content",
-		"type",
-		"status",
-		"createdAt",
-		"updatedAt"
-	)
+    "Notification" (
+        "id",
+        "userId",
+        "title",
+        "content",
+        "type",
+        "severity",
+        "status",
+        "createdAt",
+        "updatedAt"
+    )
 SELECT
-	gen_random_uuid (),
-	id,
-	'Welcome to CADSQUAD',
-	'Your account has been successfully set up.',
-	'SUCCESS',
-	'UNSEEN',
-	NOW (),
-	NOW ()
+    gen_random_uuid(),
+    "id",
+    'Welcome to CADSQUAD',
+    'Your account has been successfully set up.',
+    'USER_CREATED',
+    'SUCCESS',
+    'UNSEEN',
+    '2026-05-10 16:18:45+07',
+    '2026-05-10 16:18:45+07'
 FROM
-	"User"
+    "User"
 LIMIT
-	10;
+    10;

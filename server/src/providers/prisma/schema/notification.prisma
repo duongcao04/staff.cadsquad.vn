@@ -1,0 +1,90 @@
+// 1. Phân loại mức độ (Dành cho UI: Hiển thị icon, màu sắc - Đỏ, Vàng, Xanh, Xám)
+enum NotificationSeverity {
+    INFO
+    SUCCESS
+    WARNING
+    ERROR
+}
+
+// 2. Phân loại hành động/sự kiện (Dành cho Logic: Biết chính xác chuyện gì vừa xảy ra)
+enum NotificationType {
+    // --- JOB EVENTS ---
+    JOB_CREATED
+    JOB_UPDATED
+    JOB_DELETED
+    JOB_CANCELLED
+    JOB_ASSIGNED
+    JOB_DEADLINE_NEAR
+
+    // --- JOB DELIVERIES & FINANCIALS ---
+    JOB_DELIVERED
+    JOB_REVIEW_REQUESTED
+    JOB_APPROVED
+    JOB_REJECTED
+    JOB_WAITING_PAYOUT
+    JOB_PAID
+
+    // --- USER & COMMUNICATION ---
+    USER_CREATED
+    USER_RESTORED
+    NEW_COMMENT
+    USER_MENTIONED
+
+    // --- SYSTEM ---
+    SYSTEM_ISSUE_REPORTED
+    SYSTEM_ALERT
+}
+
+// Giả sử bạn đang có enum này
+enum NotificationStatus {
+    SEEN
+    UNSEEN
+}
+
+model Notification {
+    id String @id @default(uuid())
+
+    /**
+     * 1. Người nhận thông báo
+     */
+    userId String
+    user   User   @relation("UserNotifications", fields: [userId], references: [id])
+
+    /**
+     * 2. Người gửi/tác nhân gây ra thông báo (Rất tốt, dùng cho avatar người gửi)
+     */
+    senderId String?
+    sender   User?   @relation("UserSendedNotifications", fields: [senderId], references: [id])
+
+    /**
+     * 3. Phân loại & Mức độ ưu tiên (Đã được tách biệt)
+     */
+    type     NotificationType // Lỗi biên dịch nếu thiếu, bắt buộc phải có để biết là sự kiện gì
+    severity NotificationSeverity @default(INFO)
+    status   NotificationStatus   @default(UNSEEN)
+
+    /**
+     * 4. Nội dung hiển thị
+     */
+    title       String?
+    content     String
+    imageUrl    String?
+    redirectUrl String?
+
+    /**
+     * 5. Khóa ngoại liên kết (NÊN THÊM)
+     * Thêm jobId giúp bạn dễ dàng query: "Lấy tất cả thông báo thuộc về Job này"
+     * hoặc tự động xóa thông báo khi Job bị xóa (onDelete: Cascade).
+     */
+    jobId String?
+    job   Job?    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    // Indexes để tối ưu truy vấn (Filters trên UI)
+    @@index([type])
+    @@index([severity])
+    @@index([userId, status])
+    @@index([createdAt])
+}
