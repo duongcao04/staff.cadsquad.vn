@@ -53,6 +53,8 @@ export type TJob = {
      */
     attachmentUrls: string[]
 
+    reviewers: TUser[]
+
     /**
      * The name of the client for whom the job is being done.
      * @type {TClient | undefined}

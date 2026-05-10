@@ -273,14 +273,11 @@ export const DeliverJobContent = ({
     }
 
     const jobDeliverName = useMemo(() => {
-        if (lodash.isEmpty(formik.values.jobId)) {
+        if (lodash.isEmpty(defaultJob)) {
             return ''
         }
-        const jobDeliver = pendingDeliverJobs.find(
-            (it) => it.id === formik.values.jobId
-        )
-        return '#' + jobDeliver?.no + '_' + jobDeliver?.displayName
-    }, [formik.values.jobId, pendingDeliverJobs])
+        return '#' + defaultJob?.no + '_' + defaultJob?.displayName
+    }, [defaultJob])
 
     const isUploadingFiles = uploadStates.some((f) => f.status === 'uploading')
 
