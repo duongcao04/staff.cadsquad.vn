@@ -27,7 +27,7 @@ export function SchedulePage() {
     )
 }
 
-import { HeroCard, HeroCardBody, PageHeading } from '@/shared/components'
+import { HeroCard, HeroCardBody, WorkspaceHeading } from '@/shared/components'
 import { TJob } from '@/shared/types'
 import { Button, Chip } from '@heroui/react'
 import dayjs from 'dayjs'
@@ -37,7 +37,7 @@ import UserScheduleMobileContent from '../../features/schedules/components/views
 export const ScheduleDesktopContent = ({ jobs }: { jobs: TJob[] }) => {
     return (
         <>
-            <PageHeading
+            <WorkspaceHeading
                 title="My Schedule"
                 // subtitle="Manage your tasks and deadlines"
             />

@@ -9,7 +9,7 @@ import {
 } from '@/features/workbench'
 import { workbenchDataOptions } from '@/lib/queries'
 import { jobFiltersSchema, TJobFilters } from '@/lib/validationSchemas'
-import { PageHeading } from '@/shared/components'
+import { WorkspaceHeading } from '@/shared/components'
 import { useDevice } from '@/shared/hooks'
 import {
     Button,
@@ -26,7 +26,7 @@ import { Suspense, useMemo, useState } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { z } from 'zod'
 import WorkbenchTable from '../../../features/workbench/components/views/WorkbenchTable'
-import { RouteUtil, TABLE_ROW_PER_PAGE_OPTIONS } from '../../../lib'
+import { cn, RouteUtil, TABLE_ROW_PER_PAGE_OPTIONS } from '../../../lib'
 import { useWorkbenchFilters } from './-hooks/useWorkbenchFilters'
 
 const DEFAULT_SORT = 'displayName:asc'
@@ -63,10 +63,13 @@ function WorkbenchPage() {
     const { isSmallView } = useDevice()
     return (
         <>
-            <PageHeading
+            <WorkspaceHeading
                 title="Workbench"
                 classNames={{
-                    wrapper: `${isSmallView ? '!py-3' : '!py-2'} pl-6 pr-3.5 border-b border-border-default`,
+                    wrapper: cn(
+                        isSmallView && 'py-3!',
+                        'border-b border-border-default'
+                    ),
                 }}
             />
             <div

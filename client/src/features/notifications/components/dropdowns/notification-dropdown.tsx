@@ -24,9 +24,9 @@ import { useRouter } from '@tanstack/react-router'
 import { useChannel } from 'ably/react'
 import { CheckCheck, Inbox, RefreshCcw } from 'lucide-react'
 import { useState } from 'react'
-import { NotificationCard } from './NotificationCard'
+import { NotificationDropdownItem } from './notification-dropdown-item'
 
-export default function NotificationDropdown() {
+export function NotificationDropdown() {
     const { profile } = useProfile()
     const router = useRouter()
     const [isOpen, setOpen] = useState(false)
@@ -220,7 +220,7 @@ export default function NotificationDropdown() {
                                         )}
 
                                         <div className={isUnseen ? 'pl-2' : ''}>
-                                            <NotificationCard
+                                            <NotificationDropdownItem
                                                 data={notification}
                                             />
                                         </div>

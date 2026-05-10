@@ -1,104 +1,194 @@
-import { NotificationList } from '@/features/notifications'
-import { getPageTitle, notificationsInfiniteOptions } from '@/lib'
-import { PageHeading } from '@/shared/components'
-import { Button, Spinner } from '@heroui/react'
-import { useSuspenseInfiniteQuery } from '@tanstack/react-query'
+import {
+    NotificationCard,
+    NotificationItemData,
+    NotificationToolbar,
+} from '@/features/notifications'
+import { Button } from '@heroui/react'
 import { createFileRoute } from '@tanstack/react-router'
-import { Suspense, useEffect, useMemo } from 'react'
-import { ErrorBoundary } from 'react-error-boundary'
-import { useInView } from 'react-intersection-observer'
+import { Info, Settings } from 'lucide-react'
+import { useState } from 'react'
 
 export const Route = createFileRoute('/_workspace/notifications/')({
-    head: () => ({ meta: [{ title: getPageTitle('Notifications') }] }),
-    loader: ({ context }) => {
-        // Prefetch the first page
-        void context.queryClient.ensureInfiniteQueryData(
-            notificationsInfiniteOptions()
-        )
-    },
     component: NotificationsPage,
 })
 
-function NotificationsPage() {
-    return (
-        <>
-            <PageHeading
-                title="Notifications"
-                classNames={{
-                    wrapper: 'pl-6 pr-3.5 py-4 border-b border-border-default',
-                }}
-            />
-            <div className="container mx-auto p-4 md:p-6 min-h-[calc(100svh-80px)]">
-                <ErrorBoundary
-                    fallback={
-                        <div className="p-10 text-center text-danger">
-                            <p>Failed to load notifications</p>
-                            <Button onPress={() => window.location.reload()}>
-                                Retry
-                            </Button>
-                        </div>
-                    }
-                >
-                    <Suspense fallback={<NotificationsSkeleton />}>
-                        <NotificationsContainer />
-                    </Suspense>
-                </ErrorBoundary>
-            </div>
-        </>
+const MOCK_NOTIFICATIONS: NotificationItemData[] = [
+    {
+        id: '1',
+        type: 'comment',
+        user: {
+            name: 'Rúben Rocha',
+            avatar: 'https://i.pravatar.cc/150?u=ruben',
+        },
+        message: (
+            <span>
+                <strong>Rúben Rocha</strong> commented on{' '}
+                <strong>Process 99827373</strong>
+            </span>
+        ),
+        subMessage:
+            '"Oh, I finished de-bugging the phones, but the system\'s compiling for eighteen minutes, or twenty. So, some minor systems may go on and off for a while..."',
+        timestamp: '9:42 AM',
+        dateGroup: 'Today',
+        isUnread: false,
+    },
+    {
+        id: '2',
+        type: 'error',
+        message: (
+            <span>
+                <strong>Process 09200939</strong> has exceeded the retry limit
+                on the Liveness step.
+            </span>
+        ),
+        timestamp: '9:42 AM',
+        dateGroup: 'Today',
+        isUnread: true,
+    },
+    {
+        id: '3',
+        type: 'warning',
+        message: (
+            <span>
+                <strong>Process 09200939</strong> is reaching the limit to
+                terminate its process.
+            </span>
+        ),
+        subMessage: 'Want to send an alert to the customer to notify?',
+        actions: [
+            { label: 'Go to process', variant: 'solid', color: 'primary' },
+            { label: 'Discard', variant: 'bordered', color: 'default' },
+        ],
+        timestamp: '9:42 AM',
+        dateGroup: 'Today',
+        isUnread: false,
+    },
+    {
+        id: '4',
+        type: 'success',
+        message: (
+            <span>
+                <strong>Process 09200939</strong> has been completed
+                successfully.
+            </span>
+        ),
+        timestamp: '9:42 AM',
+        dateGroup: 'Yesterday',
+        isUnread: false,
+    },
+    {
+        id: '5',
+        type: 'info',
+        message: (
+            <span>
+                Your next call with <strong>Process 0000</strong> starts in 5
+                minutes.
+            </span>
+        ),
+        timestamp: '9:42 AM',
+        dateGroup: 'Yesterday',
+        isUnread: true,
+    },
+    {
+        id: '6',
+        type: 'review',
+        user: {
+            name: 'Rúben Rocha',
+            avatar: 'https://i.pravatar.cc/150?u=ruben',
+        },
+        message: (
+            <span>
+                <strong>Rúben Rocha</strong> asks you to review{' '}
+                <strong>Process 99827373</strong>
+            </span>
+        ),
+        actions: [
+            { label: 'Go to process', variant: 'solid', color: 'primary' },
+            { label: 'Discard', variant: 'bordered', color: 'default' },
+        ],
+        timestamp: '9:42 AM',
+        dateGroup: 'Yesterday',
+        isUnread: false,
+    },
+]
+
+export default function NotificationsPage() {
+    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+
+    // Group notifications by dateGroup
+    const groupedNotifications = MOCK_NOTIFICATIONS.reduce(
+        (acc, curr) => {
+            if (!acc[curr.dateGroup]) acc[curr.dateGroup] = []
+            acc[curr.dateGroup].push(curr)
+            return acc
+        },
+        {} as Record<string, NotificationItemData[]>
     )
-}
 
-function NotificationsContainer() {
-    // --- 2. Use Infinite Query ---
-    const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-        useSuspenseInfiniteQuery(notificationsInfiniteOptions())
-
-    // --- 3. Flatten Data ---
-    const allNotifications = useMemo(
-        () => data.pages.flatMap((page) => page.notifications),
-        [data]
-    )
-
-    // --- 4. Infinite Scroll Trigger (Sentinel) ---
-    const Sentinel = () => {
-        const { ref, inView } = useInView({
-            threshold: 0.5,
-            rootMargin: '100px',
-        })
-
-        useEffect(() => {
-            if (inView && hasNextPage && !isFetchingNextPage) {
-                fetchNextPage()
-            }
-        }, [inView, hasNextPage, isFetchingNextPage])
-
-        if (!hasNextPage) return <div className="h-4" /> // Spacer
-
-        return (
-            <div ref={ref} className="w-full flex justify-center py-6">
-                <Spinner size="sm" color="default" />
-            </div>
-        )
+    const toggleSelection = (id: string) => {
+        const newSet = new Set(selectedIds)
+        if (newSet.has(id)) newSet.delete(id)
+        else newSet.add(id)
+        setSelectedIds(newSet)
     }
 
     return (
-        <div className="flex flex-col gap-4">
-            <NotificationList data={allNotifications} isLoading={false} />
+        <div className="flex flex-col min-h-screen bg-white">
+            {/* Header */}
+            <div className="px-6 py-4 border-b border-default-200 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                    <h1 className="text-2xl font-bold text-default-900">
+                        Notifications
+                    </h1>
+                    <Info size={16} className="text-default-400 mt-1" />
+                </div>
+                <div className="flex items-center gap-3">
+                    <Button
+                        variant="light"
+                        color="primary"
+                        className="font-semibold"
+                    >
+                        Mark all as read
+                    </Button>
+                    <Button isIconOnly variant="light">
+                        <Settings size={20} className="text-default-600" />
+                    </Button>
+                </div>
+            </div>
 
-            <Sentinel />
-        </div>
-    )
-}
+            <NotificationToolbar />
 
-function NotificationsSkeleton() {
-    return (
-        <div className="flex flex-col gap-4 max-w-3xl mx-auto w-full pt-10">
-            {[1, 2, 3, 4, 5].map((i) => (
-                <div
-                    key={i}
-                    className="w-full h-24 rounded-xl bg-content2 animate-pulse"
-                />
-            ))}
+            {/* Main Content / Timeline */}
+            <div className="px-6 pb-20 max-w-5xl">
+                {Object.entries(groupedNotifications).map(
+                    ([groupName, items]) => (
+                        <div key={groupName} className="mb-6">
+                            {/* Timeline Divider */}
+                            <div className="flex items-center py-4">
+                                <div className="flex-grow h-px bg-default-200"></div>
+                                <span className="px-4 text-xs font-semibold text-default-500 uppercase tracking-wider bg-white">
+                                    {groupName}
+                                </span>
+                                <div className="flex-grow h-px bg-default-200"></div>
+                            </div>
+
+                            {/* Notification List */}
+                            <div className="flex flex-col gap-2">
+                                {items.map((item) => (
+                                    <NotificationCard
+                                        key={item.id}
+                                        data={item}
+                                        isSelected={selectedIds.has(item.id)}
+                                        onToggle={() =>
+                                            toggleSelection(item.id)
+                                        }
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    )
+                )}
+            </div>
         </div>
     )
 }

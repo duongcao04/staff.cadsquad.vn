@@ -4,9 +4,9 @@ import { jobsListOptions, useProfile } from '@/lib/queries'
 import { INTERNAL_URLS, JOB_STATUS_CODES } from '@/lib/utils'
 import {
     HeroCopyButton,
-    PageHeading,
     ScrollArea,
     ScrollBar,
+    WorkspaceHeading,
 } from '@/shared/components'
 import { useDevice } from '@/shared/hooks'
 import {
@@ -32,7 +32,6 @@ import {
     UserRound,
     UserRoundPen,
 } from 'lucide-react'
-import { optimizeCloudinary } from '../../lib'
 
 export const Route = createFileRoute('/_workspace/profile')({
     head: () => ({
@@ -123,7 +122,7 @@ export default function ProfilePage() {
     return (
         <>
             <div className="border-b border-border-default">
-                <PageHeading
+                <WorkspaceHeading
                     title="Profile"
                     classNames={{
                         wrapper: '!py-3 pl-6 pr-3.5',

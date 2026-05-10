@@ -5,7 +5,11 @@ import type { TUserNotification } from '@/shared/types'
 import { Image } from 'antd'
 import { dateFormatter } from '../../../../lib'
 
-export function NotificationCard({ data }: { data: TUserNotification }) {
+export function NotificationDropdownItem({
+    data,
+}: {
+    data: TUserNotification
+}) {
     const markSeenNotification = useMarkSeenNotification()
 
     return (

@@ -1,4 +1,4 @@
-import NotificationDropdown from '@/features/notifications/components/views/NotificationDropdown'
+import { NotificationDropdown } from '@/features/notifications'
 import { INTERNAL_URLS, useProfile } from '@/lib'
 import { CHANNELS } from '@/lib/ably'
 import { useDevice } from '@/shared/hooks'
