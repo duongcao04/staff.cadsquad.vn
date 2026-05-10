@@ -877,6 +877,7 @@ INSERT INTO
         "type",
         "severity",
         "status",
+		"redirectUrl",
         "createdAt",
         "updatedAt"
     )
@@ -888,6 +889,7 @@ SELECT
     'USER_CREATED',
     'SUCCESS',
     'UNSEEN',
+	'/profile',
     '2026-05-10 16:18:45+07',
     '2026-05-10 16:18:45+07'
 FROM
