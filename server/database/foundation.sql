@@ -877,19 +877,36 @@ INSERT INTO
         "type",
         "severity",
         "status",
-		"redirectUrl",
+        "redirectUrl",
+        "actions",
         "createdAt",
         "updatedAt"
     )
 SELECT
     gen_random_uuid(),
     "id",
-    'Welcome to CADSQUAD',
+    '<p>Welcome to <b>CADSQUAD</b></p>',
     'Your account has been successfully set up.',
     'USER_CREATED',
     'SUCCESS',
     'UNSEEN',
-	'/profile',
+    '/profile',
+    '[
+        {
+            "id": "act-view-profile",
+            "label": "View Profile",
+            "variant": "solid",
+            "color": "primary",
+			"actionRedirect": "/profile"
+        },
+        {
+            "id": "act-dismiss",
+            "label": "Dismiss",
+            "variant": "light",
+            "color": "default",
+            "actionKey": "DISMISS_ACTIONS"
+        }
+    ]'::jsonb,
     '2026-05-10 16:18:45+07',
     '2026-05-10 16:18:45+07'
 FROM

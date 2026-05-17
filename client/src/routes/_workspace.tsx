@@ -60,9 +60,10 @@ function WorkspaceLayout() {
                         )}
 
                         <div
-                            className="bg-background-muted"
+                            className="size-full bg-background"
                             style={{
                                 marginLeft: leftMargin,
+                                minHeight: 'calc(100svh - 67px)',
                                 width: `calc(100% - ${leftMargin})`,
                                 transition:
                                     'margin 300ms cubic-bezier(0.4, 0, 0.2, 1)',

@@ -33,7 +33,7 @@ export class NotificationProcessor extends WorkerHost {
 			// 1. Gửi Realtime (Ably)
 			await this.ablyService.publish(
 				`user-notifications:${notification.userId}`,
-				notification.type || NotificationType.INFO,
+				notification.type || NotificationType.SYSTEM_ALERT,
 				{
 					...notification,
 					createdAt: notification.createdAt || new Date(),

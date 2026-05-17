@@ -1,11 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { Expose } from 'class-transformer'
 import { NotificationType } from '../../../generated/prisma'
+import { NotificationActionDto } from './notification-action.dto'
 
 export class NotificationResponseDto {
 	@ApiProperty({ description: 'Notification ID' })
 	@Expose()
-	id: string
+	id!: string
 
 	@ApiProperty({ description: 'Title of the notification', required: false })
 	@Expose()
@@ -13,7 +14,7 @@ export class NotificationResponseDto {
 
 	@ApiProperty({ description: 'Content of the notification' })
 	@Expose()
-	content: string
+	content!: string
 
 	@ApiProperty({
 		description: 'URL of an image for the notification',
@@ -28,7 +29,16 @@ export class NotificationResponseDto {
 
 	@ApiProperty({ description: 'Status of the notification' })
 	@Expose()
-	status: string
+	status!: string
+
+	@Expose()
+	actions?: NotificationActionDto
+
+	@Expose()
+	showActions?: boolean
+
+	@Expose()
+	metadata?: any
 
 	@ApiProperty({
 		description: 'URL to redirect to when the notification is clicked',
@@ -42,19 +52,19 @@ export class NotificationResponseDto {
 		enum: NotificationType,
 	})
 	@Expose()
-	type: NotificationType
+	type!: NotificationType
 
 	@ApiProperty({
 		description: 'ID of the user who received the notification',
 	})
 	@Expose()
-	userId: string
+	userId!: string
 
 	@ApiProperty({ description: 'Creation timestamp' })
 	@Expose()
-	createdAt: Date
+	createdAt!: Date
 
 	@ApiProperty({ description: 'Last update timestamp' })
 	@Expose()
-	updatedAt: Date
+	updatedAt!: Date
 }

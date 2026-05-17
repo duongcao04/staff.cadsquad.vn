@@ -3,10 +3,7 @@ import type { TCreateNotificationInput } from '@/lib/validationSchemas'
 
 export const notificationApi = {
     create: (data: TCreateNotificationInput) => {
-        return axiosClient.post<ApiResponse<any>>(
-            '/v1/notifications',
-            data
-        )
+        return axiosClient.post<ApiResponse<any>>('/v1/notifications', data)
     },
     // Get all user notification
     // userId get from Authentication Header
@@ -22,9 +19,7 @@ export const notificationApi = {
             .then((res) => res.data)
     },
     findOne: (id: string) => {
-        return axiosClient.get<ApiResponse<any>>(
-            `/v1/notifications/${id}`
-        )
+        return axiosClient.get<ApiResponse<any>>(`/v1/notifications/${id}`)
     },
     markSeen: (id: string) => {
         return axiosClient.patch<ApiResponse<{ id: string }>>(
@@ -36,5 +31,15 @@ export const notificationApi = {
     },
     remove: (id: string) => {
         return axiosClient.delete(`/v1/notifications/${id}`)
+    },
+
+    executeAction: async (notificationId: string, actionKey: string) => {
+        const response = await axiosClient.post(
+            `/v1/notifications/${notificationId}/execute-action`,
+            {
+                actionKey: actionKey,
+            }
+        )
+        return response.data
     },
 }

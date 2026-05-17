@@ -65,6 +65,9 @@ export const localizedFormats = {
     /** Example: Aug 16, 2018 8:02 PM */
     shortMonthDateTime: 'MMM D, YYYY h:mm A',
 
+     /** Example: Aug 16, 2018 8:02 PM */
+    shortMonthDateTimeReverse: 'h:mm A - MMM D, YYYY',
+
     /** Example: Thu, Aug 16, 2018 8:02 PM */
     fullShort: 'ddd, MMM D, YYYY h:mm A',
 } as const

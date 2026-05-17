@@ -1,5 +1,11 @@
 import { notificationApi } from '@/lib/api'
-import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query'
+import {
+    infiniteQueryOptions,
+    mutationOptions,
+    queryOptions,
+} from '@tanstack/react-query'
+import { TUserNotification } from '../../../shared/types'
+import { onErrorToast } from '../helper'
 
 // --- Query Options ---
 // 1. Danh sách notifications
@@ -15,7 +21,8 @@ export const notificationsListOptions = (paginations?: {
                 paginations?.limit ?? 20
             ),
         select: (res) => {
-            const notificationsData = res.result?.notifications
+            const notificationsData = res.result
+                ?.notifications as TUserNotification[]
             return {
                 notifications: notificationsData,
                 totalCount: res.result?.totalCount || 0,
@@ -61,3 +68,9 @@ export const notificationsInfiniteOptions = (limit: number = 20) => {
         },
     })
 }
+
+export const executeNotificationActionOptions = mutationOptions({
+    mutationFn: ({ id, actionKey }: { id: string; actionKey: string }) =>
+        notificationApi.executeAction(id, actionKey),
+    onError: (error) => onErrorToast(error, 'Reset password failed'),
+})

@@ -63,7 +63,7 @@ export class JobReminderService {
 						// No senderId needed as this is a SYSTEM notification
 						title: `Upcoming Deadline: ${job.no}`,
 						content: `Job "${job.displayName}" is due in ${daysLeft} days (${job.dueAt.toLocaleDateString('en-GB')}).`,
-						type: NotificationType.JOB_DEADLINE_REMINDER,
+						type: NotificationType.JOB_DEADLINE_NEAR,
 						redirectUrl: `/jobs/${job.no}`,
 					}))
 				)

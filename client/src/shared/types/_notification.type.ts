@@ -6,7 +6,7 @@ export type TUserNotification = {
      * The unique identifier for the notification.
      * @type {string}
      */
-    id?: string
+    id: string
 
     /**
      * The ID of the user who will receive the notification.
@@ -80,5 +80,31 @@ export type TUserNotification = {
      * @type {Date}
      */
     updatedAt: Date | string
+
+    actions?: TUserNotificationAction[]
+    showActions?: boolean
+    metadata?: string
 }
 
+export type NotificationActionVariant = 'solid' | 'bordered' | 'flat' | 'light'
+export type NotificationActionColor =
+    | 'default'
+    | 'primary'
+    | 'secondary'
+    | 'success'
+    | 'warning'
+    | 'danger'
+
+export type NotificationActionKey =
+    | 'DISMISS_ACTIONS'
+    | 'ACCEPT_REVIEW'
+    | 'REJECT_REVIEW'
+
+export type TUserNotificationAction = {
+    id: string
+    label: string
+    variant: NotificationActionVariant
+    color?: NotificationActionColor
+    actionKey?: NotificationActionKey
+    actionRedirect?: string
+}

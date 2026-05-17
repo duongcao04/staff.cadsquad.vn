@@ -27,6 +27,7 @@ import { BulkCreateNotificationDto } from './dto/bulk-create-notification.dto'
 import { CreateNotificationDto } from './dto/create-notification.dto'
 import { NotificationResponseDto } from './dto/notification-response.dto'
 import { NotificationService } from './notification.service'
+import { ExecuteActionDto } from './dto/execute-action.dto'
 
 @ApiTags('Notifications')
 @Controller('notifications')
@@ -156,6 +157,24 @@ export class NotificationController {
 	async markAsSeen(@Req() request: Request, @Param('id') id: string) {
 		const user: TokenPayload = request['user']
 		return this.notificationService.markAsSeen(id, user.sub)
+	}
+
+	@Post(':id/execute-action')
+	@ApiOperation({
+		summary: 'Execute a dynamic action from a notification button',
+	})
+	async executeDynamicAction(
+		@Param('id') notificationId: string,
+		@Body() body: ExecuteActionDto,
+		@Req() request: Request
+	) {
+		const user: TokenPayload = request['user']
+
+		return this.notificationService.executeDynamicAction(
+			notificationId,
+			body.actionKey,
+			user.sub
+		)
 	}
 
 	@Patch('mark-all-seen')

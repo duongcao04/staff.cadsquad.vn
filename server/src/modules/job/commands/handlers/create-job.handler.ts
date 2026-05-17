@@ -1,4 +1,4 @@
-import { ActivityType, Prisma } from '@/generated/prisma'
+import { ActivityType, NotificationType, Prisma } from '@/generated/prisma'
 import { PrismaService } from '@/providers/prisma/prisma.service'
 import { InternalServerErrorException } from '@nestjs/common'
 import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs'
@@ -113,7 +113,7 @@ export class CreateJobHandler implements ICommandHandler<CreateJobCommand> {
 		// Send notification
 		this.eventBus.publish(
 			new JobActionEvent(
-				ActivityType.CREATE_JOB,
+				NotificationType.JOB_CREATED,
 				newJob.id,
 				creatorId,
 				{},

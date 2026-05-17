@@ -482,20 +482,6 @@ exports.Prisma.JobActivityLogScalarFieldEnum = {
   notes: 'notes'
 };
 
-exports.Prisma.NotificationScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  title: 'title',
-  content: 'content',
-  imageUrl: 'imageUrl',
-  senderId: 'senderId',
-  redirectUrl: 'redirectUrl',
-  type: 'type',
-  status: 'status',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
 exports.Prisma.CommunityScalarFieldEnum = {
   id: 'id',
   code: 'code',
@@ -549,6 +535,25 @@ exports.Prisma.PostEventScalarFieldEnum = {
   redirectUrl: 'redirectUrl',
   thumbnailUrl: 'thumbnailUrl',
   postId: 'postId'
+};
+
+exports.Prisma.NotificationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  senderId: 'senderId',
+  type: 'type',
+  severity: 'severity',
+  status: 'status',
+  title: 'title',
+  content: 'content',
+  imageUrl: 'imageUrl',
+  redirectUrl: 'redirectUrl',
+  actions: 'actions',
+  metadata: 'metadata',
+  showActions: 'showActions',
+  jobId: 'jobId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SharepointItemScalarFieldEnum = {
@@ -736,31 +741,6 @@ exports.ActivityType = exports.$Enums.ActivityType = {
   PRIVATE: 'PRIVATE'
 };
 
-exports.NotificationType = exports.$Enums.NotificationType = {
-  INFO: 'INFO',
-  WARNING: 'WARNING',
-  ERROR: 'ERROR',
-  SUCCESS: 'SUCCESS',
-  JOB_DEADLINE_REMINDER: 'JOB_DEADLINE_REMINDER',
-  JOB_UPDATE: 'JOB_UPDATE',
-  JOB_CREATED: 'JOB_CREATED',
-  JOB_DELIVERED: 'JOB_DELIVERED',
-  JOB_APPROVED: 'JOB_APPROVED',
-  JOB_REJECTED: 'JOB_REJECTED',
-  JOB_ASSIGNED_MEMBER: 'JOB_ASSIGNED_MEMBER',
-  JOB_PAID: 'JOB_PAID',
-  JOB_DELETED: 'JOB_DELETED',
-  JOB_WAITING_PAYOUT: 'JOB_WAITING_PAYOUT',
-  USER_CREATED: 'USER_CREATED',
-  USER_RESTORED: 'USER_RESTORED',
-  ISSUE_REPORT: 'ISSUE_REPORT'
-};
-
-exports.NotificationStatus = exports.$Enums.NotificationStatus = {
-  SEEN: 'SEEN',
-  UNSEEN: 'UNSEEN'
-};
-
 exports.CommunityRole = exports.$Enums.CommunityRole = {
   MEMBER: 'MEMBER',
   MODERATOR: 'MODERATOR',
@@ -773,6 +753,40 @@ exports.TopicType = exports.$Enums.TopicType = {
   FILES: 'FILES',
   IDEA: 'IDEA',
   SUPPORT: 'SUPPORT'
+};
+
+exports.NotificationType = exports.$Enums.NotificationType = {
+  JOB_CREATED: 'JOB_CREATED',
+  JOB_UPDATED: 'JOB_UPDATED',
+  JOB_DELETED: 'JOB_DELETED',
+  JOB_CANCELLED: 'JOB_CANCELLED',
+  JOB_ASSIGNED: 'JOB_ASSIGNED',
+  JOB_DEADLINE_NEAR: 'JOB_DEADLINE_NEAR',
+  JOB_SYNCED_SHAREPOINT: 'JOB_SYNCED_SHAREPOINT',
+  JOB_DELIVERED: 'JOB_DELIVERED',
+  JOB_REVIEW_REQUESTED: 'JOB_REVIEW_REQUESTED',
+  JOB_APPROVED: 'JOB_APPROVED',
+  JOB_REJECTED: 'JOB_REJECTED',
+  JOB_WAITING_PAYOUT: 'JOB_WAITING_PAYOUT',
+  JOB_PAID: 'JOB_PAID',
+  USER_CREATED: 'USER_CREATED',
+  USER_RESTORED: 'USER_RESTORED',
+  NEW_COMMENT: 'NEW_COMMENT',
+  USER_MENTIONED: 'USER_MENTIONED',
+  SYSTEM_ISSUE_REPORTED: 'SYSTEM_ISSUE_REPORTED',
+  SYSTEM_ALERT: 'SYSTEM_ALERT'
+};
+
+exports.NotificationSeverity = exports.$Enums.NotificationSeverity = {
+  INFO: 'INFO',
+  SUCCESS: 'SUCCESS',
+  WARNING: 'WARNING',
+  ERROR: 'ERROR'
+};
+
+exports.NotificationStatus = exports.$Enums.NotificationStatus = {
+  SEEN: 'SEEN',
+  UNSEEN: 'UNSEEN'
 };
 
 exports.SharepointSyncStatus = exports.$Enums.SharepointSyncStatus = {
@@ -841,12 +855,12 @@ exports.Prisma.ModelName = {
   JobDelivery: 'JobDelivery',
   JobStatusHistory: 'JobStatusHistory',
   JobActivityLog: 'JobActivityLog',
-  Notification: 'Notification',
   Community: 'Community',
   CommunityMember: 'CommunityMember',
   Topic: 'Topic',
   Post: 'Post',
   PostEvent: 'PostEvent',
+  Notification: 'Notification',
   SharepointItem: 'SharepointItem',
   SupportTicket: 'SupportTicket',
   SystemSetting: 'SystemSetting',

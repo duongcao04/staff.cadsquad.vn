@@ -4,6 +4,7 @@ import { NotificationStatusEnum } from '@/shared/enums/_notification-status.enum
 import type { TUserNotification } from '@/shared/types'
 import { Image } from 'antd'
 import { dateFormatter } from '../../../../lib'
+import HtmlReactParser from '../../../../shared/components/ui/html-react-parser'
 
 export function NotificationDropdownItem({
     data,
@@ -42,12 +43,11 @@ export function NotificationDropdownItem({
                 )}
             </div>
             <div>
-                <p
-                    className="text-sm font-medium line-clamp-1"
-                    title={data.title ?? ''}
-                >
-                    {data.title}
-                </p>
+                {data.title && (
+                    <div className="text-sm font-medium line-clamp-1">
+                        <HtmlReactParser htmlString={data.title} />
+                    </div>
+                )}
                 <p className="mt-1 text-sm line-clamp-2" title={data.content}>
                     {data.content}
                 </p>

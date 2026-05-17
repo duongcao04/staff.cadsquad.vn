@@ -15,6 +15,7 @@ enum NotificationType {
     JOB_CANCELLED
     JOB_ASSIGNED
     JOB_DEADLINE_NEAR
+    JOB_SYNCED_SHAREPOINT
 
     // --- JOB DELIVERIES & FINANCIALS ---
     JOB_DELIVERED
@@ -70,6 +71,13 @@ model Notification {
     content     String
     imageUrl    String?
     redirectUrl String?
+
+    // Store dynamic buttons 
+    actions  Json?
+    // Dynamic Store for buttons
+    metadata Json?
+
+    showActions Boolean? @default(true)
 
     /**
      * 5. Khóa ngoại liên kết (NÊN THÊM)

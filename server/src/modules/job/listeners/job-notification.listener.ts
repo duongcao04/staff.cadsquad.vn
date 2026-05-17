@@ -1,4 +1,4 @@
-import { ActivityType, NotificationType } from '@/generated/prisma'
+import { NotificationType } from '@/generated/prisma'
 import { NotificationService } from '@/modules/notification/notification.service'
 import { PermissionService } from '@/modules/role-permissions/permission.service'
 import { MailService } from '@/providers/mail/mail.service'
@@ -6,6 +6,7 @@ import { IMAGES, APP_PERMISSIONS } from '@/utils'
 import { Logger } from '@nestjs/common'
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs'
 import { JobActionEvent } from '../events/job-action.event'
+import { NotificationActionDto } from '../../notification/dto/notification-action.dto'
 
 @EventsHandler(JobActionEvent)
 export class JobNotificationListener implements IEventHandler<JobActionEvent> {
@@ -24,46 +25,45 @@ export class JobNotificationListener implements IEventHandler<JobActionEvent> {
 
 		try {
 			switch (actionType) {
-				case ActivityType.CREATE_JOB:
+				case NotificationType.JOB_CREATED:
 					await this.handleJobCreated(modifierId, jobContext)
 					break
-				case ActivityType.ASSIGN_MEMBER:
+				case NotificationType.JOB_SYNCED_SHAREPOINT:
+					await this.handleSyncedSharepointFolder(
+						modifierId,
+						jobContext
+					)
+					break
+				case NotificationType.JOB_ASSIGNED:
 					await this.handleMemberAssigned(
 						modifierId,
 						payload,
 						jobContext
 					)
 					break
-				case ActivityType.UNASSIGN_MEMBER:
-					await this.handleMemberRemoved(
-						modifierId,
-						payload,
-						jobContext
-					)
-					break
-				case ActivityType.UPDATE_MEMBER_COST:
+				case NotificationType.JOB_UPDATED:
 					await this.handleCostUpdated(
 						modifierId,
 						payload,
 						jobContext
 					)
 					break
-				case ActivityType.UPDATE_ATTACHMENTS:
+				case NotificationType.JOB_UPDATED:
 					await this.handleAttachmentsUpdated(
 						modifierId,
 						payload,
 						jobContext
 					)
 					break
-				case ActivityType.RESCHEDULE:
+				case NotificationType.JOB_UPDATED:
 					await this.handleDeadlineChanged(
 						modifierId,
 						payload,
 						jobContext
 					)
 					break
-				case ActivityType.APPROVE:
-				case ActivityType.REJECT:
+				case NotificationType.JOB_APPROVED:
+				case NotificationType.JOB_REJECTED:
 					await this.handleDeliveryReviewed(
 						modifierId,
 						actionType,
@@ -71,20 +71,20 @@ export class JobNotificationListener implements IEventHandler<JobActionEvent> {
 						jobContext
 					)
 					break
-				case ActivityType.FORCE_CHANGE_STATUS:
+				case NotificationType.JOB_UPDATED:
 					await this.handleForceStatusChange(
 						modifierId,
 						payload,
 						jobContext
 					)
 					break
-				case ActivityType.PAID:
+				case NotificationType.JOB_PAID:
 					await this.handleJobPaid(modifierId, jobContext)
 					break
-				case ActivityType.DELETE:
+				case NotificationType.JOB_CANCELLED:
 					await this.handleJobDeleted(modifierId, jobContext)
 					break
-				case ActivityType.UPDATE_GENERAL_INFORMATION:
+				case NotificationType.JOB_UPDATED:
 					if (payload.isRevenueUpdate) {
 						await this.handleRevenueUpdated(modifierId, jobContext)
 					}
@@ -108,11 +108,29 @@ export class JobNotificationListener implements IEventHandler<JobActionEvent> {
 
 		// 1. Notify Assignees
 		if (jobAssignmentIds.length > 0) {
+			const actions: NotificationActionDto[] = [
+				{
+					id: 'view',
+					color: 'primary',
+					label: 'View Detail',
+					variant: 'solid',
+					actionRedirect: `/jobs/${job.no}`,
+				},
+				{
+					id: 'dismiss',
+					color: 'default',
+					label: 'Dismiss',
+					variant: 'light',
+					actionKey: 'DISMISS_ACTIONS',
+				},
+			]
 			await this.notificationService.sendToUsers(jobAssignmentIds, {
 				senderId: modifierId,
 				title: `[${job.no}] New Project Assignment`,
 				content: `You have been assigned to Job #${job.no}- ${job.displayName}.`,
-				type: NotificationType.JOB_ASSIGNED_MEMBER,
+				type: NotificationType.JOB_ASSIGNED,
+				severity: 'INFO',
+				actions,
 				redirectUrl: `/jobs/${job.no}`,
 				imageUrl:
 					job.status?.thumbnailUrl ||
@@ -142,11 +160,116 @@ export class JobNotificationListener implements IEventHandler<JobActionEvent> {
 			.then((res) => res.filter((it) => !jobAssignmentIds.includes(it)))
 
 		if (managerIds.length > 0) {
+			const actions: NotificationActionDto[] = [
+				{
+					id: 'view',
+					color: 'primary',
+					label: 'View Detail',
+					variant: 'solid',
+					actionRedirect: `/jobs/${job.no}`,
+				},
+				{
+					id: 'dismiss',
+					color: 'default',
+					label: 'Dismiss',
+					variant: 'light',
+					actionKey: 'DISMISS_ACTIONS',
+				},
+			]
 			await this.notificationService.sendToUsers(managerIds, {
 				senderId: modifierId,
+				actions,
 				title: `[${job.no}] New Project Created`,
 				content: `New project created Job #${job.no}- ${job.displayName}.`,
-				type: NotificationType.JOB_ASSIGNED_MEMBER,
+				type: NotificationType.JOB_ASSIGNED,
+				redirectUrl: `/jobs/${job.no}`,
+				imageUrl:
+					job.status?.thumbnailUrl ||
+					IMAGES.NOTIFICATION_DEFAULT_IMAGE,
+			})
+		}
+	}
+
+	private async handleSyncedSharepointFolder(modifierId: string, job: any) {
+		const jobAssignmentIds =
+			job.assignments?.map((it: any) => it.userId) || []
+
+		// 1. Notify Assignees
+		if (jobAssignmentIds.length > 0) {
+			const actions: NotificationActionDto[] = [
+				{
+					id: 'view',
+					color: 'primary',
+					label: 'Open Sharepoint',
+					variant: 'solid',
+					actionRedirect: `#`,
+				},
+				{
+					id: 'dismiss',
+					color: 'default',
+					label: 'Dismiss',
+					variant: 'light',
+					actionKey: 'DISMISS_ACTIONS',
+				},
+			]
+			await this.notificationService.sendToUsers(jobAssignmentIds, {
+				senderId: modifierId,
+				title: `Synced sharepoint folder for job #${job.no}`,
+				content: `You have been assigned to Job #${job.no}- ${job.displayName}.`,
+				type: NotificationType.JOB_ASSIGNED,
+				severity: 'INFO',
+				actions,
+				redirectUrl: `/jobs/${job.no}`,
+				imageUrl:
+					job.status?.thumbnailUrl ||
+					IMAGES.NOTIFICATION_DEFAULT_IMAGE,
+			})
+
+			const usersForMail = job.assignments.map((it: any) => ({
+				email: it.user.email,
+				personalEmail: it.user.personalEmail,
+				displayName: it.user.displayName,
+			}))
+			await this.mailService.sendJobAssignmentNotification(usersForMail, {
+				no: job.no,
+				displayName: job.displayName,
+				clientName: job.client?.name,
+				dueAt: job.dueAt,
+			})
+		}
+
+		// 2. Notify Managers
+		const managerIds = await this.permissionService
+			.findUserHasAnyPermission([
+				APP_PERMISSIONS.JOB.MANAGE,
+				APP_PERMISSIONS.SYSTEM.MANAGE,
+				APP_PERMISSIONS.JOB.PAID,
+			])
+			.then((res) => res.filter((it) => !jobAssignmentIds.includes(it)))
+
+		if (managerIds.length > 0) {
+			const actions: NotificationActionDto[] = [
+				{
+					id: 'view',
+					color: 'primary',
+					label: 'View Detail',
+					variant: 'solid',
+					actionRedirect: `/jobs/${job.no}`,
+				},
+				{
+					id: 'dismiss',
+					color: 'default',
+					label: 'Dismiss',
+					variant: 'light',
+					actionKey: 'DISMISS_ACTIONS',
+				},
+			]
+			await this.notificationService.sendToUsers(managerIds, {
+				senderId: modifierId,
+				actions,
+				title: `[${job.no}] New Project Created`,
+				content: `New project created Job #${job.no}- ${job.displayName}.`,
+				type: NotificationType.JOB_ASSIGNED,
 				redirectUrl: `/jobs/${job.no}`,
 				imageUrl:
 					job.status?.thumbnailUrl ||
@@ -162,13 +285,29 @@ export class JobNotificationListener implements IEventHandler<JobActionEvent> {
 	) {
 		const { memberId, userEmail, userPersonalEmail, userDisplayName } =
 			payload
-
+		const actions: NotificationActionDto[] = [
+			{
+				id: 'view',
+				color: 'primary',
+				label: 'View Detail',
+				variant: 'solid',
+				actionRedirect: `/jobs/${job.no}`,
+			},
+			{
+				id: 'dismiss',
+				color: 'default',
+				label: 'Dismiss',
+				variant: 'light',
+				actionKey: 'DISMISS_ACTIONS',
+			},
+		]
 		await this.notificationService.send({
 			userId: memberId,
 			senderId: modifierId,
 			title: `[#${job.no}] New Job Assignment`,
 			content: `You have been assigned to job: ${job.no}- ${job.displayName}`,
-			type: NotificationType.JOB_ASSIGNED_MEMBER,
+			type: NotificationType.JOB_ASSIGNED,
+			actions,
 			imageUrl:
 				job.status?.thumbnailUrl || IMAGES.NOTIFICATION_DEFAULT_IMAGE,
 			redirectUrl: `/jobs/${job.no}`,
@@ -191,23 +330,6 @@ export class JobNotificationListener implements IEventHandler<JobActionEvent> {
 		)
 	}
 
-	private async handleMemberRemoved(
-		modifierId: string,
-		payload: any,
-		job: any
-	) {
-		await this.notificationService.send({
-			userId: payload.memberId,
-			senderId: modifierId,
-			title: `[${job.no}] Job Assignment Update`,
-			content: `You have been removed from job #${job.no}- ${job.displayName}.`,
-			type: NotificationType.JOB_ASSIGNED_MEMBER,
-			imageUrl:
-				job.status?.thumbnailUrl || IMAGES.NOTIFICATION_DEFAULT_IMAGE,
-			redirectUrl: `/project-center`,
-		})
-	}
-
 	private async handleCostUpdated(
 		modifierId: string,
 		payload: any,
@@ -218,7 +340,7 @@ export class JobNotificationListener implements IEventHandler<JobActionEvent> {
 			senderId: modifierId,
 			title: 'Staff Cost Updated',
 			content: `Your cost assignment for Job #${job.no} has been updated.`,
-			type: NotificationType.JOB_UPDATE,
+			type: NotificationType.JOB_UPDATED,
 			imageUrl:
 				job.status?.thumbnailUrl || IMAGES.NOTIFICATION_DEFAULT_IMAGE,
 			redirectUrl: `/jobs/${job.no}`,
@@ -236,7 +358,7 @@ export class JobNotificationListener implements IEventHandler<JobActionEvent> {
 				senderId: modifierId,
 				title: `[${job.no}] Files Updated`,
 				content: `${payload.filesCount} new file(s) have been added to ${job.displayName}.`,
-				type: NotificationType.JOB_UPDATE,
+				type: NotificationType.JOB_UPDATED,
 				imageUrl:
 					job.status?.thumbnailUrl ||
 					IMAGES.NOTIFICATION_DEFAULT_IMAGE,
@@ -263,11 +385,28 @@ export class JobNotificationListener implements IEventHandler<JobActionEvent> {
 		)
 
 		const assigneeIds = assignments.map((a: any) => a.userId)
+		const actions: NotificationActionDto[] = [
+			{
+				id: 'view',
+				color: 'primary',
+				label: 'View Detail',
+				variant: 'solid',
+				actionRedirect: `/jobs/${job.no}`,
+			},
+			{
+				id: 'dismiss',
+				color: 'default',
+				label: 'Dismiss',
+				variant: 'light',
+				actionKey: 'DISMISS_ACTIONS',
+			},
+		]
 		await this.notificationService.sendToUsers(assigneeIds, {
 			senderId: modifierId,
 			title: `[${job.no}] Schedule Updated`,
+			actions,
 			content: `The deadline for Job #${job.no} has been changed to ${formattedDate}.`,
-			type: NotificationType.JOB_DEADLINE_REMINDER,
+			type: NotificationType.JOB_DEADLINE_NEAR,
 			imageUrl:
 				job.status?.thumbnailUrl || IMAGES.NOTIFICATION_DEFAULT_IMAGE,
 			redirectUrl: `/jobs/${job.no}`,
@@ -276,11 +415,11 @@ export class JobNotificationListener implements IEventHandler<JobActionEvent> {
 
 	private async handleDeliveryReviewed(
 		modifierId: string,
-		actionType: ActivityType,
+		actionType: NotificationType,
 		payload: any,
 		job: any
 	) {
-		const isApproved = actionType === ActivityType.APPROVE
+		const isApproved = actionType === NotificationType.JOB_APPROVED
 		const assignees =
 			job.assignments?.map((it: any) => ({
 				id: it.user.id,
@@ -300,9 +439,8 @@ export class JobNotificationListener implements IEventHandler<JobActionEvent> {
 				content: isApproved
 					? `Your delivery for ${job.displayName} was approved.`
 					: `Your delivery was rejected. Feedback: ${payload.feedback}`,
-				type: isApproved
-					? NotificationType.SUCCESS
-					: NotificationType.WARNING,
+				severity: isApproved ? 'SUCCESS' : 'ERROR',
+				type: 'JOB_DELIVERED',
 				imageUrl:
 					job.status?.thumbnailUrl ||
 					IMAGES.NOTIFICATION_DEFAULT_IMAGE,
@@ -338,7 +476,7 @@ export class JobNotificationListener implements IEventHandler<JobActionEvent> {
 					senderId: modifierId,
 					title: `[${job.no}] New Payout Pending`,
 					content: `Job #${job.no} is completed and ready for payment.`,
-					type: NotificationType.JOB_UPDATE,
+					type: NotificationType.JOB_UPDATED,
 					redirectUrl: `/financial/pending-payouts`,
 				})
 			}
@@ -368,7 +506,7 @@ export class JobNotificationListener implements IEventHandler<JobActionEvent> {
 				imageUrl:
 					job.status?.thumbnailUrl ||
 					IMAGES.NOTIFICATION_DEFAULT_IMAGE,
-				type: NotificationType.JOB_UPDATE,
+				type: NotificationType.JOB_UPDATED,
 				redirectUrl: `/jobs/${job.no}`,
 			})
 
@@ -452,7 +590,7 @@ export class JobNotificationListener implements IEventHandler<JobActionEvent> {
 			senderId: modifierId,
 			title: 'Job Revenue Updated',
 			content: `Financial details for Job #${job.no} have been updated.`,
-			type: NotificationType.JOB_UPDATE,
+			type: NotificationType.JOB_UPDATED,
 			redirectUrl: `/jobs/${job.no}`,
 		})
 	}
