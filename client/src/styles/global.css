@@ -2,10 +2,13 @@
 @import './foundation.css';
 @import './utility.css';
 @import 'tw-animate-css';
+@import "@heroui/styles"; /* Style của v3 - bắt buộc phải import sau tailwindcss */
 
 /* Tailwind v4 Plugin & Source Configuration
 */
 @plugin '../lib/hero.ts';
+
+/* Chỉ định quét source v2 để Tailwind biên dịch class của v2 */
 @source '../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
 
 @custom-variant dark (&:where(.dark, .dark *));
