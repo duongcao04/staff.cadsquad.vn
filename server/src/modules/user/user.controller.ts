@@ -76,7 +76,6 @@ export class UserController {
 		return this.queryBus.execute(
 			new GetScheduleQuery(
 				userPayload.sub,
-				userPayload.permissions,
 				month,
 				year,
 				day

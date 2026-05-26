@@ -2,6 +2,7 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { APP_PERMISSIONS } from '@/utils'
 import slugify from 'slugify'
 import { Prisma } from '../../generated/prisma'
+import { PrismaService } from '../../providers/prisma/prisma.service'
 import { AuthService } from '../auth/auth.service'
 import { UserService } from '../user/user.service'
 
@@ -9,6 +10,7 @@ import { UserService } from '../user/user.service'
 export class JobHelpersService {
 	constructor(
 		private readonly authService: AuthService,
+		private readonly prismaService: PrismaService,
 		@Inject(forwardRef(() => UserService))
 		private readonly userService: UserService
 	) {}
@@ -55,27 +57,49 @@ export class JobHelpersService {
 	}
 
 	async buildPermission(userId: string): Promise<Prisma.JobWhereInput> {
-		const permissions =
-			await this.authService.getEffectivePermissions(userId)
+		const [permissions, scopeMap] = await Promise.all([
+			this.authService.getEffectivePermissions(userId),
+			this.authService.getPermissionScopeMap(userId),
+		])
 
-		// Admin/Manager bypass
-		if (
-			permissions.includes(APP_PERMISSIONS.JOB.MANAGE) ||
-			permissions.includes(APP_PERMISSIONS.JOB.READ_ALL)
-		) {
+		// Admin bypass — không check scope
+		if (permissions.includes(APP_PERMISSIONS.JOB.MANAGE)) {
 			return {}
 		}
 
-		const baseFilter: Prisma.JobWhereInput = {
-			assignments: { some: { userId } },
+		// OWN filter: job mình tạo HOẶC được assign vào
+		const ownFilter: Prisma.JobWhereInput = {
+			OR: [
+				{ createdById: userId },
+				{ assignments: { some: { userId } } },
+			],
 		}
 
-		// Example: Hide cancelled jobs unless they have permission
-		if (!permissions.includes(APP_PERMISSIONS.JOB.READ_CANCELLED)) {
-			baseFilter.deletedAt !== null
+		if (permissions.includes(APP_PERMISSIONS.JOB.READ_ALL)) {
+			const scope = scopeMap.get(APP_PERMISSIONS.JOB.READ_ALL) ?? 'ALL'
+
+			if (scope === 'ALL') return {}
+
+			if (scope === 'DEPARTMENT') {
+				const user = await this.prismaService.user.findUnique({
+					where: { id: userId },
+					select: { departmentId: true },
+				})
+				if (!user?.departmentId) return ownFilter
+				return {
+					assignments: {
+						some: { user: { departmentId: user.departmentId } },
+					},
+				}
+			}
+
+			// scope === 'OWN'
+			return ownFilter
 		}
 
-		return baseFilter
+		// Không có permission đặc biệt (ví dụ: role Sale)
+		// Chỉ thấy job mình tạo hoặc được assign vào
+		return ownFilter
 	}
 
 	async generateClientCode(

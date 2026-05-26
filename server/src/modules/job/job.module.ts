@@ -62,6 +62,6 @@ const EventListeners = [JobNotificationListener, JobSharepointListener]
 		...CommandHandlers,
 		...QueryHandlers,
 	],
-	exports: [JobService, ActivityLogService, JobCommentService],
+	exports: [JobService, ActivityLogService, JobCommentService, JobHelpersService],
 })
 export class JobModule {}

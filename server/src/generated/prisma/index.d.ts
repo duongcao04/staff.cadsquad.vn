@@ -241,6 +241,15 @@ export const SecurityLogStatus: {
 export type SecurityLogStatus = (typeof SecurityLogStatus)[keyof typeof SecurityLogStatus]
 
 
+export const PermissionScope: {
+  OWN: 'OWN',
+  DEPARTMENT: 'DEPARTMENT',
+  ALL: 'ALL'
+};
+
+export type PermissionScope = (typeof PermissionScope)[keyof typeof PermissionScope]
+
+
 export const EntityEnum: {
   JOB: 'JOB',
   USER: 'USER',
@@ -481,6 +490,10 @@ export type SecurityLogStatus = $Enums.SecurityLogStatus
 
 export const SecurityLogStatus: typeof $Enums.SecurityLogStatus
 
+export type PermissionScope = $Enums.PermissionScope
+
+export const PermissionScope: typeof $Enums.PermissionScope
+
 export type EntityEnum = $Enums.EntityEnum
 
 export const EntityEnum: typeof $Enums.EntityEnum
@@ -674,7 +687,7 @@ export class PrismaClient<
    * 
    * Read more in our [docs](https://www.prisma.io/docs/orm/prisma-client/queries/transactions).
    */
-  $transaction<P extends Prisma.PrismaPromise<any>[]>(arg: [...P], options?: { isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<runtime.Types.Utils.UnwrapTuple<P>>
+  $transaction<P extends Prisma.PrismaPromise<any>[]>(arg: [...P], options?: { maxWait?: number, timeout?: number, isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<runtime.Types.Utils.UnwrapTuple<P>>
 
   $transaction<R>(fn: (prisma: Omit<PrismaClient, runtime.ITXClientDenyList>) => $Utils.JsPromise<R>, options?: { maxWait?: number, timeout?: number, isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<R>
 
@@ -1131,8 +1144,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 7.6.0
-   * Query Engine version: 75cbdc1eb7150937890ad5465d861175c6624711
+   * Prisma Client JS version: 7.8.0
+   * Query Engine version: 3c6e192761c0362d496ed980de936e2f3cebcd3a
    */
   export type PrismaVersion = {
     client: string
@@ -14399,6 +14412,7 @@ export namespace Prisma {
     userId: string | null
     permissionId: string | null
     isDenied: boolean | null
+    scope: $Enums.PermissionScope | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -14408,6 +14422,7 @@ export namespace Prisma {
     userId: string | null
     permissionId: string | null
     isDenied: boolean | null
+    scope: $Enums.PermissionScope | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -14417,6 +14432,7 @@ export namespace Prisma {
     userId: number
     permissionId: number
     isDenied: number
+    scope: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -14428,6 +14444,7 @@ export namespace Prisma {
     userId?: true
     permissionId?: true
     isDenied?: true
+    scope?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -14437,6 +14454,7 @@ export namespace Prisma {
     userId?: true
     permissionId?: true
     isDenied?: true
+    scope?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -14446,6 +14464,7 @@ export namespace Prisma {
     userId?: true
     permissionId?: true
     isDenied?: true
+    scope?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -14528,6 +14547,7 @@ export namespace Prisma {
     userId: string
     permissionId: string
     isDenied: boolean
+    scope: $Enums.PermissionScope
     createdAt: Date
     updatedAt: Date
     _count: UserPermissionCountAggregateOutputType | null
@@ -14554,6 +14574,7 @@ export namespace Prisma {
     userId?: boolean
     permissionId?: boolean
     isDenied?: boolean
+    scope?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -14565,6 +14586,7 @@ export namespace Prisma {
     userId?: boolean
     permissionId?: boolean
     isDenied?: boolean
+    scope?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -14576,6 +14598,7 @@ export namespace Prisma {
     userId?: boolean
     permissionId?: boolean
     isDenied?: boolean
+    scope?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -14587,11 +14610,12 @@ export namespace Prisma {
     userId?: boolean
     permissionId?: boolean
     isDenied?: boolean
+    scope?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserPermissionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "permissionId" | "isDenied" | "createdAt" | "updatedAt", ExtArgs["result"]["userPermission"]>
+  export type UserPermissionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "permissionId" | "isDenied" | "scope" | "createdAt" | "updatedAt", ExtArgs["result"]["userPermission"]>
   export type UserPermissionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     permission?: boolean | PermissionDefaultArgs<ExtArgs>
@@ -14616,6 +14640,7 @@ export namespace Prisma {
       userId: string
       permissionId: string
       isDenied: boolean
+      scope: $Enums.PermissionScope
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["userPermission"]>
@@ -15047,6 +15072,7 @@ export namespace Prisma {
     readonly userId: FieldRef<"UserPermission", 'String'>
     readonly permissionId: FieldRef<"UserPermission", 'String'>
     readonly isDenied: FieldRef<"UserPermission", 'Boolean'>
+    readonly scope: FieldRef<"UserPermission", 'PermissionScope'>
     readonly createdAt: FieldRef<"UserPermission", 'DateTime'>
     readonly updatedAt: FieldRef<"UserPermission", 'DateTime'>
   }
@@ -52748,6 +52774,7 @@ export namespace Prisma {
     userId: 'userId',
     permissionId: 'permissionId',
     isDenied: 'isDenied',
+    scope: 'scope',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -53381,6 +53408,20 @@ export namespace Prisma {
    * Reference to a field of type 'EntityEnum[]'
    */
   export type ListEnumEntityEnumFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EntityEnum[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'PermissionScope'
+   */
+  export type EnumPermissionScopeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PermissionScope'>
+    
+
+
+  /**
+   * Reference to a field of type 'PermissionScope[]'
+   */
+  export type ListEnumPermissionScopeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PermissionScope[]'>
     
 
 
@@ -54290,6 +54331,7 @@ export namespace Prisma {
     userId?: StringFilter<"UserPermission"> | string
     permissionId?: StringFilter<"UserPermission"> | string
     isDenied?: BoolFilter<"UserPermission"> | boolean
+    scope?: EnumPermissionScopeFilter<"UserPermission"> | $Enums.PermissionScope
     createdAt?: DateTimeFilter<"UserPermission"> | Date | string
     updatedAt?: DateTimeFilter<"UserPermission"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -54301,6 +54343,7 @@ export namespace Prisma {
     userId?: SortOrder
     permissionId?: SortOrder
     isDenied?: SortOrder
+    scope?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -54316,6 +54359,7 @@ export namespace Prisma {
     userId?: StringFilter<"UserPermission"> | string
     permissionId?: StringFilter<"UserPermission"> | string
     isDenied?: BoolFilter<"UserPermission"> | boolean
+    scope?: EnumPermissionScopeFilter<"UserPermission"> | $Enums.PermissionScope
     createdAt?: DateTimeFilter<"UserPermission"> | Date | string
     updatedAt?: DateTimeFilter<"UserPermission"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -54327,6 +54371,7 @@ export namespace Prisma {
     userId?: SortOrder
     permissionId?: SortOrder
     isDenied?: SortOrder
+    scope?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: UserPermissionCountOrderByAggregateInput
@@ -54342,6 +54387,7 @@ export namespace Prisma {
     userId?: StringWithAggregatesFilter<"UserPermission"> | string
     permissionId?: StringWithAggregatesFilter<"UserPermission"> | string
     isDenied?: BoolWithAggregatesFilter<"UserPermission"> | boolean
+    scope?: EnumPermissionScopeWithAggregatesFilter<"UserPermission"> | $Enums.PermissionScope
     createdAt?: DateTimeWithAggregatesFilter<"UserPermission"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"UserPermission"> | Date | string
   }
@@ -57616,6 +57662,7 @@ export namespace Prisma {
   export type UserPermissionCreateInput = {
     id?: string
     isDenied?: boolean
+    scope?: $Enums.PermissionScope
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutUserPermissionsInput
@@ -57627,6 +57674,7 @@ export namespace Prisma {
     userId: string
     permissionId: string
     isDenied?: boolean
+    scope?: $Enums.PermissionScope
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -57634,6 +57682,7 @@ export namespace Prisma {
   export type UserPermissionUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     isDenied?: BoolFieldUpdateOperationsInput | boolean
+    scope?: EnumPermissionScopeFieldUpdateOperationsInput | $Enums.PermissionScope
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutUserPermissionsNestedInput
@@ -57645,6 +57694,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     permissionId?: StringFieldUpdateOperationsInput | string
     isDenied?: BoolFieldUpdateOperationsInput | boolean
+    scope?: EnumPermissionScopeFieldUpdateOperationsInput | $Enums.PermissionScope
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -57654,6 +57704,7 @@ export namespace Prisma {
     userId: string
     permissionId: string
     isDenied?: boolean
+    scope?: $Enums.PermissionScope
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -57661,6 +57712,7 @@ export namespace Prisma {
   export type UserPermissionUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     isDenied?: BoolFieldUpdateOperationsInput | boolean
+    scope?: EnumPermissionScopeFieldUpdateOperationsInput | $Enums.PermissionScope
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -57670,6 +57722,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     permissionId?: StringFieldUpdateOperationsInput | string
     isDenied?: BoolFieldUpdateOperationsInput | boolean
+    scope?: EnumPermissionScopeFieldUpdateOperationsInput | $Enums.PermissionScope
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -61237,6 +61290,13 @@ export namespace Prisma {
     _max?: NestedEnumEntityEnumFilter<$PrismaModel>
   }
 
+  export type EnumPermissionScopeFilter<$PrismaModel = never> = {
+    equals?: $Enums.PermissionScope | EnumPermissionScopeFieldRefInput<$PrismaModel>
+    in?: $Enums.PermissionScope[] | ListEnumPermissionScopeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PermissionScope[] | ListEnumPermissionScopeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPermissionScopeFilter<$PrismaModel> | $Enums.PermissionScope
+  }
+
   export type PermissionScalarRelationFilter = {
     is?: PermissionWhereInput
     isNot?: PermissionWhereInput
@@ -61252,6 +61312,7 @@ export namespace Prisma {
     userId?: SortOrder
     permissionId?: SortOrder
     isDenied?: SortOrder
+    scope?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -61261,6 +61322,7 @@ export namespace Prisma {
     userId?: SortOrder
     permissionId?: SortOrder
     isDenied?: SortOrder
+    scope?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -61270,8 +61332,19 @@ export namespace Prisma {
     userId?: SortOrder
     permissionId?: SortOrder
     isDenied?: SortOrder
+    scope?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type EnumPermissionScopeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PermissionScope | EnumPermissionScopeFieldRefInput<$PrismaModel>
+    in?: $Enums.PermissionScope[] | ListEnumPermissionScopeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PermissionScope[] | ListEnumPermissionScopeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPermissionScopeWithAggregatesFilter<$PrismaModel> | $Enums.PermissionScope
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPermissionScopeFilter<$PrismaModel>
+    _max?: NestedEnumPermissionScopeFilter<$PrismaModel>
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -64544,6 +64617,10 @@ export namespace Prisma {
     connect?: PermissionWhereUniqueInput
   }
 
+  export type EnumPermissionScopeFieldUpdateOperationsInput = {
+    set?: $Enums.PermissionScope
+  }
+
   export type UserUpdateOneRequiredWithoutUserPermissionsNestedInput = {
     create?: XOR<UserCreateWithoutUserPermissionsInput, UserUncheckedCreateWithoutUserPermissionsInput>
     connectOrCreate?: UserCreateOrConnectWithoutUserPermissionsInput
@@ -66747,6 +66824,23 @@ export namespace Prisma {
     _max?: NestedEnumEntityEnumFilter<$PrismaModel>
   }
 
+  export type NestedEnumPermissionScopeFilter<$PrismaModel = never> = {
+    equals?: $Enums.PermissionScope | EnumPermissionScopeFieldRefInput<$PrismaModel>
+    in?: $Enums.PermissionScope[] | ListEnumPermissionScopeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PermissionScope[] | ListEnumPermissionScopeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPermissionScopeFilter<$PrismaModel> | $Enums.PermissionScope
+  }
+
+  export type NestedEnumPermissionScopeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PermissionScope | EnumPermissionScopeFieldRefInput<$PrismaModel>
+    in?: $Enums.PermissionScope[] | ListEnumPermissionScopeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PermissionScope[] | ListEnumPermissionScopeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPermissionScopeWithAggregatesFilter<$PrismaModel> | $Enums.PermissionScope
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPermissionScopeFilter<$PrismaModel>
+    _max?: NestedEnumPermissionScopeFilter<$PrismaModel>
+  }
+
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -68474,6 +68568,7 @@ export namespace Prisma {
   export type UserPermissionCreateWithoutUserInput = {
     id?: string
     isDenied?: boolean
+    scope?: $Enums.PermissionScope
     createdAt?: Date | string
     updatedAt?: Date | string
     permission: PermissionCreateNestedOneWithoutUserPermissionsInput
@@ -68483,6 +68578,7 @@ export namespace Prisma {
     id?: string
     permissionId: string
     isDenied?: boolean
+    scope?: $Enums.PermissionScope
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -69527,6 +69623,7 @@ export namespace Prisma {
     userId?: StringFilter<"UserPermission"> | string
     permissionId?: StringFilter<"UserPermission"> | string
     isDenied?: BoolFilter<"UserPermission"> | boolean
+    scope?: EnumPermissionScopeFilter<"UserPermission"> | $Enums.PermissionScope
     createdAt?: DateTimeFilter<"UserPermission"> | Date | string
     updatedAt?: DateTimeFilter<"UserPermission"> | Date | string
   }
@@ -70145,6 +70242,7 @@ export namespace Prisma {
   export type UserPermissionCreateWithoutPermissionInput = {
     id?: string
     isDenied?: boolean
+    scope?: $Enums.PermissionScope
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutUserPermissionsInput
@@ -70154,6 +70252,7 @@ export namespace Prisma {
     id?: string
     userId: string
     isDenied?: boolean
+    scope?: $Enums.PermissionScope
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -79257,6 +79356,7 @@ export namespace Prisma {
     id?: string
     permissionId: string
     isDenied?: boolean
+    scope?: $Enums.PermissionScope
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -80078,6 +80178,7 @@ export namespace Prisma {
   export type UserPermissionUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     isDenied?: BoolFieldUpdateOperationsInput | boolean
+    scope?: EnumPermissionScopeFieldUpdateOperationsInput | $Enums.PermissionScope
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     permission?: PermissionUpdateOneRequiredWithoutUserPermissionsNestedInput
@@ -80087,6 +80188,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     permissionId?: StringFieldUpdateOperationsInput | string
     isDenied?: BoolFieldUpdateOperationsInput | boolean
+    scope?: EnumPermissionScopeFieldUpdateOperationsInput | $Enums.PermissionScope
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -80095,6 +80197,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     permissionId?: StringFieldUpdateOperationsInput | string
     isDenied?: BoolFieldUpdateOperationsInput | boolean
+    scope?: EnumPermissionScopeFieldUpdateOperationsInput | $Enums.PermissionScope
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -80550,6 +80653,7 @@ export namespace Prisma {
     id?: string
     userId: string
     isDenied?: boolean
+    scope?: $Enums.PermissionScope
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -80580,6 +80684,7 @@ export namespace Prisma {
   export type UserPermissionUpdateWithoutPermissionInput = {
     id?: StringFieldUpdateOperationsInput | string
     isDenied?: BoolFieldUpdateOperationsInput | boolean
+    scope?: EnumPermissionScopeFieldUpdateOperationsInput | $Enums.PermissionScope
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutUserPermissionsNestedInput
@@ -80589,6 +80694,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     isDenied?: BoolFieldUpdateOperationsInput | boolean
+    scope?: EnumPermissionScopeFieldUpdateOperationsInput | $Enums.PermissionScope
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -80597,6 +80703,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     isDenied?: BoolFieldUpdateOperationsInput | boolean
+    scope?: EnumPermissionScopeFieldUpdateOperationsInput | $Enums.PermissionScope
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

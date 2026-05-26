@@ -152,6 +152,12 @@ model Permission {
     @@unique([entity, action])
 }
 
+enum PermissionScope {
+    OWN        // Chỉ xem record mình tạo hoặc được assign vào
+    DEPARTMENT // Xem record trong cùng phòng ban
+    ALL        // Xem tất cả (mặc định, giữ nguyên hành vi cũ)
+}
+
 // Bảng này lưu các quyền "đặc biệt" của user (khác với Role)
 model UserPermission {
     id String @id @default(uuid())
@@ -166,6 +172,10 @@ model UserPermission {
     // false (Mặc định): Cấp thêm quyền này cho user (Grant/Bonus)
     // true: Cấm user dùng quyền này, kể cả khi Role của họ có quyền đó (Deny/Exclude)
     isDenied Boolean @default(false)
+
+    // Giới hạn phạm vi dữ liệu khi isDenied = false (GRANT)
+    // Chỉ có ý nghĩa với GRANT — DENY rows bỏ qua field này
+    scope PermissionScope @default(ALL)
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
