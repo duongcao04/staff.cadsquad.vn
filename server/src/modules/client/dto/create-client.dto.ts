@@ -1,55 +1,101 @@
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {
-	IsString,
-	IsEnum,
-	IsEmail,
-	IsOptional,
-	IsNumber,
-	Min,
-	IsNotEmpty,
+    IsEnum,
+    IsNotEmpty,
+    IsNumber,
+    IsOptional,
+    IsString,
+    Min,
 } from 'class-validator'
 import { ClientType } from '../../../generated/prisma'
 
 export class CreateClientDto {
-	@IsNotEmpty()
-	@IsString()
-	name!: string
+    @ApiProperty({
+        description: 'Tên hiển thị của khách hàng',
+        example: 'ABC Corporation',
+    })
+    @IsNotEmpty()
+    @IsString()
+    name!: string
 
-	@IsNotEmpty()
-	@IsString()
-	code!: string
+    @ApiProperty({
+        description: 'Mã khách hàng — duy nhất, dùng để tra cứu nhanh (slug hoặc mã nội bộ)',
+        example: 'ABC-CORP',
+    })
+    @IsNotEmpty()
+    @IsString()
+    code!: string
 
-	@IsOptional()
-	@IsEnum(ClientType)
-	type?: ClientType
+    @ApiPropertyOptional({
+        description: 'Loại khách hàng: INDIVIDUAL (cá nhân) hoặc COMPANY (doanh nghiệp)',
+        enum: ClientType,
+        example: ClientType.COMPANY,
+    })
+    @IsOptional()
+    @IsEnum(ClientType)
+    type?: ClientType
 
-	@IsOptional()
-	email?: string
+    @ApiPropertyOptional({
+        description: 'Email liên hệ chính',
+        example: 'contact@abccorp.com',
+    })
+    @IsOptional()
+    email?: string
 
-	@IsOptional()
-	billingEmail?: string
+    @ApiPropertyOptional({
+        description: 'Email nhận hóa đơn (billing) — có thể khác email liên hệ',
+        example: 'billing@abccorp.com',
+    })
+    @IsOptional()
+    billingEmail?: string
 
-	@IsOptional()
-	@IsString()
-	phoneNumber?: string
+    @ApiPropertyOptional({
+        description: 'Số điện thoại liên hệ',
+        example: '+84901234567',
+    })
+    @IsOptional()
+    @IsString()
+    phoneNumber?: string
 
-	@IsOptional()
-	@IsString()
-	address?: string
+    @ApiPropertyOptional({
+        description: 'Địa chỉ đầy đủ của khách hàng',
+        example: '123 Nguyễn Văn Linh, Q.7, TP.HCM',
+    })
+    @IsOptional()
+    @IsString()
+    address?: string
 
-	@IsOptional()
-	@IsString()
-	country?: string
+    @ApiPropertyOptional({
+        description: 'Quốc gia (mã ISO 3166-1 alpha-2 hoặc tên quốc gia)',
+        example: 'VN',
+    })
+    @IsOptional()
+    @IsString()
+    country?: string
 
-	@IsOptional()
-	@IsString()
-	taxId?: string
+    @ApiPropertyOptional({
+        description: 'Mã số thuế doanh nghiệp',
+        example: '0123456789',
+    })
+    @IsOptional()
+    @IsString()
+    taxId?: string
 
-	@IsOptional()
-	@IsString()
-	currency?: string
+    @ApiPropertyOptional({
+        description: 'Đơn vị tiền tệ thanh toán mặc định',
+        example: 'VND',
+    })
+    @IsOptional()
+    @IsString()
+    currency?: string
 
-	@IsOptional()
-	@IsNumber()
-	@Min(0)
-	paymentTerms?: number
+    @ApiPropertyOptional({
+        description: 'Số ngày thanh toán sau khi xuất hóa đơn (Net payment terms)',
+        example: 30,
+        minimum: 0,
+    })
+    @IsOptional()
+    @IsNumber()
+    @Min(0)
+    paymentTerms?: number
 }
