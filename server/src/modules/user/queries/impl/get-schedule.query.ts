@@ -1,12 +1,11 @@
 import { PrismaService } from "@/providers/prisma/prisma.service";
 import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
-import { APP_PERMISSIONS } from "@/utils"
+import { JobHelpersService } from "@/modules/job/job-helpers.service";
 import dayjs from "dayjs";
 
 export class GetScheduleQuery {
 	constructor(
 		public readonly userId: string,
-		public readonly userPermissions: string[],
 		public readonly month: number,
 		public readonly year: number,
 		public readonly day?: number
@@ -15,10 +14,13 @@ export class GetScheduleQuery {
 
 @QueryHandler(GetScheduleQuery)
 export class GetScheduleHandler implements IQueryHandler<GetScheduleQuery> {
-	constructor(private readonly prisma: PrismaService) { }
+	constructor(
+		private readonly prisma: PrismaService,
+		private readonly jobHelpers: JobHelpersService,
+	) { }
 
 	async execute(query: GetScheduleQuery) {
-		const { userId, month, userPermissions, year, day } = query;
+		const { userId, month, year, day } = query;
 
 		const baseDate = dayjs().year(year).month(month - 1);
 
@@ -38,14 +40,8 @@ export class GetScheduleHandler implements IQueryHandler<GetScheduleQuery> {
 			end = baseDate.endOf('month').toDate();
 		}
 
-		// 2. Logic phân quyền giữ nguyên
-		const buildPermission = userPermissions.includes(APP_PERMISSIONS.JOB.READ_ALL)
-			? {}
-			: {
-				assignments: {
-					some: { userId: userId },
-				},
-			};
+		// 2. Dùng buildPermission() để áp dụng scope-aware filter
+		const buildPermission = await this.jobHelpers.buildPermission(userId);
 
 		// 3. Query DB
 		const jobsSchedule = await this.prisma.job.findMany({

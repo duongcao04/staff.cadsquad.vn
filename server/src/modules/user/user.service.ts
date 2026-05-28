@@ -334,19 +334,27 @@ export class UserService {
 					},
 				},
 				update: {
-					isDenied, // Update existing status
+					isDenied,
+					// Chỉ cập nhật scope khi GRANT và có truyền scope
+					...(!isDenied && dto.scope !== undefined
+						? { scope: dto.scope }
+						: {}),
 				},
 				create: {
 					userId,
 					permissionId: dto.permissionId,
 					isDenied,
+					// Default ALL nếu không truyền scope (giữ hành vi cũ)
+					...(!isDenied && dto.scope !== undefined
+						? { scope: dto.scope }
+						: {}),
 				},
 			})
 
 			return {
 				message: isDenied
 					? 'Permission explicitly DENIED.'
-					: 'Permission explicitly GRANTED.',
+					: `Permission explicitly GRANTED${dto.scope ? ` with scope: ${dto.scope}` : ''}.`,
 				data: result,
 			}
 		}

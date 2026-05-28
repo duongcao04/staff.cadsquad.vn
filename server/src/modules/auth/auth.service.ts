@@ -1,4 +1,4 @@
-import { SecurityLogStatus, User } from '@/generated/prisma'
+import { PermissionScope, SecurityLogStatus, User } from '@/generated/prisma'
 import { UserResponseDto } from '@/modules/user/dto/user-response.dto'
 import { UserSecurityService } from '@/modules/user/user-security.service'
 import { MailService } from '@/providers/mail/mail.service'
@@ -201,6 +201,18 @@ export class AuthService {
 
 		// Trả về mảng quyền cuối cùng
 		return Array.from(allAllowed)
+	}
+
+	async getPermissionScopeMap(userId: string): Promise<Map<string, PermissionScope>> {
+		const userPermissions = await this.prismaService.userPermission.findMany({
+			where: { userId, isDenied: false },
+			include: { permission: true },
+		})
+		const map = new Map<string, PermissionScope>()
+		for (const up of userPermissions) {
+			map.set(up.permission.entityAction, up.scope)
+		}
+		return map
 	}
 
 	// --- 1. Request Reset Link ---

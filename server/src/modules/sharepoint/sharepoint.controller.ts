@@ -1,133 +1,226 @@
 import {
-	BadRequestException,
-	Body,
-	Controller,
-	Delete,
-	Get,
-	Param,
-	Post,
-	Query,
-	UploadedFile,
-	UseInterceptors,
+    BadRequestException,
+    Body,
+    Controller,
+    Delete,
+    Get,
+    HttpCode,
+    Param,
+    Post,
+    Query,
+    UploadedFile,
+    UseGuards,
+    UseInterceptors,
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
+import {
+    ApiBearerAuth,
+    ApiBody,
+    ApiConsumes,
+    ApiOperation,
+    ApiParam,
+    ApiQuery,
+    ApiResponse,
+    ApiTags,
+} from '@nestjs/swagger'
+import { ResponseMessage } from '../../common/decorators/responseMessage.decorator'
+import { BadRequestResponseDto } from '../../common/swagger/api-response.dto'
+import { JwtGuard } from '../auth/jwt.guard'
 import { CopyItemDto } from './dtos/copy-item.dto'
 import { SharePointService } from './sharepoint.service'
-import { ResponseMessage } from '../../common/decorators/responseMessage.decorator'
 
+@ApiTags('SharePoint')
+@ApiBearerAuth()
 @Controller('sharepoint')
-// @UseGuards(JwtGuard) // Bảo vệ toàn bộ API bằng Token Local
+@UseGuards(JwtGuard)
 export class SharePointController {
-	constructor(private readonly service: SharePointService) {}
+    constructor(private readonly service: SharePointService) {}
 
-	// 1. Lấy danh sách file
-	// GET /api/v1/sharepoint/items?folderId=xxx
-	// Nếu không truyền folderId -> Lấy Root
-	@Get('items')
-	@ResponseMessage('Get folder items successfully')
-	async listItems(@Query('folderId') folderId?: string) {
-		return this.service.getItems(folderId)
-	}
+    @Get('items')
+    @HttpCode(200)
+    @ResponseMessage('Get folder items successfully')
+    @ApiOperation({
+        summary: 'Lấy danh sách file/folder trong SharePoint',
+        description:
+            'Trả về nội dung thư mục theo `folderId`. Nếu không truyền `folderId` → lấy root của drive.',
+    })
+    @ApiQuery({
+        name: 'folderId',
+        required: false,
+        description: 'ID thư mục SharePoint. Bỏ qua để lấy root.',
+        example: 'folder-uuid-from-sharepoint',
+    })
+    @ApiResponse({ status: 200, description: 'Danh sách items trong thư mục' })
+    async listItems(@Query('folderId') folderId?: string) {
+        return this.service.getItems(folderId)
+    }
 
-	// 2. Upload File
-	// POST /api/v1/sharepoint/upload
-	// Body: parentId (id thư mục cha, hoặc 'root'), file (binary)
-	@Post('queu-upload')
-	@UseInterceptors(FileInterceptor('file'))
-	async queuUploadFile(
-		@UploadedFile() file: Express.Multer.File,
-		@Body('parentId') parentId: string = 'root'
-	) {
-		// Pass to service to handle queuing
-		return this.service.queueUploadFile(parentId, file)
-	}
+    @Post('queu-upload')
+    @HttpCode(202)
+    @UseInterceptors(FileInterceptor('file'))
+    @ApiConsumes('multipart/form-data')
+    @ApiOperation({
+        summary: 'Upload file vào hàng đợi (queue)',
+        description: 'Đẩy file vào BullMQ queue để xử lý upload lên SharePoint bất đồng bộ.',
+    })
+    @ApiBody({
+        schema: {
+            type: 'object',
+            properties: {
+                file: { type: 'string', format: 'binary', description: 'File cần upload' },
+                parentId: { type: 'string', description: 'ID thư mục đích (mặc định: root)', example: 'root' },
+            },
+        },
+    })
+    @ApiResponse({ status: 202, description: 'File đã được đưa vào hàng đợi' })
+    async queuUploadFile(
+        @UploadedFile() file: Express.Multer.File,
+        @Body('parentId') parentId: string = 'root'
+    ) {
+        return this.service.queueUploadFile(parentId, file)
+    }
 
-	@Post('upload')
-	@UseInterceptors(FileInterceptor('file')) // 'file' là tên trường (field name) Frontend sẽ gửi lên
-	async executeUploadFile(
-		@UploadedFile() file: Express.Multer.File,
-		@Body('parentId') parentId: string
-	) {
-		if (!file) {
-			throw new BadRequestException('No file uploaded')
-		}
+    @Post('upload')
+    @HttpCode(200)
+    @UseInterceptors(FileInterceptor('file'))
+    @ApiConsumes('multipart/form-data')
+    @ApiOperation({
+        summary: 'Upload file trực tiếp lên SharePoint',
+        description: 'Upload file ngay lập tức (không qua queue). Phù hợp cho file nhỏ.',
+    })
+    @ApiBody({
+        schema: {
+            type: 'object',
+            required: ['file'],
+            properties: {
+                file: { type: 'string', format: 'binary', description: 'File cần upload' },
+                parentId: { type: 'string', description: 'ID thư mục đích', example: 'root' },
+            },
+        },
+    })
+    @ApiResponse({ status: 200, description: 'File đã được upload thành công' })
+    @ApiResponse({ status: 400, type: BadRequestResponseDto, description: 'Không có file được gửi lên' })
+    async executeUploadFile(
+        @UploadedFile() file: Express.Multer.File,
+        @Body('parentId') parentId: string
+    ) {
+        if (!file) throw new BadRequestException('No file uploaded')
+        return this.service.executeUploadFile(parentId || 'root', file)
+    }
 
-		// Nếu Frontend không gửi parentId, mặc định lưu vào thư mục 'root'
-		const targetFolderId = parentId || 'root'
+    @Post('folder')
+    @HttpCode(201)
+    @ApiOperation({
+        summary: 'Tạo thư mục mới trong SharePoint',
+        description: 'Tạo thư mục mới trong SharePoint. Có thể chỉ định thư mục cha.',
+    })
+    @ApiBody({
+        schema: {
+            type: 'object',
+            required: ['name'],
+            properties: {
+                parentId: { type: 'string', description: 'ID thư mục cha (mặc định: root)', example: 'root' },
+                name: { type: 'string', description: 'Tên thư mục mới', example: 'CSD-TEAM/ST001.CH.ANH' },
+            },
+        },
+    })
+    @ApiResponse({ status: 201, description: 'Thư mục đã được tạo trong hàng đợi' })
+    async createFolder(@Body() body: { parentId: string; name: string }) {
+        return this.service.queueCreateFolder(body.parentId || 'root', body.name)
+    }
 
-		// Gọi hàm service bạn vừa sửa ở trên
-		return this.service.executeUploadFile(targetFolderId, file)
-	}
+    @Get('download/:id')
+    @HttpCode(200)
+    @ApiOperation({
+        summary: 'Lấy link download của file',
+        description: 'Tạo URL tạm thời để download file từ SharePoint.',
+    })
+    @ApiParam({ name: 'id', description: 'ID của item SharePoint', example: 'sharepoint-item-id' })
+    @ApiResponse({ status: 200, description: 'Download URL', schema: { example: { url: 'https://...' } } })
+    async getDownloadLink(@Param('id') id: string) {
+        return this.service.getDownloadUrl(id)
+    }
 
-	// 3. Tạo Folder mới
-	// POST /api/v1/sharepoint/folder
-	// Body: { parentId: "xxx", name: "New Project" }
-	@Post('folder')
-	async createFolder(@Body() body: { parentId: string; name: string }) {
-		return this.service.queueCreateFolder(
-			body.parentId || 'root',
-			body.name
-		)
-	}
+    @Delete('items/:id')
+    @HttpCode(200)
+    @ApiOperation({
+        summary: 'Xóa file hoặc folder khỏi SharePoint',
+        description: 'Xóa vĩnh viễn item (file/folder) theo ID. Hành động không thể hoàn tác.',
+    })
+    @ApiParam({ name: 'id', description: 'ID của item SharePoint cần xóa', example: 'sharepoint-item-id' })
+    @ApiResponse({ status: 200, description: 'Item đã được xóa' })
+    async deleteItem(@Param('id') id: string) {
+        return this.service.deleteItem(id)
+    }
 
-	// 4. Lấy link Download
-	// GET /api/v1/sharepoint/download/xxx-item-id-xxx
-	@Get('download/:id')
-	async getDownloadLink(@Param('id') id: string) {
-		return this.service.getDownloadUrl(id)
-	}
+    @Get('resolve-path')
+    @HttpCode(200)
+    @ApiOperation({
+        summary: 'Lấy chi tiết folder theo đường dẫn',
+        description: 'Tìm và trả về metadata của folder từ path tương đối trong SharePoint.',
+    })
+    @ApiQuery({
+        name: 'path',
+        required: true,
+        description: 'Đường dẫn tương đối trong SharePoint',
+        example: 'CSD-TEAM/ST006.CH.DUONG',
+    })
+    @ApiResponse({ status: 200, description: 'Chi tiết folder' })
+    async getIdFromPath(@Query('path') path: string) {
+        const detail = await this.service.getFolderDetailsByPath(path)
+        return { path, detail }
+    }
 
-	// 5. Xóa File/Folder
-	// DELETE /api/v1/sharepoint/items/xxx-item-id-xxx
-	@Delete('items/:id')
-	async deleteItem(@Param('id') id: string) {
-		return this.service.deleteItem(id)
-	}
+    @Get('drives')
+    @HttpCode(200)
+    @ApiOperation({
+        summary: 'Liệt kê tất cả Document Libraries trong SharePoint Site',
+        description: 'Trả về danh sách tất cả drives (document libraries) trong SharePoint site hiện tại.',
+    })
+    @ApiResponse({ status: 200, description: 'Danh sách drives' })
+    async getDrives() {
+        return this.service.listDrives()
+    }
 
-	// 6. Lấy Folder Detail từ path
-	@Get('resolve-path')
-	async getIdFromPath(@Query('path') path: string) {
-		// Gọi: GET /sharepoint/resolve-path?path=CSD- TEAM/ST006. CH.DUONG
-		const detail = await this.service.getFolderDetailsByPath(path)
-		return { path, detail }
-	}
-	/**
-	 *  7. Liệt kê tất cả Document Libraries (Drives) trong Site hiện tại
-	 */
-	@Get('drives')
-	async getDrives() {
-		return this.service.listDrives()
-	}
+    @Post('queu-copy')
+    @HttpCode(202)
+    @ApiOperation({
+        summary: 'Sao chép file/folder vào hàng đợi',
+        description: 'Đẩy thao tác sao chép vào queue để xử lý bất đồng bộ.',
+    })
+    @ApiBody({ type: CopyItemDto })
+    @ApiResponse({ status: 202, description: 'Thao tác copy đã được đưa vào hàng đợi' })
+    async queuCopyItem(@Body() dto: CopyItemDto) {
+        return this.service.queueCopyItem(dto.itemId, dto.destinationFolderId, dto.newName)
+    }
 
-	// 8. Sao chép File/Folder
-	// POST /api/v1/sharepoint/copy
-	// Body: { itemId: "xxx", destinationFolderId: "yyy", newName: "Optional Name" }
-	@Post('queu-copy')
-	async queuCopyItem(@Body() dto: CopyItemDto) {
-		return this.service.queueCopyItem(
-			dto.itemId,
-			dto.destinationFolderId,
-			dto.newName
-		)
-	}
+    @Post('copy')
+    @HttpCode(200)
+    @ApiOperation({
+        summary: 'Sao chép file/folder ngay lập tức',
+        description: 'Thực hiện sao chép file hoặc folder trực tiếp (không qua queue).',
+    })
+    @ApiBody({ type: CopyItemDto })
+    @ApiResponse({ status: 200, description: 'Item đã được sao chép' })
+    async copyItem(@Body() dto: CopyItemDto) {
+        return this.service.excuteCopySharepointFolder({
+            destinationFolderId: dto.destinationFolderId,
+            itemId: dto.itemId,
+            newName: dto.newName,
+        })
+    }
 
-	@Post('copy')
-	async copyItem(@Body() dto: CopyItemDto) {
-		return this.service.excuteCopySharepointFolder({
-			destinationFolderId: dto.destinationFolderId,
-			itemId: dto.itemId,
-			newName: dto.newName,
-		})
-	}
-
-	// 9. Lấy thông tin chi tiết của Folder (hoặc File)
-	// GET /api/v1/sharepoint/folder/xxx-folder-id-xxx
-	@Get('folder/:id')
-	async getFolderDetails(@Param('id') id: string) {
-		if (!id) {
-			throw new BadRequestException('Folder ID is required')
-		}
-
-		return this.service.getFolderDetails(id)
-	}
+    @Get('folder/:id')
+    @HttpCode(200)
+    @ApiOperation({
+        summary: 'Lấy thông tin chi tiết folder theo ID',
+        description: 'Trả về metadata đầy đủ của folder (tên, đường dẫn, quyền, ...) theo SharePoint item ID.',
+    })
+    @ApiParam({ name: 'id', description: 'ID của folder SharePoint', example: 'sharepoint-folder-id' })
+    @ApiResponse({ status: 200, description: 'Chi tiết folder' })
+    @ApiResponse({ status: 400, type: BadRequestResponseDto, description: 'Thiếu Folder ID' })
+    async getFolderDetails(@Param('id') id: string) {
+        if (!id) throw new BadRequestException('Folder ID is required')
+        return this.service.getFolderDetails(id)
+    }
 }
