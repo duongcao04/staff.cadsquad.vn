@@ -1,0 +1,65 @@
+import { type ApiResponse, axiosClient } from '@/presentation/lib/axios'
+import type {
+    ILoginResponse,
+    IValidateTokenResponse,
+} from '@/presentation/interfaces'
+import type { TUser, TUserSession } from '@/presentation/types'
+import type { TLoginInput, TRegisterUserValues, TUpdateProfileInput } from '../validationSchemas'
+
+export const authApi = {
+    forgotPassword: async (email: string) => {
+        return axiosClient
+            .post<ApiResponse>(`/v1/auth/forgot-password`, { email })
+            .then((res) => res.data)
+    },
+    resetPasswordWithToken: async (data: {
+        token: string
+        newPassword: string
+    }) => {
+        return axiosClient
+            .post<ApiResponse>('/v1/auth/forgot-password/reset', data)
+            .then((res) => res.data)
+    },
+    activeSessions: async () => {
+        return axiosClient.get<ApiResponse<TUserSession[]>>('/v1/auth/sessions').then(res => res.data)
+    },
+    revokeSession: async (sessionId: string) => {
+        return axiosClient
+            .delete<ApiResponse>(`/v1/auth/sessions/${sessionId}`)
+            .then((res) => res.data)
+    },
+    revokeAllSession: async () => {
+        return axiosClient
+            .delete<ApiResponse>(`/v1/auth/sessions/all`)
+            .then((res) => res.data)
+    },
+    validateToken: async (token: string) => {
+        return axiosClient
+            .get<ApiResponse<IValidateTokenResponse>>(
+                '/v1/auth/validate-token',
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            )
+            .then((res) => res?.data?.result?.isValid)
+    },
+    register: async (data: TRegisterUserValues) => {
+        return axiosClient.post('/v1/auth/register', data)
+    },
+    login: async (data: TLoginInput) => {
+        return axiosClient.post<Required<ApiResponse<ILoginResponse>>>(
+            '/v1/auth/login',
+            data
+        )
+    },
+    getProfile: async () => {
+        return axiosClient.get<ApiResponse<TUser>>('/v1/auth/profile').then(res => res.data)
+    },
+    updateProfile: async (data: TUpdateProfileInput) => {
+        return axiosClient
+            .patch<ApiResponse<TUser>>('/v1/auth/profile', data)
+            .then((res) => res.data)
+    },
+}

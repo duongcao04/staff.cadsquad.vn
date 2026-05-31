@@ -12,11 +12,11 @@
   },
   "iconLibrary": "lucide",
   "aliases": {
-    "components": "@/shared/components",
+    "components": "@/presentation/components",
     "utils": "@/lib/utils",
-    "ui": "@/shared/components/ui",
+    "ui": "@/presentation/components/ui",
     "lib": "@/lib",
-    "hooks": "@/shared/hooks"
+    "hooks": "@/presentation/hooks"
   },
   "registries": {
     "@plate": "https://platejs.org/r/{name}.json",

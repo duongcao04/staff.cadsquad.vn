@@ -35,6 +35,18 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@core/*": [
+        "./src/core/*"
+      ],
+      "@data/*": [
+        "./src/data/*"
+      ],
+      "@presentation/*": [
+        "./src/presentation/*"
+      ],
+      "@utils/*": [
+        "./src/utils/*"
       ]
     }
   },

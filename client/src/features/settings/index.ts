@@ -1,5 +1,0 @@
-export * from './components/SettingsSidebar'
-export * from './components/SettingTitle'
-export * from './security/components/active-sessions-section'
-export * from './security/components/two-factor-auth-section'
-export * from './security/components/update-password-form'

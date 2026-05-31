@@ -3,8 +3,8 @@ import { createRouter, RouterProvider } from '@tanstack/react-router'
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { routeTree } from './routeTree.gen'
-import './styles/global.css'
-import { AppThemeProvider, LayoutProvider } from './shared/contexts'
+import './presentation/styles/global.css'
+import { AppThemeProvider, LayoutProvider } from './presentation/contexts'
 
 // Initialize dependencies
 export const queryClient = new QueryClient({

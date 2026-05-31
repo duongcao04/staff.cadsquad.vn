@@ -1,0 +1,402 @@
+import { clientsListOptions, INTERNAL_URLS } from '@/presentation/lib'
+import {
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    Chip,
+    Divider,
+    Input,
+    Table,
+    TableBody,
+    TableCell,
+    TableColumn,
+    TableHeader,
+    TableRow,
+    Tooltip,
+    useDisclosure,
+} from '@heroui/react'
+import { AdminPageHeading } from '@presentation/components'
+import AdminContentContainer from '@presentation/components/admin/AdminContentContainer'
+import { useSuspenseQuery } from '@tanstack/react-query'
+import { Link } from '@tanstack/react-router'
+import {
+    Building2,
+    Edit3,
+    EyeIcon,
+    Globe2,
+    Mail,
+    MapPin,
+    Phone,
+    Plus,
+    Search,
+    Trash2,
+    UserCircle,
+} from 'lucide-react'
+import { useState } from 'react'
+import { ClientHelper } from '../../../../lib/helpers'
+import { ClientFormModal } from './_components/client-form-modal'
+
+export function ClientManagementPage() {
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    const [searchQuery, setSearchQuery] = useState('')
+    const [selectedClient, setSelectedClient] = useState<any>(null)
+
+    const {
+        data: { clients },
+    } = useSuspenseQuery(clientsListOptions())
+
+    // Filter Logic
+    const filteredClients = clients.filter(
+        (client: any) =>
+            client.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            client.code.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+
+    // Stats
+    const totalClients = clients.length
+    const companyCount = clients.filter((c: any) => c.type === 'COMPANY').length
+    const indvCount = totalClients - companyCount
+
+    const handleAdd = () => {
+        setSelectedClient(null)
+        onOpen()
+    }
+
+    const handleEdit = (client: any) => {
+        setSelectedClient(client)
+        onOpen()
+    }
+
+    return (
+        <>
+            <AdminPageHeading
+                title="Clients"
+                description="Manage corporate and individual clients, billing details, and regional data."
+                actions={
+                    <Button
+                        color="primary"
+                        startContent={<Plus size={16} />}
+                        onPress={handleAdd}
+                    >
+                        Add New Client
+                    </Button>
+                }
+            />
+
+            <AdminContentContainer className="mt-2 space-y-6">
+                {/* 2. KPI Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <Card
+                        shadow="none"
+                        className="border border-border-default"
+                    >
+                        <CardBody className="p-5 flex flex-row items-center justify-between">
+                            <div>
+                                <p className="text-sm font-semibold text-text-subdued">
+                                    Total Clients
+                                </p>
+                                <p className="text-2xl font-bold text-text-default mt-1">
+                                    {totalClients}
+                                </p>
+                            </div>
+                            <div className="p-3 bg-primary-50 rounded-xl text-primary-600">
+                                <Building2 size={24} />
+                            </div>
+                        </CardBody>
+                    </Card>
+
+                    <Card
+                        shadow="none"
+                        className="border border-border-default"
+                    >
+                        <CardBody className="p-5 flex flex-row items-center justify-between">
+                            <div>
+                                <p className="text-sm font-semibold text-text-subdued">
+                                    Client Breakdown
+                                </p>
+                                <p className="text-lg font-bold text-text-default mt-1">
+                                    {companyCount} Corporate
+                                </p>
+                                <p className="text-xs text-default-500 mt-1">
+                                    {indvCount} Individual
+                                </p>
+                            </div>
+                            <div className="p-3 bg-warning-50 rounded-xl text-warning-600">
+                                <UserCircle size={24} />
+                            </div>
+                        </CardBody>
+                    </Card>
+
+                    <Card
+                        shadow="none"
+                        className="border border-border-default"
+                    >
+                        <CardBody className="p-5 flex flex-row items-center justify-between">
+                            <div>
+                                <p className="text-sm font-semibold text-text-subdued">
+                                    Global Reach
+                                </p>
+                                <p className="text-lg font-bold text-text-default mt-1">
+                                    3 Regions
+                                </p>
+                                <p className="text-xs text-default-500 mt-1">
+                                    USA, UK, Singapore
+                                </p>
+                            </div>
+                            <div className="p-3 bg-success-50 rounded-xl text-success-600">
+                                <Globe2 size={24} />
+                            </div>
+                        </CardBody>
+                    </Card>
+                </div>
+
+                {/* 3. Data Table */}
+                <Card shadow="none" className="border border-border-default">
+                    <CardHeader>
+                        <Input
+                            placeholder="Search by client name or code..."
+                            startContent={
+                                <Search
+                                    size={16}
+                                    className="text-text-subdued"
+                                />
+                            }
+                            className="max-w-md"
+                            classNames={{
+                                inputWrapper: 'border-1',
+                            }}
+                            variant="bordered"
+                            value={searchQuery}
+                            onValueChange={setSearchQuery}
+                        />
+                    </CardHeader>
+
+                    <Divider className="bg-border-default" />
+
+                    <CardBody>
+                        <Table aria-label="Clients Table" removeWrapper>
+                            <TableHeader>
+                                <TableColumn>Display name</TableColumn>
+                                <TableColumn>Location</TableColumn>
+                                <TableColumn>Type</TableColumn>
+                                <TableColumn>Contact</TableColumn>
+                                <TableColumn>Billing / Terms</TableColumn>
+                                <TableColumn align="end">Actions</TableColumn>
+                            </TableHeader>
+                            <TableBody emptyContent="No clients found.">
+                                {filteredClients.map((client) => {
+                                    const clientTypeDisplay =
+                                        ClientHelper.getClientTypeDisplay(
+                                            client.type
+                                        )
+
+                                    // Helper to check if location data exists
+                                    const hasLocation = !!(
+                                        client.country || client.region
+                                    )
+
+                                    return (
+                                        <TableRow
+                                            key={client.id}
+                                            className="hover:bg-background-hovered transition-colors group"
+                                        >
+                                            {/* --- Name & Identity --- */}
+                                            <TableCell>
+                                                <div className="flex flex-col gap-1">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="font-semibold text-text-default">
+                                                            {client.name ||
+                                                                'Unnamed Client'}
+                                                        </span>
+                                                    </div>
+                                                    <span className="text-[10px] text-default-500 font-mono uppercase tracking-tighter">
+                                                        {client.code || 'NO_ID'}
+                                                    </span>
+                                                </div>
+                                            </TableCell>
+
+                                            {/* --- Location (Handled) --- */}
+                                            <TableCell>
+                                                {hasLocation ? (
+                                                    <div className="flex items-start gap-2 text-sm text-default-700">
+                                                        <MapPin
+                                                            size={16}
+                                                            className="text-danger-400 mt-0.5 shrink-0"
+                                                        />
+                                                        <div className="flex flex-col">
+                                                            <span className="font-medium leading-tight">
+                                                                {client.country ||
+                                                                    'Global'}
+                                                            </span>
+                                                            {client.region && (
+                                                                <span className="text-[11px] text-text-subdued italic">
+                                                                    {
+                                                                        client.region
+                                                                    }
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex items-center gap-2 text-text-subdued italic text-xs">
+                                                        <Globe2
+                                                            size={14}
+                                                            className="opacity-50"
+                                                        />
+                                                        <span>
+                                                            No location recorded
+                                                        </span>
+                                                    </div>
+                                                )}
+                                            </TableCell>
+
+                                            {/* --- Client Type Badge --- */}
+                                            <TableCell>
+                                                <Chip
+                                                    color={
+                                                        clientTypeDisplay.colorName
+                                                    }
+                                                    size="sm"
+                                                    variant="shadow"
+                                                    className="shadow-sm"
+                                                >
+                                                    <span className="text-white font-semibold text-tiny">
+                                                        {
+                                                            clientTypeDisplay.title
+                                                        }
+                                                    </span>
+                                                </Chip>
+                                            </TableCell>
+
+                                            {/* --- Contact Info (Handled) --- */}
+                                            <TableCell>
+                                                <div className="flex flex-col gap-1.5 text-sm">
+                                                    {client.email ? (
+                                                        <div className="flex items-center gap-2 text-text-default">
+                                                            <Mail
+                                                                size={12}
+                                                                className="text-primary-400 shrink-0"
+                                                            />
+                                                            <span className="truncate max-w-45">
+                                                                {client.email}
+                                                            </span>
+                                                        </div>
+                                                    ) : (
+                                                        <span className="text-[11px] text-default-400 italic ml-5">
+                                                            Missing email
+                                                        </span>
+                                                    )}
+
+                                                    {client.phoneNumber ? (
+                                                        <div className="flex items-center gap-2 text-text-default">
+                                                            <Phone
+                                                                size={12}
+                                                                className="text-success-400 shrink-0"
+                                                            />
+                                                            <span>
+                                                                {
+                                                                    client.phoneNumber
+                                                                }
+                                                            </span>
+                                                        </div>
+                                                    ) : (
+                                                        <span className="text-[10px] text-default-400/60 ml-5">
+                                                            No phone recorded
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </TableCell>
+
+                                            {/* --- Billing & Terms --- */}
+                                            <TableCell>
+                                                <div className="flex flex-col gap-0.5">
+                                                    <div className="flex items-center gap-1.5">
+                                                        <span className="text-xs font-black text-default-800">
+                                                            NET{' '}
+                                                            {client.paymentTerms ??
+                                                                30}
+                                                        </span>
+                                                        <span className="text-[10px] text-text-subdued uppercase">
+                                                            Days
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex items-center gap-1 text-[11px] font-mono font-bold uppercase">
+                                                        <span className="text-text-subdued">
+                                                            $
+                                                        </span>
+                                                        {client.currency ||
+                                                            'USD'}
+                                                    </div>
+                                                </div>
+                                            </TableCell>
+
+                                            {/* --- Actions --- */}
+                                            <TableCell>
+                                                <div className="flex items-center justify-end gap-1">
+                                                    <Tooltip content="View details">
+                                                        <Button
+                                                            isIconOnly
+                                                            size="sm"
+                                                            variant="light"
+                                                            as={Link}
+                                                            to={INTERNAL_URLS.management.clientDetail(
+                                                                client.code
+                                                            )}
+                                                            className="text-text-subdued hover:text-primary transition-colors"
+                                                        >
+                                                            <EyeIcon
+                                                                size={16}
+                                                            />
+                                                        </Button>
+                                                    </Tooltip>
+                                                    <Tooltip content="Edit">
+                                                        <Button
+                                                            isIconOnly
+                                                            size="sm"
+                                                            variant="light"
+                                                            onPress={() =>
+                                                                handleEdit(
+                                                                    client
+                                                                )
+                                                            }
+                                                            className="hover:text-warning transition-colors"
+                                                        >
+                                                            <Edit3 size={16} />
+                                                        </Button>
+                                                    </Tooltip>
+                                                    <Tooltip
+                                                        content="Delete"
+                                                        color="danger"
+                                                        closeDelay={0}
+                                                    >
+                                                        <Button
+                                                            isIconOnly
+                                                            size="sm"
+                                                            variant="light"
+                                                            color="danger"
+                                                            className="group-hover:opacity-100 transition-opacity"
+                                                        >
+                                                            <Trash2 size={16} />
+                                                        </Button>
+                                                    </Tooltip>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    )
+                                })}
+                            </TableBody>
+                        </Table>
+                    </CardBody>
+                </Card>
+
+                {/* Form Modal */}
+                <ClientFormModal
+                    isOpen={isOpen}
+                    onClose={onClose}
+                    client={selectedClient}
+                />
+            </AdminContentContainer>
+        </>
+    )
+}

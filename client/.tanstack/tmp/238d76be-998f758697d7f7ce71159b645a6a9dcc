@@ -1,4 +1,4 @@
-import { PageHeading } from '@/shared/components'
+import { PageHeading } from '@presentation/components'
 import { Button, Spinner, useDisclosure } from '@heroui/react'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'

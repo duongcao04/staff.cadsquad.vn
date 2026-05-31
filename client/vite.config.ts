@@ -57,10 +57,10 @@ export default defineConfig(({ mode }) => {
         resolve: {
             alias: {
                 '@': path.resolve(__dirname, './src'),
-                '@staff-cadsquad/shared': path.resolve(
-                    __dirname,
-                    '../shared/index.ts'
-                ),
+                '@core': path.resolve(__dirname, './src/core'),
+                '@data': path.resolve(__dirname, './src/data'),
+                '@presentation': path.resolve(__dirname, './src/presentation'),
+                '@utils': path.resolve(__dirname, './src/utils'),
             },
         },
 
