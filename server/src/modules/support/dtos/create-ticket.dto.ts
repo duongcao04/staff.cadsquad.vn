@@ -24,7 +24,7 @@ export class CreateTicketDto {
     @ApiProperty({
         description: 'Phân loại ticket hỗ trợ',
         enum: TicketCategory,
-        example: TicketCategory.TECHNICAL,
+        example: TicketCategory.OTHER,
     })
     @IsEnum(TicketCategory)
     @IsNotEmpty()

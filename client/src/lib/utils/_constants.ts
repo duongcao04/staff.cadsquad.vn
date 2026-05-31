@@ -10,9 +10,9 @@ export const COOKIES = {
     sessionId: 'csd-sseIds',
 }
 
-export const baseUrl = envConfig.APP_URL ?? 'http://localhost'
-export const apiBaseUrl = envConfig.API_ENDPOINT
-    ? `${envConfig.API_ENDPOINT}`
+export const baseUrl = envConfig?.APP_URL ?? 'http://localhost'
+export const apiBaseUrl = envConfig?.API_ENDPOINT
+    ? `${envConfig?.API_ENDPOINT}`
     : 'http://localhost/api'
 
 export const STORAGE_KEYS = {
@@ -60,11 +60,11 @@ export const COLORS = {
     black: '#000000',
 }
 
-export const UI_APPLICATION_NAME = envConfig.APP_TITLE ?? 'Cadsquad Staff'
+export const UI_APPLICATION_NAME = envConfig?.APP_TITLE ?? 'Cadsquad Staff'
 export const DEPLOYMENT_ENV = import.meta.env.NODE_ENV || 'development'
 
 export const IS_DEV = DEPLOYMENT_ENV !== 'production'
-export const APP_VERSION = envConfig.APP_VERSION ?? '0.0.0-release'
+export const APP_VERSION = envConfig?.APP_VERSION ?? '0.0.0-release'
 
 export const SETTINGS_LOCATION_KEYS = {
     application: 'application',
