@@ -1,7 +1,3 @@
-import {
-    ConfirmDeleteJobTitleModal,
-    ModifyJobTitleModal,
-} from '@/presentation/features/job-title-manage'
 import { INTERNAL_URLS, RouteUtil, usersListOptions } from '@/presentation/lib'
 import {
     deleteJobTitleOptions,
@@ -41,6 +37,8 @@ import {
     Users,
 } from 'lucide-react'
 import { useMemo, useState } from 'react'
+import { ConfirmDeleteJobTitleModal } from './_components/ConfirmDeleteJobTitleModal'
+import { ModifyJobTitleModal } from './_components/ModifyJobTitleModal'
 
 export function JobTitlesPage() {
     const searchParams = useSearch({

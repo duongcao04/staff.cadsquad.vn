@@ -1,20 +1,20 @@
-import { createJobTypeOptions, CreateJobTypeSchema } from '@/presentation/lib'; // Adjust paths
+import { createJobTypeOptions, CreateJobTypeSchema } from '@/presentation/lib' // Adjust paths
 import {
-	addToast,
-	Button,
-	Input,
-	Modal,
-	ModalBody,
-	ModalContent,
-	ModalFooter,
-	ModalHeader
+    addToast,
+    Button,
+    Input,
+    Modal,
+    ModalBody,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
 } from '@heroui/react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useFormik } from 'formik'
 import { Cloud, Hash, Save, Search, Settings, Tag } from 'lucide-react'
 import { useState } from 'react'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
-import { ResolvePathModal } from '../../sharepoint'
+import { ResolvePathModal } from '../../../../sharepoint'
 
 interface CreateJobTypeModalProps {
     isOpen: boolean
@@ -57,11 +57,7 @@ export function CreateJobTypeModal({
 
     return (
         <>
-            <Modal
-                isOpen={isOpen}
-                onOpenChange={onOpenChange}
-                size="2xl"
-            >
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="2xl">
                 <ModalContent>
                     {(onClose) => (
                         <>

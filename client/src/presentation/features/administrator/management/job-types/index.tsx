@@ -1,4 +1,3 @@
-import { CreateJobTypeModal } from '@/presentation/features/job-type-manage'
 import { COLORS, INTERNAL_URLS, jobTypesListOptions } from '@/presentation/lib'
 import {
     Button,
@@ -17,6 +16,7 @@ import AdminContentContainer from '@presentation/components/admin/AdminContentCo
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import { Plus, Tag } from 'lucide-react'
+import { CreateJobTypeModal } from './_components/create-job-type-modal'
 
 export function JobTypesListPage() {
     const createModal = useDisclosure()

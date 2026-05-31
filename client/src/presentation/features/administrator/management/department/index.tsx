@@ -1,4 +1,3 @@
-import { ConfirmDeleteDeptModal } from '@/presentation/features/department-manage'
 import {
     deleteDepartmentOptions,
     INTERNAL_URLS,
@@ -38,6 +37,7 @@ import {
     Users,
 } from 'lucide-react'
 import { useMemo, useState } from 'react'
+import { ConfirmDeleteDeptModal } from './_components/ConfirmDeleteDeptModal'
 
 export function DepartmentsManagePage({
     depts: departments,

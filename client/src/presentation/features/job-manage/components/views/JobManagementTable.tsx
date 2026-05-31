@@ -5,12 +5,8 @@ import {
     JobHelper,
     optimizeCloudinary,
     restoreJobOptions,
-    RouteUtil
+    RouteUtil,
 } from '@/presentation/lib'
-import {
-    EJobManagementTableTabs,
-    TManageJobsParams,
-} from '@/routes/_administrator/mgmt/jobs'
 import { HeroCopyButton } from '@presentation/components'
 import { JobFinishChip } from '@presentation/components'
 import { JobStatusChip } from '@presentation/components/chips/JobStatusChip'
@@ -53,6 +49,10 @@ import {
 import React, { useCallback, useMemo, useState } from 'react'
 import { ConfirmCancelJobModal } from '../modals/ConfirmCancelJobModal'
 import { ConfirmRestoreJob } from '../modals/ConfirmRestoreJobModal'
+import {
+    EJobManagementTableTabs,
+    TManageJobsParams,
+} from '../../../../routes/_administrator/mgmt/jobs'
 
 const columns = [
     { name: 'Job no', uid: 'no', sortable: false },

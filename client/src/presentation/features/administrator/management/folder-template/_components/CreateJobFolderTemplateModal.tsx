@@ -1,3 +1,4 @@
+import { TCreateJobFolderTemplateInput } from '@core/validations'
 import {
     Modal,
     ModalBody,
@@ -9,16 +10,11 @@ import {
     useDisclosure,
 } from '@heroui/react'
 import { useSuspenseQuery } from '@tanstack/react-query'
+import lodash from 'lodash'
 import { Folder, Plus } from 'lucide-react'
 import { useState } from 'react'
-import {
-    SHAREPOINT,
-    sharepointFolderItemsOptions,
-    TCreateJobFolderTemplateInput,
-} from '../../../../lib'
-import { HeroButton, HeroInput } from '../../../../shared/components'
-import { CancelModal } from '../../../../shared/components/ui/cancel-modal'
-import lodash from 'lodash'
+import { CancelModal, HeroButton, HeroInput } from '../../../../../components'
+import { SHAREPOINT, sharepointFolderItemsOptions } from '../../../../../lib'
 
 interface ModalProps {
     isOpen: boolean
