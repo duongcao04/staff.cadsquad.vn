@@ -22,7 +22,7 @@ async function bootstrap() {
 	const appVersion = configService.get<string>('app.APP_VERSION') || 'v1.0'
 
 	// 3. Setup Global Prefix (lấy từ config luôn cho chuẩn)
-	app.setGlobalPrefix(apiPrefix + '/v1')
+	app.setGlobalPrefix(apiPrefix)
 
 	// 4. Setup CORS
 	app.enableCors({
@@ -64,3 +64,4 @@ async function bootstrap() {
 	})
 }
 void bootstrap()
+

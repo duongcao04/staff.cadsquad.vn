@@ -73,7 +73,7 @@ export const Route = createRootRouteWithContext<AppRouterContext>()({
                             </HeroUIConfigurationProvider>
                         </NextThemesProvider>
 
-                        {!isSmallView && <ReactQueryDevtools />}
+                        {/* {!isSmallView && <ReactQueryDevtools />} */}
                         {/* <TanStackRouterDevtools /> */}
                     </QueryClientProvider>
                 </AblyProvider>
